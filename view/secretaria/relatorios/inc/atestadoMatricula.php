@@ -92,7 +92,7 @@ if (isset($_GET["codigo"])) {
     $papel = "A4";
 
     // gera o relatório em PDF
-    include LIB.'/fpdf17/pdfDiario.php';
+    include PATH.LIB.'/fpdf17/pdfDiario.php';
 
     // Instanciation of inherited class
     $pdf = new PDF();

@@ -20,7 +20,7 @@ $orientacao = "P"; // Landscape
                    // $orientacao = "P"; //Portrait
 $papel = "A4";
 
-include LIB.'/fpdf17/pdfDiario.php';
+include PATH.LIB.'/fpdf17/pdfDiario.php';
 
 $pdf = new PDF ();
 

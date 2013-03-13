@@ -142,6 +142,6 @@ if (isset($_GET["curso"]) && isset($_GET["turma"])) {
     $papel = "A4";
     
     // gera o relatório em PDF
-    include(LIB.'/relatorio_banco.php');
+    include(PATH.LIB.'/relatorio_banco.php');
 }
 ?>

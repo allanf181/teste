@@ -60,7 +60,7 @@ if (isset($_GET["curso"]) && isset($_GET["turma"])) {
     $largura = array(22,120,50,20,65,30);
 
     // gera o relatório em PDF
-    include LIB.'/relatorio_banco.php';
+    include PATH.LIB.'/relatorio_banco.php';
 
 
 }

@@ -16,7 +16,7 @@ $orientacao = "P"; // Landscape
 $papel = "A3";
 
 
-include LIB.'/fpdf17/pdfDiario.php';
+include PATH.LIB.'/fpdf17/pdfDiario.php';
 
 $sql = "SELECT pe.numeroAulaSemanal, pe.totalHoras, pe.totalAulas, pe.numeroProfessores,
 							pe.ementa, pe.objetivo, pe.conteudoProgramatico, pe.metodologia, d.numero,

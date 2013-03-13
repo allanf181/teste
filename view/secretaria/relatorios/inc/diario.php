@@ -35,7 +35,7 @@ $largura = array (
 );
 $larguraDia = 4; // campos de dias
 
-include LIB.'/fpdf17/pdfDiario.php';
+include PATH.LIB.'/fpdf17/pdfDiario.php';
 
 $sql = "SELECT DATE_FORMAT(data, '%m'), c.nome, d.ch,
 						t.numero, tu.nome, t.semestre, d.nome, d.numero, a.bimestre,

@@ -42,5 +42,5 @@ $titulosColunas = array("PROFESSOR", "DISCIPLINA", "C. HORÁRIA", "QDE. AULAS", 
 $largura = array(70,80,22,23,20,60);
 
 // gera o relatÃ³ em PDF
-include LIB.'/relatorio_banco.php';
+include PATH.LIB.'/relatorio_banco.php';
 ?>

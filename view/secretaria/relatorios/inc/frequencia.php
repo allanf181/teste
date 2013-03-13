@@ -11,7 +11,7 @@ $orientacao = "L"; // Landscape
                    // $orientacao = "P"; //Portrait
 $papel = "A3";
 
-include LIB.'/fpdf17/pdfDiario.php';
+include PATH.LIB.'/fpdf17/pdfDiario.php';
 
 if ($ano && $semestre) {
 

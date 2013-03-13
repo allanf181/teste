@@ -31,7 +31,7 @@ if (mysql_num_rows($resultado) == '')
     $papel = "A4";
 
     // gera o relatório em PDF
-    include LIB.'/fpdf17/pdfImage.php';
+    include PATH.LIB.'/fpdf17/pdfImage.php';
 
     // Instanciation of inherited class
     $pdf = new PDF_MemImage();

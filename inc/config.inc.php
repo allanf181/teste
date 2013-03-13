@@ -66,7 +66,7 @@ define("VIEW", LOCATION.'/view', true);
 define("CONTROLLER", PATH.LOCATION.'/controller', true);
 
 // Diretório de Bibliotecas
-define("LIB", PATH.LOCATION.'/lib', true);
+define("LIB", LOCATION.'/lib', true);
 
 // Diretório de Imagens
 define("IMAGES", VIEW.'/css/images/', true);

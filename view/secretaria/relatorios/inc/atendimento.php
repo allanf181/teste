@@ -4,7 +4,7 @@ require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
-include LIB.'/fpdf17/pdfDiario.php';
+include PATH.LIB.'/fpdf17/pdfDiario.php';
 
 $curso = dcrip($_GET["curso"]);
 

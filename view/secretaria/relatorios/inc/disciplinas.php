@@ -33,5 +33,5 @@ $titulosColunas = array("Código", "Módulo", "Disciplina", "Curso");
 $largura = array(30,20,110,110);
 
 // gera o relatório em PDF
-include LIB.'/relatorio_banco.php';
+include PATH.LIB.'/relatorio_banco.php';
 ?>

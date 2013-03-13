@@ -1035,3 +1035,6 @@ Apr 14 00:19:08 [info] UPDATE Permissoes SET menu='view/secretaria/abono.php,vie
 Apr 14 00:19:08 [info] UPDATE Permissoes SET menu='view/secretaria/calendario.php,view/secretaria/relatorios/listagem.php',permissao='view/secretaria/calendario.php,view/secretaria/relatorios/listagem.php',nome='Calend&aacute;rio,Relat&oacute;rios' WHERE codigo = 10;
 Apr 14 00:19:08 [info] UPDATE Permissoes SET menu='view/secretaria/calendario.php,view/secretaria/cursos/coordenador.php,view/secretaria/cursos/professorAtribuicao.php,view/secretaria/relatorios/listagem.php,view/admin/sincronizadorNambei.php',permissao='view/secretaria/calendario.php,view/secretaria/cursos/coordenador.php,view/secretaria/cursos/professorAtribuicao.php,view/secretaria/relatorios/listagem.php,view/admin/sincronizadorNambei.php',nome='Calend&aacute;rio,Coordenador,Professor,Relat&oacute;rios,Sincronizar' WHERE codigo = 11;
 Apr 14 00:19:08 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174655')
+Mar 13 06:02:20 [info] SELECT version FROM schema_migrations
+Mar 13 06:02:20 [info] SELECT version FROM schema_migrations
+Mar 13 06:02:20 [info] SELECT version FROM schema_migrations

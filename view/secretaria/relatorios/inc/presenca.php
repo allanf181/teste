@@ -48,7 +48,7 @@ if ($ano && $semestre){
     $largura = array(20, 120, 0);
 
     // gera o relatório em PDF
-    include LIB.'/relatorio_banco.php';
+    include PATH.LIB.'/relatorio_banco.php';
 
 
 }

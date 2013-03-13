@@ -50,6 +50,6 @@ order by a.nome";
     $largura = array(20, 85, 20, 15, 15, 15, 15, 15, 15, 15, 15, 15, 0);
 
     // gera o relatório em PDF
-    include LIB.'/relatorio_banco.php';
+    include PATH.LIB.'/relatorio_banco.php';
 
 ?>

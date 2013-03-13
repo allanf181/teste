@@ -1,7 +1,7 @@
 
 <?php
 require $_SESSION['CONFIG'] ;
-require LIB.'/relatorio.php';
+require PATH.LIB.'/relatorio.php';
 
 require MYSQL;
 require VARIAVEIS;
