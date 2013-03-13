@@ -173,12 +173,6 @@ if (isset($_SESSION["loginTipo"])) {
         <?php
     } else {
         ?>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $('#index').load('home.php');
-            });
-        </script>
-            
         <div id="cssmenu">
         <ul>
         <li><a href="javascript:$('#index').load('home.php'); void(0);"><span>Home</span></a></li>
@@ -270,7 +264,17 @@ if (isset($_SESSION["loginTipo"])) {
             <?php
         } 
         print makeMenu($permissoes['view']);
-       }   
+        ?>
+        </ul>
+        <?php
+       }
+       ?>
+       <script type="text/javascript">
+            $(document).ready(function() {
+                $('#index').load('home.php');
+            });
+       </script>
+       <?php
  }
 ?>
 </div>
@@ -283,6 +287,10 @@ if (isset($_SESSION["loginTipo"])) {
     mysql_close($conexao);
 ?>
 </div>
+</div>
+    <div class="footer" <?php if (!$_SESSION['loginCodigo']) print 'style="margin-right: 195px; "'; ?> >
+	<a class="link" href="javascript:$('#index').load('creditos.php');void(0);">Equipe de desenvolvimento do WebDi&aacute;rio IFSP</a>
+</a>
 </div>
 </body>
 </html>
