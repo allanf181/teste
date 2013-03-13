@@ -48,7 +48,7 @@ class Aviso {
         $res = $bd->selectDB($sql, $params);
         if ( $res )
         {
-            return $res[0];
+            return $res;
         }
         else
         {

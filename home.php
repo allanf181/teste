@@ -7,7 +7,7 @@ require FUNCOES;
 
 
 ?>
-<table border="0">
+<table border="0" width='100%'>
 <tr><td colspan="2"><font size="4"><b>WebDi&aacute;rio</b></font></font>
 <br><font size="1">Vers&atilde;o 1.7</font></td></tr>
 <tr><td>
@@ -158,7 +158,7 @@ if ($res) {
         ?>
         <tr><td colspan="2"><h2><?php print $nome; ?></h2></td></tr>
         <tr><td valign="top" width="50">
-        <img alt="foto" style="width: 50px; height: 50px" src="<?php print INC; ?>/file.php?type=pic&id=<?php crip($codigo); ?>" />
+        <img alt="foto" style="width: 50px; height: 50px" src="<?php print INC; ?>/file.inc.php?type=pic&id=<?php print crip($codigo); ?>" />
         </td>
         <td valign="top"><?php print $reg['Data']; ?><br><?php print $reg['Conteudo']; ?></a>
         </td>

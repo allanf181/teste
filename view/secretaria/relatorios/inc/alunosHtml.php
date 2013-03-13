@@ -1,6 +1,6 @@
 
 <?php
-require '../../../inc/config.inc.php';
+require '../../../../inc/config.inc.php';
 require PATH.LIB.'/relatorio.php';
 
 require MYSQL;
