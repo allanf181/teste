@@ -20,6 +20,9 @@ $_SESSION['loginCodigo']='null';
 $_SERVER["SERVER_NAME"] = 'null';
 $_SERVER['HTTP_X_FORWARDED_FOR'] = 'null';
 
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
 include ("$LOCATION_CRON"."db2Alunos.php");
 include ("$LOCATION_CRON"."db2Professores.php");
 include ("$LOCATION_CRON"."db2Horarios.php");
@@ -37,16 +40,15 @@ include ("$LOCATION_CRON"."db2Matriculas.php");
 include ("$LOCATION_CRON"."db2Notas.php");
 
 // CHECANDO A VERSAO DO SISTEMA
-include("$LOCATION_CRON"."../inc/mysqlAtualizacao.php");
-$resultado = mysql_query("SELECT versao FROM BrtAtualizacao.versao");
- if (mysql_num_rows($resultado) != '') {
- 	$versao = mysql_result($resultado, 0, "versao");
- 	
- 	$conexao = mysql_connect($servidor, $usuario, $senha) or die (mysql_error());
-	mysql_set_charset('utf8');           
-	mysql_select_db($bd);		
-	mysql_query("UPDATE Instituicoes SET versao = '$versao'");
-}
+//include("$LOCATION_CRON"."../inc/mysqlAtualizacao.php");
+//$resultado = mysql_query("SELECT versao FROM BrtAtualizacao.versao");
+// if (mysql_num_rows($resultado) != '') {
+// 	$versao = mysql_result($resultado, 0, "versao");
+//  	$conexao = mysql_connect($servidor, $usuario, $senha) or die (mysql_error());
+//	mysql_set_charset('utf8');           
+//	mysql_select_db($bd);		
+//	mysql_query("UPDATE Instituicoes SET versao = '$versao'");
+//}
 
 // DELETANDO LOGS ANTIGOS
 mysql_query("DELETE FROM Logs WHERE datediff(now(), data) > 30");

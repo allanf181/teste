@@ -43,7 +43,7 @@ define("MY_PORT", '3306', true);
 define("MYSQL", PATH.INC.'/mysql.php', true);
 
 //ACESSO AO BANCO DE DADOS - NAMBEI
-$DB2_DB = 'TESTESP';
+$DB2_DB = 'TESTEBI';
 $DB2_USER = 'db2inst1';
 $DB2_PASS = 'brtacad';
 $DB2_HOST = '192.168.56.101';

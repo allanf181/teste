@@ -683,7 +683,7 @@ function formatarTexto($texto) {
         "ix" => "1", "x" => "1"
     );
 
-    $words = split(" ", $string);
+    $words = @split(" ", $string);
     $newwords = array();
     foreach ($words as $word) {
         if (@$higher_exceptions[$word])
