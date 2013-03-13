@@ -151,14 +151,14 @@ if ($res) {
     <td width="300" valign="top">
     <div style="width: 300px; height: 400px; overflow-y: scroll;">
     <table border="0" id="form" width="100%">
-    <tr><td colspan="2">Avisos Gerais</td></tr>;
+    <tr><td colspan="2">Avisos Gerais</td></tr>
     <?php
     foreach($res as $reg) {
-        list($codigo, $nome) = split('#', $reg['Pessoa']);
+        list($codigo, $nome) = @split('#', $reg['Pessoa']);
         ?>
         <tr><td colspan="2"><h2><?php print $nome; ?></h2></td></tr>
         <tr><td valign="top" width="50">
-        <img alt="foto" style="width: 50px; height: 50px" src="<?php print INC; ?>inc/pic.php?id=<?php crip($codigo); ?>" />
+        <img alt="foto" style="width: 50px; height: 50px" src="<?php print INC; ?>/file.php?type=pic&id=<?php crip($codigo); ?>" />
         </td>
         <td valign="top"><?php print $reg['Data']; ?><br><?php print $reg['Conteudo']; ?></a>
         </td>
