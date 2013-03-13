@@ -4,7 +4,7 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //0
 
-require $_SESSION['CONFIG'] ;
+require '../inc/config.inc.php';
 require FUNCOES;
 require MENSAGENS;
 require CONTROLLER . '/login.class.php';

@@ -1,6 +1,6 @@
 <?php
 // VERIFICANDO A SESSÃO DO USUÁRIO
-if ($_SESSION['timeout'] + $TIMEOUT * 60 < time() && $_SESSION['timeout'] != 'CRON') {
+if (isset($_SESSION['timeout']) && $_SESSION['timeout'] + $TIMEOUT * 60 < time() && $_SESSION['timeout'] != 'CRON') {
     $_SESSION['timeout'] = time();
     ?>
     <script type="text/javascript">

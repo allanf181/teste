@@ -8,7 +8,7 @@ require FUNCOES;
 
 ?>
 <table border="0">
-<tr><td colspan="2"><font size="4"><b>Sistema Integrado para Gest&atilde;o Acad&ecirc;mica</b></font></font>
+<tr><td colspan="2"><font size="4"><b>WebDi&aacute;rio</b></font></font>
 <br><font size="1">Vers&atilde;o 1.7</font></td></tr>
 <tr><td>
 <?php

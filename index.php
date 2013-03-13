@@ -30,7 +30,7 @@ $nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title><?php print utf8_encode($SITE_TITLE); ?></title>
+    <title><?php print $SITE_TITLE; ?></title>
 <meta http-equiv="Content-Language" content="pt-br" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="shortcut icon" type="image/x-icon" href="<?php print ICONS; ?>/favicon.ico">
@@ -133,6 +133,7 @@ if (isset($nome)) {
 <div id="content">
 
 <?php
+
 // Janela de Login, caso o usuário não tenha sessão.
 if (!isset($_SESSION["loginTipo"]) && !isset($_POST['campoLogin']) && (!isset($_GET['est']) && !isset($_GET['p']))  ) {
 ?>

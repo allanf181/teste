@@ -4,7 +4,8 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
-require $_SESSION['CONFIG'] ;
+require '../../../inc/config.inc.php';
+
 require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;

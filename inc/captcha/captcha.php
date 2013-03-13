@@ -1,5 +1,5 @@
 <?php
-require $_SESSION['CONFIG'];
+require '../config.inc.php';
 
 header("Content-type: image/png");
 

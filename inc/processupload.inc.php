@@ -1,5 +1,5 @@
 <?php
-require $_SESSION['CONFIG'] ;
+require 'config.inc.php';
 require MYSQL;
 require VARIAVEIS;
 require FUNCOES;

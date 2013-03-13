@@ -1,6 +1,6 @@
 <?php
 include("fpdf17/pdf.php");
-require $_SESSION['CONFIG'] ;
+require '../inc/config.inc.php';
 //require VARIAVEIS;
 
 // Instanciation of inherited class

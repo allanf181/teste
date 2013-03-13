@@ -1,5 +1,6 @@
 <?php
-require $_SESSION['CONFIG'] ;
+require '../inc/config.inc.php';
+
 
 //header('Content-Type: text/html; charset=UTF-8');
 //header('Content-Type: text/html; charset=iso8859-1');
