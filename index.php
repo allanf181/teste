@@ -3,7 +3,6 @@ include_once "inc/config.inc.php";
 require FUNCOES;
 require VARIAVEIS;
 
-
 // Verifica e redireciona para HTTPS
 if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTP_HOST']!='localhost') {
     header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
