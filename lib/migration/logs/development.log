@@ -1041,3 +1041,62 @@ Mar 13 06:02:20 [info] SELECT version FROM schema_migrations
 Mar 13 06:27:53 [info] SELECT version FROM schema_migrations
 Mar 13 06:27:53 [info] SELECT version FROM schema_migrations
 Mar 13 06:27:53 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:23 [info] CREATE TABLE `schema_migrations` (
+`version` varchar(255))  DEFAULT CHARSET=utf8;
+Mar 13 08:33:23 [info] CREATE UNIQUE INDEX idx_schema_migrations_version ON `schema_migrations`(`version`)
+Mar 13 08:33:24 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:24 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:24 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:37 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:37 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:37 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:49 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:49 [info] SELECT version FROM schema_migrations
+Mar 13 08:33:49 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:07 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:07 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:07 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:18 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:18 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:18 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:24 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:24 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:24 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:30 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:30 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:30 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:36 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:36 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:36 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:44 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:44 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:44 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:51 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:51 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:51 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:58 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:58 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:58 [info] SELECT version FROM schema_migrations
+Mar 13 08:34:58 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'Atribuicoes' 
+                                    AND COLUMN_NAME = 'formula'
+Mar 13 08:34:58 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico' 
+                                    AND TABLE_NAME = 'Instituicoes' 
+                                    AND COLUMN_NAME = 'campiDigitaNotas '
+Mar 13 08:34:58 [info] SELECT prof,aluno FROM Instituicoes
+Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,,,view/aluno/ensalamento.php,,view/aluno/socioEconomico.php',permissao='view/aluno/aluno.php,view/aluno/aula.php,view/aluno/avaliacao.php,view/aluno/aviso.php,view/aluno/boletim.php,view/aluno/ensalamento.php,view/aluno/planoEnsino.php,view/aluno/socioEconomico.php',nome=',Aulas,Avalia&ccedil;&otilde;es,Avisos,Boletim,Ensalamento,Plano de Ensino,Socioecon&ocirc;mico' WHERE tipo = 1;
+Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,view/professor/ensalamento.php,,view/professor/ftd.php,,,',permissao='view/professor/aula.php,view/professor/avaliacao.php,view/professor/aviso.php,view/professor/ensalamento.php,view/professor/frequencia.php,view/professor/ftd.php,view/professor/nota.php,view/professor/plano.php,view/professor/professor.php',nome='Aulas,Avalia&ccedil;&otilde;es,Avisos,Ensalamento,Frequ&ecirc;ncias,FTD,Notas,Planos de Ensino,' WHERE tipo = 2;
+Mar 13 08:34:58 [info] SELECT tipo,codigo,nome,menu,permissao FROM Permissoes WHERE tipo NOT IN (2,1)
+Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,',permissao=',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,',nome='Boletim por Turma,Frequ&ecirc;ncias,Relat&oacute;rios,Prazos Aulas,Di&aacute;rios,Ensalamento,Hor&aacute;rios,Salas,Atribui&ccedil;&otilde;es,Coordenadores,Cursos,Disciplinas,Matr&iacute;&shy;culas,Modalidades,Notas Finais,Professores,Situa&ccedil;&otilde;es,Tipos de Avalia&ccedil;&otilde;es,Turmas,Turnos,Abono de Faltas,Atendimento,Avisos,Calend&aacute;rio Acad&ecirc;mico,Cidades,Estados,FTDs,Pessoas,Planos de Ensino,Socioecon&ocirc;mico,Boletim,Institui&ccedil;&atilde;o,Logs,Migra&ccedil;&atilde;o BRT,Permiss&otilde;es,Sincronizar,Tipos,Uso do Sistema' WHERE codigo = 1;
+Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,,,,,,,,,,,,,,,,,,,,,,,,',permissao=',,,,,,,,,,,,,,,,,,,,,,,,,,',nome='Boletim - Turmas,Frequ&ecirc;ncias,Relat&oacute;rios,Lan&ccedil;amento de Aulas,Fechamento de Di&aacute;rios,Ensalamento,Hor&aacute;rios,Salas,Cursos,Disciplinas,Matr&iacute;culas,Modalidades,Situa&ccedil;&otilde;es,Tipos de Avalia&ccedil;&otilde;es,Turmas,Turnos,Avisos,Calend&aacute;rio Acad&ecirc;mico,Cidades,Estados,FTDs,Cadastro de Pessoas,Planos de Ensino,SocioEcon&ocirc;mico,Boletim,Tipos de Pessoas,Uso do Sistema' WHERE codigo = 5;
+Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,,,,,,,',permissao=',,,,,,,,,',nome='Avisos,Boletim do Aluno,Boletim da Turma,Di&aacute;rios,Listas de Frequ&ecirc;ncias,FTDs,Planos de Ensino,Prazos Aulas,Prazos Di&aacute;rios,Relat&oacute;rios' WHERE codigo = 7;
+Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,',permissao=',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,',nome='Boletim - Turmas,Frequ&ecirc;ncias,Relat&oacute;rios,Lan&ccedil;amento de Aulas,Fechamento de Di&aacute;rios,Ensalamento,Hor&aacute;rios,Salas,Atribui&ccedil;&otilde;es,Coordenadores,Cursos,Disciplinas,Matr&iacute;culas,Modalidades,Notas Finais,Professores,Situa&ccedil;&otilde;es,Tipos de Avalia&ccedil;&otilde;es,Turmas,Turnos,Abono de Faltas,Atendimento,Avisos,Calend&aacute;rio Acad&ecirc;mico,Cidades,Estados,FTD,Cadastro de Pessoas,Planos de Ensino,SocioEcon&ocirc;mico,Boletim,Migra&ccedil;&atilde;o BRT,Sincronizar,Uso do Sistema' WHERE codigo = 8;
+Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',',permissao=',',nome='Calend&aacute;rio,Relat&oacute;rios' WHERE codigo = 10;
+Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,,',permissao=',,,,',nome='Calend&aacute;rio,Coordenador,Professor,Relat&oacute;rios,Sincronizar' WHERE codigo = 11;
+Mar 13 08:34:58 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174655')

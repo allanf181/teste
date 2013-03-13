@@ -1,4 +1,5 @@
 <?php
+require "inc/config.inc.php";
 
 class Academico extends Ruckusing_Migration_Base
 {
@@ -8,7 +9,7 @@ class Academico extends Ruckusing_Migration_Base
         $result = $this->select_all("SELECT * 
                                     FROM information_schema.COLUMNS 
                                     WHERE 
-                                        TABLE_SCHEMA = 'st' 
+                                        TABLE_SCHEMA = '".MY_DB."'
                                     AND TABLE_NAME = 'Atribuicoes' 
                                     AND COLUMN_NAME = 'formula'");
         if (!$result) {
@@ -20,7 +21,7 @@ class Academico extends Ruckusing_Migration_Base
         $result = $this->select_all("SELECT * 
                                     FROM information_schema.COLUMNS 
                                     WHERE 
-                                        TABLE_SCHEMA = 'st' 
+                                        TABLE_SCHEMA = '".MY_DB."' 
                                     AND TABLE_NAME = 'Instituicoes' 
                                     AND COLUMN_NAME = 'campiDigitaNotas '");
         if (!$result) {
