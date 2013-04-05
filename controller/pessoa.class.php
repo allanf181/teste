@@ -54,10 +54,23 @@ class Pessoas extends Generic {
     // USADO POR: HOME.PHP
     public function removeFoto($codigo) {
         $bd = new database();
-        $sql = "UPDATE Pessoas SET foto = '' WHERE codigo = :cod";
-        $params = array(':cod' => $codigo);
+
+        $validos = explode(',', $codigo);
+        $i = 0;
+        foreach ($validos as $value) {
+            if ($value) {
+                $indice = 'A' . $i;
+                $new_array[$indice] = $value;
+                $new_params[] = ':' . $indice;
+                $i++;
+            }
+        }
+        $param = implode($new_params, ',');
+        $params = $new_array;
+
+        $sql = "UPDATE Pessoas SET foto = '', bloqueioFoto='' WHERE codigo IN ($param)";
         $res = $bd->updateDB($sql, $params);
-        if ($res[0]) {
+        if ($res) {
             return true;
         } else {
             return false;

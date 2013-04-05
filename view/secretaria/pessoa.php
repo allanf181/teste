@@ -63,16 +63,22 @@ if ($_GET["opcao"] == 'removeFoto') {
 
 <?php
 if ($_GET["opcao"] == 'validacao') {
-    if ($_GET["codigo"]) {
-        $ret = $pessoa->desloqueioFoto($_GET['codigo']);
-        if ($ret)
-            mensagem('OK', 'TRUE_UPDATE');
-    }
+    if ($_GET["insert"])
+        $ret = $pessoa->desloqueioFoto($_GET['insert']);
+    if ($_GET["delete"])
+        $ret = $pessoa->removeFoto($_GET['delete']);
+    
+    if ($ret)
+        mensagem('OK', 'TRUE_UPDATE');
     ?>
     <table align="center" id="form" width="100%">
         <tr>
             <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Voltar</a></td>
-            <td align="right"><input type="submit" name="liberar" id="liberar" value="Liberar">
+            <td align="right"><input type="submit" name="liberar" id="liberar" value="Liberar"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td align="right"><input type="submit" name="remover" id="remover" value="Remover"></td>
         </tr>
     </table>
 
@@ -98,7 +104,7 @@ if ($_GET["opcao"] == 'validacao') {
                         }
                         ?>
                         <td align='center'>
-                            <input <?= $bloqueado ?> type='checkbox' id='bloqueioFoto' name='bloqueioFoto[]' value='<?= $reg['codigo'] ?>"' />
+                            <input <?= $bloqueado ?> type='checkbox' id='bloqueioFoto' name='bloqueioFoto[]' value='<?= $reg['codigo'] ?>' />
                         </td>
                     </tr>
                     <?php
@@ -110,37 +116,54 @@ if ($_GET["opcao"] == 'validacao') {
     </form>
 
     <script>
-        $('#select-all').click(function(event) {
+        $('#select-all').click(function (event) {
             if (this.checked) {
                 // Iterate each checkbox
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = true;
                 });
             } else {
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = false;
                 });
             }
         });
 
-        $(document).ready(function() {
-            $('#liberar').click(function(event) {
+        $(document).ready(function () {
+            $('#remover').click(function (event) {
+                $.Zebra_Dialog('<strong>Deseja remover as fotos selecionadas?</strong>', {
+                    'type': 'question',
+                    'title': '<?php print $TITLE; ?>',
+                    'buttons': ['Sim', 'Não'],
+                    'onClose': function (caption) {
+                        if (caption == 'Sim') {
+                            var selected = [];
+                            $('input:checkbox:checked').each(function () {
+                                selected.push($(this).val());
+                            });
+
+                            $('#index').load('<?php print $SITE; ?>?opcao=validacao&delete=' + selected);
+                        }
+                    }
+                });
+            });
+
+            $('#liberar').click(function (event) {
                 $.Zebra_Dialog('<strong>Deseja prosseguir com o desbloqueio?</strong>', {
                     'type': 'question',
                     'title': '<?php print $TITLE; ?>',
                     'buttons': ['Sim', 'Não'],
-                    'onClose': function(caption) {
+                    'onClose': function (caption) {
                         if (caption == 'Sim') {
                             var selected = [];
-                            $('input:checkbox:checked').each(function() {
+                            $('input:checkbox:checked').each(function () {
                                 selected.push($(this).val());
                             });
 
-                            $('#index').load('<?php print $SITE; ?>?opcao=validacao&codigo=' + selected);
+                            $('#index').load('<?php print $SITE; ?>?opcao=validacao&insert=' + selected);
                         }
                     }
                 });
-
             });
         });
     </script>
@@ -549,9 +572,9 @@ require PATH . VIEW . '/paginacao.php';
             else
                 return URLS;
         }
-        $(document).ready(function() {
+        $(document).ready(function () {
             valida();
-            $('#nome, #prontuario, #senha').keyup(function() {
+            $('#nome, #prontuario, #senha').keyup(function () {
                 valida();
             });
 
@@ -571,15 +594,15 @@ require PATH . VIEW . '/paginacao.php';
                 prevText: 'Anterior'
             });
 
-            $(".item-excluir").click(function() {
+            $(".item-excluir").click(function () {
                 $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                     'type': 'question',
                     'title': '<?php print $TITLE; ?>',
                     'buttons': ['Sim', 'Não'],
-                    'onClose': function(caption) {
+                    'onClose': function (caption) {
                         if (caption == 'Sim') {
                             var selected = [];
-                            $('input:checkbox:checked').each(function() {
+                            $('input:checkbox:checked').each(function () {
                                 selected.push($(this).val());
                             });
 
@@ -589,56 +612,56 @@ require PATH . VIEW . '/paginacao.php';
                 });
             });
 
-            $('#select-all').click(function(event) {
+            $('#select-all').click(function (event) {
                 if (this.checked) {
                     // Iterate each checkbox
-                    $(':checkbox').each(function() {
+                    $(':checkbox').each(function () {
                         this.checked = true;
                     });
                 } else {
-                    $(':checkbox').each(function() {
+                    $(':checkbox').each(function () {
                         this.checked = false;
                     });
                 }
             });
 
-            $(".item-alterar").click(function() {
+            $(".item-alterar").click(function () {
                 var codigo = $(this).attr('id');
                 $('#nome').val('');
                 $('#prontuario').val('');
                 $('#index').load(atualizar(1) + '&pesquisa=1&codigo=' + codigo + '&item=<?php print $item; ?>');
             });
 
-            $('#setNome, #setProntuario').click(function() {
+            $('#setNome, #setProntuario').click(function () {
                 atualizar();
             });
 
 
             $('#tipo option').prop('selected', true);
 
-            $("#btnLeft").click(function() {
+            $("#btnLeft").click(function () {
                 var selectedItem = $("#rightValues option:selected");
                 $("#tipo").append(selectedItem);
                 $('#tipo option').prop('selected', true);
             });
 
-            $("#btnRight").click(function() {
+            $("#btnRight").click(function () {
                 var selectedItem = $("#tipo option:selected");
                 $("#rightValues").append(selectedItem);
                 $('#tipo option').prop('selected', true);
             });
 
-            $("#rightValues").change(function() {
+            $("#rightValues").change(function () {
                 var selectedItem = $("#rightValues option:selected");
                 $("#txtRight").val(selectedItem.text());
             });
 
-            $(function() {
-                $('#estadoNaturalidade').change(function() {
+            $(function () {
+                $('#estadoNaturalidade').change(function () {
                     if ($(this).val()) {
                         $('#naturalidade').hide();
                         $('.carregando').show();
-                        $.getJSON('<?= VIEW ?>/secretaria/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function(j) {
+                        $.getJSON('<?= VIEW ?>/secretaria/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function (j) {
                             var options = '<option value=""></option>';
                             for (var i = 0; i < j.length; i++) {
                                 options += '<option value="' + j[i].codigo + '">' + j[i].nome + '</option>';
@@ -652,12 +675,12 @@ require PATH . VIEW . '/paginacao.php';
                 });
             });
 
-            $(function() {
-                $('#estado').change(function() {
+            $(function () {
+                $('#estado').change(function () {
                     if ($(this).val()) {
                         $('#cidade').hide();
                         $('.carregando').show();
-                        $.getJSON('<?= VIEW ?>/secretaria/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function(j) {
+                        $.getJSON('<?= VIEW ?>/secretaria/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function (j) {
                             var options = '<option value=""></option>';
                             for (var i = 0; i < j.length; i++) {
                                 options += '<option value="' + j[i].codigo + '">' + j[i].nome + '</option>';
@@ -671,7 +694,7 @@ require PATH . VIEW . '/paginacao.php';
                 });
             });
 
-            $('#imageInput').change(function() {
+            $('#imageInput').change(function () {
                 $('#MyUploadForm').submit();
             });
 
@@ -682,7 +705,7 @@ require PATH . VIEW . '/paginacao.php';
                 resetForm: true        // reset the form after successful submit 
             };
 
-            $('#MyUploadForm').submit(function() {
+            $('#MyUploadForm').submit(function () {
                 $(this).ajaxSubmit(options);
                 // always return false to prevent standard browser submit and page navigation 
                 return false;
