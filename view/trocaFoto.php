@@ -17,7 +17,6 @@ if ($tmp = $_GET['foto']) {
 
 require '../inc/config.inc.php';
 
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 

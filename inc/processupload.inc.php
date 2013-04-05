@@ -1,8 +1,11 @@
 <?php
+
 require 'config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
+
+require CONTROLLER . "/pessoa.class.php";
+$pessoa = new Pessoas();
 
 $x = 0;
 $y = 0;
@@ -130,16 +133,20 @@ function createImage($ImageName, $ImageType, $TempSrc, $codigo, $prontuario) {
         $instr = fopen($DestinationDirectory . $NewImageName, "rb");
         $image = addslashes(fread($instr, filesize($DestinationDirectory . $NewImageName)));
 
-        global $ALUNO;
+        global $ALUNO, $pessoa;
+        $aluno = 0;
+        
         if ($_POST['filePath'])
             if (in_array($ALUNO, $_SESSION["loginTipo"]))
-                $sqlAdd = ",bloqueioFoto=(SELECT i.bloqueioFoto FROM Instituicoes i)";
+                    $aluno = 1;
 
-        if ($codigo)
-            $sql = "UPDATE Pessoas SET foto=(\"" . $image . "\") $sqlAdd WHERE codigo = $codigo";
+        if ($codigo) {
+            $params['codigo'] = $codigo;
+        }
 
-        if ($prontuario)
-            $sql = "UPDATE Pessoas SET foto=(\"" . $image . "\") WHERE prontuario = '$prontuario'";
+        if ($prontuario) {
+            $params['prontuario'] = $prontuario;
+        }
 
         //LIMPANDO LIXO
         global $TempSrc;
@@ -148,7 +155,11 @@ function createImage($ImageName, $ImageType, $TempSrc, $codigo, $prontuario) {
 
         if ($prontuario)
             unlink($DestinationDirectory . $TMPImageName);
-        $res = mysql_query($sql) or die("Erro:" . mysql_error());
+        
+        if (!$pessoa->updateFoto($params, $image, $aluno)) {
+            print "Erro ao alterar foto!!!";
+            die;
+        }
 
         if ($_POST['filePath']) { // se filePath � pq veio do trocaFoto, fecha a janela aberta.
             print "<h1>Foto foi adicionada com sucesso.</h1>";

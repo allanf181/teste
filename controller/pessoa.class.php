@@ -42,7 +42,7 @@ class Pessoas extends Generic {
                 AND t.codigo = pt.tipo
                 $sqlAdicional
 		ORDER BY p.nome $nav";
-        
+
         $res = $bd->selectDB($sql, $params);
         if ($res) {
             return $res;
@@ -80,7 +80,7 @@ class Pessoas extends Generic {
             return false;
         }
     }
-    
+
     // USADO POR: SECRETARIA/PESSOA.PHP
     // RETORNA QUANTIDADE DE FOTOS BLOQUEADAS
     public function countBloqPic() {
@@ -150,7 +150,7 @@ class Pessoas extends Generic {
                     AND t.ano=:ano
                     $sqlAdicional )
                 GROUP BY p.$campo";
-        
+
         $res = $bd->selectDB($sql, $params);
         if ($res) {
             foreach ($res as $reg) {
@@ -178,6 +178,32 @@ class Pessoas extends Generic {
             }
             $new_res[array_shift(array_keys($new_res))]['totalGeral'] = $totalGeral;
             return $new_res;
+        } else {
+            return false;
+        }
+    }
+
+    // USADO POR: INC/PROCESSUPLOAD.PHP
+    // ALTERACAO DE FOTOS
+    public function updateFoto($params, $image, $aluno) {
+        $bd = new database();
+
+        if ($aluno)
+            $sqlAdicional = ",bloqueioFoto=(SELECT i.bloqueioFoto FROM Instituicoes i)";
+
+        $sql = "UPDATE Pessoas SET foto=(\"" . $image . "\") $sqlAdicional ";
+        
+        if ($params['codigo']) {
+            $sql .= " WHERE codigo = :codigo";
+        }
+
+        if ($params['prontuario']) {
+            $sql .= " WHERE prontuario = :codigo ";
+        }
+
+        $res = $bd->updateDB($sql, $params);
+        if ($res) {
+            return true;
         } else {
             return false;
         }
