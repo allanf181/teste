@@ -85,7 +85,8 @@ class Pessoas extends Generic {
     // RETORNA QUANTIDADE DE FOTOS BLOQUEADAS
     public function countBloqPic() {
         $bd = new database();
-        $sql = "SELECT p.codigo, p.nome, bloqueioFoto, COUNT(*) as total
+        $sql = "SELECT p.codigo, p.nome, bloqueioFoto,
+                    (SELECT COUNT(*) FROM Pessoas WHERE bloqueioFoto = 1) as total
 		    FROM Pessoas p
 		    WHERE bloqueioFoto = 1
 		    ORDER BY p.nome";
