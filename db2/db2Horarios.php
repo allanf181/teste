@@ -1,9 +1,9 @@
 <?php
 if (!$LOCATION_CRON) {
-	require("../inc/mysql.php");
-	require("../inc/db2.php");
-	require("db2Funcoes.php");
-	require("../inc/variaveis.inc.php");
+    require("$LOCATION_CRON"."db2Mysql.php");
+    require("$LOCATION_CRON"."../inc/db2.php");
+    require("$LOCATION_CRON"."db2Funcoes.php");
+    require("$LOCATION_CRON"."db2Variaveis.inc.php");
 }
 
 mysql_set_charset('latin1');

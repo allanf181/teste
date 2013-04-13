@@ -1,7 +1,7 @@
 <?php
 if (!$LOCATION_CRON) {
-    require("../inc/mysql.php");
-    require("../inc/variaveis.inc.php");
+    require("$LOCATION_CRON"."db2Mysql.php");
+    require("$LOCATION_CRON"."db2Variaveis.inc.php");
 }
 
 require ('lib/digitaNotasWS.php');

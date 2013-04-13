@@ -1,9 +1,9 @@
 <?php
 if (!$LOCATION_CRON) {
-	require("../inc/mysql.php");
-	require("../inc/db2.php");
-	require("db2Funcoes.php");
-	require("../inc/variaveis.php");
+    require("$LOCATION_CRON"."db2Mysql.php");
+    require("$LOCATION_CRON"."../inc/db2.php");
+    require("$LOCATION_CRON"."db2Funcoes.php");
+    require("$LOCATION_CRON"."db2Variaveis.inc.php");
 }
 
 mysql_set_charset('latin1');
@@ -55,7 +55,7 @@ for ($n=1; $n <= 2; $n++) {
 		
 			$numero = 'N'.$row->CM_MODULO.$row->CM_MODUSEQ;
 		
-			// VERIFICA SE HÁ TURMA
+			// VERIFICA SE Hï¿½ TURMA
 	    $sql = "SELECT * FROM Turmas t 
 	    		WHERE numero='$numero' 
 	    		AND curso='".$row->CM_CDCURSO."'

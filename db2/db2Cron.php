@@ -1,9 +1,9 @@
 <?php
 //SESSAO
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 if (!isset($_SESSION)) { session_start(); }
-
-$_SESSION['timeout'] = 'CRON';
 
 $DEBUG = 0;
 $LOCATION_CRON = dirname(__FILE__).'/';
@@ -12,18 +12,14 @@ require $LOCATION_CRON.'../inc/config.inc.php';
 
 if (isset($argv[1])) $DEBUG=1;
 
-$_SERVER['REQUEST_URI']='null';
-$_POST['opcao']='null';
-$_SESSION['URL']='null';
-$_SESSION['URLANT'] = 'null';
-$_SESSION['loginCodigo']='null';
-$_SERVER["SERVER_NAME"] = 'null';
-$_SERVER['HTTP_X_FORWARDED_FOR'] = 'null';
-
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
+require("$LOCATION_CRON"."db2Mysql.php");
+require("$LOCATION_CRON"."../inc/db2.php");
+require("$LOCATION_CRON"."db2Funcoes.php");
+require("$LOCATION_CRON"."db2Variaveis.inc.php");
+require("$LOCATION_CRON"."../inc/funcoes.inc.php");
 
 include ("$LOCATION_CRON"."db2Alunos.php");
+
 include ("$LOCATION_CRON"."db2Professores.php");
 include ("$LOCATION_CRON"."db2Horarios.php");
 

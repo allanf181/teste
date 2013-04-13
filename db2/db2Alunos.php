@@ -1,10 +1,12 @@
 <?php
 
-require("$LOCATION_CRON"."../inc/mysql.php");
-require("$LOCATION_CRON"."../inc/db2.php");
-require("$LOCATION_CRON"."db2Funcoes.php");
-require("$LOCATION_CRON"."../inc/variaveis.inc.php");
-require("$LOCATION_CRON"."../inc/funcoes.inc.php");
+if (!$LOCATION_CRON) {
+    require("$LOCATION_CRON"."db2Mysql.php");
+    require("$LOCATION_CRON"."../inc/db2.php");
+    require("$LOCATION_CRON"."db2Funcoes.php");
+    require("$LOCATION_CRON"."db2Variaveis.inc.php");
+    require("$LOCATION_CRON"."../inc/funcoes.inc.php");
+}
 
 mysql_set_charset('latin1');
 

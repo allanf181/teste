@@ -35,8 +35,7 @@ $ANO = $_SESSION["ano"];
 $SEMESTRE = $_SESSION["semestre"];
 
 // COLETANDO AS DEFINICOES DE PAPEIS DO BANCO
-if (!$LOCATION_CRON) require CONTROLLER . "/instituicao.class.php";
-if ($LOCATION_CRON) require $LOCATION_CRON . "../controller/instituicao.class.php";
+require CONTROLLER . "/instituicao.class.php";
 
 $instituicao = new Instituicoes();
 if ($res = $instituicao->dadosInstituicao()) {
