@@ -9,6 +9,7 @@ require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
+require SESSAO;
 
 $turma = dcrip($_GET["turma"]);
 $aluno = dcrip($_GET["aluno"]);

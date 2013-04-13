@@ -1,6 +1,8 @@
 <?php
 include_once "inc/config.inc.php";
 require VARIAVEIS;
+require SESSAO;
+
 ?>
 
 <h2>Equipe WebDi&aacute;rio</h2>

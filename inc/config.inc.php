@@ -79,6 +79,9 @@ define("ICONS",  VIEW.'/css/icons/', true);
 // Arquivo de Funções
 define("FUNCOES", PATH.INC.'/funcoes.inc.php', true);
 
+// Arquivo de Sessão
+define("SESSAO", PATH.INC.'/sessao.inc.php', true);
+
 // Arquivo de Permissão
 define("PERMISSAO", PATH.INC.'/permissao.inc.php', true);
 

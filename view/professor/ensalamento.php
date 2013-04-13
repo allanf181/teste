@@ -9,6 +9,7 @@ require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
+require SESSAO;
 
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>

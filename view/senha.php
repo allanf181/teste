@@ -9,6 +9,7 @@ require FUNCOES;
 require MENSAGENS;
 require VARIAVEIS;
 require CONTROLLER.'/login.class.php';
+require SESSAO;
 
 // verifica se não está sendo chamado diretamente.
 if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {

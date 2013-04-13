@@ -2,6 +2,7 @@
 require '../../../../inc/config.inc.php';
 require MYSQL;
 require VARIAVEIS;
+require FUNCOES;
 
 // lista os alunos cadastrados
 

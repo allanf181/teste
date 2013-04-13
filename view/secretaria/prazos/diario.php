@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 if ($_GET["opcao"] == 'controleDiario') {
 	$atribuicao = $_GET["atribuicao"];

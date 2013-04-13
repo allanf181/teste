@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 if ($_POST['pagina']) $_GET['pagina'] = $_POST['pagina'];
 if (!$_GET['pagina']) $_GET['pagina'] = "entregarPlano";

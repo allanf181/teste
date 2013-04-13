@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 // PARA QUALQUER APLICAÇÃO UTILIZANDO AJAX PESQUISANDO CIDADES
 if ($_GET["ajaxCidade"]) {

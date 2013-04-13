@@ -11,6 +11,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 require CONTROLLER . "/situacao.class.php";
 $situacoes = new Situacoes();

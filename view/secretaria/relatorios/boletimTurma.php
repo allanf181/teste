@@ -11,6 +11,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 $data = date("d/m/Y", time()); // data atual
 $turma="";

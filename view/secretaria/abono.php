@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 require CONTROLLER . "/abono.class.php";
 $abono = new FrequenciasAbonos();

@@ -10,6 +10,7 @@ require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
+require SESSAO;
 
 if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     $atribuicao = dcrip($_GET["atribuicao"]);

@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 require CONTROLLER . "/atribuicao.class.php";
 $att = new Atribuicoes();

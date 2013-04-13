@@ -4,6 +4,8 @@ include_once "inc/config.inc.php";
 require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
+require SESSAO;
+
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 

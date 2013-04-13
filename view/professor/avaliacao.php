@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 $atribuicao = dcrip($_GET["atribuicao"]);
 $result = mysql_query("SELECT calculo, formula FROM Atribuicoes WHERE codigo=$atribuicao");

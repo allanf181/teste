@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 if ($_POST["opcao"] == 'InsertOrUpdate') {
 	$aula = $_POST["campoAula"];

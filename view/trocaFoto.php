@@ -107,23 +107,17 @@ print "</form>\n";
         $('#ImageFile').change(function() {
 
             $("#ret").html("<progress id='barraprogresso' value='0' max='100'></progress>");
-            var barraprogresso = $('#barraprogresso'),
-                    max = barraprogresso.attr('max'),
-                    time = (1000 / max) * 15,
-                    value = barraprogresso.val();
-
+            var value = 0;
             var loading = function() {
                 value += 1;
-                addValue = barraprogresso.val(value);
-
-                if (value == max) {
+                addValue = $('#barraprogresso').val(value);
+                if (value == 100)
                     value = 0;
-                }
-            }
+            };
 
             var animate = setInterval(function() {
                 loading();
-            }, time);
+            }, 100);
             $('#1').click();
         });
     });

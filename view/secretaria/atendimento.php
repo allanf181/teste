@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 if (isset($_GET["professor"])) {
 	$professor = dcrip($_GET["professor"]);
