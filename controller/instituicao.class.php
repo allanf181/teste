@@ -13,11 +13,7 @@ class Instituicao {
     // USADO POR: INC/VARIAVEIS.PHP
     public function dadosInstituicao() {
         $bd = new database();
-        $sql = "SELECT nome,cidade,ged,adm,sec,coord, "
-                . "limiteAltDiarioProf,limiteInsAulaProf,aluno,prof,"
-                . "ipServidorAtualizacao,usuarioServidorAtualizacao,"
-                . "senhaServidorAtualizacao,versao,campiDigitaNotas "
-                . "FROM Instituicoes";
+        $sql = "SELECT * FROM Instituicoes";
         $res = $bd->selectDB($sql);
 
         if ( $res )

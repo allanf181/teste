@@ -1100,3 +1100,110 @@ Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',',permissao=',',nome='Calend&aacute;rio,Relat&oacute;rios' WHERE codigo = 10;
 Mar 13 08:34:58 [info] UPDATE Permissoes SET menu=',,,,',permissao=',,,,',nome='Calend&aacute;rio,Coordenador,Professor,Relat&oacute;rios,Sincronizar' WHERE codigo = 11;
 Mar 13 08:34:58 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174655')
+Apr 13 06:01:18 [info] SELECT version FROM schema_migrations
+Apr 13 06:01:18 [info] SELECT version FROM schema_migrations
+Apr 13 06:01:18 [info] SELECT version FROM schema_migrations
+Apr 13 06:01:18 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'NotasFinais' 
+                                    AND COLUMN_NAME = 'flag'
+Apr 13 06:01:18 [info] ALTER TABLE `NotasFinais` ADD `flag` CHAR( 1 ) NOT NULL DEFAULT '0' AFTER `sincronizado`;
+Apr 13 06:01:18 [info] SELECT * 
+                                    FROM information_schema.TABLES
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico' 
+                                    AND TABLE_NAME = 'AtualizacoesSistema' 
+Apr 13 06:01:18 [info] DROP TABLE AtualizacoesSistema;
+Apr 13 06:01:18 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174656')
+Apr 13 06:01:40 [info] SELECT version FROM schema_migrations
+Apr 13 06:01:40 [info] SELECT version FROM schema_migrations
+Apr 13 06:01:40 [info] SELECT version FROM schema_migrations
+Apr 13 06:01:41 [info] SELECT version FROM schema_migrations
+Apr 13 06:01:41 [info] SELECT version FROM schema_migrations
+Apr 13 06:01:41 [info] SELECT version FROM schema_migrations
+Apr 13 06:02:15 [info] SELECT version FROM schema_migrations
+Apr 13 06:02:15 [info] SELECT version FROM schema_migrations
+Apr 13 06:02:15 [info] SELECT version FROM schema_migrations
+Apr 13 06:02:15 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'NotasFinais' 
+                                    AND COLUMN_NAME = 'flag'
+Apr 13 06:02:15 [info] SELECT * 
+                                    FROM information_schema.TABLES
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico' 
+                                    AND TABLE_NAME = 'AtualizacoesSistema' 
+Apr 13 06:02:15 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174657')
+Apr 13 06:02:24 [info] SELECT version FROM schema_migrations
+Apr 13 06:02:24 [info] SELECT version FROM schema_migrations
+Apr 13 06:02:24 [info] SELECT version FROM schema_migrations
+Apr 13 06:34:08 [info] SELECT version FROM schema_migrations
+Apr 13 06:34:08 [info] SELECT version FROM schema_migrations
+Apr 13 06:34:08 [info] SELECT version FROM schema_migrations
+Apr 13 06:34:08 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'NotasFinais' 
+                                    AND COLUMN_NAME = 'flag'
+Apr 13 06:34:08 [info] SELECT * 
+                                    FROM information_schema.TABLES
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico' 
+                                    AND TABLE_NAME = 'AtualizacoesSistema' 
+Apr 13 06:34:08 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'Instituicoes' 
+                                    AND COLUMN_NAME = 'versaoAtual'
+Apr 13 06:34:08 [info] UPDATE Instituicoes SET versaoAtual='1.701';
+Apr 13 06:34:08 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174656')
+Apr 13 06:36:30 [info] SELECT version FROM schema_migrations
+Apr 13 06:36:30 [info] SELECT version FROM schema_migrations
+Apr 13 06:36:30 [info] SELECT version FROM schema_migrations
+Apr 13 06:36:30 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'NotasFinais' 
+                                    AND COLUMN_NAME = 'flag'
+Apr 13 06:36:30 [info] SELECT * 
+                                    FROM information_schema.TABLES
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico' 
+                                    AND TABLE_NAME = 'AtualizacoesSistema' 
+Apr 13 06:36:30 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'Instituicoes' 
+                                    AND COLUMN_NAME = 'versaoAtual'
+Apr 13 06:36:30 [info] UPDATE Instituicoes SET versaoAtual='380';
+Apr 13 06:36:30 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174656')
+Apr 13 06:37:57 [info] SELECT version FROM schema_migrations
+Apr 13 06:37:57 [info] SELECT version FROM schema_migrations
+Apr 13 06:37:57 [info] SELECT version FROM schema_migrations
+Apr 13 06:37:57 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'NotasFinais' 
+                                    AND COLUMN_NAME = 'flag'
+Apr 13 06:37:57 [info] SELECT * 
+                                    FROM information_schema.TABLES
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico' 
+                                    AND TABLE_NAME = 'AtualizacoesSistema' 
+Apr 13 06:37:57 [info] SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = 'academico'
+                                    AND TABLE_NAME = 'Instituicoes' 
+                                    AND COLUMN_NAME = 'versaoAtual'
+Apr 13 06:37:57 [info] UPDATE Instituicoes SET versao='380';
+Apr 13 06:37:57 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174656')

@@ -9,7 +9,8 @@ require FUNCOES;
 ?>
 <table border="0" width='100%'>
 <tr><td colspan="2"><font size="4"><b>WebDi&aacute;rio</b></font></font>
-<br><font size="1">Vers&atilde;o 1.7</font></td></tr>
+<br><font size="1">Vers&atilde;o 1.<?php print $VERSAO; ?></font></td></tr>
+<tr><td>&nbsp;</td></tr>
 <tr><td>
 <?php
 $user = $_SESSION["loginCodigo"];
@@ -70,6 +71,14 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
 }
 
 if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"])) {
+    // Checa a versão atual.
+    if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
+        ?>
+  	<br><br><font size="4" color="red">Vers&atilde;o desatualizada. Vers&atilde;o atual: 1.<?php print $VERSAOAT; ?></font>
+        <br>Utilize o comando "git pull" para atualizar com a nova vers&atilde;o
+        <br>Faça o update de banco: php /var/www/academico/lib/migration/ruckus.php db:migrate
+        <?php
+    }    
     
     // Verifica se o CRON está sendo executado.
     require CONTROLLER . "/log.class.php";

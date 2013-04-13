@@ -54,6 +54,7 @@ if ($res = $instituicao->dadosInstituicao()) {
     $ALUNO = $res['aluno'];
     $PROFESSOR = $res['prof'];
     $VERSAO = $res['versao'];
+    $VERSAOAT = $res['versaoAtual'];
     $DIGITANOTAS = $res['campiDigitaNotas'];
 }
 
