@@ -36,15 +36,17 @@ include ("$LOCATION_CRON"."db2Matriculas.php");
 include ("$LOCATION_CRON"."db2Notas.php");
 
 // CHECANDO A VERSAO DO SISTEMA
-//include("$LOCATION_CRON"."../inc/mysqlAtualizacao.php");
-//$resultado = mysql_query("SELECT versao FROM BrtAtualizacao.versao");
-// if (mysql_num_rows($resultado) != '') {
-// 	$versao = mysql_result($resultado, 0, "versao");
-//  	$conexao = mysql_connect($servidor, $usuario, $senha) or die (mysql_error());
-//	mysql_set_charset('utf8');           
-//	mysql_select_db($bd);		
-//	mysql_query("UPDATE Instituicoes SET versao = '$versao'");
-//}
+$conexao = mysql_connect("$IPSRVUPDATE", "$USERSRVUPDATE", "$PASSSRVUPDATE") or die (mysql_error());
+mysql_set_charset('utf8');
+mysql_select_db("BrtAtualizacao");
+
+$resultado = mysql_query("SELECT versao FROM BrtAtualizacao.versao");
+ if (mysql_num_rows($resultado) != '') {
+ 	$versao = mysql_result($resultado, 0, "versao");
+
+        include("$LOCATION_CRON"."db2Mysql.php");
+	mysql_query("UPDATE Instituicoes SET versaoAtual = '$versao'");
+}
 
 // DELETANDO LOGS ANTIGOS
 mysql_query("DELETE FROM Logs WHERE datediff(now(), data) > 30");
