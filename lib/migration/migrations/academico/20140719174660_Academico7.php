@@ -1,7 +1,7 @@
 <?php
 require "inc/config.inc.php";
 
-class Academico6 extends Ruckusing_Migration_Base
+class Academico7 extends Ruckusing_Migration_Base
 {
     public function up()
     {
