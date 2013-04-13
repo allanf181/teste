@@ -155,8 +155,9 @@ if ( $status || ($_SESSION['dataExpirou'] && ($linha[7] < 0 || $linha[7]=='')))
 	</table>
 </form>
 <?php
-echo "<br><div style='margin: auto'><a href=\"javascript:$('#professor').load('$VOLTAR'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
-?>
+    echo "<br><div style='margin: auto'><a href=\"javascript:$('#professor').load('".VIEW."/professor/aula.php?atribuicao=".crip($atribuicao)."'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='" . ICONS . "/left.png'/></a></div>";
+
+    ?>
 
 <script>
 $(document).ready(function(){

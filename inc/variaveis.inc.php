@@ -61,21 +61,6 @@ if ($res = $instituicao->dadosInstituicao()) {
     $DIGITANOTAS = $res[0]['campiDigitaNotas'];
 }
 
-// GERA O VOLTAR AUTOMATICAMENTE
-if (strripos($_SERVER['REQUEST_URI'], 'menu=professor') != true &&
-        strripos($_SERVER['REQUEST_URI'], 'relatorios') != true) {
-    if (isset($_SESSION['URL']))
-        $VOLTAR = $_SESSION['URL'];
-
-    if (!isset($_POST['opcao']) && !isset($_GET['opcao'])) {
-        $VOLTAR = null;
-        $_SESSION['URLANT'] = $VOLTAR;
-        $_SESSION['URL'] = str_replace('/academico/', '', $_SERVER['REQUEST_URI']);
-    } else {
-        $VOLTAR = $_SESSION['URLANT'];
-    }
-}
-
 // PARA MIGRAÃ‡ÃƒO
 //$BD1 = "brtacademico";
 //$BD2 = "academico";

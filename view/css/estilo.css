@@ -319,7 +319,6 @@ li{
     width: 100px;
 }
 
-// frequencia lista
 .foto_lista{
     width: 20px; height: 20px;
     margin-top: 5px;
@@ -349,7 +348,6 @@ li{
     height: 20px;
 }
 
-// Senha.php
 .errorBalloon{
     background: lightcoral;
 }
@@ -794,7 +792,6 @@ div.flash {
     background: url('icons/top.png') no-repeat;
 }
 
-// DAQUI PARA BAIXO UTILIZADO EM PESSOA
 #upload-wrapper {
 	width: 50%;
 	margin-right: auto;
@@ -831,4 +828,16 @@ div.flash {
 #output img {
 	border: 1px solid #DDD;
 	padding: 5px;
+}
+
+.foto_lista{
+    width: 20px; height: 20px;
+    margin-top: 5px;
+}
+
+#mask {
+    position:absolute;
+    z-index:9000; 
+    background-color:#000;
+    display:none;
 }

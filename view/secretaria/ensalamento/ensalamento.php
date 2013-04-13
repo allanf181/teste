@@ -286,7 +286,6 @@ if ($turma || $professor || $aluno) {
   	}
 	print "</tr>\n";
 	print "</table></center>\n";
-	echo "<br><div style='margin: auto'><a href=\"javascript:$('#index').load('$VOLTAR'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
 }
 mysql_close($conexao);
 ?>

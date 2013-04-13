@@ -196,8 +196,9 @@ mysql_close($conexao);
 </div>
 	<?php
 
-	echo "<br><div style='margin: auto'><a href=\"javascript:$('#professor').load('$VOLTAR'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
-?>
+    echo "<br><div style='margin: auto'><a href=\"javascript:$('#professor').load('".VIEW."/professor/avaliacao.php?atribuicao=".crip($atribuicao)."'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='" . ICONS . "/left.png'/></a></div>";
+
+    ?>
 <script>
 	retorno=true;
 	function validaForm(){

@@ -210,6 +210,8 @@ if ($_GET['opcao'] == 'insert') {
 </form>
 
 <?php
+    echo "<br><div style='margin: auto'><a href=\"javascript:$('#professor').load('".$SITE."?atribuicao=".crip($atribuicao)."'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='" . ICONS . "/left.png'/></a></div>";
+
 }
 
 if ($_GET['opcao'] == '') {
@@ -306,6 +308,7 @@ if ($_GET['opcao'] == '') {
     	}
     }
     mysql_close($conexao);
+    
     ?>
 
     <div id="etiqueta" align="center">
@@ -372,8 +375,7 @@ if ($_GET['opcao'] == '') {
     }
 }
 
-echo "<br><div style='margin: auto'><a href=\"javascript:$('#professor').load('$SITE?atribuicao=".crip($atribuicao)."'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
-
+        
 // DATA DE INICIO E FIM DA ATRIBUICAO PARA RESTRINGIR O CALENDARIO
 $sql = "SELECT 	DATE_FORMAT( a.dataInicio,  '%d/%m/%Y' ) AS dataInicio, 
 				DATE_FORMAT( a.dataFim,  '%d/%m/%Y' ) AS dataFim

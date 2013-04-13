@@ -294,7 +294,6 @@ caption {
 </style>
 
 <?php
-	echo "<br><div style='margin: auto'><a href=\"javascript:$('#index').load('$VOLTAR'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
 
 	$sql = "SELECT codigo, date_format(data, '%d') as dia, date_format(data, '%m') as mes, ocorrencia, diaLetivo 
 			FROM Calendarios WHERE date_format(data, '%Y') = '$ano'";
@@ -388,7 +387,6 @@ caption {
 	print "</td>\n";
 	print "</tr></table>\n";
 } 
-	echo "<br><div style='margin: auto'><a href=\"javascript:$('#index').load('$VOLTAR'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
 
 mysql_close($conexao);
 ?>

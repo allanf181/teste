@@ -229,8 +229,6 @@ if ($_GET["opcao"] == 'delete') {
     ?>
 <?php require(PATH.VIEW.'/navegacao.php'); 
 
-echo "<div style='margin: auto'><a href=\"javascript:$('#index').load('$VOLTAR'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
-
 mysql_close($conexao);
 
 $atribuicao = $_GET["atribuicao"];

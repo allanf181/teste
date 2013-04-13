@@ -165,5 +165,11 @@ while ($linha = mysql_fetch_array($resultado)){
 mysql_close($conexao);
 ?>
 <?php
-    echo "<br><div style='margin: auto'><a href=\"javascript:$('#index').load('$VOLTAR'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
+    echo "<br><div style='margin: auto'><a href='#' id='voltar' title='Voltar' ><img class='botao' src='".ICONS."/left.png'/></a></div>";
 ?>
+<script>
+    $('#voltar').click(function(){
+        history.back();
+        return false;
+    });
+</script>
