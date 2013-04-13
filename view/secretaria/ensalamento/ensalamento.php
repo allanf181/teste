@@ -226,11 +226,12 @@ if ($turma || $professor || $aluno) {
     			AND a.turma = t.codigo
     			AND pr.professor = e.professor
     			AND pr.professor = p.codigo
-				AND pr.atribuicao = a.codigo
-                $sql2
+			AND pr.atribuicao = a.codigo
+
+                        $sql2
     			$aluno 
     			$atribuicao
-    			$turma $sub $professor
+   			$turma $sub $professor
     			GROUP BY diaSemana, h.inicio, h.fim, d.numero, s.nome
 				ORDER BY diaSemana, inicio, disciplina";
 	//print $sql;

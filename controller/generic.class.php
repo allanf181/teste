@@ -70,7 +70,7 @@ Abstract class Generic {
         }
     }
     
-    public function listRegistros($params, $item=null, $itensPorPagina=null) {
+    public function listRegistros($params=null, $item=null, $itensPorPagina=null) {
         $bd = new database();
         $table = get_called_class();
 

@@ -1,6 +1,7 @@
 <?php
-include("fpdf17/pdf.php");
-require '../inc/config.inc.php';
+require dirname(__FILE__).'/../inc/config.inc.php';
+require 'fpdf17/pdf.php';
+
 //require VARIAVEIS;
 
 // Instanciation of inherited class

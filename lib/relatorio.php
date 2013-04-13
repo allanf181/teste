@@ -1,5 +1,5 @@
 <?php
-require '../inc/config.inc.php';
+require dirname(__FILE__).'/../inc/config.inc.php';
 
 
 //header('Content-Type: text/html; charset=UTF-8');
