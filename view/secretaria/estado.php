@@ -19,7 +19,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
-    $ret = $estado->insertOrUpdateEstado($_POST);
+    $ret = $estado->insertOrUpdate($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     if ($_POST['codigo']) $_GET["codigo"] = $_POST['codigo'];
@@ -28,7 +28,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 
 // DELETE
 if ($_GET["opcao"] == 'delete') {
-    $ret = $estado->deleteEstado($_GET["codigo"]);
+    $ret = $estado->delete($_GET["codigo"]);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
@@ -37,7 +37,7 @@ if ($_GET["opcao"] == 'delete') {
 if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     // consulta no banco
     $params = array('codigo' => dcrip($_GET["codigo"]));
-    $res = $estado->listEstados($params);
+    $res = $estado->listRegistros($params);
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 }
 ?>
@@ -81,7 +81,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     if (isset($_GET['item']))
         $item = $_GET["item"];
 
-    $res = $estado->listEstados($params, $item, $itensPorPagina);
+    $res = $estado->listRegistros($params, $item, $itensPorPagina);
 
     $totalRegistros = $estado->count();
     $SITENAV = $SITE . '?';

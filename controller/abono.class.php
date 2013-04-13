@@ -66,11 +66,6 @@ class FrequenciasAbonos extends Generic {
             return false;
         }
     }
-
-    public function deleteAbono($codigo) {
-        return $this->delete($codigo);
-    }
-
 }
 
 ?>

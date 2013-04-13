@@ -42,7 +42,7 @@ Abstract class Generic {
                 . "WHERE codigo=:codigo";
             $res = $bd->updateDB($sql, $params);
         }
-
+        
         if ( $res )
         {
             return $res;

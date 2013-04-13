@@ -859,4 +859,20 @@ function mapURL($array) {
     }
     return implode('&', $ret);
 }
+
+// Função que atualiza o BD-RUCKUS
+function updateDataBase() {
+    $argv[2] = 1;
+    require 'lib/migration/ruckusWeb.php';
+    $argv[0] = 'db:migrate';
+ 
+    $main = new Ruckusing_FrameworkRunner($db_config, $argv);
+    $ret = $main->execute();
+    $argv = null;
+  
+    if (strpos($ret,'relevant') !== false)
+        return false;
+    else
+        return true;
+}
 ?>

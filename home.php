@@ -74,10 +74,12 @@ if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTip
     // Checa a versão atual.
     if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
         ?>
-  	<br><br><font size="4" color="red">Vers&atilde;o desatualizada. Vers&atilde;o atual: 1.<?php print $VERSAOAT; ?></font>
-        <br>Utilize o comando "git pull" para atualizar com a nova vers&atilde;o
-        <br>Faça o update de banco: php /var/www/academico/lib/migration/ruckus.php db:migrate
+  	<br><br><font size="3" color="red">Sua vers&atilde;o foi atualizada: 1.<?php print $VERSAOAT; ?></font>
+
         <?php
+        if (updateDataBase()) {
+            print "<br>O sistema atualizou automaticamente o banco de dados.";
+        }
     }    
     
     // Verifica se o CRON está sendo executado.
@@ -153,7 +155,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
 // SISTEMA DE AVISOS
 require CONTROLLER . "/aviso.class.php";
 $aviso = new Avisos();
-$res = $aviso->hasAviso($user);
+$res = $aviso->getAvisoGeral($user);
 if ($res) {
     ?>
     <td width="300" valign="top">

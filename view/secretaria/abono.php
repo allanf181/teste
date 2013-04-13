@@ -28,7 +28,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 
 // DELETE
 if ($_GET["opcao"] == 'delete') {
-    $ret = $abono->deleteAbono($_GET["codigo"]);
+    $ret = $abono->delete($_GET["codigo"]);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
@@ -105,7 +105,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         require CONTROLLER . '/pessoa.class.php';
                         $pessoa = new Pessoas();
                         $paramPessoa = array('tipo' => $ALUNO);
-                        $res = $pessoa->listPessoas($paramPessoa, " AND pt.tipo = :tipo");
+                        $res = $pessoa->listPessoasTipos($paramPessoa, " AND pt.tipo = :tipo");
                         foreach ($res as $reg) {
                             $selected = "";
                             if ($reg['codigo'] == $aluno)

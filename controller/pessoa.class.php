@@ -8,8 +8,16 @@ class Pessoas extends Generic {
     public function __construct() {
         //
     }
-
-    public function listPessoas($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
+    
+    public function insertOrUpdatePessoa($params) {
+        return $this->insertOrUpdate($params);
+    }
+    
+    public function listPessoas($params, $item=null, $itensPorPagina=null) {
+        return $this->listRegistros($params, $item, $itensPorPagina);
+    }
+    
+    public function listPessoasTipos($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 
         if ($item && $itensPorPagina)
