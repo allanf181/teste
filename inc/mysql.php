@@ -1,5 +1,5 @@
 <?php
-include "../inc/config.inc.php";
+
 # Conecta ao sgbd
 $conexao = mysql_connect(MY_HOST, MY_USER, MY_PASS) or die (mysql_error());
 # Configura o charset 

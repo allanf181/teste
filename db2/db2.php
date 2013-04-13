@@ -1,5 +1,7 @@
 <?php
-
+if (!$LOCATION_CRON) {
+    require '../inc/config.inc.php';
+}
 $conn_string = "DRIVER={IBM DB2 ODBC DRIVER};DATABASE=$DB2_DB;" .
   "HOSTNAME=$DB2_HOST;PORT=$DB2_PORT;PROTOCOL=TCPIP;UID=$DB2_USER;PWD=$DB2_PASS;";
 $conn = db2_connect($conn_string, '', '');

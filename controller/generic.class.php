@@ -13,19 +13,28 @@ Abstract class Generic {
     public function insertOrUpdate($params) {
         $bd = new database();
         
+        // decriptografa elementos que possam
+        // estar criptografados dentro do Array
+        $params = dcripArray($params);
+        
         foreach(array_keys($params) as $key) {
-            if ($key == 'codigo') $INS = 'NULL,';
-            else {
-                $INS .= ':'.$key.',';
-                $UP .= $key.'=:'.$key.',';
+            if ($key == 'codigo') { 
+                $INS[] = 'NULL';
+                $COL[] = $key;
+            } else {
+                $INS[] = ':'.$key;
+                $COL[] = $key;
+                $UP[]  = $key.'=:'.$key;
             }
         }
-        $INS = substr_replace($INS, "", -1);
-        $UP = substr_replace($UP, "", -1);
+        
+        $INS = implode(',', $INS);
+        $COL = implode(',', $COL);
+        $UP = implode(',', $UP);
         
         $table = get_called_class();
         if (!$params['codigo']) {
-            $sql = "INSERT INTO $table VALUES ($INS)";
+            $sql = "INSERT INTO $table ($COL) VALUES ($INS)";
             unset($params['codigo']);
             $res = $bd->insertDB($sql, $params);        
         } else {
@@ -48,7 +57,7 @@ Abstract class Generic {
         $bd = new database();
         $table = get_called_class();
 
-        $sql = "SELECT COUNT(*) as total FROM $table $nav";
+        $sql = "SELECT COUNT(*) as total FROM $table";
         
         $res = $bd->selectDB($sql);
         if ( $res[0] )
@@ -74,7 +83,7 @@ Abstract class Generic {
             $sql = "SELECT * FROM $table "
                 . "WHERE codigo=:codigo $nav";
         }
-        
+
         $res = $bd->selectDB($sql, $params);
         if ( $res )
         {
@@ -95,18 +104,20 @@ Abstract class Generic {
         // OBS: NÃO FOI FEITO DIRETO PARA NÃO COMPROMETER
         // A SEGURANÇA FORNECIDA PELO PDO CONTRA SQLInjection
         $codigo = explode(',',$codigo);
+                        
         if ($codigo[0] == '0') unset($codigo[0]);
         
         $i=0;
         foreach ($codigo as $value) {
             $indice = 'A'.$i;
-            $new_array[$indice] = $value;
+            $new_array[$indice] = dcrip($value);
             $new_params[] = ':'.$indice;
             $i++;
         }
         $param = implode($new_params, ',');
+
         $sql = "DELETE FROM $table WHERE codigo IN ($param)";
-              
+
         $params = $new_array;
         $res = $bd->deleteDB($sql, $params);
 

@@ -13,7 +13,7 @@ require $LOCATION_CRON.'../inc/config.inc.php';
 if (isset($argv[1])) $DEBUG=1;
 
 require("$LOCATION_CRON"."db2Mysql.php");
-require("$LOCATION_CRON"."../inc/db2.php");
+require("$LOCATION_CRON"."db2.php");
 require("$LOCATION_CRON"."db2Funcoes.php");
 require("$LOCATION_CRON"."db2Variaveis.inc.php");
 require("$LOCATION_CRON"."../inc/funcoes.inc.php");

@@ -22,7 +22,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $ret = $estado->insertOrUpdateEstado($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    if ($_POST['codigo']) $_GET["codigo"] = crip($_POST['codigo']);
+    if ($_POST['codigo']) $_GET["codigo"] = $_POST['codigo'];
     else $_GET["codigo"] = crip($ret['RESULTADO']);
 }
 
@@ -39,8 +39,6 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     $params = array('codigo' => dcrip($_GET["codigo"]));
     $res = $estado->listEstados($params);
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
-} else {
-    $res = $estado->listEstados($params);
 }
 ?>
 <h2><?php print $TITLE; ?></font></h2>
@@ -59,9 +57,9 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
-            <input type="hidden" name="codigo" value="<?php echo $codigo; ?>" />
-            <tr><td align="right">Nome: </td><td><input type="text" name="nome" id="campoNome" maxlength="45" value="<?php echo $nome; ?>" /></td></tr>
-            <tr><td align="right">Sigla: </td><td><input type="text" name="sigla" id="campoSigla" maxlength="2" value="<?php echo $sigla; ?>" /></td></tr>
+            <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
+            <tr><td align="right">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="45" value="<?php echo $nome; ?>" /></td></tr>
+            <tr><td align="right">Sigla: </td><td><input type="text" name="sigla" id="sigla" maxlength="2" value="<?php echo $sigla; ?>" /></td></tr>
             <tr><td></td><td>
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" class="submit" /></td>
@@ -93,8 +91,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     <table id="listagem" border="0" align="center">
         <tr><th align="center" width="40">#</th><th align="left">Estado</th><th align="left">Sigla</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
         <?php
-// efetuando a consulta para listagem
-
+        // efetuando a consulta para listagem
         $i = $item;
         foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
@@ -104,15 +101,13 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 <td><?php print $reg['nome']; ?>
                 </td><td><?php print $reg['sigla']; ?></td>
                 <td align='center'>
-                    <input type='checkbox' id='deletar' name='deletar[]' value='<?php print $reg['codigo']; ?>' />
+                    <input type='checkbox' id='deletar' name='deletar[]' value='<?php print $codigo; ?>' />
                     <a href='#' title='Alterar' class='item-alterar' id='<?php print $codigo; ?>'><img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
                 </td>
             </tr>
             <?php
             $i++;
         }
-
-        mysql_close($conexao);
         ?>
     </table>
 <br />
@@ -126,10 +121,12 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 'buttons': ['Sim', 'Não'],
                 'onClose': function(caption) {
                     if (caption == 'Sim') {
-                        var codigo = $.map($('input:checkbox:checked'), function(e, i) {
-                            return +e.value;
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
                         });
-                        $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
+                        
+                        $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
                     }
                 }
             });

@@ -1,25 +1,43 @@
 <?php
-if(!class_exists('Generic'))
-    require_once CONTROLLER.'/generic.class.php';
+
+if (!class_exists('Generic'))
+    require_once CONTROLLER . '/generic.class.php';
 
 class Pessoas extends Generic {
-    
-    public function __construct(){
+
+    public function __construct() {
         //
     }
-    
+
+    public function listPessoas($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
+        $bd = new database();
+
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina";
+
+        $sql = "SELECT p.codigo as codigo, p.nome as nome,
+                p.prontuario as prontuario
+               	FROM Pessoas p, PessoasTipos pt
+               	WHERE p.codigo = pt.pessoa
+                $sqlAdicional
+		ORDER BY p.nome";
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
+
     // USADO POR: HOME.PHP
     public function removeFoto($codigo) {
         $bd = new database();
         $sql = "UPDATE Pessoas SET foto = '' WHERE codigo = :cod";
-        $params = array(':cod'=> $codigo);
+        $params = array(':cod' => $codigo);
         $res = $bd->updateDB($sql, $params);
-        if ( $res[0] )
-        {
+        if ($res[0]) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -28,35 +46,29 @@ class Pessoas extends Generic {
     public function getFoto($codigo) {
         $bd = new database();
         $sql = "SELECT foto, bloqueioFoto FROM Pessoas WHERE codigo = :cod";
-        $params = array(':cod'=> $codigo);
+        $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);
-        if ( $res[0] )
-        {
+        if ($res[0]) {
             return $res[0];
-        }
-        else
-        {
+        } else {
             return $sql;
         }
     }
-    
+
     // USADO POR: HOME.PHP
     // Verifica se o usuário tem foto
     public function hasPicture($codigo) {
         $bd = new database();
         $sql = "SELECT foto FROM Pessoas WHERE codigo = :cod";
-        $params = array(':cod'=> $codigo);
+        $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);
-        if ( $res[0]['foto'] )
-        {
+        if ($res[0]['foto']) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    
+
     // USADO POR: HOME.PHP
     // RETORNA DADOS DA SENHA
     public function infoPassword($codigo) {
@@ -64,57 +76,48 @@ class Pessoas extends Generic {
         $sql = "SELECT DATEDIFF(NOW(), dataSenha) as data,"
                 . "(SELECT diasAlterarSenha FROM Instituicoes) as dias, "
                 . "dataSenha, senha, PASSWORD(prontuario) as pront "
-                . "FROM Pessoas WHERE codigo = :cod";     
-        $params = array(':cod'=> $codigo);
+                . "FROM Pessoas WHERE codigo = :cod";
+        $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);
-        if ( $res[0] )
-        {
+        if ($res[0]) {
             return $res[0];
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    
+
     // USADO POR: HOME.PHP
     // Atualiza o Lattes do Usuário
     public function updateLattes($codigo, $lattes) {
         $bd = new database();
         $sql = "UPDATE Pessoas SET lattes = :lattes WHERE codigo = :cod";
-        $params = array(':cod'=> $codigo, ':lattes'=> $lattes);
+        $params = array(':cod' => $codigo, ':lattes' => $lattes);
         $res = $bd->selectDB($sql, $params);
-        if ( $res )
-        {
+        if ($res) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    
+
     // USADO POR: HOME.PHP
     // Retorna o Lattes do Usuário
     public function showLattes($codigo) {
         $bd = new database();
         $sql = "SELECT lattes FROM Pessoas WHERE codigo = :cod";
-        $params = array(':cod'=> $codigo);
+        $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);
-        if ( $res[0]['lattes'] )
-        {
+        if ($res[0]['lattes']) {
             if (strpos($res[0]['lattes'], 'http://') === FALSE) {
                 return "http://" . $res[0]['lattes'];
             } else {
                 return $res[0]['lattes'];
             }
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    
+
     // USADO POR: HOME.PHP
     // INFOMRAR AO COORDENADOR PROFESSORES QUE NÃO CADASTRAM 
     // DISCIPLINAS DE ACORDO COM O LIMITE IMPOSTO EM INSTITUIÇÕES
@@ -136,17 +139,15 @@ class Pessoas extends Generic {
                         WHERE co.coordenador=:cod)
 			GROUP BY p.codigo
 			ORDER BY data ASC";
-        $params = array(':cod'=> $codigo, ':sem'=> $semestre, ':ano'=> $ano);
+        $params = array(':cod' => $codigo, ':sem' => $semestre, ':ano' => $ano);
         $res = $bd->selectDB($sql, $params);
-        if ( $res )
-        {
+        if ($res) {
             return $res;
-        }
-        else
-        {
+        } else {
             return false;
         }
-    }    
+    }
+
 }
 
 ?>

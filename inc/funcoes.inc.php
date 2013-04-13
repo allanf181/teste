@@ -830,4 +830,33 @@ function dirToArray($dir) {
     return $files;
 }
 
+// Função decriptação de variaveis em um Array.
+// Entrada: Array
+// Saída: Array
+// Autor: Naylor - 29/07
+function dcripArray($array) {
+    foreach ($array as $key => $value) {
+        if (base64_encode(base64_decode($value)) === $value) {
+            if ($value)
+                $new_array[$key] = dcrip($value);
+        } else {
+            if ($value)
+                $new_array[$key] = $value;
+            else
+                $new_array[$key] = 'NULL';
+        }
+    }
+    return $new_array;
+}
+
+// Função que converte um Array em Retorno de URL
+// Entrada: Array
+// Saída: String concatenada
+// Autor: Naylor - 29/07
+function mapURL($array) {
+    foreach ($array as $key => $value) {
+        $ret[] = "$key=$value";
+    }
+    return implode('&', $ret);
+}
 ?>

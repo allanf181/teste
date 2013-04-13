@@ -30,7 +30,7 @@ class Atribuicoes extends Generic {
     
     // LISTA AS ATRIBUICOES DO PROFESSOR/ALUNO
     // USADO POR: INDEX.PHP (PARA MONTAR O MENU DO PROFESSOR)
-    public function listAtribuicoes($codigo, $papel) {
+    public function listAtribuicoes($codigo, $papel, $menu=null) {
         $bd = new database();
         
 	$professor = "SELECT t.ano as ano, t.semestre as semestre, a.bimestre as bimestre, a.codigo as atribuicao, d.nome as disciplina,
@@ -63,6 +63,8 @@ class Atribuicoes extends Generic {
 				ORDER BY d.numero, at.bimestre";        
         $params = array(':cod'=> $codigo);
         $res = $bd->selectDB($$papel, $params);
+        if (!$menu) return $res;
+        
         if ( $res )
         {
             foreach ($res as $reg) {
