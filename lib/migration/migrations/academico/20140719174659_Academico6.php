@@ -5,7 +5,16 @@ class Academico6 extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        $this->execute("ALTER TABLE  `FrequenciasAbonos` CHANGE  `data`  `dataInicio` DATE NOT NULL");
+        // ADD COLUMN ON FREQUENCIASABONOS
+        $result = $this->select_all("SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = '".MY_DB."'
+                                    AND TABLE_NAME = 'FrequenciasAbonos' 
+                                    AND COLUMN_NAME = 'data'");
+        if ($result) {
+            $this->execute("ALTER TABLE  `FrequenciasAbonos` CHANGE  `data`  `dataInicio` DATE NOT NULL");
+        }
 
         // ADD COLUMN ON FREQUENCIASABONOS
         $result = $this->select_all("SELECT * 
