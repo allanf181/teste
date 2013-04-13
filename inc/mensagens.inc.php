@@ -39,7 +39,10 @@ function mensagem($TIPO, $MSG, $OPT=null) {
 
 	$OK_TRUE_COPY_MODALIDADE = 'Modalidade copiada com sucesso.';
 	$NOK_FALSE_COPY_MODALIDADE = 'Problema ao copiar a modalidade.';
-	
+
+        $OK_TRUE_COPY_PERMISSAO = 'Permiss&atilde;o copiada com sucesso.';
+	$NOK_FALSE_COPY_PERMISSAO = 'Problema ao copiar a Permiss&atilde;o.';
+        
 	$FALSE_CLOSE_CLASS_REGISTRY = 'O di&aacute;rio n&atilde;o pode ser finalizado. Verifique se h&aacute; algum aluno sem nota ou se algum instrumento de avalia&ccedil;&atilde;o deixou de ser aplicado.';
 	
 	$NOT_SELECT = "Nenhum registro selecionado.";

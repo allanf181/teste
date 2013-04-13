@@ -150,7 +150,7 @@ if (in_array($ADM, $_SESSION["loginTipo"])
 	                AND (t.semestre=$semestre OR t.semestre=0)
 	                $restricao
 	                ORDER BY p.nome, d.nome, t.numero limit ". ($item - 1) . ",$itensPorPagina";
-	   //print $sql;
+	    //print $sql;
 	    $resultado = mysql_query($sql);
 	    $i = $item;
 	    $dias = diasDaSemana();
