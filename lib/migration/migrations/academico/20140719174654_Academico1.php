@@ -544,12 +544,6 @@ class Academico1 extends Ruckusing_Migration_Base
             ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 
-            CREATE TABLE IF NOT EXISTS `schema_migrations` (
-              `version` varchar(255) DEFAULT NULL,
-              UNIQUE KEY `idx_schema_migrations_version` (`version`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
             INSERT INTO `schema_migrations` (`version`) VALUES
             ('20140719174655');
 
