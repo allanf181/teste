@@ -81,10 +81,16 @@ if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTip
         } else {
             ?>
             <br><br><font size="3" color="red">Problema para atualizar a vers&atilde;o: 1.<?php print $VERSAOAT; ?></font>
-            <br>1 - Verifique as permiss&otilde;es em <?php print dirname(__FILE__); ?>
-            <br>2 - Usu&aacute;rio dono do diret&oacute;rio: <?php print get_current_user(); ?>
-            <br>3 - Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
-            <br>4 - Execute o migrate manualmente: "php lib/migration/ruckus.php db:migrate"
+            <br>- Verifique as permiss&otilde;es em <?php print dirname(__FILE__); ?>
+            <?php 
+            if (getenv('APACHE_RUN_USER') != get_current_user()) {
+                ?>
+                <br>- Permiss&otilde;es divergentes, deveria ser: <?php print getenv('APACHE_RUN_USER'); ?>
+                <?php
+            }
+            ?>
+            <br>- Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
+            <br>- Execute o migrate manualmente: "php lib/migration/ruckus.php db:migrate"
             <?php
         }
     }    
