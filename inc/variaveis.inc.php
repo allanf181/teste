@@ -1,4 +1,5 @@
 <?php
+
 // VERIFICANDO A SESSÃO DO USUÁRIO
 if (isset($_SESSION['timeout']) && $_SESSION['timeout'] + $TIMEOUT * 60 < time() && $_SESSION['timeout'] != 'CRON') {
     $_SESSION['timeout'] = time();
@@ -28,9 +29,11 @@ if (isset($_GET["ano"]))
 if (isset($_GET["semestre"]))
     $_SESSION["semestre"] = $_GET["semestre"];
 
+// FUTURAMENTE RETIRAR
 $ano = $_SESSION["ano"];
 $semestre = $_SESSION["semestre"];
 
+// PADRAO, MAISCULA GLOBAL VARS
 $ANO = $_SESSION["ano"];
 $SEMESTRE = $_SESSION["semestre"];
 

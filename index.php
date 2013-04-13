@@ -1,30 +1,5 @@
 <?php
 include_once "inc/config.inc.php";
-require FUNCOES;
-require VARIAVEIS;
-
-// Verifica e redireciona para HTTPS
-if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTP_HOST']!='localhost') {
-    header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
-}
-
-// Verifica se está tentando acessar diretamente
-if ($_SERVER["PHP_SELF"] != LOCATION."/index.php") {
-    header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
-}
-
-// Verifica se a extensão GD está instalada no sistema.
-if (!extension_loaded('gd')) {
-	print "<center><br><br><font size=\"2\" color=\"red\">Aten&ccedil;&atilde;o: a biblioteca GD (PHP) não foi instalada.</b></font></center>";
-}
-
-// Verifica se a extensão do DB2 está instalada no sistema.
-if (!extension_loaded('ibm_db2')) {
-	print "<center><br><br><font size=\"2\" color=\"red\">Aten&ccedil;&atilde;o: a biblioteca IBM_DB2 (PHP) não foi instalada.</b></font></center>";
-}
-
-$prontuario = (isset($_SESSION["loginProntuario"])) ? $_SESSION["loginProntuario"] : null;
-$nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -41,7 +16,6 @@ $nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
 
 <script src="<?php print VIEW; ?>/js/jquery.html5form-1.5-min.js"></script>
 
-
 <script type="text/javascript" src="<?php print LIB; ?>/Zebra_Dialog/public/javascript/zebra_dialog.js"></script>
 <link rel="stylesheet" href="<?php print LIB; ?>/Zebra_Dialog/public/css/flat/zebra_dialog.css" type="text/css"></link>
 <script src="<?php print VIEW; ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
@@ -55,7 +29,30 @@ $nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
 <script src="<?php print VIEW; ?>/css/menu/script.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/menu/styles.css" media="screen" />
 
-<script>
+<script type="text/javascript">
+    function display_c(start){
+        window.start = parseFloat(start);
+        var end = 0 // change this to stop the counter at a higher value
+        var refresh=1000; // Refresh rate in milli seconds
+        if(window.start >= end ){
+            mytime=setTimeout('display_ct()',refresh)
+        }
+        else {
+            $('#index').load('<?php print VIEW; ?>/logoff.php');
+        }
+    }
+
+    function display_ct() {
+        var days=Math.floor(window.start / 86400); 
+        var hours = Math.floor((window.start - (days * 86400 ))/3600)
+        var minutes = Math.floor((window.start - (days * 86400 ) - (hours *3600 ))/60)
+        var secs = Math.floor((window.start - (days * 86400 ) - (hours *3600 ) - (minutes*60)))
+        var x = "Sessão expira em " + minutes + "min" + secs;
+        document.getElementById('sessaoTime').innerHTML = x;
+        window.start= window.start- 1;
+        tt=display_c(window.start);
+    }
+
     $(document).ready(function() {
     $.ajaxSetup({
         cache: false
@@ -94,18 +91,48 @@ $nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
 });
 </script>
 </head>
+<?php
+require FUNCOES;
+require VARIAVEIS;
 
+// Verifica e redireciona para HTTPS
+if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTP_HOST']!='localhost') {
+    header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
+}
+
+// Verifica se está tentando acessar diretamente
+if ($_SERVER["PHP_SELF"] != LOCATION."/index.php") {
+    header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
+}
+
+// Verifica se a extensão GD está instalada no sistema.
+if (!extension_loaded('gd')) {
+	print "<center><br><br><font size=\"2\" color=\"red\">Aten&ccedil;&atilde;o: a biblioteca GD (PHP) não foi instalada.</b></font></center>";
+}
+
+// Verifica se a extensão do DB2 está instalada no sistema.
+if (!extension_loaded('ibm_db2')) {
+	print "<center><br><br><font size=\"2\" color=\"red\">Aten&ccedil;&atilde;o: a biblioteca IBM_DB2 (PHP) não foi instalada.</b></font></center>";
+}
+
+$prontuario = (isset($_SESSION["loginProntuario"])) ? $_SESSION["loginProntuario"] : null;
+$nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
+?>
 <div id="mask"></div>
 
 <body id="body">
 <div id="wrap">
 <?php
 if (isset($nome)) {
-?>
+    ?>
+    <script> 
+        display_c(<?php print $TIMEOUT*60; ?>); 
+        document.title = '<?php print $SITE_TITLE; ?>';
+    </script>    
     <div id="header" style='height: 80px;'>
     </div>
-    <div id="menu">
-    <div id='barra_topo'>
+    <div id="menu"><div id='sessaoTime'></div>
+        <div id='barra_topo'>
     <?php
 
     if (!in_array($ALUNO, $_SESSION["loginTipo"]) &&

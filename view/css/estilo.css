@@ -521,6 +521,15 @@ h2{
     margin-left: -5px;
 }
 
+#sessaoTime {
+    width: 200px;
+    height: 20px;
+    float: left;
+    margin-left: 5px;
+    padding: 2px 0 0 10px;
+    color: white;
+}
+
 input {
     /*border: none;*/
     padding: 2px;

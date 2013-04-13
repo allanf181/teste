@@ -5,7 +5,6 @@ require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 ?>
-
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <table border="0" width='100%'>
