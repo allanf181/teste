@@ -76,6 +76,15 @@ if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTip
             ?>
             <br><br><font size="3" color="red">Sua vers&atilde;o foi atualizada: 1.<?php print $VERSAOAT; ?></font>
             <br>O sistema atualizou automaticamente o banco de dados.
+            <br>Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
+            <?php
+        } else {
+            ?>
+            <br><br><font size="3" color="red">Problema para atualizar a vers&atilde;o: 1.<?php print $VERSAOAT; ?></font>
+            <br>1 - Verifique as permiss&otilde;es em <?php print dirname(__FILE__); ?>
+            <br>2 - Usu&aacute;rio dono do diret&oacute;rio: <?php print get_current_user(); ?>
+            <br>3 - Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
+            <br>4 - Execute o migrate manualmente: "php lib/migration/ruckus.php db:migrate"
             <?php
         }
     }    
