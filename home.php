@@ -74,7 +74,7 @@ if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTip
     if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
         if (updateDataBase()) {
             ?>
-            <br><br><font size="3" color="red">Sua vers&atilde;o foi atualizada: 1.<?php print $VERSAOAT; ?></font>
+            <br><br><font size="4" color="green">Sua vers&atilde;o foi atualizada: 1.<?php print $VERSAOAT; ?></font>
             <br>O sistema atualizou automaticamente o banco de dados.
             <br>Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
             <?php

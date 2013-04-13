@@ -30,6 +30,6 @@ return array(
     ),
     'migrations_dir' => array('default' => RUCKUSING_WORKING_BASE . '/migrations'),
     'db_dir' => RUCKUSING_WORKING_BASE . DIRECTORY_SEPARATOR . 'db',
-    'log_dir' => RUCKUSING_WORKING_BASE . DIRECTORY_SEPARATOR . 'logs',
+    'log_dir' => sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'logs',
     'ruckusing_base' => dirname(__FILE__) . DIRECTORY_SEPARATOR . ''
 );

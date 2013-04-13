@@ -863,6 +863,7 @@ function updateDataBase() {
         else
             return true;
     } catch (Exception $e) {
+        print $e;
         return false;
     }
 }
