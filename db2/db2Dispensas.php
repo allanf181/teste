@@ -34,7 +34,7 @@ while ($row = db2_fetch_object($res)) {
 
     if ($aluno) {
         $sql = "SELECT f.codigo "
-                . "FROM FrequenciasAbonos "
+                . "FROM FrequenciasAbonos f "
                 . "WHERE f.aluno = $aluno->codigo "
                 . "AND f.dataInicio = '" . $row->DI_DATA . "'"
                 . "AND f.atribuicao = $aluno->atribuicao";
@@ -58,23 +58,25 @@ while ($row = db2_fetch_object($res)) {
 }
 
 // REGISTRA A ATUALIZACAO
-    if (!$LOCATION_CRON) {
-        $sql = "insert into Atualizacoes values(0,13," . $_SESSION['loginCodigo'] . ", now())";
-        mysql_query($sql);
-        ?>
-        <script>
-            $('#dispensaRetorno').text('Dispensas: <?php print $f; ?>');
-        </script><?php
-    } else {
-        $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
-        $resultAdmin = mysql_query($sqlAdmin);
-        $admin = mysql_fetch_object($resultAdmin);
-
-        $sql = "insert into Atualizacoes values(0,113," . $admin->codigo . ", now())";
-        mysql_query($sql);
-
-        $URL = "DISPENSAS IMPORTADOS: $f ";
-        $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
-        mysql_query($sql);
-    }
+if (!$LOCATION_CRON) {
+    $sql = "insert into Atualizacoes values(0,13," . $_SESSION['loginCodigo'] . ", now())";
+    mysql_query($sql);
     ?>
+    <script>
+        $('#dispensaRetorno').text('Dispensas: <?php print $f; ?>');
+    </script><?php
+} else {
+    $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
+    $resultAdmin = mysql_query($sqlAdmin);
+    $admin = mysql_fetch_object($resultAdmin);
+
+    $sql = "insert into Atualizacoes values(0,113," . $admin->codigo . ", now())";
+    mysql_query($sql);
+
+    $URL = "DISPENSAS IMPORTADOS: $f ";
+    if ($DEBUG)
+        print "$URL \n";
+    $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
+    mysql_query($sql);
+}
+?>

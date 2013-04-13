@@ -113,6 +113,7 @@ if (!$LOCATION_CRON) {
 	mysql_query($sql);
 		
 	$URL = "FERIADOS IMPORTADOS: $f |HORAS IMPORTADAS: $h |SALAS IMPORTADAS: $s ";
+        if ($DEBUG) print "$URL \n";
 	$sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
 	mysql_query($sql);
 }

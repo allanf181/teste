@@ -95,7 +95,8 @@ if (!$LOCATION_CRON) {
 	$sql = "insert into Atualizacoes values(0,110,".$admin->codigo.", now())";
 	mysql_query($sql);
 		
-	$URL = "MATR&Iacute;CULAS (CURSOS ANTIGOS) IMPORTADAS: $i |ATUALIZADAS $j ";
+	$URL = "MATRICULAS (CURSOS ANTIGOS) IMPORTADAS: $i |ATUALIZADAS $j ";
+        if ($DEBUG) print "$URL \n";
 	$sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
 	mysql_query($sql);
 }

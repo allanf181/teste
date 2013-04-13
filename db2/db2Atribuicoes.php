@@ -196,7 +196,8 @@ if (!$LOCATION_CRON) {
 	$sql = "insert into Atualizacoes values(0,108,".$admin->codigo.", now())";
 	mysql_query($sql);
 		
-	$URL = "ATRIBUI&Ccedil;&Otilde;ES CURSOS ANTIGOS: $j";
+	$URL = "ATRIBUICOES CURSOS ANTIGOS: $j";
+        if ($DEBUG) print "$URL \n";	    	
 	$sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
 	mysql_query($sql);
 }

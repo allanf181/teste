@@ -61,5 +61,6 @@ if ($semestre == 2) {
             }
         }
     }
+    if ($DEBUG) print "NOTAS \n";
 }
 ?>

@@ -118,6 +118,7 @@ if (!$LOCATION_CRON) {
     mysql_query($sql);
 
     $URL = "DIGITA NOTAS: $s NOTAS SINCRONIZADAS";
+    if ($DEBUG) print "$URL \n";
     $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
     mysql_query($sql);
 }

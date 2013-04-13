@@ -32,7 +32,7 @@ include ("$LOCATION_CRON"."db2Turmas.php");
 include ("$LOCATION_CRON"."db2Atribuicoes.php");
 include ("$LOCATION_CRON"."db2Matriculas.php");
 
-include ("$LOCATION_CRON"."db2Dipensas.php");
+include ("$LOCATION_CRON"."db2Dispensas.php");
 
 include ("$LOCATION_CRON"."db2DigitaNotas.php");
 

@@ -72,6 +72,7 @@ if (!$LOCATION_CRON) {
 	mysql_query($sql);
 		
 	$URL = "TURMAS CURSOS ANTIGOS IMPORTADAS: $i";
+        if ($DEBUG) print "$URL \n";
 	$sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
 	mysql_query($sql);
 }

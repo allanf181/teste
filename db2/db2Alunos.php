@@ -150,6 +150,7 @@ if (!$LOCATION_CRON) {
 	mysql_query($sql);
 	
 	$URL = "ALUNOS IMPORTADOS: $i |ATUALIZADOS: $j";
+        if ($DEBUG) print "$URL \n";	    	
 	$sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
 	mysql_query($sql);
 }
