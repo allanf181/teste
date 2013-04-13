@@ -99,15 +99,16 @@ if ($_GET['opcao'] == 'insert') {
         <tr><td align="right">Semana:</td><td><select name="campoPlano" id="campoPlano"><option></option>;
     <?php
     $sql = "SELECT pa.conteudo, pa.semana, pe.numeroAulaSemanal 
-								FROM PlanosAula pa, PlanosEnsino pe, Atribuicoes a, Disciplinas d 
-								WHERE pa.atribuicao = pe.atribuicao 
-								AND pe.atribuicao = a.codigo
-								AND a.disciplina = d.codigo
-								AND d.numero IN (SELECT d1.numero 
-																	FROM Atribuicoes a1, Disciplinas d1 
-																	WHERE a1.disciplina = d1.codigo 
-																	AND a1.codigo = $atribuicao
-																	AND a.turma = a1.turma)";
+                FROM PlanosAula pa, PlanosEnsino pe, Atribuicoes a, Disciplinas d, Turmas t
+                WHERE pa.atribuicao = pe.atribuicao
+                AND pe.atribuicao = a.codigo 
+                AND a.disciplina = d.codigo 
+                AND t.codigo = a.turma
+                AND d.numero IN (SELECT d1.numero FROM Atribuicoes a1, Disciplinas d1 
+                                    WHERE a1.disciplina = d1.codigo AND a1.codigo = $atribuicao)
+                AND t.numero IN (SELECT t2.numero FROM Atribuicoes a2, Turmas t2 
+                                    WHERE a2.turma = t2.codigo AND a2.codigo = $atribuicao )";
+    
     $resultado = mysql_query($sql);
     while ($linha = mysql_fetch_array($resultado)) {
         echo "<option $selected value='$linha[0]'>Semana $linha[1] [" . abreviar($linha[0], 85) . "]</option>";
