@@ -31,6 +31,7 @@ if ($_GET["opcao"] == 'controlePlano') {
 ?>
 
 <h2><?php print $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <script>
 			function valida() {
@@ -283,11 +284,11 @@ if (isset($_GET["professor"]) && dcrip($_GET["professor"]) != 'Todos') {
 		       		echo "<td align='center'>Plano corrigido</a></td>";
 		       		$checked="checked='checked'";
 	            } else if ($solicitacao) {
-	                echo "<td align='center' colspan='2'><a href='#' class='tooltip' title='Correção solicitada por $linha[8]'>Correção solicitada</a></td>";
+	                echo "<td align='center' colspan='2'><a href='#' title='Correção solicitada por $linha[8]'>Correção solicitada</a></td>";
 	                $correcao=1;
 	            } else {
 	            	if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"]))
-		               echo "<td align='center'><a href='#' class='tooltip' title='Solicitar correção' onclick=\"return plano('".$linha[0]."', '".$linha[1]."', '".crip($curso)."', '".crip($linha[9])."')\";><img class='botao campoCorrecao' id='".crip($linha[0])."' name='$linha[0]' src='".ICONS."/cancel.png' /></a></td>";
+		               echo "<td align='center'><a href='#' title='Solicitar correção' onclick=\"return plano('".$linha[0]."', '".$linha[1]."', '".crip($curso)."', '".crip($linha[9])."')\";><img class='botao campoCorrecao' id='".crip($linha[0])."' name='$linha[0]' src='".ICONS."/cancel.png' /></a></td>";
 							}
 	            
 	            if (!$correcao) {

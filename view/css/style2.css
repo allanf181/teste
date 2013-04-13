@@ -220,5 +220,6 @@ th {
 	color:#fff;
 	font-size:12px Arial;
         white-space:pre-wrap;
-        width: 300px;
+        min-width: 50px;
+        max-width: 400px;
 }

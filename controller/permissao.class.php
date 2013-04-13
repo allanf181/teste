@@ -16,10 +16,18 @@ class permissao {
     // NECESSITA REFATORAÇÃO
     public function listaPermissoes($codigo, $tipo = null) {
         $bd = new database();
-        $sql = "SELECT nome,menu,permissao FROM Permissoes WHERE tipo IN (:cod)";
-     
-        $codigo = implode(',', $codigo);
-        $params = array(':cod'=> $codigo);
+
+        $i=0;
+        foreach ($codigo as $value) {
+            $indice = 'A'.$i;
+            $new_array[$indice] = $value;
+            $new_params[] = ':'.$indice;
+            $i++;
+        }
+        $param = implode($new_params, ',');
+        $params = $new_array;
+
+        $sql = "SELECT nome,menu,permissao FROM Permissoes WHERE tipo IN ($param)";
         $res = $bd->selectDB($sql, $params);
         
         // Concatenando todas as permissões do usuário
@@ -29,15 +37,19 @@ class permissao {
         $vir=null;
         $j=0;
         
+        $P['nome'] = null;
+        $P['menu'] = null;
+        $P['permissao'] = null;
+
         foreach ($res as $reg) {
             if ($j)
                 $vir = ',';
-            $P['nome'] .= $vir . $res[0]['nome'];
-            $P['menu'] .= $vir . $res[0]['menu'];
-            $P['permissao'] .= $vir . $res[0]['permissao'];
+            $P['nome'] .= $vir . $reg['nome'];
+            $P['menu'] .= $vir . $reg['menu'];
+            $P['permissao'] .= $vir . $reg['permissao'];
             $j++;
         }
-
+        
         // Tranformando em Array
         $P['nome'] = explode(",", $P['nome']);
         $P['menu'] = explode(",", $P['menu']);
@@ -59,6 +71,7 @@ class permissao {
             $tree = array_merge_recursive($tree, $subTree);
             $i++;
         }
+        
         if ($tipo == 'menu') return $menus;
         return $tree;
     }

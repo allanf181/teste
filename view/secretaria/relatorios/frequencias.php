@@ -21,6 +21,7 @@ if (isset($_GET["turma"])){
 
 ?>
 <h2><?php print $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <script>
     $(document).ready(function(){
@@ -178,7 +179,7 @@ if (isset($_GET["turma"])){
                     foreach ($codAulas as $codAula => $n) {
                         if ($frequencias[$c][$codAula] > 0 && $frequencias[$c][$codAula] <= $codAulas)
                             $cor = '#FFCCCC';
-                        $conteudo.= "<a href='#' class='tooltip' title='".mostraTexto($disciplinas[$codAula])."(".mostraTexto($professores[$codAula]).")\n$n aulas' > (".$frequencias[$c][$codAula].")</a>";
+                        $conteudo.= "<a href='#' title='".mostraTexto($disciplinas[$codAula])."(".mostraTexto($professores[$codAula]).")\n$n aulas' > (".$frequencias[$c][$codAula].")</a>";
                     }
                      echo "<td align='center' bgcolor='$cor'>$conteudo</td>";
                 }

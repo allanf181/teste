@@ -183,14 +183,14 @@ if (isset($_SESSION["loginTipo"])) {
         if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
             // MENU PROFESSOR
             require CONTROLLER . "/atribuicao.class.php";
-            $disc = new Atribuicao();
+            $disc = new Atribuicoes();
             $disc = $disc->listAtribuicoes($_SESSION['loginCodigo'], 'professor');
             $menuDiferencial='professor';
         }
         if (in_array($ALUNO, $_SESSION["loginTipo"])) {
           // MENU ALUNO
             require CONTROLLER . "/atribuicao.class.php";
-            $disc = new Atribuicao();
+            $disc = new Atribuicoes();
             $disc = $disc->listAtribuicoes($_SESSION['loginCodigo'], 'aluno');
             $menuDiferencial='aluno';
         }
@@ -242,7 +242,7 @@ if (isset($_SESSION["loginTipo"])) {
         $permissao = new permissao();
         $permissoes = $permissao->listaPermissoes($_SESSION["loginTipo"]);
         $files = $permissao->listaPermissoes($_SESSION["loginTipo"], 'menu');
-        
+
         function makeMenu($ar){
             global $files;
             foreach ($ar as $k => $v ) {

@@ -12,22 +12,23 @@ require FUNCOES;
 require PERMISSAO;
 
 require CONTROLLER . "/estado.class.php";
-$estado = new Estado();
+$estado = new Estados();
 
 // INSERT E UPDATE
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
-    $ret = $estado->insertOrUpdate($_POST);
+    $ret = $estado->insertOrUpdateEstado($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    $_GET["codigo"] = crip($ret['RESULTADO']);
+    if ($_POST['codigo']) $_GET["codigo"] = crip($_POST['codigo']);
+    else $_GET["codigo"] = crip($ret['RESULTADO']);
 }
 
 // DELETE
 if ($_GET["opcao"] == 'delete') {
-    $ret = $estado->delete($_GET["codigo"]);
+    $ret = $estado->deleteEstado($_GET["codigo"]);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
@@ -83,8 +84,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
         $item = $_GET["item"];
 
     $res = $estado->listEstados($params, $item, $itensPorPagina);
-
-    $c = $estado->listEstados($params);
+    $c = $estado->listEstados();
 
     $totalRegistros = count($c);
     $SITENAV = $SITE . '?';

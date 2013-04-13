@@ -24,6 +24,8 @@ if ($_GET["opcao"] == 'delete') {
 }
 ?>
 <h2><?php print $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+
 <?php
     // inicializando as variÃ¡veis do formulÃ¡rio
     $codigo="";
@@ -170,7 +172,7 @@ require(PATH.VIEW.'/navegacao.php'); ?>
     while ($linha = mysql_fetch_array($resultado)) {
         $i%2==0 ? $cdif="class='cdif'" : $cdif="";
 		$codigo = crip($linha[0]);
-        echo "<tr $cdif><td align='left'>$linha[3]</td><td>".(mostraTexto($linha[1]))."</td><td>$linha[4]</td><td><a href='#' class='tooltip' title='$linha[2] [$linha[5]]'>".abreviar(mostraTexto($linha[2]), 32)."</a></td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
+        echo "<tr $cdif><td align='left'>$linha[3]</td><td>".(mostraTexto($linha[1]))."</td><td>$linha[4]</td><td><a href='#' title='$linha[2] [$linha[5]]'>".abreviar(mostraTexto($linha[2]), 32)."</a></td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
         $i++;
     }
     mysql_close($conexao);

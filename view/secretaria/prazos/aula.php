@@ -38,7 +38,8 @@ if ($_GET["opcao"] == 'controlePrazo') {
 }
 ?>
 <h2><?php print $TITLE; ?></h2>
-    
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+
 <?php
 $curso="";
 $turma="";
@@ -328,14 +329,14 @@ if (isset($_GET["professor"]) && dcrip($_GET["professor"]) != 'Todos') {
 	    $i%2==0 ? $cdif="class='cdif'" : $cdif="";
 	    $disciplina=$linha[1];
 	    if (strlen($disciplina)>30)
-				$disciplina = "<a href='#' class='tooltip' title='$linha[1]'>".abreviar ($disciplina, 30)."</a>";
+				$disciplina = "<a href='#' title='$linha[1]'>".abreviar ($disciplina, 30)."</a>";
     	
     	$professores='';			
 			foreach(getProfessor($linha[2]) as $key => $reg)
 			$professores[] = $reg['nome'];
 			$prof = implode("<br>", $professores);
 	    if (strlen($prof)>30)
-			$prof = "<a href='#' class='tooltip' title='$prof'>".abreviar ($prof, 30)."</a>";
+			$prof = "<a href='#' title='$prof'>".abreviar ($prof, 30)."</a>";
 	    echo "<tr $cdif><td align='center'>$i</td><td>$linha[0]</td><td>$disciplina</a></td><td>$prof</td><td><a href='#Data' title='$linha[3]'>".abreviar($linha[3],25)."</a></td></tr>";
 	    $i++;
 	}

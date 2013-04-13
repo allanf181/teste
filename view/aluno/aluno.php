@@ -22,7 +22,7 @@ if ($_GET["atribuicao"]) {
     $aluno = $_SESSION["loginCodigo"];
 
     require CONTROLLER . "/atribuicao.class.php";
-    $att = new Atribuicao();
+    $att = new Atribuicoes();
     $res = $att->getAtribuicao($atribuicao);
     
     $bimestre="SEMESTRAL";

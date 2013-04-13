@@ -47,12 +47,14 @@ class Plano {
                 . "AND pr.professor = p.codigo "
                 . "AND d.codigo = a.disciplina "
                 . "AND pe.valido = '0000-00-00 00:00:00' "
+                . "AND (pe.solicitacao IS NOT NULL AND pe.solicitacao <> \"\")"
                 . "AND p.codigo = :cod";
+
         $params = array(':cod'=> $codigo);
         $res = $bd->selectDB($sql, $params);
-        if ( $res[0] )
+        if ( $res )
         {
-            return $res[0];
+            return $res;
         }
         else
         {

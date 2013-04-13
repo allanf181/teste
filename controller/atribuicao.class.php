@@ -4,7 +4,7 @@ if (!class_exists('database')) {
     require_once MYSQL;
 }
 
-class Atribuicao {
+class Atribuicoes {
 
     // USADO POR: ALUNO/ALUNO.PHP
     // Retorna dados da atribuicao (Disciplina, Turma, etc..)
@@ -46,6 +46,7 @@ class Atribuicao {
 			AND m.codigo = c.modalidade
 			AND pr.atribuicao = a.codigo
 			AND pr.professor=:cod 
+                        AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
 			ORDER BY t.ano,t.semestre,a.bimestre,d.numero,a.grupo";
 
         $aluno = "SELECT t.ano as ano, t.semestre as semestre, at.bimestre as bimestre,
@@ -60,6 +61,7 @@ class Atribuicao {
 				AND t.turno=tu.codigo
 				AND at.disciplina = d.codigo
 				AND p.codigo=:cod
+                                AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
 				ORDER BY d.numero, at.bimestre";        
         $params = array(':cod'=> $codigo);
         $res = $bd->selectDB($$papel, $params);

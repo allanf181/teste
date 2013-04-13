@@ -22,6 +22,7 @@ if (isset($_GET["bimestre"]))
 
 ?>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <script>
 function Links(){
@@ -249,14 +250,14 @@ if (!empty($_GET["turma"])) {
 		foreach ($bimestres as $bim => $aa)
 			foreach ($disciplinasNomes[$bim] as $ddSigla)
 				foreach ($ddSigla as $dSigla => $dNome)
-				    print "<td align='center' style='width: 30px'><a class='tooltip' title='$dNome'>".$dSigla."</a></td>";
+				    print "<td align='center' style='width: 30px'><a title='$dNome'>".$dSigla."</a></td>";
 		
 	if ($bimestre == 'final' && $fechamento=='b')
 		foreach ($disciplinasMediaNome as $ddSigla => $dsNome)
 		    print "<td align='center' style='width: 30px'>$dsNome</td>";
 	
-	print "<td align='center' style='width: 30px'><a class='tooltip' title='M&eacute;dia Global'>MG</a></td>\n";  
-	print "<td align='center' style='width: 30px'><a class='tooltip' title='Frequ&ecirc;ncia Global'>FG</a></td>\n";
+	print "<td align='center' style='width: 30px'><a title='M&eacute;dia Global'>MG</a></td>\n";  
+	print "<td align='center' style='width: 30px'><a title='Frequ&ecirc;ncia Global'>FG</a></td>\n";
 
 	print "</tr>\n";
 	$i=1;
@@ -282,9 +283,9 @@ if (!empty($_GET["turma"])) {
         	if ($situacaoListar[$c][$dCodigo]) {
         		if ($situacaoHabilitar[$c][$dCodigo]) {
        				$dados = resultado($dMatricula[$c], $dCodigo);
-             		print "<td align='center'><a title='Situa&ccedil;&atilde;o: <b>".$dados['situacao']."</b><br>Faltas: ".$dados['faltas']."<br>Aulas Dadas: ".$dados['auladada']."<br>Frequ&ecirc;ncia: ".arredondar($dados['frequencia'])."%' class='tooltip'><font color='".$dados['color']."'>".$dados['media']."</font></a></td>";
+             		print "<td align='center'><a title='Situa&ccedil;&atilde;o: <b>".$dados['situacao']."</b><br>Faltas: ".$dados['faltas']."<br>Aulas Dadas: ".$dados['auladada']."<br>Frequ&ecirc;ncia: ".arredondar($dados['frequencia'])."%'><font color='".$dados['color']."'>".$dados['media']."</font></a></td>";
             	} else {
-            	  	print "<td align='center'><a title='".$situacaoNome[$c][$dCodigo]."' class='tooltip'>".$situacaoSigla[$c][$dCodigo]."</a></td>";
+            	  	print "<td align='center'><a title='".$situacaoNome[$c][$dCodigo]."'>".$situacaoSigla[$c][$dCodigo]."</a></td>";
             	}
             } else
             	print "<td align='center'>-</td>";
