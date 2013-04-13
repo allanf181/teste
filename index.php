@@ -116,7 +116,7 @@ if (isset($nome)) {
     <?php 
     }
     ?>
-    <span style="color: white">Ol&aacute; <a id="senhaTip" title="Para sua segurança, altere sua senha periodicamente (clique no seu nome)." href="javascript:$('#index').load('<?php print VIEW; ?>/senha.php?opcao=alterar'); void(0);" style="color: white"><?php print utf8_encode($nome); ?></a></span>
+    <span style="color: white">Ol&aacute; <a id="senhaTip" title="Para sua segurança, altere sua senha periodicamente (clique no seu nome)." href="javascript:$('#index').load('<?php print VIEW; ?>/senha.php?opcao=alterar'); void(0);" style="color: white"><?php print $nome; ?></a></span>
     <a href="javascript:$('#index').load('<?php print VIEW; ?>/logoff.php'); void(0);" style="color: white">(Sair)</a>
     </div>
     </div>
