@@ -281,7 +281,7 @@ $(document).ready(function(){
             $dados = mysql_fetch_object($result);
             $enabled=true;
             $rotulo = "Importar";
-            $situacao = "Dados nunca importados manualmente.";
+            $situacao = "Dados nunca exportados manualmente.";
             if ($dados->tipo >= 112) $dados->nome = 'CRON';
             if (!empty($dados->data)){
                 $ultimaAtualizacao = (date('d/m/Y H:i:s', strtotime($dados->data)))." por ". $dados->nome;
