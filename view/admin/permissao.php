@@ -48,6 +48,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 }
 ?>
 <h2><font color="white"><?php print $TITLE; ?></font></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <script>
     function libera(campo, valor) {
