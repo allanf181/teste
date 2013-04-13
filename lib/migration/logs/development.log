@@ -7356,3 +7356,13 @@ Apr 13 06:19:29 [info] INSERT INTO EstadosCivis (codigo, nome) VALUES (NULL , 'U
 Apr 13 06:19:29 [info] INSERT INTO SituacoesTrabalho (codigo, nome) VALUES (NULL ,'Trabalhando'), (NULL ,  'Aposentado ou com benefício INSS'), (NULL ,  'Não trabalha por opção');
 Apr 13 06:19:29 [info] UPDATE Instituicoes SET versao='387', versaoAtual='387';
 Apr 13 06:19:29 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174658')
+Apr 13 04:08:16 [info] SELECT version FROM schema_migrations
+Apr 13 04:08:16 [info] SELECT version FROM schema_migrations
+Apr 13 04:08:16 [info] SELECT version FROM schema_migrations
+Apr 13 04:08:16 [info] UPDATE Instituicoes SET versao='388', versaoAtual='388';
+Apr 13 04:08:16 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174659')
+Apr 13 07:17:02 [info] SELECT version FROM schema_migrations
+Apr 13 07:17:02 [info] SELECT version FROM schema_migrations
+Apr 13 07:17:02 [info] SELECT version FROM schema_migrations
+Apr 13 07:17:02 [info] UPDATE Instituicoes SET versao='388', versaoAtual='388';
+Apr 13 07:17:02 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174659')

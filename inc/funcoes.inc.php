@@ -1,66 +1,50 @@
 <?php
-
-function getFrequencia($matricula, $atribuicao, $data = null) {
-    // VERIFICANDO O HORARIO DO PROFESSOR
-    $sql = "SELECT h.nome
-			FROM Ensalamentos e, Horarios h
-			WHERE e.horario = h.codigo
-			AND e.atribuicao= $atribuicao";
-    //echo $sql;
-    $res = mysql_query($sql);
-    $horario = null;
-    while ($l = mysql_fetch_array($res)) {
-        $horario[$l[0]] = $l[0];
-        preg_match('#\[(.*?)\]#', $l[0], $match);
-        $horario[$match[1]] = $match[1];
-    }
-
+function getFrequenciaAbono($aluno, $atribuicao, $data) {
     // VERIFICANDO OS ABONOS DO ALUNO
-    if ($data != null)
-        $sqlData = " AND fa.data = '" . $data . "'";
-    $sql = "SELECT fa.aula, fa.data, fa.tipo, fa.atribuicao
-			FROM Pessoas p, Aulas au, Frequencias f, Matriculas m, FrequenciasAbonos fa
-			WHERE p.codigo = m.aluno
-			AND f.matricula = m.codigo
-			AND au.codigo = f.aula
-			AND fa.aluno = m.aluno
-			AND fa.atribuicao = au.atribuicao
-			AND f.matricula = $matricula 
-			AND au.atribuicao= $atribuicao
-			$sqlData";
+        
+        $sql = "SELECT f.tipo
+                FROM FrequenciasAbonos f
+                WHERE f.aluno = $aluno
+                AND '" . $data . "' BETWEEN f.dataInicio AND f.dataFim
+                AND
+                (   (f.atribuicao = $atribuicao)
+                    OR 
+                    (
+                        (f.aula = (SELECT h1.nome
+                            FROM Ensalamentos e1, Horarios h1
+                            WHERE e1.horario = h1.codigo
+                            AND e1.atribuicao=$atribuicao)
+                        )
+                        OR 
+                        ( f.aula =  (SELECT tu2.sigla
+                            FROM Atribuicoes a2, Turmas t2, Turnos tu2
+                            WHERE a2.turma = t2.codigo
+                            AND t2.turno = tu2.codigo
+                            AND a2.codigo=$atribuicao)
+                        ) 
+                    )
+                )";
     //echo "$sql<br><br>";
     $res = mysql_query($sql);
-    $abono = null;
-    $attrib = null;
     while ($l = mysql_fetch_array($res)) {
-        if ($l[2] == 'A')
+        if ($l[0] == 'A')
             $tipo['nome'] = 'Abono';
-        if ($l[2] == 'R')
+        if ($l[0] == 'R')
             $tipo['nome'] = 'Regime de Exerc&iacute;cios Domiciliares';
-        if ($l[2] == 'M')
+        if ($l[0] == 'M')
             $tipo['nome'] = 'Matr&iacute;cula ap&oacute;s inicio letivo';
-        if ($l[2] == 'D')
+        if ($l[0] == 'D')
             $tipo['nome'] = 'Dispensa';
-        $tipo[$l[0]] = $l[2];
-        $abono[$l[1]][$l[0]] = $l[0];
-        if ($l[3]) {
-            $attrib = $l[3];
-            $tipo['sigla'] = $tipo['nome'][0];
-        }
+        
+        $tipo['sigla'] = $l[0];
+        
+        return $tipo;
     }
-
-    if ($data != null) {
-        if ($abono[$data] && $attrib)
-            return $tipo;
-        $containsSearch = array_intersect($abono[$data], $horario);
-        if (count($containsSearch) > 0) {
-            $tipo['sigla'] = $tipo[reset($containsSearch)];
-            return $tipo;
-        }
-        return 0;
-    }
-
-    // CALCULANDO A FREQUENCIA
+    return 0;
+}
+    
+function getFrequencia($matricula, $atribuicao) {
+     // CALCULANDO A FREQUENCIA
     $sql = "SELECT f.quantidade, 
 			(SELECT SUM(au1.quantidade) 
 					FROM Aulas au1 
@@ -69,7 +53,7 @@ function getFrequencia($matricula, $atribuicao, $data = null) {
 					FROM Atribuicoes at1, Disciplinas d 
 					WHERE at1.disciplina = d.codigo
 					AND at1.codigo = au.atribuicao) as CH,
-			au.data
+			au.data, m.aluno
 			FROM Pessoas p, Aulas au, Frequencias f, Matriculas m
 			WHERE p.codigo = m.aluno
 			AND f.matricula = m.codigo
@@ -80,7 +64,7 @@ function getFrequencia($matricula, $atribuicao, $data = null) {
     $res = mysql_query($sql);
     $faltas = 0;
     while ($l = mysql_fetch_array($res)) {
-        if (!in_array($abono[$l[3]], $horario))
+        if (!getFrequenciaAbono($l[4], $atribuicao, $l[3]))
             $faltas += substr_count($l[0], 'F');
         $auladada = $l[1];
         $ch = $l[2];

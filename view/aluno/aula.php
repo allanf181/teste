@@ -18,7 +18,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     
     require CONTROLLER . "/aula.class.php";
     $aula = new Aulas();
-    $res = $aula->listAulas($aluno, $atribuicao);
+    $res = $aula->listAulasAluno($aluno, $atribuicao);
     print "<h2>Aulas</h2>\n";
     print "<div class='professores_textarea'>\n";
     print "<table width=\"100%\" align=\"center\" style=\"border: 0px solid black\">\n";
@@ -27,7 +27,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     foreach ($res as $reg) {
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         if (isset($reg['freqMat'])) $regFreq = explode(',', $reg['freqMat']);
-        if (!$A = getFrequencia($reg[1], $atribuicao, $reg['data'])) {
+        if (!$A = getFrequenciaAbono($aluno, $atribuicao, $reg['data'])) {
             $falta = $regFreq[0];
             if ($falta) {
                 $F = $falta;

@@ -15,15 +15,17 @@ require CONTROLLER . "/abono.class.php";
 $abono = new FrequenciasAbonos();
 
 if ($_POST["opcao"] == 'InsertOrUpdate') {
+    $_POST['dataInicio'] = dataMysql($_POST['dataInicio']);
+    $_POST['dataFim'] = dataMysql($_POST['dataFim']);
     extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
-    $ret = $abono->insertOrUpdateAbono($_POST);
+    $ret = $abono->insertOrUpdate($_POST);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     if ($_POST['codigo'])
-        $_GET["codigo"] = $_POST['codigo'];
-    else
         $_GET["codigo"] = crip($ret['RESULTADO']);
+    else
+        $_GET["codigo"] = $_POST['codigo'];
 }
 
 // DELETE
@@ -38,7 +40,7 @@ if ($_GET["opcao"] == 'delete') {
 <?php
 // inicializando as variáveis do formulário
 $params['ano'] = $ano;
-$sqlAdicional .= " AND date_format(f.data, '%Y') = :ano ";
+$sqlAdicional .= " AND date_format(f.dataInicio, '%Y') = :ano ";
 
 if (dcrip($_GET["aluno"]) != "") {
     $params['aluno'] = dcrip($_GET["aluno"]);
@@ -55,15 +57,15 @@ $dataFim = $_GET['dataFim'];
 if ($dataFim && $dataInicio) {
     $params['dataInicio'] = dataMysql($dataInicio);
     $params['dataFim'] = dataMysql($dataFim);
-    $sqlAdicional .= " AND f.data >= :dataInicio AND f.data <= :dataFim ";
+    $sqlAdicional .= " AND f.dataInicio >= :dataInicio AND f.dataFim <= :dataFim ";
 } else {
     if (!empty($dataInicio)) {
         $params['dataInicio'] = dataMysql($dataInicio);
-        $sqlAdicional .= " AND f.data = :dataInicio ";
+        $sqlAdicional .= " AND f.dataInicio = :dataInicio ";
     }
     if (!empty($dataFim)) {
         $params['dataFim'] = dataMysql($dataFim);
-        $sqlAdicional .= " AND f.data = :dataFim ";
+        $sqlAdicional .= " AND f.dataFim = :dataFim ";
     }
 }
 
@@ -198,11 +200,12 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     require PATH . VIEW . '/paginacao.php';
     ?>
     <table id="listagem" border="0" align="center">
-        <tr><th width="80">Data</th><th width="80">Prontu&aacute;rio</th><th width="220">Aluno</th><th th width="200">Tipo</th><th>Aula/Disciplina</th><th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+        <tr><th width="180">Data</th><th width="80">Prontu&aacute;rio</th><th width="220">Aluno</th><th th width="200">Tipo</th><th>Aula/Disciplina</th><th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
         <?php
         $i = $item;
         foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+            if ($reg['dataFim']) $reg['dataInicio'] = $reg['dataInicio'].' a '.$reg['dataFim'];
             ?>
             <tr <?php print $cdif; ?>><td><?php print $reg['dataInicio']; ?></td>
                 <td><?php print $reg['prontuario']; ?></td>

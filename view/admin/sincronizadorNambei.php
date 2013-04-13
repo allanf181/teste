@@ -63,6 +63,10 @@ $(document).ready(function(){
     $("#digitaNotas").click(function(){
         $('#digitaNotasRetorno').load('db2/db2DigitaNotas.php');
     });
+    
+  $("#dispensa").click(function(){
+        $('#dispensaRetorno').load('db2/db2Dispensas.php');
+    });    
 });
 
 </script>
@@ -273,7 +277,27 @@ $(document).ready(function(){
         ?>
         <tr><td align="right">Matr&iacute;culas (Cursos Antigos): </td><td><? if ($enabled) { ?><input type="button" id="matriculasa" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='matriculasaRetorno'></div></td></tr>
 				</td></tr>
-        <tr><td colspan="3"><hr></td></tr>
+         <tr><td colspan="3"><hr></td></tr>
+
+        <?php
+            $sql = "select * from Atualizacoes a, Pessoas p where (a.tipo=13 OR a.tipo=113) and a.pessoa=p.codigo  order by a.codigo desc limit 1";
+            $result = mysql_query($sql);
+            $dados = mysql_fetch_object($result);
+            $enabled=true;
+            $rotulo = "Importar";
+            $situacao = "Dados nunca importados manualmente.";
+            if ($dados->tipo >= 113) $dados->nome = 'CRON';
+            if (!empty($dados->data)){
+                $ultimaAtualizacao = (date('d/m/Y H:i:s', strtotime($dados->data)))." por ". $dados->nome;
+                $rotulo="Atualizar";
+                $situacao = "<p class='info'>Última atualização: $ultimaAtualizacao</p>";
+                $enabled=true;
+            }
+
+        ?>
+        <tr><td align="right">Dispensas: </td><td><? if ($enabled) { ?><input type="button" id="dispensa" value="Sincronizar" /><? } ?></td><td><?=$situacao?><div id='dispensaRetorno'></div></td></tr>
+
+    <tr><td colspan="3"><hr></td></tr>
 
         <?php
             $sql = "select * from Atualizacoes a, Pessoas p where (a.tipo=12 OR a.tipo=112) and a.pessoa=p.codigo  order by a.codigo desc limit 1";
@@ -301,7 +325,7 @@ $(document).ready(function(){
 	<?php
 		$sql = "SELECT DATE_FORMAT(data, '%d/%m/%Y %H:%i'), url 
 				FROM Logs WHERE origem = 'CRON' 
-				ORDER BY codigo DESC, data DESC, url ASC LIMIT 11";
+				ORDER BY codigo DESC, data DESC, url ASC LIMIT 13";
     	$resultado = mysql_query($sql);
     	while ($l = mysql_fetch_array($resultado)) {
      		print "$l[0] - $l[1]<br>"; 

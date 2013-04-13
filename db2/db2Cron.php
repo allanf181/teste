@@ -18,10 +18,7 @@ require("$LOCATION_CRON"."db2Funcoes.php");
 require("$LOCATION_CRON"."db2Variaveis.inc.php");
 require("$LOCATION_CRON"."../inc/funcoes.inc.php");
 
-include ("$LOCATION_CRON"."db2Notas.php");
-
 include ("$LOCATION_CRON"."db2Alunos.php");
-
 include ("$LOCATION_CRON"."db2Professores.php");
 include ("$LOCATION_CRON"."db2Horarios.php");
 
@@ -34,6 +31,8 @@ include ("$LOCATION_CRON"."db2CursosDisciplinas.php");
 include ("$LOCATION_CRON"."db2Turmas.php");
 include ("$LOCATION_CRON"."db2Atribuicoes.php");
 include ("$LOCATION_CRON"."db2Matriculas.php");
+
+include ("$LOCATION_CRON"."db2Dipensas.php");
 
 include ("$LOCATION_CRON"."db2DigitaNotas.php");
 

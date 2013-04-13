@@ -45,7 +45,8 @@ class FrequenciasAbonos extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina";
 
-            $sql = "SELECT f.codigo as codigo, date_format(f.data, '%d/%m/%Y') as dataInicio, 
+            $sql = "SELECT f.codigo as codigo, date_format(f.dataInicio, '%d/%m/%Y') as dataInicio,
+                    date_format(f.dataFim, '%d/%m/%Y') as dataFim,
                     f.motivo as motivo, f.aula as aula, p.nome as nome, p.codigo as aluno,
                     p.prontuario as prontuario, f.tipo as sigla, f.atribuicao as atribuicao,
                     CASE f.tipo WHEN 'A' THEN 'Abono'
@@ -57,7 +58,7 @@ class FrequenciasAbonos extends Generic {
                     FROM FrequenciasAbonos f, Pessoas p
                     WHERE f.aluno = p.codigo 
                     $sqlAdicional
-                    ORDER BY f.data DESC $nav";
+                    ORDER BY f.dataInicio DESC $nav";
 
         $res = $bd->selectDB($sql, $params);
         if ($res) {

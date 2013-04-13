@@ -175,11 +175,10 @@ require(PATH.VIEW.'/navegacao.php'); ?>
 	if ($resultado){
 		while ($linha = mysql_fetch_array($resultado)) {
 			$i%2==0 ? $cdif="class='cdif'" : $cdif="class='cdif2'";
-			($linha[6]>0) ? $bimestre="$linha[6]ºBIM:":$bimestre="";
-			($linha[7]!="0") ? $grupo=" Grupo $linha[7]":$grupo="";
+			$bimestre=($linha[6]>0)? "[$linha[6]ºBIM]":$bimestre="";
 			$codigo = crip($linha[0]);
 			if (!$linha[8]) $linha[8] = $linha[9];
-			echo "<tr $cdif><td align='left'>$linha[1]</td><td>$linha[2] [$linha[5]]</td><td align=left>$linha[3] $grupo [$linha[8]]</td><td align='left'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
+			echo "<tr $cdif><td align='left'>$linha[1]</td><td>$linha[2] [$linha[5]] $bimestre</td><td align=left>$linha[3] [$linha[8]]</td><td align='left'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
 			$i++;
 		}
 	}

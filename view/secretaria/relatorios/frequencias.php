@@ -124,7 +124,7 @@ if (isset($_GET["turma"])){
         // consulta no banco
         $sql = "SELECT p.codigo, date_format(au.data, '%d/%m'), au.quantidade, 
         		IfNULL(f.quantidade,0), upper(p.nome), au.codigo, d.nome,
-        		at.codigo, au.data, m.codigo
+        		at.codigo, au.data, m.aluno
                 FROM Atribuicoes at
                 join Disciplinas d on at.disciplina=d.codigo
                 join Aulas au on au.atribuicao=at.codigo
@@ -143,7 +143,7 @@ if (isset($_GET["turma"])){
             $aulas[$linha[1]][$linha[5]] = $linha[2];
             $disciplinas[$linha[5]] = $linha[6];
            
-						$frequencias[$linha[0]][$linha[5]] = ($A = getFrequencia($linha[9], $linha[7], $linha[8])) ? $A['sigla'] : $linha[3];
+						$frequencias[$linha[0]][$linha[5]] = ($A = getFrequenciaAbono($linha[9], $linha[7], $linha[8])) ? $A['sigla'] : $linha[3];
             //$frequencias[$linha[0]][$linha[5]] .= $linha[3];
             $nomes[$linha[0]] = $linha[4];
 

@@ -224,7 +224,7 @@ if (mysql_num_rows ( $result ) != 0) {
 	$linha = 0;
 
 	// Mostrando os alunos
-	$sql = "SELECT p.nome, m.codigo, p.prontuario, s.nome, s.listar, s.habilitar
+	$sql = "SELECT p.nome, m.codigo, p.prontuario, s.nome, s.listar, s.habilitar, m.aluno
 			FROM Matriculas m, Atribuicoes a, Pessoas p, Situacoes s
 			WHERE a.codigo = m.atribuicao 
 			AND p.codigo = m.aluno 
@@ -240,6 +240,7 @@ if (mysql_num_rows ( $result ) != 0) {
 		$shabilitar = mysql_result ( $result, $i, "s.habilitar" );
 		$prontuario = mysql_result ( $result, $i, "p.prontuario" );
 		$matricula = mysql_result ( $result, $i, "m.codigo" );
+                $aluno = mysql_result ( $result, $i, "m.aluno" );
 		$pdf->Cell ( $larguraDia, $alturaLinha, $i + 1, 1, 0, 'C', true );
 
 		$pdf->SetFont($fonte, '', $tamanho);
@@ -263,7 +264,7 @@ if (mysql_num_rows ( $result ) != 0) {
 				//print "$sql <br>";
 				$faltas = mysql_query($sql);
 				for($j=0; $j < mysql_num_rows($faltas); $j++) {
-					if (!$A = getFrequencia($matricula, $atribuicao, mysql_result( $faltas, $j, "a.data"))) {
+					if (!$A = getFrequenciaAbono($aluno, $atribuicao, mysql_result( $faltas, $j, "a.data"))) {
 						$falta = mysql_result( $faltas, $j, "freq");
 						if ($falta) {
 							$F = $falta;

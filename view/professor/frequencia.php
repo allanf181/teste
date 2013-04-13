@@ -121,7 +121,7 @@ if ( $status || ($_SESSION['dataExpirou'] && ($linha[7] < 0 || $linha[7]=='')))
 			if ($l[6]) {
 				if ($l[7]) {
 					print "<td align='left'>\n";
-					if (!$A = getFrequencia($l[3], $atribuicao, $linha[9])) {
+					if (!$A = getFrequenciaAbono($l[1], $atribuicao, $linha[9])) {
 						echo "<input $disabled type='hidden' checked name='matricula[" . $l[3] . "][".$l[3]."]' />";
 						for($n=0; $n < $l[10]; $n++) {
 							if (substr($l[0], $n, 1) == 'F') $F = 'checked';
