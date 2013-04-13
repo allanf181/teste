@@ -44,6 +44,23 @@ Abstract class Generic {
             return false;
         }
     }
+ 
+    public function count() {
+        $bd = new database();
+        $table = get_called_class();
+
+        $sql = "SELECT COUNT(*) as total FROM $table $nav";
+        
+        $res = $bd->selectDB($sql);
+        if ( $res[0] )
+        {
+            return $res[0]['total'];
+        }
+        else
+        {
+            return false;
+        }
+    }
     
     public function listRegistros($params, $item=null, $itensPorPagina=null) {
         $bd = new database();

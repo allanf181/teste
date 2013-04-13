@@ -84,9 +84,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
         $item = $_GET["item"];
 
     $res = $estado->listEstados($params, $item, $itensPorPagina);
-    $c = $estado->listEstados();
 
-    $totalRegistros = count($c);
+    $totalRegistros = $estado->count();
     $SITENAV = $SITE . '?';
     require PATH . VIEW . '/paginacao.php';
     ?>
