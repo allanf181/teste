@@ -207,11 +207,11 @@ $atribuicao = $_GET["atribuicao"];
                                 <form id="form_padrao">
                                     <h2>Competências Desenvolvidas:</h2>
                                     <div class='professores_textarea'>
-                                        <textarea <?php print $disabled; ?> maxlength='500' id='4' name='competencias'><?php print $competencias; ?></textarea>
+                                        <textarea <?php print $disabled; ?> maxlength='1500' id='4' name='competencias'><?php print $competencias; ?></textarea>
                                     </div>
                                     <h2>Observações a serem incluídas no diário da disciplina:</h2>
                                     <div class='professores_textarea'>
-                                        <textarea <?php print $disabled; ?> maxlength='500' id='3' name='observacoes'><?php print $observacoes; ?></textarea>
+                                        <textarea <?php print $disabled; ?> maxlength='1500' id='3' name='observacoes'><?php print $observacoes; ?></textarea>
                                     </div>
                                     <input type='hidden' value='<?php print crip($atribuicao); ?>' name='atribuicao' id='atribuicao' />
                                     <input type='hidden' name='opcao' value='InsertOrUpdateObs' />
@@ -234,7 +234,7 @@ $atribuicao = $_GET["atribuicao"];
                 $(document).ready(function() {
                     $('#3, #4').maxlength({
                         events: [], // Array of events to be triggerd    
-                        maxCharacters: 500, // Characters limit   
+                        maxCharacters: 1500, // Characters limit   
                         status: true, // True to show status indicator bewlow the element    
                         statusClass: "status", // The class on the status div  
                         statusText: "caracteres restando", // The status text  

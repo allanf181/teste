@@ -395,14 +395,13 @@ $sql = "SELECT au.conteudo, au.quantidade, DATE_FORMAT(au.data, '%m') as mes,
 $resultado = mysql_query($sql);
 $linha = mysql_fetch_array($resultado);
       
-$limit = 105; // tamanho limite
-$limit2=140;
+$limit2=120;
 
 $observ = $linha[4];
 $competencias = $linha[5];
 
 $obs = explode( "\n", wordwrap( $observ, $limit2));
-$comp = explode( "\n", wordwrap( $competencias, $limit-10));
+$comp = explode( "\n", wordwrap( $competencias, $limit2));
 
 $k = 0;
 $j = 0;
@@ -466,15 +465,15 @@ $pdf->Cell(8, $alturaLinha, '', 'LRT', 0, 'C', true);
 while ($l<=12){
     if ($l>0)
         $pdf->Cell(8, $alturaLinha, '', 'LR', 0, 'C', true);
-    $pdf->Cell($larg1+$larg2+$larg3-16, $alturaLinha, utf8_decode($obs[$l]), 1, 0, 'L', true);
+    $pdf->Cell($larg6 * 1.213, $alturaLinha, utf8_decode($obs[$l]), 1, 0, 'L', true);
     if ($l==0)
         $pdf->Cell($larg5, $alturaLinha, '', 'LRT', 0, 'L', true);
     else
         $pdf->Cell($larg5, $alturaLinha, '', 'LR', 0, 'L', true);
-    $pdf->Cell($larg6, $alturaLinha, utf8_decode($comp[$l]), 1, 0, 'L', true);
+    $pdf->Cell($larg6 * 1.213, $alturaLinha, utf8_decode($comp[$l]), 1, 0, 'L', true);
     $pdf->Ln();
     $l++;
-    if ($l>=10)
+    if ($l>=13)
         break;    
 }
 
@@ -485,12 +484,12 @@ if ($l<=10){
         else
             $pdf->Cell(8, $alturaLinha, '', 'LR', 0, 'L', true);
         
-        $pdf->Cell($larg1+$larg2+$larg3-16, $alturaLinha,'', 1, 0, 'C', true);
+        $pdf->Cell($larg6 * 1.213, $alturaLinha,'', 1, 0, 'C', true);
         if ($l==12)
             $pdf->Cell($larg5, $alturaLinha, '', 'LRB', 0, 'L', true);
         else
             $pdf->Cell($larg5, $alturaLinha, '', 'LR', 0, 'L', true);
-        $pdf->Cell($larg6, $alturaLinha,'', 1, 0, 'C', true);
+        $pdf->Cell($larg6 * 1.213, $alturaLinha,'', 1, 0, 'C', true);
         $pdf->Ln();
         $l++;
     }
@@ -500,7 +499,7 @@ $pdf->Ln();
 // TEXTOS ROTACIONADOS
 $pdf->SetFont($fonte, '', $tamanho+4);
 $pdf->RotatedText(15,230 - $ALT_OBS,utf8_decode('OBSERVAÇÕES'),90);
-$pdf->RotatedText(238,243 - $ALT_OBS,utf8_decode('COMPETÊNCIAS DESENV.'),90);
+$pdf->RotatedText(206,243 - $ALT_OBS,utf8_decode('COMPETÊNCIAS DESENV.'),90);
 
 $pdf->Ln();
 $pdf->Ln();
