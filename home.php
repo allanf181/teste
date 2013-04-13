@@ -4,9 +4,10 @@ include_once "inc/config.inc.php";
 require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
-
-
 ?>
+
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+
 <table border="0" width='100%'>
 <tr><td colspan="2"><font size="4"><b>WebDi&aacute;rio</b></font></font>
 <br><font size="1">Vers&atilde;o 1.<?php print $VERSAO; ?></font></td></tr>
@@ -25,13 +26,12 @@ if ($user) {
         $pessoa->removeFoto($user);
     
     ?>
-    <img alt="foto" style="width: 150px; height: 150px" src="<?php print INC; ?>/file.inc.php?type=pic&time=<?php print time(); ?>&id=<?php print crip($user); ?>" />
-    <br><a href="#" id="adiciona-foto">Alterar Foto</a>
+        <a href='#' id="adiciona-foto" title="Alterar Foto"><img alt="foto" style="width: 150px; height: 150px" src="<?php print INC; ?>/file.inc.php?type=pic&time=<?php print time(); ?>&id=<?php print crip($user); ?>" /></a>
     <?php
    
     if ($pessoa->hasPicture($user)) {
         ?>
-        &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="remover-foto" title='Remover Foto' style="width: 15px; height: 15px">
+        <br><img src="<?php print ICONS; ?>/remove.png" id="remover-foto" title='Remover Foto' style="width: 15px; height: 15px">
         <?php
     }
     
@@ -189,22 +189,45 @@ if ($res) {
 <?php
 // INFOMRAR AO COORDENADOR PROFESSORES QUE NÃO CADASTRAM 
 // DISCIPLINAS DE ACORDO COM O LIMITE IMPOSTO EM INSTITUIÇÕES
-$res = $pessoa->listProfOutOfLimitAddAula($user, $ANO, $SEMESTRE);
-if ($res) {
-    ?>
-    <br><table id="listagem" align="center">
-    <caption><font color="red">Lista de professores sem registro de aulas nos &uacute;ltimos 7 dias.</font></caption>
-    <tr><th width='220'>Nome</th><th align='center' width='80'>&Uacute;ltimo Lan&ccedil;amento</th></tr>
-    <?php
-    $i = $item;
-    foreach($res as $reg) {
-        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-        print "<tr $cdif><td>".$reg['Professor']."</td><td>".$reg['Data']."</td></tr>";
-        $i++;
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    require CONTROLLER . "/atribuicao.class.php";
+    $atribuicao = new Atribuicoes();
+    
+    $res = $atribuicao->listProfOutOfLimitAddAula($user, $ANO, $SEMESTRE);
+    if ($res) {
+        ?>
+        <br><table id="listagem" align="center">
+        <caption>Lista de professores sem registro de aulas nos &uacute;ltimos 7 dias.</caption>
+        <tr><th width='220'>Nome</th><th align='center' width='80'>&Uacute;ltimo Lan&ccedil;amento</th></tr>
+        <?php
+        $i = $item;
+        foreach($res as $reg) {
+            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+            print "<tr $cdif><td>".$reg['Professor']."</td><td>".$reg['Data']."</td></tr>";
+            $i++;
+        }
+        ?>
+        </table>
+        <?php
     }
-    ?>
-    </table>
-    <?php
+    
+    $res = $plano->listChangePlano($user);
+    if ($res) {
+        ?>
+        <br><br><table id="listagem">
+        <caption>Lista de Professores que aguardam por valida&ccedil;&atilde;o do Plano de Ensino.</caption>
+        <tr><th width='220'>Nome</th><th align='center' width='80'>Disciplina</th></tr>
+        <?php
+        $i = $item;
+        foreach($res as $reg) {
+            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+            print "<tr $cdif><td><a href=\"javascript:$('#index').load('".VIEW."/secretaria/plano.php?curso=".crip($reg['codCurso'])."'); void(0);\" class='plano-ensino' title='Clique aqui para validar'>".$reg['Professor']."</a></td><td>".$reg['Disciplina']."</td></tr>";
+            $i++;
+        }
+        ?>
+        </table>
+        <?php
+    }    
 }
 ?>
 
@@ -219,7 +242,7 @@ if ($res) {
             $('#index').load('home.php?removerFoto=<?php print crip($user); ?>');
     
         });
-        
+
         $('#adiciona-foto').click(function(event) {
             new $.Zebra_Dialog('<strong>Recorte a foto, se desejar.</strong>', {
                 source: {'iframe': {

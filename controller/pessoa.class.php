@@ -100,7 +100,8 @@ class Pessoas extends Generic {
         $bd = new database();
         $sql = "UPDATE Pessoas SET lattes = :lattes WHERE codigo = :cod";
         $params = array(':cod' => $codigo, ':lattes' => $lattes);
-        $res = $bd->selectDB($sql, $params);
+        $res = $bd->updateDB($sql, $params);
+
         if ($res) {
             return true;
         } else {
@@ -125,37 +126,6 @@ class Pessoas extends Generic {
             return false;
         }
     }
-
-    // USADO POR: HOME.PHP
-    // INFOMRAR AO COORDENADOR PROFESSORES QUE NÃO CADASTRAM 
-    // DISCIPLINAS DE ACORDO COM O LIMITE IMPOSTO EM INSTITUIÇÕES
-    // --> Enviar essa query para o Banco no futuro.
-    public function listProfOutOfLimitAddAula($codigo, $ano, $semestre) {
-        $bd = new database();
-        $sql = "SELECT p.nome as Professor, date_format(data, '%d/%m/%Y') as Data 
-			FROM Pessoas p, Atribuicoes a, Professores pr, Aulas au, Turmas t, Cursos c
-			WHERE p.codigo = pr.professor
-			AND a.codigo = pr.atribuicao
-			AND au.atribuicao = a.codigo
-			AND t.codigo = a.turma
-			AND t.curso = c.codigo
-			AND t.semestre = :sem
-			AND t.ano = :ano
-			AND DATEDIFF(NOW(), au.data) > 7
-			AND c.codigo IN (SELECT curso 
-                        FROM Coordenadores co 
-                        WHERE co.coordenador=:cod)
-			GROUP BY p.codigo
-			ORDER BY data ASC";
-        $params = array(':cod' => $codigo, ':sem' => $semestre, ':ano' => $ano);
-        $res = $bd->selectDB($sql, $params);
-        if ($res) {
-            return $res;
-        } else {
-            return false;
-        }
-    }
-
 }
 
 ?>

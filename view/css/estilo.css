@@ -31,7 +31,12 @@
     color: black;
 }
 
-
+#listagem caption {
+    color: white;
+    font-weight: bold;    
+    text-align: center;
+    background: #00913d;    
+}
 
 a{
     border: none;
@@ -722,21 +727,21 @@ ul.menu_esquerdo li span.menu_item a{
 }
 
 div.flash.notice {
-	background: url(../icons/true.png) 8px 5px no-repeat;
+	background: url(icons/true.png) 8px 5px no-repeat;
 	background-color: #dfffdf;
 	border-color: #9fcf9f;
 	color: #005f00;
 }
 
 div.flash.info {
-	background: url(../icons/info.png) 8px 5px no-repeat;
+	background: url(icons/info.png) 8px 5px no-repeat;
 	background-color: #FFEBC1;
 	border-color: #FDBF3B;
 	color: #A6750C;
 }
 
 div.flash.error, #errorExplanation {
-	background: url(../icons/exclamation.png) 8px 50% no-repeat;
+	background: url(icons/exclamation.png) 8px 50% no-repeat;
 	background-color: #ffe3e3;
 	border-color: #dd0000;
 	color: #880000;
@@ -751,4 +756,15 @@ div.flash {
 	margin-bottom: 12px;
 	font-size: 1.1em;
 	border: 2px solid;
+}
+
+.scrollup {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    display: none;
+    text-indent: -9999px;
+    background: url('icons/top.png') no-repeat;
 }

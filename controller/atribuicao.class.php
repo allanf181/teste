@@ -39,8 +39,10 @@ class Atribuicoes extends Generic {
     // USADO POR: INDEX.PHP (PARA MONTAR O MENU DO PROFESSOR)
     public function listAtribuicoes($codigo, $papel, $menu=null) {
         $bd = new database();
-        
-	$professor = "SELECT t.ano as ano, t.semestre as semestre, a.bimestre as bimestre, a.codigo as atribuicao, d.nome as disciplina,
+
+        $ANO = $_SESSION["ano"];
+
+        $professor = "SELECT t.ano as ano, t.semestre as semestre, a.bimestre as bimestre, a.codigo as atribuicao, d.nome as disciplina,
 			d.numero as numero, c.nome as curso, t.numero as turma, a.subturma as subturma,
 			a.eventod as evento, c.nomeAlternativo as cursoAlt, m.codigo as codigoModalidade, m.nome as modalidade
 			FROM Turnos tt, Disciplinas d, Turmas t, Atribuicoes a, Professores pr, Cursos c, Modalidades m
@@ -52,6 +54,7 @@ class Atribuicoes extends Generic {
 			AND pr.atribuicao = a.codigo
 			AND pr.professor=:cod 
                         AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
+                        AND t.ano = $ANO
 			ORDER BY t.ano,t.semestre,a.bimestre,d.numero,a.grupo";
 
         $aluno = "SELECT t.ano as ano, t.semestre as semestre, at.bimestre as bimestre,
@@ -67,6 +70,7 @@ class Atribuicoes extends Generic {
 				AND at.disciplina = d.codigo
 				AND p.codigo=:cod
                                 AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
+                                AND t.ano = $ANO
 				ORDER BY d.numero, at.bimestre";        
         $params = array(':cod'=> $codigo);
         $res = $bd->selectDB($$papel, $params);
@@ -105,6 +109,36 @@ class Atribuicoes extends Generic {
             return false;
         }
     }
+    
+    // USADO POR: HOME.PHP
+    // INFOMRAR AO COORDENADOR PROFESSORES QUE NÃO CADASTRAM 
+    // DISCIPLINAS DE ACORDO COM O LIMITE IMPOSTO EM INSTITUIÇÕES
+    // --> Enviar essa query para o Banco no futuro.
+    public function listProfOutOfLimitAddAula($codigo, $ano, $semestre) {
+        $bd = new database();
+        $sql = "SELECT p.nome as Professor, date_format(data, '%d/%m/%Y') as Data 
+			FROM Pessoas p, Atribuicoes a, Professores pr, Aulas au, Turmas t, Cursos c
+			WHERE p.codigo = pr.professor
+			AND a.codigo = pr.atribuicao
+			AND au.atribuicao = a.codigo
+			AND t.codigo = a.turma
+			AND t.curso = c.codigo
+			AND t.semestre = :sem
+			AND t.ano = :ano
+			AND DATEDIFF(NOW(), au.data) > 7
+			AND c.codigo IN (SELECT curso 
+                        FROM Coordenadores co 
+                        WHERE co.coordenador=:cod)
+			GROUP BY p.codigo
+			ORDER BY data ASC";
+        $params = array(':cod' => $codigo, ':sem' => $semestre, ':ano' => $ano);
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }    
 }
 
 ?>

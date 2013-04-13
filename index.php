@@ -41,6 +41,7 @@ $nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
 
 <script src="<?php print VIEW; ?>/js/jquery.html5form-1.5-min.js"></script>
 
+
 <script type="text/javascript" src="<?php print LIB; ?>/Zebra_Dialog/public/javascript/zebra_dialog.js"></script>
 <link rel="stylesheet" href="<?php print LIB; ?>/Zebra_Dialog/public/css/flat/zebra_dialog.css" type="text/css"></link>
 <script src="<?php print VIEW; ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
@@ -67,26 +68,30 @@ $nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
         align: 'center'
     });
 
-    $("#setTroca").click(atualizar);
-});
-
-$(document).ready(function() {
-    $('a').click(function() {
-        if ($(this).attr("id") != 'setTroca')
-            $('#campoMenuLink').val($(this).attr("id"));
+    $('#setTroca').click(function(event) {
+        var ano = $('#campoAnoIndex').val();
+        var semestre = $('#campoSemestreIndex').val();
+        $(document).ready(function() {
+            window.location = 'index.php?ano='+ano+'&semestre='+semestre;
+        });
     });
-});
+    
+    $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) {
+                $('.scrollup').fadeIn();
+            } else {
+                $('.scrollup').fadeOut();
+            }
+        });
 
-function atualizar() {
-    var ano = $('#campoAnoIndex').val();
-    var semestre = $('#campoSemestreIndex').val();
-    var linkTroca = $('#campoMenuLink').val();
-    if (linkTroca == '' || linkTroca == 'setTroca')
-        linkTroca = 'home.php';
-    $(document).ready(function() {
-        $('#index').load(linkTroca + '?ano=' + ano + '&semestre=' + semestre);
-    });
-}
+        $('.scrollup').click(function () {
+            $("html, body").animate({
+                scrollTop: 0
+            }, 600);
+            return false;
+        });
+    
+});
 </script>
 </head>
 
@@ -102,12 +107,13 @@ if (isset($nome)) {
     <div id="menu">
     <div id='barra_topo'>
     <?php
-    if (!in_array($PROFESSOR, $_SESSION["loginTipo"]) && !in_array($ALUNO, $_SESSION["loginTipo"])) {
+
+    if (!in_array($ALUNO, $_SESSION["loginTipo"]) &&
+        ( !in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"]) ) ) {
     ?>
         <div id='ano_semestre'>
         <span style="color: white">Ano:<input type="text" maxlength="4" style="width: 50px" value="<?php print $_SESSION['ano']; ?>" name="campoAnoIndex" id="campoAnoIndex" /></span>
         <span style="color: white">Sem:<input type="text" maxlength="1" style="width: 50px" value="<?php print $_SESSION['semestre']; ?>" name="campoSemestreIndex" id="campoSemestreIndex" /></span>
-        <input type="hidden" name="campoMenuLink" id="campoMenuLink" />
         <div id='botao_ano_semestre'><a href="#" id="setTroca"><img src="<?php print ICONS; ?>/change.png" /></a></div>&nbsp;
 	</div>
     
@@ -288,7 +294,9 @@ if (isset($_SESSION["loginTipo"])) {
 
     <div class="footer" <?php if (!$_SESSION['loginCodigo']) print 'style="margin-right: 195px; "'; ?> >
 	<a class="link" href="javascript:$('#index').load('creditos.php');void(0);">Equipe de desenvolvimento do WebDi&aacute;rio IFSP</a>
-</a>
+
 </div>
+    <a href="#" class="scrollup">Scroll</a>
+
 </body>
 </html>

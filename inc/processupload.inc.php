@@ -152,7 +152,8 @@ function createImage($ImageName, $ImageType, $TempSrc, $codigo, $prontuario) {
 
         if ($_POST['filePath']) { // se filePath � pq veio do trocaFoto, fecha a janela aberta.
             print "<h1>Foto foi adicionada com sucesso.</h1>";
-            print "<img alt=\"foto\" style=\"width: 150px; height: 150px\" src=\"".INC."/file.inc.php?type=pic&time=".time()."&id=".crip($codigo)." />";
+            print "<img style=\"width: 150px; height: 150px\" src=\"" . INC . "/file.inc.php?type=pic&id=" . crip($codigo) . "&timestamp=" . rand(0, 100000) . "\">";
+            die;
         }
 
         if ($prontuario)

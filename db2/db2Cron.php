@@ -32,11 +32,11 @@ include ("$LOCATION_CRON"."db2Turmas.php");
 include ("$LOCATION_CRON"."db2Atribuicoes.php");
 include ("$LOCATION_CRON"."db2Matriculas.php");
 
-include ("$LOCATION_CRON"."db2Dispensas.php");
-
 include ("$LOCATION_CRON"."db2DigitaNotas.php");
 
 include ("$LOCATION_CRON"."db2Notas.php");
+
+include ("$LOCATION_CRON"."db2Dispensas.php");
 
 // CHECANDO A VERSAO DO SISTEMA
 $conexao = mysql_connect("$IPSRVUPDATE", "$USERSRVUPDATE", "$PASSSRVUPDATE") or die (mysql_error());
