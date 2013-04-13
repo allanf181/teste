@@ -1,3 +1,6 @@
+<script> 
+    window.start = <?php print $TIMEOUT*60; ?>;
+</script> 
 <?php
 
 // VERIFICANDO A SESSÃO DO USUÁRIO
