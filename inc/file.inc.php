@@ -43,9 +43,9 @@ if ($type == 'pdf') {
     if (isset($_GET['atribuicao'])) {
         $codigo = dcrip($_GET['atribuicao']);
         
-        require CONTROLLER . "/plano.class.php";
+        require CONTROLLER . "/planoEnsino.class.php";
 
-        $plano = new Planos();
+        $plano = new PlanosEnsino();
         $res = $plano->getPlano($codigo);
     	header("Content-type: application/pdf");
 	header("Content-Disposition: attachment; filename=".$res['disciplina'].".pdf");

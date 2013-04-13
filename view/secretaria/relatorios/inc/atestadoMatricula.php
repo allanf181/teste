@@ -96,20 +96,18 @@ if (isset($_GET["codigo"])) {
 
     // Instanciation of inherited class
     $pdf = new PDF();
-	$pdf->logo = PATH.IMAGES."/logo_atestado.jpg";
-	$pdf->A = '55';
-	$pdf->L = '15';
-	$pdf->C = '100';
-    $pdf->rodape = $SITE_TITLE;
+
+    $pdf->rodape = $SITE_CIDADE;
     $pdf->AliasNbPages();
     $pdf->AddPage($orientacao, $papel);
+    $pdf->Image ( PATH.IMAGES."/logo_atestado.jpg", 55, 10, 100 );
     $pdf->SetFillColor(255, 255, 255);
-    $pdf->Ln();
     $pdf->SetFont($fonte, '', 12);
-    $pdf->Cell(190,10,$instituicao,0,1,'C',1);
+    $pdf->Cell(190,20,'',0,1,'C',false);
+    $pdf->Cell(190,30,utf8_decode($instituicao),0,1,'C',false);
     $pdf->SetFont($fonte, '', $tamanho+5);
-    $pdf->Ln();
-    $pdf->Cell(190,8,utf8_decode('ATESTADO DE MATRÍCULA'),0,1,'C',1);
+    
+    $pdf->Cell(190,10,utf8_decode('ATESTADO DE MATRÍCULA'),0,1,'C',false);
     $pdf->Ln();
 
     $pdf->SetFont($fonte, '', $tamanho);

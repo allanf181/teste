@@ -7,18 +7,25 @@ class Atribuicoes extends Generic {
     // USADO POR: ALUNO/ALUNO.PHP
     // Retorna dados da atribuicao (Disciplina, Turma, etc..)
     // Pode ser colocado com função no MySQL futuramente
-    public function getAtribuicao($codigo) {
+    public function getAtribuicao($codigo, $LIMITE_AULA_PROF=0) {
         $bd = new database();
-        $sql = "select d.nome as disciplina, t.numero as turma, c.nome as curso,
+
+        $sql = "SELECT d.nome as disciplina, t.numero as turma, c.nome as curso,
                 c.nomeAlternativo as cursoAlt, a.bimestre as bimestre, c.fechamento as fechamento,
-        	t.semestre as semestre, t.ano as ano, t.codigo as turmaCodigo
-                from Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
-                where a.disciplina=d.codigo
-                and d.curso=c.codigo
-                and a.turma=t.codigo
-                and t.turno=tu.codigo
-                and m.codigo = c.modalidade
-                and a.codigo=:cod";
+        	t.semestre as semestre, t.ano as ano, t.codigo as turmaCodigo, a.subturma as subturma,
+                c.fechamento as fechamento, a.observacoes as observacoes, a.competencias as competencias,
+                m.codigo as codModalidade, m.nome as modalidade, d.ch as CH, a.aulaPrevista as aulaPrevista,
+                date_format(DATE_ADD(a.prazo, INTERVAL $LIMITE_AULA_PROF DAY), '%H:%i de %d/%m/%Y') as prazoFormat, 
+                DATEDIFF(DATE_ADD(a.prazo, INTERVAL $LIMITE_AULA_PROF DAY), NOW()) as prazoDiff,
+                date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_AULA_PROF DAY), '%d/%m/%Y') as dataFimFormat,
+                DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_AULA_PROF DAY), NOW()) as dataFimDiff
+                FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
+                WHERE a.disciplina=d.codigo
+                AND d.curso=c.codigo
+                AND a.turma=t.codigo
+                AND t.turno=tu.codigo
+                AND m.codigo = c.modalidade
+                AND a.codigo=:cod";
         $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);
         if ($res) {

@@ -40,7 +40,7 @@ function getFrequencia($matricula, $atribuicao, $data = null) {
         if ($l[2] == 'M')
             $tipo['nome'] = 'Matr&iacute;cula ap&oacute;s inicio letivo';
         if ($l[2] == 'D')
-            $tipo['nome'] = 'Dispensa';        
+            $tipo['nome'] = 'Dispensa';
         $tipo[$l[0]] = $l[2];
         $abono[$l[1]][$l[0]] = $l[0];
         if ($l[3]) {
@@ -356,7 +356,7 @@ function resultadoBimestral($aluno, $turma, $numeroDisciplina, $final = 0, $fech
         $notaMenor = @mysql_result($res, 0, "t.notaMenor");
         $notaUltimBimestre = @mysql_result($res, 0, "t.notaUltimBimestre");
 
-        if ($media > $notaMaior && $media < $notaMenor) {
+        if ($media >= $notaMaior && $media < $notaMenor) {
             $situacao[] = mysql_result($res, 0, "t.nome");
             $situacao[] = mysql_result($res, 0, "t.sigla");
             $dados['color'] = 'OliveDrab1';
@@ -549,7 +549,7 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
         $notaMaior = mysql_result($res, 0, "t.notaMaior");
         $notaMenor = mysql_result($res, 0, "t.notaMenor");
 
-        if ($media > $notaMaior && $media < $notaMenor) {
+        if ($media >= $notaMaior && $media < $notaMenor) {
             $situacao[] = mysql_result($res, 0, "t.nome");
             $situacao[] = mysql_result($res, 0, "t.sigla");
             $dados['color'] = 'OliveDrab1';
@@ -818,10 +818,10 @@ if (!function_exists('sys_get_temp_dir')) {
 // Autor: Naylor - 17/07
 function dirToArray($dir) {
     $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST);
-    foreach($objects as $name => $object){
-        $arquivo = str_replace(PATH.LOCATION.'/', '', $name);
+    foreach ($objects as $name => $object) {
+        $arquivo = str_replace(PATH . LOCATION . '/', '', $name);
 
-        if ( !preg_match('/\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\//', $name) ) {
+        if (!preg_match('/\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\//', $name)) {
             if (is_dir($name)) {
                 $files[$arquivo] = '';
             } else {
@@ -868,14 +868,15 @@ function updateDataBase() {
     $argv[2] = 1;
     require 'lib/migration/ruckusWeb.php';
     $argv[0] = 'db:migrate';
- 
+
     $main = new Ruckusing_FrameworkRunner($db_config, $argv);
     $ret = $main->execute();
     $argv = null;
-  
-    if (strpos($ret,'relevant') !== false)
+
+    if (strpos($ret, 'relevant') !== false)
         return false;
     else
         return true;
 }
+
 ?>

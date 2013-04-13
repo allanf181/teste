@@ -240,7 +240,7 @@ if (isset($_GET["professor"]) && dcrip($_GET["professor"]) != 'Todos') {
             if ($linha[5]!=0)
                 $bimestre="[".$linha[5]."&ordm; Bim]";
             echo "<tr $cdif>";
-            echo "<td><a target=\"_blank\" href='view/relatorios/diarioProfessor.php?atribuicao=".crip($linha[0])."'>$bimestre ".mostraTexto($linha[1])."</a></td>";
+            echo "<td><a target=\"_blank\" href='".VIEW."/secretaria/relatorios/inc/diario.php?atribuicao=".crip($linha[0])."'>$bimestre ".mostraTexto($linha[1])."</a></td>";
             echo "<td align='left'>".mostraTexto($professor)."</td><td align=left>$linha[3]</td>";
             $checked="";
             $origem="";

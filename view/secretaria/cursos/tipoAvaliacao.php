@@ -158,7 +158,7 @@ if ($_GET["opcao"] == 'delete') {
             </td></tr>
         <tr>
           <td align="right">Recupera&ccedil;&atilde;o:</td>
-          <td>M&eacute;dia > <input name="campoNotaMaior" id="campoNotaMaior" type="text" value="<?php echo $notaMaior ?>" size="5" maxlength="5" /> e 
+          <td>M&eacute;dia >= <input name="campoNotaMaior" id="campoNotaMaior" type="text" value="<?php echo $notaMaior ?>" size="5" maxlength="5" /> e 
           	< <input name="campoNotaMenor" id="campoNotaMenor" type="text" value="<?php echo $notaMenor ?>" size="5" maxlength="5" />
           	(Deixar 0 para desabilitar)</td></tr>
         <tr><td align="right">C&aacute;lculo: </td><td>

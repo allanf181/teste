@@ -14,9 +14,9 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     $atribuicao = dcrip($_GET["atribuicao"]);
     $aluno = $_SESSION["loginCodigo"];
 
-    require CONTROLLER . "/plano.class.php";
-    $plano = new Planos();
-    $res = $plano->listPlanoEnsino($atribuicao);
+    require CONTROLLER . "/planoEnsino.class.php";
+    $plano = new PlanosEnsino();
+    $res = $plano->listPlanoEnsino($atribuicao, 'validado');
     
     if ($res) {
         $numeroAulaSemanal = $res["numeroAulaSemanal"];

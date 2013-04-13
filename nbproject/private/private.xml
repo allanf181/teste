@@ -3,7 +3,36 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Z:/academico/home.php</file>
+            <file>file:/Z:/academico/db2/db2Mysql.php</file>
+            <file>file:/Z:/academico/controller/planoEnsino.class.php</file>
+            <file>file:/Z:/academico/controller/atribuicao.class.php</file>
+            <file>file:/Z:/academico/index.php</file>
+            <file>file:/Z:/academico/db2/db2Horarios.php</file>
+            <file>file:/Z:/academico/view/professor/professor.php</file>
+            <file>file:/Z:/academico/db2/db2Atribuicoes.php</file>
+            <file>file:/Z:/academico/db2/db2Alunos.php</file>
+            <file>file:/Z:/academico/view/secretaria/plano.php</file>
+            <file>file:/Z:/academico/controller/generic.class.php</file>
+            <file>file:/Z:/academico/db2/db2Matriculas.php</file>
+            <file>file:/Z:/academico/controller/aula.class.php</file>
+            <file>file:/Z:/academico/view/secretaria/cursos/matricula.php</file>
+            <file>file:/Z:/academico/view/aluno/planoEnsino.php</file>
+            <file>file:/Z:/academico/view/secretaria/relatorios/inc/atestadoMatricula.php</file>
+            <file>file:/Z:/academico/db2/db2DigitaNotas.php</file>
+            <file>file:/Z:/academico/db2/db2TurmasNovos.php</file>
+            <file>file:/Z:/academico/db2/db2Funcoes.php</file>
+            <file>file:/Z:/academico/db2/db2MatriculasNovos.php</file>
+            <file>file:/Z:/academico/db2/db2Variaveis.inc.php</file>
+            <file>file:/Z:/academico/view/secretaria/relatorios/inc/ftd.php</file>
+            <file>file:/Z:/academico/db2/db2CursosDisciplinas.php</file>
+            <file>file:/Z:/academico/db2/db2Professores.php</file>
+            <file>file:/Z:/academico/db2/db2AtribuicoesNovos.php</file>
+            <file>file:/Z:/academico/db2/db2Notas.php</file>
+            <file>file:/Z:/academico/db2/db2Turmas.php</file>
+            <file>file:/Z:/academico/db2/db2CursosDisciplinasNovos.php</file>
+            <file>file:/Z:/academico/view/secretaria/prazos/diario.php</file>
+            <file>file:/Z:/academico/db2/db2Cron.php</file>
+            <file>file:/Z:/academico/view/secretaria/prazos/aula.php</file>
         </group>
     </open-files>
 </project-private>

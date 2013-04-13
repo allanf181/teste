@@ -2,7 +2,7 @@
 if(!class_exists('Generic'))
     require_once CONTROLLER.'/generic.class.php';
 
-class Planos {
+class PlanosEnsino extends Generic {
     
     public function __construct(){
         //
@@ -32,8 +32,12 @@ class Planos {
     // USADO POR: HOME.PHP
     // Verifica se o usuário tem correções para Plano
     // Pode ser colocado com função no MySQL futuramente
-    public function hasChangePlano($codigo) {
+    public function hasChangePlano($codigo, $atribuicao=null) {
         $bd = new database();
+        
+        if ($atribuicao)
+            $sqlAtt = " AND a.codigo = :atr";
+            
         $sql = "SELECT (SELECT nome FROM Pessoas "
                 . "WHERE codigo = pe.solicitante) as PlanoSolicitante,"
                 . " pe.solicitacao as PlanoSolicitacao, d.nome as Disc, "
@@ -45,11 +49,14 @@ class Planos {
                 . "AND pr.professor = p.codigo "
                 . "AND d.codigo = a.disciplina "
                 . "AND pe.valido = '0000-00-00 00:00:00' "
-                . "AND (pe.solicitacao IS NOT NULL AND pe.solicitacao <> \"\")"
-                . "AND p.codigo = :cod";
+                . "AND (pe.solicitacao IS NOT NULL AND pe.solicitacao <> \"\") "
+                . "AND p.codigo = :cod "
+                . " $sqlAtt";
 
         $params = array(':cod'=> $codigo);
+        if ($atribuicao) $params = array(':cod'=> $codigo, ':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
+
         if ( $res )
         {
             return $res;
@@ -62,8 +69,10 @@ class Planos {
     
     // USADO POR: ALUNO/PLANOENSINO.PHP
     // LISTA O PLANO DE ENSINO E PLANO DE AULA
-    public function listPlanoEnsino($codigo) {
+    public function listPlanoEnsino($codigo, $validado=null) {
         $bd = new database();
+        
+        if ($validado) $validado = "AND (pe.valido <> '' AND pe.valido <> '0000-00-00 00:00:00')";
 	$sql = "SELECT pe.numeroAulaSemanal as numeroAulaSemanal,
                 pe.totalHoras as totalHoras, pe.totalAulas as totalAulas,
                 pe.numeroProfessores as numeroProfessores,
@@ -85,10 +94,11 @@ class Planos {
 		AND a.turma = t.codigo
 		AND t.curso = c.codigo
 		AND c.modalidade = m.codigo
-		AND (pe.valido <> '' AND pe.valido <> '0000-00-00 00:00:00')
+		$validado
 		AND a.codigo = :cod";
         $params = array(':cod'=> $codigo);
         $res = $bd->selectDB($sql, $params);
+
         if ( $res[0] )
         {
             return $res[0];

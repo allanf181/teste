@@ -231,7 +231,7 @@ if (isset($_GET["professor"]) && dcrip($_GET["professor"]) != 'Todos') {
 		if ($linha[5]!=0)
 		    $bimestre="[".$linha[5]."º Bim]";
 		echo "<tr $cdif><td align='center'>$i</td>";
-		echo "<td><a target='_blank' href='relatorios/diarioProfessor.php?atribuicao=".crip($linha[0])."'>$bimestre ".mostraTexto($linha[1])."</a></td>";
+		echo "<td><a target='_blank' href='".VIEW."/secretaria/relatorios/inc/diario.php?atribuicao=".crip($linha[0])."'>$bimestre ".mostraTexto($linha[1])."</a></td>";
 		echo "<td align='left'>".mostraTexto($prof)."</td><td align=left>$linha[3]</td>";
 		$bloqueado="";
     

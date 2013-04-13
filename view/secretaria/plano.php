@@ -269,7 +269,7 @@ if (isset($_GET["professor"]) && dcrip($_GET["professor"]) != 'Todos') {
 	    	    
 	            $i%2==0 ? $cdif="class='cdif'" : $cdif="";
 	            echo "<tr $cdif style='height: 40px'><td align='center'>$i</td>";
-	            echo "<td><a target='_blank' href='relatorios/planoEnsino.php?atribuicao=".crip($linha[0])."' title=\"$linha[7]\">".mostraTexto($linha[1])."</a></td>";
+	            echo "<td><a target='_blank' href='".VIEW."/secretaria/relatorios/inc/planoEnsino.php?atribuicao=".crip($linha[0])."' title=\"$linha[7]\">".mostraTexto($linha[1])."</a></td>";
 	            echo "<td align='left'>".mostraTexto($professor)."</td><td align='left'>$linha[3]</td>";
 	
 							if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"]) ) {

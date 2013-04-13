@@ -135,14 +135,15 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
     }
 
     // Verificando se há correções para o Plano de Ensino.
-    require CONTROLLER . "/plano.class.php";
-    $plano = new Planos();
+    require CONTROLLER . "/planoEnsino.class.php";
+    $plano = new PlanosEnsino();
     $res = $plano->hasChangePlano($user);
 
     if ($res) {
         foreach($res as $reg) {
             ?>
             <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?php print $reg['PlanoSolicitante']; ?>, solicitou corre&ccedil;&atilde;o em seu Plano de Ensino de <?php print $reg['Disc']; ?>: <br><?php print $reg['PlanoSolicitacao']; ?></font>
+            <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/professor/professor.php?atribuicao=<?php print crip($reg['CodAtribuicao']); ?>'); void(0);">Clique aqui para corrigir</a>
             <?php
         }
     }
