@@ -10241,3 +10241,8 @@ Apr 13 09:14:03 [info] SELECT *
                                     AND COLUMN_NAME = 'dataFim'
 Apr 13 09:14:03 [info] UPDATE Instituicoes SET versao='388', versaoAtual='388';
 Apr 13 09:14:03 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174659')
+Apr 13 10:26:17 [info] SELECT version FROM schema_migrations
+Apr 13 10:26:17 [info] SELECT version FROM schema_migrations
+Apr 13 10:26:17 [info] SELECT version FROM schema_migrations
+Apr 13 10:26:17 [info] UPDATE Instituicoes SET versao='389', versaoAtual='389';
+Apr 13 10:26:17 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174660')

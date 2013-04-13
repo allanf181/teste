@@ -72,12 +72,11 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
 if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"])) {
     // Checa a versão atual.
     if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
-        ?>
-  	<br><br><font size="3" color="red">Sua vers&atilde;o foi atualizada: 1.<?php print $VERSAOAT; ?></font>
-
-        <?php
         if (updateDataBase()) {
-            print "<br>O sistema atualizou automaticamente o banco de dados.";
+            ?>
+            <br><br><font size="3" color="red">Sua vers&atilde;o foi atualizada: 1.<?php print $VERSAOAT; ?></font>
+            <br>O sistema atualizou automaticamente o banco de dados.
+            <?php
         }
     }    
     
