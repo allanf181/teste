@@ -227,7 +227,8 @@ if ($turma || $professor || $aluno) {
     			AND pr.professor = e.professor
     			AND pr.professor = p.codigo
 			AND pr.atribuicao = a.codigo
-
+                        AND t.semestre = $semestre
+                        AND t.ano = $ano
                         $sql2
     			$aluno 
     			$atribuicao
