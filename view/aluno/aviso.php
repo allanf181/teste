@@ -16,7 +16,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     $aluno = $_SESSION["loginCodigo"];
 
     require CONTROLLER . "/aviso.class.php";
-    $aviso = new Aviso();
+    $aviso = new Avisos();
     $res = $aviso->listAvisos($aluno, $atribuicao);
     
     print "<h2>Avisos</h2>\n";

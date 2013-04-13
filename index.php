@@ -239,7 +239,7 @@ if (isset($_SESSION["loginTipo"])) {
             } // FIM MENU PROFESSOR
         }
         require CONTROLLER . "/permissao.class.php";
-        $permissao = new permissao();
+        $permissao = new Permissoes();
         $permissoes = $permissao->listaPermissoes($_SESSION["loginTipo"]);
         $files = $permissao->listaPermissoes($_SESSION["loginTipo"], 'menu');
 
@@ -266,15 +266,14 @@ if (isset($_SESSION["loginTipo"])) {
         print makeMenu($permissoes['view']);
         ?>
         </ul>
-        <?php
-       }
-       ?>
-       <script type="text/javascript">
+
+        <script type="text/javascript">
             $(document).ready(function() {
                 $('#index').load('home.php');
             });
-       </script>
-       <?php
+        </script>
+        <?php
+    }
  }
 ?>
 </div>

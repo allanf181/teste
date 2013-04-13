@@ -1,10 +1,9 @@
 <?php
-if(!class_exists('database'))
-{
-    require_once MYSQL;
-}
+if(!class_exists('Generic'))
+    require_once CONTROLLER.'/generic.class.php';
 
-class Aula {
+
+class Aulas extends Generic {
     
     public function __construct(){
         //

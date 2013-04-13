@@ -24,7 +24,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     }
     
     require CONTROLLER . "/ensalamento.class.php";
-    $ensalamento = new Ensalamento();
+    $ensalamento = new Ensalamentos();
     $res = $ensalamento->getEnsalamento($codigo, $tipo);
 
     foreach ($res as $reg) {
@@ -40,7 +40,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     }
 
     require CONTROLLER . "/turno.class.php";
-    $t = new Turno();
+    $t = new Turnos();
     $res = $t->listTurnos();
     foreach ($res as $reg)
         $turnos[$reg['sigla']] = $reg['nome'];

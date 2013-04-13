@@ -15,7 +15,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     $aluno = $_SESSION["loginCodigo"];
 
     require CONTROLLER . "/plano.class.php";
-    $plano = new Plano();
+    $plano = new Planos();
     $res = $plano->listPlanoEnsino($atribuicao);
     
     if ($res) {

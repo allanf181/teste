@@ -1,10 +1,8 @@
 <?php
-if(!class_exists('database'))
-{
-    require_once MYSQL;
-}
+if(!class_exists('Generic'))
+    require_once CONTROLLER.'/generic.class.php';
 
-class Ftd {
+class Ftd extends Generic {
 
     // USADO POR: HOME.PHP
     // Verifica se o usuário tem correções para FTD

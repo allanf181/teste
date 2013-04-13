@@ -1,27 +1,15 @@
 <?php
+if(!class_exists('Generic'))
+    require_once CONTROLLER.'/generic.class.php';
 
-if(!class_exists('database'))
-{
-    require_once MYSQL;
-}
-
-class Instituicao {
+class Instituicoes extends Generic {
     
     public function __construct(){}
     
     // MÉTODO PARA CARREGAR VARIÁVEIS DE AMBIENTE
     // USADO POR: INC/VARIAVEIS.PHP
     public function dadosInstituicao() {
-        $bd = new database();
-        $sql = "SELECT * FROM Instituicoes";
-        $res = $bd->selectDB($sql);
-
-        if ( $res )
-        {
-            while ($res) {
-                return $res[0];
-            }
-        }
+        return $this->listRegistros();
     }
     
 }

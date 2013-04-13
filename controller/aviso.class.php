@@ -1,10 +1,9 @@
 <?php
-if(!class_exists('database'))
-{
-    require_once MYSQL;
-}
+if(!class_exists('Generic'))
+    require_once CONTROLLER.'/generic.class.php';
 
-class Aviso {
+
+class Avisos extends Generic {
 
     // USADO POR: HOME.PHP
     // Verifica se o usuário tem avisos
@@ -59,13 +58,9 @@ class Aviso {
     // USADO POR: ALUNO/AVISO.PHP
     // Lista os avisos do usuário
     public function listAvisos($codigo, $atribuicao) {
-        $bd = new database();
-        $sql = "SELECT data, conteudo 
-        	FROM Avisos 
-                WHERE atribuicao = :atr
-		AND (destinatario = 0 OR destinatario = :cod)";
         $params = array(':cod'=> $codigo, ':atr'=> $atribuicao);
-        $res = $bd->selectDB($sql, $params);
+        $res = $this->listRegistros($params);
+        
         if ( $res )
         {
             return $res;

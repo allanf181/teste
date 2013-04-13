@@ -19,7 +19,7 @@ $user = $_SESSION["loginCodigo"];
 // Mostra a foto do usuário e informações de senha
 if ($user) {
     require CONTROLLER . "/pessoa.class.php";
-    $pessoa = new Pessoa();
+    $pessoa = new Pessoas();
     
     if (isset($_GET['removerFoto']))
         $pessoa->removeFoto($user);
@@ -61,7 +61,7 @@ if ($user) {
 // Verifica se o aluno preencheu o sócioEconômico
 if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     require CONTROLLER . "/aluno.class.php";
-    $aluno = new Aluno();
+    $aluno = new Alunos();
     if ($nome = $aluno->hasSocioEconomico($user)) {
         ?>
         <br><br><font size="2" color="red">Ol&aacute; <?php print $nome; ?>, seu question&aacute;rio Socioecon&ocirc;mico est&aacute; incompleto.</font>
@@ -82,7 +82,7 @@ if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTip
     
     // Verifica se o CRON está sendo executado.
     require CONTROLLER . "/log.class.php";
-    $log = new Log();
+    $log = new Logs();
     if ($log->hasCronActive()) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: o script de sincroniza&ccedil;&atilde;o nunca foi executado ou n&atilde;o est&aacute; sendo executado diariamente.</font>
@@ -134,7 +134,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
 
     // Verificando se há correções para o Plano de Ensino.
     require CONTROLLER . "/plano.class.php";
-    $plano = new Plano();
+    $plano = new Planos();
     $res = $plano->hasChangePlano($user);
 
     if ($res) {
@@ -152,7 +152,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
 <?php
 // SISTEMA DE AVISOS
 require CONTROLLER . "/aviso.class.php";
-$aviso = new Aviso();
+$aviso = new Avisos();
 $res = $aviso->hasAviso($user);
 if ($res) {
     ?>

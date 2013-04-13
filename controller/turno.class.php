@@ -1,10 +1,8 @@
 <?php
-if(!class_exists('database'))
-{
-    require_once MYSQL;
-}
+if(!class_exists('Generic'))
+    require_once CONTROLLER.'/generic.class.php';
 
-class Turno {
+class Turnos extends Generic {
     
     public function __construct(){
         //
@@ -13,18 +11,7 @@ class Turno {
     // MÉTODO PARA INSERÇÃO DE OBJETO
     // USADO POR: VIEW/SECRETARIA/ABONO.PHP
     public function listTurnos() {
-        $bd = new database();
-        
-        $sql = "SELECT * FROM Turnos";
-        $res = $bd->selectDB($sql, $params);
-        if ( $res )
-        {
-            return $res;
-        }
-        else
-        {
-            return false;
-        }
+        return $this->listRegistros();
     }
 }
 

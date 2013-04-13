@@ -17,7 +17,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     $aluno = $_SESSION["loginCodigo"];
     
     require CONTROLLER . "/aula.class.php";
-    $aula = new Aula();
+    $aula = new Aulas();
     $res = $aula->listAulas($aluno, $atribuicao);
     print "<h2>Aulas</h2>\n";
     print "<div class='professores_textarea'>\n";

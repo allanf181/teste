@@ -1,8 +1,7 @@
 <?php
 if(!class_exists('database'))
-{
     require_once MYSQL;
-}
+
 
 Abstract class Generic {
     

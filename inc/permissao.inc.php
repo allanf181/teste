@@ -8,7 +8,7 @@ if (strpos($_SERVER["HTTP_REFERER"],"/$LOCATION/") == false) {
 // PERMISSOES DO ARQUIVO
 if (isset($_SESSION["loginTipo"])) {
     require CONTROLLER . "/permissao.class.php";
-    $permissao = new permissao();        
+    $permissao = new Permissoes();        
 
     $LOCATION = substr(LOCATION, 1);
     $SITE = str_replace("/$LOCATION/", '', $_SERVER['PHP_SELF']);

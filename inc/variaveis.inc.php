@@ -38,24 +38,24 @@ $SEMESTRE = $_SESSION["semestre"];
 if (!$LOCATION_CRON) require CONTROLLER . "/instituicao.class.php";
 if ($LOCATION_CRON) require $LOCATION_CRON . "../controller/instituicao.class.php";
 
-$instituicao = new Instituicao();
+$instituicao = new Instituicoes();
 if ($res = $instituicao->dadosInstituicao()) {
-    $SITE_TITLE = $res['nome'];
-    $SITE_CIDADE = $res['cidade'];
-    $IPSRVUPDATE = $res['ipServidorAtualizacao'];
-    $USERSRVUPDATE = $res['usuarioServidorAtualizacao'];
-    $PASSSRVUPDATE = $res['senhaServidorAtualizacao'];
-    $GED = $res['ged'];
-    $ADM = $res['adm'];
-    $SEC = $res['sec'];
-    $COORD = $res['coord'];
-    $LIMITE_DIARIO_PROF = $res['limiteAltDiarioProf'];
-    $LIMITE_AULA_PROF = $res['limiteInsAulaProf'];
-    $ALUNO = $res['aluno'];
-    $PROFESSOR = $res['prof'];
-    $VERSAO = $res['versao'];
-    $VERSAOAT = $res['versaoAtual'];
-    $DIGITANOTAS = $res['campiDigitaNotas'];
+    $SITE_TITLE = $res[0]['nome'];
+    $SITE_CIDADE = $res[0]['cidade'];
+    $IPSRVUPDATE = $res[0]['ipServidorAtualizacao'];
+    $USERSRVUPDATE = $res[0]['usuarioServidorAtualizacao'];
+    $PASSSRVUPDATE = $res[0]['senhaServidorAtualizacao'];
+    $GED = $res[0]['ged'];
+    $ADM = $res[0]['adm'];
+    $SEC = $res[0]['sec'];
+    $COORD = $res[0]['coord'];
+    $LIMITE_DIARIO_PROF = $res[0]['limiteAltDiarioProf'];
+    $LIMITE_AULA_PROF = $res[0]['limiteInsAulaProf'];
+    $ALUNO = $res[0]['aluno'];
+    $PROFESSOR = $res[0]['prof'];
+    $VERSAO = $res[0]['versao'];
+    $VERSAOAT = $res[0]['versaoAtual'];
+    $DIGITANOTAS = $res[0]['campiDigitaNotas'];
 }
 
 // GERA O VOLTAR AUTOMATICAMENTE

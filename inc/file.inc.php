@@ -13,7 +13,7 @@ if ($type == 'pic') {
         $force = dcrip($_GET['force']);
 
     require CONTROLLER . "/pessoa.class.php";
-    $pessoa = new pessoa();
+    $pessoa = new Pessoas();
     $res = $pessoa->getFoto($codigo);
     
     // Caso o user tenha foto
@@ -45,7 +45,7 @@ if ($type == 'pdf') {
         
         require CONTROLLER . "/plano.class.php";
 
-        $plano = new plano();
+        $plano = new Planos();
         $res = $plano->getPlano($codigo);
     	header("Content-type: application/pdf");
 	header("Content-Disposition: attachment; filename=".$res['disciplina'].".pdf");

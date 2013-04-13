@@ -1,16 +1,14 @@
 <?php
-if(!class_exists('database'))
+if(!class_exists('Generic'))
 {
-    require_once MYSQL;
+    require_once CONTROLLER.'/generic.class.php';
 }
 
-class Disciplina {
+class Disciplinas extends Generic {
     
     public function __construct(){
         //
     }
-    
-
 }
 
 ?>
