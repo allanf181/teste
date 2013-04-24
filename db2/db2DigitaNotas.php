@@ -20,7 +20,7 @@ $turma = '0';
 $flagDigitacaoNota = '0';
 
 $sql = "SELECT p.prontuario, p2.prontuario, d.numero, a.eventod, t.ano, t.semestre,
-        n.bimestre, n.falta, n.sincronizado, n.mcc, n.rec, n.ncc, n.codigo
+        n.bimestre, n.falta, n.sincronizado, n.mcc, n.rec, n.ncc, n.codigo, DATEDIFF(NOW(),a.dataFim) as data
 	FROM NotasFinais n, Atribuicoes a, Pessoas p, Pessoas p2, Professores pr, Matriculas m, Disciplinas d, Turmas t
 	WHERE n.atribuicao = a.codigo
 	AND pr.atribuicao = a.codigo
@@ -30,12 +30,14 @@ $sql = "SELECT p.prontuario, p2.prontuario, d.numero, a.eventod, t.ano, t.semest
 	AND d.codigo = a.disciplina
 	AND m.atribuicao = a.codigo
 	AND t.codigo = a.turma
+        AND flag <> 5;
 	$sqlCodigo";
 $result = mysql_query($sql);
 $n = 0;
 $s = 0;
 
 while ($l = mysql_fetch_array($result)) {
+    if ($l[13] > 10) $flagDigitacaoNota = 5;
     $prontuario = $l[0];
     $prontuarioAluno = $l[1];
     $codigoDisciplina = $l[2];
@@ -63,7 +65,7 @@ while ($l = mysql_fetch_array($result)) {
             $digitaNotaAlunoWS = new digitaNotasWS();
             $ret = $digitaNotaAlunoWS->digitarNotaAluno($user, $pass, $campus, $prontuario, $prontuarioAluno, $codigoDisciplina, $eventod, $bimestre, $ano, $semestre, $faltas, $nota, $turma, $flagDigitacaoNota);
 
-            $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas): $ret \n";
+            $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
 
             if ($ret) {
                 if ($DEBUG)
