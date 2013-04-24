@@ -1,5 +1,4 @@
 <?php
-
 if (!$LOCATION_CRON) {
     require("$LOCATION_CRON"."db2Mysql.php");
     require("$LOCATION_CRON"."db2.php");

@@ -1,7 +1,10 @@
 <?php
 if (!$LOCATION_CRON) {
     require("$LOCATION_CRON"."db2Mysql.php");
+    require("$LOCATION_CRON"."db2.php");
+    require("$LOCATION_CRON"."db2Funcoes.php");
     require("$LOCATION_CRON"."db2Variaveis.inc.php");
+    require("$LOCATION_CRON"."../inc/funcoes.inc.php");
 }
 
 require ('lib/digitaNotasWS.php');
