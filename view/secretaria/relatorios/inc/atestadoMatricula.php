@@ -104,7 +104,7 @@ if (isset($_GET["codigo"])) {
     $pdf->SetFillColor(255, 255, 255);
     $pdf->SetFont($fonte, '', 12);
     $pdf->Cell(190,20,'',0,1,'C',false);
-    $pdf->Cell(190,30,utf8_decode($instituicao),0,1,'C',false);
+    $pdf->Cell(190,30,$instituicao,0,1,'C',false);
     $pdf->SetFont($fonte, '', $tamanho+5);
     
     $pdf->Cell(190,10,utf8_decode('ATESTADO DE MATRÍCULA'),0,1,'C',false);
