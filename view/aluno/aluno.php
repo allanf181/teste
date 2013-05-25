@@ -50,7 +50,7 @@ if ($_GET["atribuicao"]) {
     <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/avaliacao.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
     <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/ensalamento?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
     <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/aviso?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/aviso.png' /><br />Avisos</a></td>
-    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/boletim.php?turma=<?=crip($res['turmaCodigo'])?>&aluno=<?=crip($aluno)?>&bimestre=<?=crip($numeroBimestre)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/boletim.png' /><br />Boletim Bimestral</a></td>
+    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/boletim.php?turma=<?=crip($res['turmaCodigo'])?>&aluno=<?=crip($aluno)?>&bimestre=<?=crip($numeroBimestre)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/boletim.png' /><br />Boletim Escolar</a></td>
     <?php
     if ($bimestre=="SEMESTRAL" || $bimestre=="1&ordm; BIMESTRE") {
         ?>
