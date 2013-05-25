@@ -1,16 +1,16 @@
 <?php
 if (!$LOCATION_CRON) {
-    require("$LOCATION_CRON"."db2Mysql.php");
-    require("$LOCATION_CRON"."db2.php");
-    require("$LOCATION_CRON"."db2Funcoes.php");
-    require("$LOCATION_CRON"."db2Variaveis.inc.php");
-    require("$LOCATION_CRON"."../inc/funcoes.inc.php");
+    require("$LOCATION_CRON" . "db2Mysql.php");
+    require("$LOCATION_CRON" . "db2.php");
+    require("$LOCATION_CRON" . "db2Funcoes.php");
+    require("$LOCATION_CRON" . "db2Variaveis.inc.php");
+    require("$LOCATION_CRON" . "../inc/funcoes.inc.php");
 }
 
 mysql_set_charset('latin1');
 
-$dataInicio=$ano."-01-01";// DATA INICIO DO PERIODO LETIVO
-$dataFim=$ano."-12-31";// DATA FINAL DO PERIODO LETIVO
+$dataInicio = $ano . "-01-01"; // DATA INICIO DO PERIODO LETIVO
+$dataFim = $ano . "-12-31"; // DATA FINAL DO PERIODO LETIVO
 
 turnos(); // CRIA OS TURNOS
 
@@ -29,47 +29,49 @@ $db2 = "SELECT DISTINCT EM_MODULO, EM_EVENTOM, EM_DTINICIO, CM_MODUSEQ,
 $res = db2_exec($conn, $db2);
 
 if (db2_stmt_error() == 42501) {
-	$ERRO = "SEM ACESSO NA TABELA TURMAS (CURSOS NOVOS)";
-	mysql_query("insert into Logs values(0, '".addslashes($ERRO)."', now(), 'CRON_ERRO', 1)");
-	print $ERRO;
+    $ERRO = "SEM ACESSO NA TABELA TURMAS (CURSOS NOVOS)";
+    mysql_query("insert into Logs values(0, '" . addslashes($ERRO) . "', now(), 'CRON_ERRO', 1)");
+    print $ERRO;
 }
 
-$i=0;
+$i = 0;
 while ($row = db2_fetch_object($res)) {
     $turno = getTurno($row->EM_PERIODO);
 
-	if (abs(date('m', strtotime("$row->EM_DTFINAL")) - date('m', strtotime("$row->EM_DTINICIO"))) > 6)
-    	$semestre = 0;
+    if (abs(date('m', strtotime("$row->EM_DTFINAL")) - date('m', strtotime("$row->EM_DTINICIO"))) > 6)
+        $semestre = 0;
     else
-    	$semestre = date('m', strtotime("$row->EM_DTFINAL"))>10?2:1;
+        $semestre = date('m', strtotime("$row->EM_DTFINAL")) > 10 ? 2 : 1;
 
-		$numero = 'N'.$row->EM_MODULO.$row->CM_MODUSEQ;
+    $numero = 'N' . $row->EM_MODULO . $row->CM_MODUSEQ;
     $sql = "SELECT * FROM Turmas 
     		WHERE numero='$numero' 
     		AND curso=$row->CN_CDCURSO 
     		AND (semestre=$semestre OR semestre=0)";
     $res2 = mysql_query($sql);
-    if (!$turma = mysql_fetch_object($res2)){// TURMA NÃO EXISTE, ENTÃO IMPORTA
+    if (!$turma = mysql_fetch_object($res2)) {// TURMA NÃO EXISTE, ENTÃO IMPORTA
         // IMPORTA A TURMA
         $ano = date('Y', strtotime($row->EM_DTINICIO));
         $sql = "insert into Turmas (codigo, ano, semestre, numero, curso, turno, sequencia) values (0, "
-                . $ano.", "
-                . $semestre.", "
+                . $ano . ", "
+                . $semestre . ", "
                 . "'$numero', "
                 . "$row->CN_CDCURSO, "
-                . $turno.", "
+                . $turno . ", "
                 . "$row->EM_EVENTOM "
                 . ")";
 
-       	if (!$result = mysql_query($sql)){
-        	if ($DEBUG) echo "<br>Erro ao importar turma: $sql \n";
-       		mysql_query("insert into Logs values(0, '".addslashes($sql)."', now(), 'CRON_ERRO', 1)");
-   	    } else {
-       		$i++;
-       		$REG = "TURMA NOVA (CURSO NOVO): $numero";
-       		mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_TN', 1)");
-        	if ($DEBUG) print "$REG <br>\n"; 
-       	}
+        if (!$result = mysql_query($sql)) {
+            if ($DEBUG)
+                echo "<br>Erro ao importar turma: $sql \n";
+            mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
+        } else {
+            $i++;
+            $REG = "TURMA NOVA (CURSO NOVO): $numero";
+            mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_TN', 1)");
+            if ($DEBUG)
+                print "$REG <br>\n";
+        }
     }
 }
 
@@ -87,65 +89,68 @@ $db2 = "SELECT DISTINCT CM_MODULO, ED_EVENTOD, CM_MODUSEQ, CM_CDCURSO, ED_DTINIC
         AND CM_CDCURSO IN (SELECT MC_CDCURSO FROM ESCOLA.MATCURSO WHERE MC_DTINGRES > '$dataInicio' )";
 
 $res = db2_exec($conn, $db2);
-$i=0;
+$i = 0;
 while ($row = db2_fetch_object($res)) {
     $turno = getTurno($row->ED_PERIODO);
-	
-	if (abs(date('m', strtotime("$row->ED_DTFINAL")) - date('m', strtotime("$row->ED_DTINICIO"))) > 6)
-    	$semestre = 0;
+
+    if (abs(date('m', strtotime("$row->ED_DTFINAL")) - date('m', strtotime("$row->ED_DTINICIO"))) > 6)
+        $semestre = 0;
     else
-    	$semestre = date('m', strtotime("$row->ED_DTFINAL"))>10?2:1;
-    
-    $numero = 'N'.$row->CM_MODULO.$row->CM_MODUSEQ;
-    
+        $semestre = date('m', strtotime("$row->ED_DTFINAL")) > 10 ? 2 : 1;
+
+    $numero = 'N' . $row->CM_MODULO . $row->CM_MODUSEQ;
+
     $sql = "SELECT * FROM Turmas 
     		WHERE numero='$numero' 
     		AND curso=$row->CM_CDCURSO 
     		AND (semestre=$semestre OR semestre=0)";
     $res2 = mysql_query($sql);
-    if (!$turma = mysql_fetch_object($res2)){// TURMA NÃO EXISTE, ENTÃO IMPORTA
+    if (!$turma = mysql_fetch_object($res2)) {// TURMA NÃO EXISTE, ENTÃO IMPORTA
         // IMPORTA A TURMA
         $ano = date('Y', strtotime($row->ED_DTFINAL));
         $sql = "insert into Turmas (codigo, ano, semestre, numero, curso, turno, sequencia) values (0, "
-                . $ano.", "
-                . $semestre.", "
+                . $ano . ", "
+                . $semestre . ", "
                 . "'$numero', "
                 . "$row->CM_CDCURSO, "
-                . $turno.", "
+                . $turno . ", "
                 . "$row->ED_EVENTOD "
                 . ")";
 
-       	if (!$result = mysql_query($sql)){
-        	if ($DEBUG) echo "<br>Erro ao importar turma: $sql \n";
-       		mysql_query("insert into Logs values(0, '".addslashes($sql)."', now(), 'CRON_ERRO', 1)");
-   	    } else {
-       		$i++;
-       		$REG = "TURMA NOVA (CURSO NOVO): $numero";
-       		mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_TN', 1)");
-        	if ($DEBUG) print "$REG <br>\n"; 
-       	}
+        if (!$result = mysql_query($sql)) {
+            if ($DEBUG)
+                echo "<br>Erro ao importar turma: $sql \n";
+            mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
+        } else {
+            $i++;
+            $REG = "TURMA NOVA (CURSO NOVO): $numero";
+            mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_TN', 1)");
+            if ($DEBUG)
+                print "$REG <br>\n";
+        }
     }
 }
 
 // REGISTRA A ATUALIZACAO
 if (!$LOCATION_CRON) {
-	$sql = "insert into Atualizacoes values(0,5,".$_SESSION['loginCodigo'].", now())";
-	mysql_query($sql);
-	?>
-	<script>
- 		$('#turmasnRetorno').text('<?php print $i; ?> registros processados...');
-	</script><?php
+    $sql = "insert into Atualizacoes values(0,5," . $_SESSION['loginCodigo'] . ", now())";
+    mysql_query($sql);
+    ?>
+    <script>
+        $('#turmasnRetorno').text('<?php print $i; ?> registros processados...');
+    </script><?php
 } else {
-	$sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
-	$resultAdmin = mysql_query($sqlAdmin);
-	$admin = mysql_fetch_object($resultAdmin);
-	
-	$sql = "insert into Atualizacoes values(0,105,".$admin->codigo.", now())";
-	mysql_query($sql);
-		
-	$URL = "TURMAS CURSOS NOVOS IMPORTADAS: $i";
-        if ($DEBUG) print "$URL \n";
-	$sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
-	mysql_query($sql);
+    $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
+    $resultAdmin = mysql_query($sqlAdmin);
+    $admin = mysql_fetch_object($resultAdmin);
+
+    $sql = "insert into Atualizacoes values(0,105," . $admin->codigo . ", now())";
+    mysql_query($sql);
+
+    $URL = "TURMAS CURSOS NOVOS IMPORTADAS: $i";
+    if ($DEBUG)
+        print "$URL \n";
+    $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
+    mysql_query($sql);
 }
 ?>

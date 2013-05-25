@@ -54,13 +54,11 @@ Class ldap {
         ldap_close($this->ldap_conn);
     }
 
-    /* Método select que retorna um VO ou um array de objetos */
-
     public function changePassword($login, $user_password) {
         $user = "(sAMAccountName=$login)";
         $ldap_conn = create_ldap_conn_ssl();
         $userDn = get_obj_dn($ldap_conn, $user);
-        $userdata = pwd_encryption($user_password);
+        $userdata = $this->pwd_encryption($user_password);
 
         $res = @ldap_mod_replace($ldap_conn, $userDn, $userdata);
         $error = ldap_error($ldap_conn);
