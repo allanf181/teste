@@ -344,7 +344,7 @@ if (dcrip($_GET["nome"])) {
                 if ($(this).val()) {
                     $('#campoNaturalidade').hide();
                     $('.carregando').show();
-                    $.getJSON('cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function(j) {
+                    $.getJSON('<?=VIEW?>/secretaria/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function(j) {
                         var options = '<option value=""></option>';
                         for (var i = 0; i < j.length; i++) {
                             options += '<option value="' + j[i].codigo + '">' + j[i].nome + '</option>';
@@ -363,7 +363,7 @@ if (dcrip($_GET["nome"])) {
                 if ($(this).val()) {
                     $('#campoCidade').hide();
                     $('.carregando').show();
-                    $.getJSON('cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function(j) {
+                    $.getJSON('<?=VIEW?>/secretaria/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function(j) {
                         var options = '<option value=""></option>';
                         for (var i = 0; i < j.length; i++) {
                             options += '<option value="' + j[i].codigo + '">' + j[i].nome + '</option>';
