@@ -85,7 +85,7 @@ if ($user) {
     if ($res['dias']) {
         if (($res['data'] >= $res['dias'])) {
             ?>
-            <br><br><p>Aten&ccedil;&atilde;o, sua sua est&aacute; expirada. <a href="javascript:$('#index').load('inc/senha.php?opcao=alterar'); void(0);">Clique aqui</a> e efetue a troca.
+            <br><br><p>Aten&ccedil;&atilde;o, sua sua est&aacute; expirada. <a href="javascript:$('#index').load('<?=VIEW?>/senha.php?opcao=alterar'); void(0);">Clique aqui</a> e efetue a troca.
             <?php
         } else {
             $diaAlteracao = $res['dias'] - $res['data'];

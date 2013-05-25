@@ -213,7 +213,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                 <tr><td><b>Dom&iacute;nio</b> <br>(Ex. ldap://ifsp.local e ldaps://ifsp.local para SSL): </td><td><input type="text" name="ldap_dominio" id="ldap_dominio" maxlength="200" value="<?php echo $ldap_dominio; ?>" /></td></tr>
                 <tr><td><b>Porta</b> <br>(Ex. 389 -> NO SSL e 636 -> SSL): </td><td><input type="text" name="ldap_porta" id="ldap_porta" maxlength="5" value="<?php echo $ldap_porta; ?>" /></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
-                <tr><td><b>Cache</b> <br>(Quantidade de dias que o sistema guarda em cache a autenti&ccedil;&atilde;o do usu&aacute;rio, evitando m&uacute;ltiplos acessos ao LDAP) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_cache" id="ldap_cache" value="<?php echo $ldap_cache; ?>" /></td></tr>
+                <tr><td><b>Cache</b> <br>(Quantidade de dias que o sistema armazena em cache a autenti&ccedil;&atilde;o do usu&aacute;rio, evitando m&uacute;ltiplos acessos ao LDAP) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_cache" id="ldap_cache" value="<?php echo $ldap_cache; ?>" /></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
 
     </table>

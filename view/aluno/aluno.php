@@ -16,6 +16,9 @@ if (!in_array($ALUNO, $_SESSION["loginTipo"])) {
     die;
 }
 ?>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
+
 <table width="100%" align="center" border="0">
 <?php
 if ($_GET["atribuicao"]) {
@@ -31,10 +34,6 @@ if ($_GET["atribuicao"]) {
     $_SESSION['semestre']=$res['semestre'];
     $_SESSION['ano']=$res['ano'];
 
-    foreach(getProfessor($atribuicao) as $key => $reg)
-        $professores[] = "<a title='Curr&iacute;culo Lattes' target=\"_blank\" href=".$reg['lattes'].">".$reg['nome']."</a>";
-    $professor = implode(" / ", $professores);
-
     if ($fechamento == 'a') $bimestre="ANUAL";
 
     $numeroBimestre=null;
@@ -43,27 +42,40 @@ if ($_GET["atribuicao"]) {
         $bimestre=abreviar($res['bimestre']."&ordm; BIMESTRE", 100);
     }
 
-    echo "<h2>".abreviar($res['disciplina'].": ".$res['turma']."/".$res['curso'], 150)."</h2>";
-    echo "<h2 id='titulo_disciplina_modalidade'>$bimestre<br></h2><br />";
-    echo "<tr align='center'>";
-    echo "<td><a class='nav professores_item' href=\"javascript:$('#aluno').load('".VIEW."/aluno/aula.php?atribuicao=".crip($atribuicao)."'); void(0);\"><img style='width: 100px' src='".IMAGES."/aulas.png' /><br />Aulas</a></td>";
-    echo "<td><a class='nav professores_item' href=\"javascript:$('#aluno').load('".VIEW."/aluno/avaliacao.php?atribuicao=".crip($atribuicao)."'); void(0);\"><img style='width: 100px' src='".IMAGES."/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>";
-    echo "<td><a class='nav professores_item' href=\"javascript:$('#aluno').load('".VIEW."/aluno/ensalamento?atribuicao=".crip($atribuicao)."'); void(0);\"><img style='width: 100px' src='".IMAGES."/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>";
-    echo "<td><a class='nav professores_item' href=\"javascript:$('#aluno').load('".VIEW."/aluno/aviso?atribuicao=".crip($atribuicao)."'); void(0);\"><img style='width: 100px' src='".IMAGES."/aviso.png' /><br />Avisos</a></td>";
-    echo "<td><a class='nav professores_item' href=\"javascript:$('#aluno').load('".VIEW."/aluno/boletim.php?turma=".crip($res['turmaCodigo'])."&aluno=".crip($aluno)."&bimestre=".crip($numeroBimestre)."'); void(0);\"><img style='width: 100px' src='".IMAGES."/boletim.png' /><br />Boletim Bimestral</a></td>";
-    if ($bimestre=="SEMESTRAL" || $bimestre=="1&ordm; BIMESTRE")
-    	echo "<td><a class='nav professores_item' href=\"javascript:$('#aluno').load('".VIEW."/aluno/planoEnsino.php?atribuicao=".crip($atribuicao)."'); void(0);\"><img style='width: 100px' src='".IMAGES."/planoEnsino.png' /><br />Plano de Ensino</a></td>";
-    echo "</tr>";
-
-    echo "<tr><td colspan=10 align='center'>\n";
-    print "<hr>\n";
-    print "PROFESSOR: <b>$professor</b>";
-    print "<hr>\n";  
-    print "</tr></tr>";
-    print "</table>\n";
+    ?>
+    <h2><?=abreviar($res['disciplina'].": ".$res['turma']."/".$res['curso'], 150)?></h2>
+    <h2 id='titulo_disciplina_modalidade'><?=$bimestre?><br></h2><br />
+    <tr align='center'>
+    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/aula.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/aulas.png' /><br />Aulas</a></td>
+    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/avaliacao.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
+    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/ensalamento?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
+    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/aviso?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/aviso.png' /><br />Avisos</a></td>
+    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/boletim.php?turma=<?=crip($res['turmaCodigo'])?>&aluno=<?=crip($aluno)?>&bimestre=<?=crip($numeroBimestre)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/boletim.png' /><br />Boletim Bimestral</a></td>
+    <?php
+    if ($bimestre=="SEMESTRAL" || $bimestre=="1&ordm; BIMESTRE") {
+        ?>
+    	<td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/planoEnsino.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
+        <?php } ?>
+    </tr>
+    <tr><td colspan=10 align='center'>
+    <hr>
+    PROFESSOR(ES): <br />
+    <?php
+    foreach(getProfessor($atribuicao) as $key => $reg) {
+        ?>
+        <a href='#' rel='<?=INC?>/file.inc.php?type=pic&id=<?=crip($reg['codigo'])?>&timestamp=<?=time()?>' class='screenshot' title='Teste'>
+        <img style='width: 20px; height: 20px' alt='Embedded Image' src='<?=INC?>/file.inc.php?type=pic&id=<?=crip($reg['codigo'])?>&timestamp=<?=time()?>' /></a>
+        <a title='Curr&iacute;culo Lattes' target="_blank" href="<?=$reg['lattes']?>"><?=$reg['nome']?></a>
+        <br>
+        <?php
+    }
+       
+    ?>
+    <hr>
+    </tr></tr>
+    </table>
+    <?php
 }
-
-mysql_close($conexao);
 
 ?>
 <div id="aluno"></div>

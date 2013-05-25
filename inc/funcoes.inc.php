@@ -100,6 +100,7 @@ function getProfessor($atribuicao) {
             $url = $l[2];
         $professor[$l[0]]['nome'] = $l[1];
         $professor[$l[0]]['lattes'] = $url;
+        $professor[$l[0]]['codigo'] = $l[0];
     }
     return $professor;
 }
