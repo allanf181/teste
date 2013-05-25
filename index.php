@@ -194,7 +194,7 @@ if (isset($_SESSION["loginTipo"])) {
     // CHECA SE O USER TROCOU DE SENHA
     require CONTROLLER . "/login.class.php";
     $login = new login();
-    if ($login->usuarioTrocouSenha($_SESSION["loginCodigo"])) {
+    if (!$LDAP_ATIVADO && $login->usuarioTrocouSenha($_SESSION["loginCodigo"])) {
         ?>
         <script type="text/javascript">
             $(document).ready(function() {

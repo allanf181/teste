@@ -56,13 +56,11 @@ Class ldap {
 
     public function changePassword($login, $user_password) {
         $user = "(sAMAccountName=$login)";
-        $ldap_conn = create_ldap_conn_ssl();
-        $userDn = get_obj_dn($ldap_conn, $user);
+        $userDn = $this->getObjDN($user);
         $userdata = $this->pwd_encryption($user_password);
 
-        $res = @ldap_mod_replace($ldap_conn, $userDn, $userdata);
-        $error = ldap_error($ldap_conn);
-        ldap_close($ldap_conn);
+        $res = @ldap_mod_replace($this->ldap_conn, $userDn, $userdata);
+        $error = ldap_error($this->ldap_conn);
 
         if (preg_match('/Invalid DN syntax/', $error))
             return "Login nao encontrado";

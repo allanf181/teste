@@ -16,6 +16,10 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
 }
 
+if ($LDAP_ATIVADO) {
+    print "O autentica&ccedil;&atilde;o LDAP est&aacute; ativada, n&atilde;o &eacute; poss&iacute;vel trocar a senha aqui.";
+    die;
+}
 // Instância a classe login
 $login = new login();
 
