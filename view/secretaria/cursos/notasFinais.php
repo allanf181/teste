@@ -151,7 +151,7 @@ $(document).ready(function(){
 	$(".sync").click(function(){
 		var codigo = $(this).attr('id');
 		var div1 = 'S' + codigo;
-		$('#'+div1).load('db2/db2Notas.php?codigo=' + codigo);
+		$('#'+div1).load('db2/db2DigitaNotas.php?codigo=' + codigo);
 		return false;
 	});
 });  

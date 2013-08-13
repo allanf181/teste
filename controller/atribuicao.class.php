@@ -71,7 +71,7 @@ class Atribuicoes extends Generic {
                 $reg['disciplina'] = $reg['disciplina'];
                 $reg['curso'] = $reg['curso'];
                 if (isset($reg['evento']) && !$reg['subturma']) $reg['subturma'] = $reg['evento'];
-                if (isset($reg['subturma'])) $reg['numero']=$reg['numero'].' ['.$reg['subturma'].']';
+                if (isset($reg['subturma'])) $reg['numero']=$reg['numero'].' ['.$reg['turma'].'-'.$reg['subturma'].']';
             					
                 $curso=($reg['cursoAlt']) ? $reg['cursoAlt'] : $reg['curso'];
                 if (isset($reg['codigoModalidade'])) {
@@ -89,7 +89,7 @@ class Atribuicoes extends Generic {
 
                 // SE FOR BIMESTRAL
                 if ($reg['bimestre'] != 0) 
-                    $disciplinas[$reg['ano']][$reg['semestre']][$reg['bimestre']][$reg['atribuicao']] = array($reg['disciplina'],$reg['atribuicao'],$reg['numero'],$reg['curso']);
+                    $disciplinas[$reg['ano']][$reg['semestre']]['B'][$reg['bimestre']][$reg['atribuicao']] = array($reg['disciplina'],$reg['atribuicao'],$reg['numero'],$reg['curso']);
             }
             return $disciplinas;
         }

@@ -61,7 +61,7 @@ $(document).ready(function(){
     });
 
     $("#digitaNotas").click(function(){
-        $('#digitaNotasRetorno').load('db2/db2Notas.php');
+        $('#digitaNotasRetorno').load('db2/db2DigitaNotas.php');
     });
 });
 

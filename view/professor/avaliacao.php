@@ -315,8 +315,8 @@ if ($_GET['opcao'] == '') {
     <?php echo "<b>Avalia&ccedil;&otilde;es:</b> ".($i-1); ?><br />
     <?php echo "<b>Recupera&ccedil;&atilde;o:</b> $recuperacao"; ?><br />
     <?php echo "<b>M&eacute;todo de C&aacute;lculo:</b> ";
-    if ( ($i-1)!=0 ) $disabled = 'disabled';
-		print "<select name=\"campoCalculo\" $disabled id=\"campoCalculo\" value=\"$calculo_avaliacao\" onChange=\"$('#professor').load('$SITE?opcao=calculo&atribuicao=".crip($atribuicao). "&campoCalculo=' + this.value);\">\n";
+    if ( ($i-1)!=0 && $calculo_avaliacao != 'formula' ) $disabled = 'disabled';
+    print "<select name=\"campoCalculo\" $disabled id=\"campoCalculo\" value=\"$calculo_avaliacao\" onChange=\"$('#professor').load('$SITE?opcao=calculo&atribuicao=".crip($atribuicao). "&campoCalculo=' + this.value);\">\n";
     if ($calculo_avaliacao == 'peso') $selected = 'selected'; else $selected = '';
     echo "<option $selected value='peso'>peso</option>";
     if ($calculo_avaliacao == 'media') $selected = 'selected'; else $selected = '';

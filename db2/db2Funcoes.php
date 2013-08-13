@@ -202,10 +202,10 @@ function modalidadesCursoAntigo(){
     	$res = mysql_query($sql);
 
 			//INSERIR RECUPERAÇÃO
-  		$sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação - Adiciona valor na média', 'recuperacao', $r->MD_MODAL, 'add_media', 1, 0, 0, 'REB', 0, 0, 0, 5)";
+  		$sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Adiciona valor na média', 'recuperacao', $r->MD_MODAL, 'add_media', 1, 0, 0, 'REB', 0, 0, 0, 5)";
 			$res = mysql_query($sql);
 
-  		$sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação - Adiciona valor na menor nota', 'recuperacao', $r->MD_MODAL, 'add_menor_nota', 1, 0, 0, 'REB', 0, 0, 0, 5)";
+  		$sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Adiciona valor na menor nota', 'recuperacao', $r->MD_MODAL, 'add_menor_nota', 1, 0, 0, 'REB', 0, 0, 0, 5)";
 			$res = mysql_query($sql);
 			mysql_set_charset('latin1');
  	}

@@ -39,6 +39,8 @@ function getFrequencia($matricula, $atribuicao, $data = null) {
             $tipo['nome'] = 'Regime de Exerc&iacute;cios Domiciliares';
         if ($l[2] == 'M')
             $tipo['nome'] = 'Matr&iacute;cula ap&oacute;s inicio letivo';
+        if ($l[2] == 'D')
+            $tipo['nome'] = 'Dispensa';        
         $tipo[$l[0]] = $l[2];
         $abono[$l[1]][$l[0]] = $l[0];
         if ($l[3]) {
@@ -380,13 +382,14 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
             $sqlFinal1 = "AND n.bimestre <> 'M' ";
         if ($final == 1)
             $sqlFinal1 = "AND n.bimestre = 'M' ";
-        $sql = "SELECT  n.mcc,n.rec,n.ncc,n.falta, t.final, t.calculo,
+        $sql = "SELECT  n.mcc,n.rec,n.ncc,n.falta,
+                                (SELECT t.final FROM Avaliacoes a, TiposAvaliacoes t
+                                    WHERE a.atribuicao = at.codigo
+                                    AND a.tipo = t.codigo) as final,
 				(SELECT SUM(au1.quantidade) FROM Aulas au1 WHERE au1.atribuicao = at.codigo) as aulas,
 				(SELECT ch FROM Atribuicoes at1, Disciplinas d WHERE at1.disciplina = d.codigo AND at1.codigo = at.codigo) as CH
-				FROM NotasFinais n, Avaliacoes a, Atribuicoes at, TiposAvaliacoes t
+				FROM NotasFinais n, Atribuicoes at
 				WHERE n.atribuicao = at.codigo
-				AND a.atribuicao = at.codigo
-				AND t.codigo = a.tipo
 				AND at.codigo = $atribuicao
 				AND n.matricula = $matricula
 				AND at.status <> 0

@@ -216,13 +216,13 @@ if (isset($_SESSION["loginTipo"])) {
                                 <?php
                             }
                         }
-                        if (!isset($disc[$ano][$semestre]['S'])) { // BIMESTRE
-                            foreach ($disc[$ano][$semestre] as $bimestre => $reg) {
+                        if (isset($disc[$ano][$semestre]['B'])) { // BIMESTRE
+                            foreach ($disc[$ano][$semestre]['B'] as $bimestre => $reg) {
                                 ?>
                                 <li class='active has-sub'><a href='#'><span><?php print $bimestre; ?>&ordm; BIMESTRE</span></a>
                                 <ul>
                                 <?php
-                                foreach ($disc[$ano][$semestre][$bimestre] as $atribuicao => $reg) {
+                                foreach ($disc[$ano][$semestre]['B'][$bimestre] as $atribuicao => $reg) {
                                     ?>
                                     <li><a title="<?php print $reg[0].' - '.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
                                     <?php

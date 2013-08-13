@@ -1,119 +1,66 @@
 <?php
+
 if (!$LOCATION_CRON) {
     require("$LOCATION_CRON"."db2Mysql.php");
+    require("$LOCATION_CRON"."db2.php");
+    require("$LOCATION_CRON"."db2Funcoes.php");
     require("$LOCATION_CRON"."db2Variaveis.inc.php");
+    require("$LOCATION_CRON"."../inc/funcoes.inc.php");
 }
 
-require ('lib/digitaNotasWS.php');
+// FAZ UMA BUSCA POR TODOS OS ALUNOS
+// E BUSCA ALUNO POR ALUNO NA TABELA DO NAMBEI
+// PARA IMPORTAR AS NOTAS.
+// NÃO FOI FEITO UM SELECT GENERICO NO NAMBEI, POIS
+// A TABELA É MUITO GRANDE.
+// SOMENTE 1 e 2 BIMESTRE DOS CURSOS ANTIGOS
 
-if (isset($_GET["codigo"])) {
-    $codigo = $_GET["codigo"];
-    $sqlCodigo = "AND n.codigo = $codigo";
-} else
-    $sqlCodigo = "AND (n.sincronizado IS NULL OR n.sincronizado = '0000-00-00 00:00:00')";
-
-
-$user = 'BT000001';
-$pass = '4(HC&m3KbT';
-$campus = $DIGITANOTAS;
-$turma = '0';
-$flagDigitacaoNota = '0';
-
-$sql = "SELECT p.prontuario, p2.prontuario, d.numero, a.eventod, t.ano, t.semestre,
-        n.bimestre, n.falta, n.sincronizado, n.mcc, n.rec, n.ncc, n.codigo
-	FROM NotasFinais n, Atribuicoes a, Pessoas p, Pessoas p2, Professores pr, Matriculas m, Disciplinas d, Turmas t
-	WHERE n.atribuicao = a.codigo
-	AND pr.atribuicao = a.codigo
-	AND pr.professor = p.codigo
-	AND n.matricula = m.codigo
-	AND m.aluno = p2.codigo
-	AND d.codigo = a.disciplina
-	AND m.atribuicao = a.codigo
-	AND t.codigo = a.turma
-	$sqlCodigo";
-$result = mysql_query($sql);
-$n = 0;
-$s = 0;
-
-while ($l = mysql_fetch_array($result)) {
-    $prontuario = $l[0];
-    $prontuarioAluno = $l[1];
-    $codigoDisciplina = $l[2];
-    $eventod = $l[3];
-    $bimestre = ($l[6] == 0) ? 'M' : $l[6];
-    $ano = $l[4];
-
-    $semestre = ($l[5]) ? $l[5] : $semestre;
-    $semestre = str_pad($semestre, 2, "0", STR_PAD_LEFT);
-    $faltas = $l[7];
-    $nota = number_format($l[11], 1, '.', ' ');
-
-    $j = ($l[10]) ? 2 : 1;
-
-    for ($i = 0; $i < $j; $i++) {
-
-        if ($i == 1 && $l[10]) {
-            $bimestre = 'R';
-            $faltas = '0';
-            $nota = number_format($l[10], 1, '.', ' ');
-        }
-
-        try {
-
-            $digitaNotaAlunoWS = new digitaNotasWS();
-            $ret = $digitaNotaAlunoWS->digitarNotaAluno($user, $pass, $campus, $prontuario, $prontuarioAluno, $codigoDisciplina, $eventod, $bimestre, $ano, $semestre, $faltas, $nota, $turma, $flagDigitacaoNota);
-
-            $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas): $ret \n";
-
-            if ($ret) {
-                if ($DEBUG)
-                    echo "$URL \n";
-                mysql_query("insert into Logs values(0, '$URL', now(), 'CRON_NT', 1)");
-                mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$ret' WHERE codigo = " . $l[12]);
-                if ($codigo)
-                    print "Nota registrada.";
-                $s++;
-            } else {
-                $URL = "ERRO $URL \n";
-                if ($DEBUG)
-                    echo "$URL \n";
-                mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_ERRO', 1)");
-                mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
-                if ($codigo)
-                    print "Problema ao registrar nota.";
-                $n++;
+if ($semestre == 2) {
+    $db2 = "SELECT NTA_DISC, NTA_PRONT, NTA_NOTA, NTA_FALTA, NTA_BIM, NTA_EVENTOD "
+            . "FROM ESCOLA.NOTASAL "
+            . "WHERE NTA_ANO = $ano "
+            . "AND (NTA_BIM = '1' OR NTA_BIM = '2')";
+    $res = db2_exec($conn, $db2);
+    while ($row = db2_fetch_object($res)) {
+        $row->NTA_DISC = trim($row->NTA_DISC);
+        $sql = "SELECT p.prontuario as prontuario, a.codigo as atribuicao,
+                        m.codigo as matricula, 
+                        (SELECT codigo FROM NotasFinais n 
+                            WHERE n.atribuicao = a.codigo 
+                            AND n.matricula = m.codigo 
+                            AND n.bimestre = a.bimestre) as notas
+                   FROM Atribuicoes a, Turmas t, Disciplinas d, Matriculas m, Pessoas p
+                   WHERE a.turma = t.codigo
+                   AND a.disciplina = d.codigo
+                   AND m.atribuicao = a.codigo
+                   AND m.aluno = p.codigo
+                   AND t.ano = $ano
+                   AND a.bimestre = $row->NTA_BIM
+                   AND p.prontuario = '$row->NTA_PRONT'
+                   AND a.eventod = '$row->NTA_EVENTOD'
+                   AND d.numero = '$row->NTA_DISC'";
+        //print $sql;
+        $res2 = mysql_query($sql);
+        while ($row2 = mysql_fetch_object($res2)) {
+            if (!$row2->notas) {
+                // IMPORTA A NOTA
+                $sql = "INSERT INTO NotasFinais 
+                    (codigo, atribuicao, matricula, bimestre, mcc, rec, ncc, falta, sincronizado, flag, retorno) 
+                    VALUES (
+                    NULL, $row2->atribuicao, "
+                        . "$row2->matricula, "
+                        . "'$row->NTA_BIM', "
+                        . "'$row->NTA_NOTA', '', '$row->NTA_NOTA', "
+                        . "$row->NTA_FALTA, NOW(), '5', "
+                        . "'FROM IMPORT NOTAS')";
+                mysql_query($sql);
+                
+                // ATUALIZACAO A ATRIBUICAO PARA FECHADA, 
+                // ASSIM A FUNCAO RESULTADO BUSCA A NOTA NA TABELA NOTASFINAIS
+                $sql = "UPDATE Atribuicoes SET status = 4 WHERE codigo = $row2->atribuicao";
+                mysql_query($sql);                
             }
-        } catch (Exception $ex) {
-            if ($codigo)
-                print $ex;
-            $erro = "Erro DigitaNotas: $ex";
-            if ($DEBUG)
-                echo "$erro \n";
-            mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
-            mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
-            $n++;
         }
     }
-}
-
-// REGISTRA A ATUALIZACAO
-if (!$LOCATION_CRON) {
-    $sql = "insert into Atualizacoes values(0,12," . $_SESSION['loginCodigo'] . ", now())";
-    mysql_query($sql);
-    ?>
-    <script>
-        $('#digitaNotasRetorno').text('<?php print $s; ?> sincronizadas, <?php print $n; ?> nao sincronizados');
-    </script><?php
-} else {
-    $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
-    $resultAdmin = mysql_query($sqlAdmin);
-    $admin = mysql_fetch_object($resultAdmin);
-
-    $sql = "insert into Atualizacoes values(0,112," . $admin->codigo . ", now())";
-    mysql_query($sql);
-
-    $URL = "DIGITA NOTAS: $s NOTAS SINCRONIZADAS";
-    $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
-    mysql_query($sql);
 }
 ?>
