@@ -33,8 +33,9 @@ $sql = "SELECT p.prontuario, p2.prontuario, d.numero, a.eventod, t.ano, t.semest
 	AND d.codigo = a.disciplina
 	AND m.atribuicao = a.codigo
 	AND t.codigo = a.turma
-        AND flag <> 5;
+        AND flag <> 5
 	$sqlCodigo";
+
 $result = mysql_query($sql);
 $n = 0;
 $s = 0;
@@ -67,7 +68,6 @@ while ($l = mysql_fetch_array($result)) {
 
             $digitaNotaAlunoWS = new digitaNotasWS();
             $ret = $digitaNotaAlunoWS->digitarNotaAluno($user, $pass, $campus, $prontuario, $prontuarioAluno, $codigoDisciplina, $eventod, $bimestre, $ano, $semestre, $faltas, $nota, $turma, $flagDigitacaoNota);
-
             $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
 
             if ($ret) {
