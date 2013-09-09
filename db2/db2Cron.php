@@ -40,6 +40,8 @@ include ("$LOCATION_CRON" . "db2DigitaNotas.php");
 include ("$LOCATION_CRON" . "db2Notas.php");
 include ("$LOCATION_CRON" . "db2Dispensas.php");
 
+include ("$LOCATION_CRON" . "db2NotasDivergentes.php");
+
 //METRICAS DO SISTEMA
 mysql_set_charset('utf8');
 // PEGA A CIDADE PRINCIPAL

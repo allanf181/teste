@@ -71,6 +71,8 @@ $ordem = '';
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
+$sqlAdicional .= ' ORDER BY data DESC ';
+
 $res = $log->listLogs($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($log->listLogs($params, $sqlAdicional));
 

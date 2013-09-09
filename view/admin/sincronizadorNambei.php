@@ -79,6 +79,27 @@ $log = new Logs();
         </tr>
         <tr>
             <td colspan="3">
+                <b>DIVERG&Ecirc;NCIAS ENTRE WEBDI&Aacute;RIO(WD) E NAMBEI-DIGITANOTAS(DN)</b>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <?php
+                $sqlAdicional = " AND l.origem = 'CRON_NTDIV' "
+                        . "AND l.data BETWEEN DATE_SUB(NOW(), INTERVAL 5 DAY) AND NOW() "
+                        . "GROUP BY l.url "
+                        . "ORDER BY l.origem ASC, l.url ASC, l.codigo DESC, l.data DESC ";
+                foreach ($log->listLogs($params, $sqlAdicional, 1, null) as $reg) {
+                    print $reg['data'] . " - " . $reg['url'] . "<br>";
+                }
+                ?>
+            </td>
+        </tr>        
+        <tr>
+            <td colspan="3"><hr></td>
+        </tr>
+        <tr>
+            <td colspan="3">
                 <b>ERROS OCORRIDOS</b>
             </td>
         </tr>
