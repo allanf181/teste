@@ -8,14 +8,17 @@ if (!$LOCATION_CRON) {
     require("$LOCATION_CRON" . "../inc/funcoes.inc.php");
 }
 
+require $LOCATION_CRON . "../controller/nota.class.php";
+$nota = new Notas();
+
 $sql = "SELECT a.eventod, d.numero, a.codigo, a.bimestre
                    FROM Atribuicoes a, Turmas t, Disciplinas d, Matriculas m, Pessoas p
                    WHERE a.turma = t.codigo
                    AND a.disciplina = d.codigo
                    AND m.atribuicao = a.codigo
                    AND m.aluno = p.codigo
-                   AND t.ano = 2013
-                   AND a.status <> 0
+                   AND t.ano = $ano
+                   AND a.status <> 0 AND a.status <> 4
                    GROUP BY a.codigo";
 //print $sql;
 $res2 = mysql_query($sql);
@@ -43,7 +46,7 @@ while ($row2 = mysql_fetch_object($res2)) {
 
     foreach ($registros as $pront => $reg) {
         foreach ($reg as $bim => $reg2) {
-            $sql = "SELECT mcc,ncc,falta,rec,n.bimestre,a.codigo,t.numero
+            $sql = "SELECT n.bimestre,a.codigo,t.numero,m.codigo as matricula,m.aluno as aluno
                    FROM Atribuicoes a, Turmas t, Disciplinas d, Matriculas m, Pessoas p, NotasFinais n
                    WHERE a.turma = t.codigo
                    AND a.disciplina = d.codigo
@@ -51,29 +54,48 @@ while ($row2 = mysql_fetch_object($res2)) {
                    AND m.aluno = p.codigo
                    AND n.matricula = m.codigo
                    AND n.atribuicao = a.codigo
-                   AND n.bimestre = a.bimestre
-                   AND a.bimestre = $bim
+                   AND n.bimestre = '$bim'
                    AND a.codigo = $row2->codigo
                    AND p.prontuario = '$pront'";
             //print $sql;
             $res3 = mysql_query($sql);
             while ($row3 = mysql_fetch_object($res3)) {
-                if ($row3->rec <> $reg2['rec'] && $row3->bimestre == 'M') {
-                    $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: $bim  |NOTA WD: $row3->rec | DN: " . $reg2['rec'] . " \n";
-		    mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
-		    if ($DEBUG) print "$REG <br>\n";
+                $dados = $nota->resultado($row3->matricula, $row2->codigo, 0, 1);
+
+                if ($reg2['nota'] && $bim == 'M') {
+                    $final = $nota->resultadoBimestral($row3->aluno, $row3->numero, $row2->numero, 1, 1);
+
+                    if (!$final['mediaAvaliacao'])
+                        $final['mediaAvaliacao'] = '0.00';
+                    
+                    if (!$final['notaRecuperacao'])
+                        $final['notaRecuperacao'] = '0.00';
+                    
+                    if ($final['mediaAvaliacao'] <> $reg2['nota']) {
+                        $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: M  |NOTA WD: ".$final['mediaAvaliacao']." | DN: " . $reg2['nota'] . " \n";
+                        mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
+                        if ($DEBUG) print "$REG <br>\n";
+                    }
+
+                    if ($final['notaRecuperacao'] <> $reg2['rec']) {
+                        $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: R  |NOTA WD: ".$final['notaRecuperacao']." | DN: " . $reg2['rec'] . " \n";
+                        mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
+                        if ($DEBUG) print "$REG <br>\n";
+                    }
                 }
 
-                if ($row3->mcc <> $reg2['nota']) {
-                    $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: $bim  |NOTA WD: $row3->mcc | DN: " . $reg2['nota'] . " \n";
-		    mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
-		    if ($DEBUG) print "$REG <br>\n";
+                if ($dados['mediaAvaliacao'] <> $reg2['nota'] && $dados['notaRecuperacao'] <> $reg2['nota']) {
+                    $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: $bim  |NOTA WD: " . $dados['mediaAvaliacao'] . " | DN: " . $reg2['nota'] . " \n";
+                    mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
+                    if ($DEBUG)
+                        print "$REG <br>\n";
                 }
-                
-                if ($row3->falta <> $reg2['falta']) {
-                    $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: $bim  |FALTA WD: $row3->falta | DN: " . $reg2['falta'] . " \n";
-		    mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
-		    if ($DEBUG) print "$REG <br>\n";
+
+                if ($dados['faltas'] <> $reg2['falta']) {
+                    $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: $bim  |FALTA WD: " . $dados['faltas'] . " | DN: " . $reg2['falta'] . " \n";
+                    mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
+                    if ($DEBUG)
+                        print "$REG <br>\n";
                 }
             }
         }

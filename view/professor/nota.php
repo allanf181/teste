@@ -44,6 +44,7 @@ $atribuicao = dcrip($_GET["atribuicao"]);
 
 // Cabeçalho
 $resAval = $aval->getAvaliacao($avaliacao);
+$travaFinal = $resAval['final'];
 ?>
 <div id="etiqueta" align="center">
     Curso: <?= $resAval['curso'] ?><br />
@@ -146,9 +147,6 @@ if ($_SESSION['dataExpirou'])
                                     <?php
                                 }
                                 
-                                if ($i==1)
-                                    $travaFinal = $resAval['final'];
-                                
                                 if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']] )
                                     $resAval['final'] = 1;
                                 $dados1 = $nota->resultadoBimestral($reg['codAluno'], $resAval['turmaCodigo'], $resAval['discNumero'], $resAval['final']);
@@ -164,7 +162,7 @@ if ($_SESSION['dataExpirou'])
                                     <td align='center'><?= abreviar($dados1['situacao'], 24) ?></td>
                                     <?php //TRAVANDO PARA REAVALIACAO FINAL
                                     $trava=null;
-                                    if ( !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
+                                    if ( $travaFinal && !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                         ?>
                                         <script> $('#<?= $i ?>').attr('disabled','disabled'); </script>
                                         <?php

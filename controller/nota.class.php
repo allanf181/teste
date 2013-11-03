@@ -1,7 +1,7 @@
 <?php
-
 if (!class_exists('Frequencias'))
-    require_once CONTROLLER . '/frequencia.class.php';
+    require CONTROLLER. "/frequencia.class.php";
+
 
 class Notas extends Frequencias {
 
@@ -62,7 +62,7 @@ class Notas extends Frequencias {
 
             foreach ($res as $reg) {
                 if ($reg['habilitado']) {
-                    return $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], 1);
+                    return $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], 1, $fechamento);
                 }
             }
         }
@@ -97,7 +97,7 @@ class Notas extends Frequencias {
             $atribuicao = $reg['atribuicao'];
             if ($reg['habilitado']) {
                 //BUSCANDO AS MEDIAS DOS BIMESTRES DE CADA ALUNO
-                $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], $final);
+                $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], $final, $fechamento);
                 $medias += $dados['media'];
                 $faltas += $dados['faltas'];
                 $frequencias += $dados['frequencia'];
@@ -174,6 +174,7 @@ class Notas extends Frequencias {
                 $dados['notaRecuperacao'] = round($reg['rec'], 2);
                 $dados['recuperacao'] = round($reg['rec'], 2);
                 $dados['media'] = round($reg['ncc'], 2);
+                $dados['faltas'] = round($reg['falta'], 2);
                 $dados['final'] = $reg['final'];
                 return $dados;
             }

@@ -14,7 +14,7 @@ ini_set('max_execution_time', 60);
 //=======================================//
 //           ERROS DO SISTEMA            //
 //=======================================//
-error_reporting(E_ALL && !E_NOTICE);
+error_reporting(E_ALL && !E_NOTICE );
 ini_set("display_errors", 1);
 
 //=======================================//
@@ -22,10 +22,12 @@ ini_set("display_errors", 1);
 //=======================================//
 // Localização do diretório raiz do sistema
 define("LOCATION", '/academico', true);
-define("PATH", $_SERVER['DOCUMENT_ROOT'], true);
 
 // Diretório de Includes
 define("INC", LOCATION.'/inc', true);
+
+//PATH DO DOCUMENT ROOT
+define("PATH", str_replace(INC, '', __DIR__), true);
 
 // Local do conector
 define("MYSQL", PATH.INC.'/mysql.php', true);
