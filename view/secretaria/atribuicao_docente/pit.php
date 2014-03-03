@@ -41,6 +41,10 @@ if ($_GET["opcao"] == 'change') {
 
     $ret = $log->insertOrUpdate($_GET);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+
+    $params["finalizado"] = null;
+    $params['codigo'] = $_GET['codigoTabela'];
+    $ret = $dados->insertOrUpdate($params); 
     
     //ENVIANDO EMAIL
     if ($ret['STATUS'] == 'OK') {

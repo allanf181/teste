@@ -35,6 +35,7 @@ if ($_POST) {
     $_POST['semestre'] = $SEMESTRE;
     $_POST['ano'] = $ANO;
     $_POST['pessoa'] = $_SESSION['loginCodigo'];
+    $_POST['codigo'] = dcrip($_POST['codigo']);
 
     $ret = $dados->insertOrUpdateFPA($_POST);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);

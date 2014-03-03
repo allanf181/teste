@@ -24,9 +24,9 @@ class TDDados extends Generic {
                 . "AND l.codigoTabela = f.codigo "
                 . "AND f.semestre = :sem "
                 . "AND f.ano = :ano "
-                . "AND f.valido = '0000-00-00 00:00:00' "
-                . "AND f.finalizado = '0000-00-00 00:00:00' "
-                . "AND l.dataConcessao = '0000-00-00 00:00:00' ";
+                . "AND (f.valido = '0000-00-00 00:00:00' OR f.valido IS NULL) "
+                . "AND (f.finalizado = '0000-00-00 00:00:00' OR f.finalizado IS NULL) "
+                . "AND (l.dataConcessao = '0000-00-00 00:00:00' OR l.dataConcessao IS NULL) ";
 
         $sql .= $sqlAdicional;
         
@@ -214,7 +214,7 @@ class TDDados extends Generic {
 
         if ($enviar) {
             //REGISTRANDO NO LOG DE SOLICITACOES
-            $l['codigo'] = dcrip($codTD);
+            $l['codigo'] = $codTD;
             $l['nome'] = $modelo;
             $l['data'] = date('Y:m:d H:i:s');
             $log = new LogSolicitacoes();
