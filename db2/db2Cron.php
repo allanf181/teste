@@ -37,11 +37,11 @@ include ("$LOCATION_CRON" . "db2Atribuicoes.php");
 include ("$LOCATION_CRON" . "db2Matriculas.php");
 
 include ("$LOCATION_CRON" . "db2DigitaNotas.php");
-
 include ("$LOCATION_CRON" . "db2Notas.php");
-
 include ("$LOCATION_CRON" . "db2Dispensas.php");
 
+//METRICAS DO SISTEMA
+mysql_set_charset('utf8');
 // PEGA A CIDADE PRINCIPAL
 $sql = "SELECT c.nome as city, COUNT(c.nome) registros 
             FROM Pessoas p, Cidades c 
