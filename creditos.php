@@ -60,6 +60,12 @@ require SESSAO;
 
 <br />
 <br />
+<b>Vers&atilde;o 1.413</b>
+<br>
+<br> - Adicionado recurso conforme chamado - #154
+<br> - Adicionado link de contato no HOME para permitir envio de sugest&atilde;o e reportar erros.
+<hr>
+<br>
 <b>Vers&atilde;o 1.412</b>
 <br>
 <br> - Corre&ccedil;&atilde;o do chamado - #185

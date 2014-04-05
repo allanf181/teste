@@ -7,7 +7,7 @@ include_once "inc/config.inc.php";
     <title><?= $SITE_TITLE ?></title>
 <meta http-equiv="Content-Language" content="pt-br" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="shortcut icon" type="image/x-icon" href="<?= ICONS ?>/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="<?= ICONS ?>/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="<?= VIEW ?>/css/estilo.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="<?= VIEW ?>/css/menu/styles.css" media="screen" />
 

@@ -23,7 +23,7 @@ $SEMESTRE = $_SESSION["semestre"];
 require CONTROLLER . "/instituicao.class.php";
 
 $instituicao = new Instituicoes();
-if ($res = $instituicao->dadosInstituicao()) {
+if ($res = $instituicao->listRegistros()) {
     $SITE_TITLE = $res[0]['nome'];
     $SITE_CIDADE = $res[0]['cidade'];
     $GED = $res[0]['ged'];
@@ -39,7 +39,9 @@ if ($res = $instituicao->dadosInstituicao()) {
     $DIGITANOTAS = $res[0]['campiDigitaNotas'];
     $LDAP_ATIVADO = $res[0]['ldap_ativado'];
     $LDAP_CACHE = $res[0]['ldap_cache'];
+    $EMAIL = $res[0]['email_account'];
 }
+
 // PARA MIGRAÃ‡ÃƒO
 //$BD1 = "brtacademico";
 //$BD2 = "academico";

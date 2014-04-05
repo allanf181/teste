@@ -76,7 +76,7 @@ if ($_GET["opcao"] == 'recuperar' || $_GET["opcao"] == 'alterar'){
     <script>
         $('#form_padrao').html5form({
             method : 'POST',
-            action : '<?php print VIEW; ?>/senha.php',
+            action : '<?= VIEW ?>/senha.php',
             responseDiv : '#index',
             colorOn: '#000',
             colorOff: '#999',

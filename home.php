@@ -11,9 +11,14 @@ require SESSAO;
     <tr>
         <td colspan="2">
             <font size="4"><b>WebDi&aacute;rio</b></font>
-            <br><a class="link" title='O que h&aacute; de novo...' href="javascript:$('#index').load('creditos.php');void(0);">
+            <br><a class="link" title='O que h&aacute; de novo...' href="javascript:$('#index').load('creditos.php'); void(0);">
                 <font size="1">Vers&atilde;o 1.<?php print $VERSAO; ?></font>
             </a></td>
+            <td>
+                <a title='Clique aqui para enviar sugest&otilde;es ou reportar problemas' href="javascript:$('#index').load('<?=VIEW?>/email.php'); void(0);">
+                    <img src="<?=ICONS?>/email.png">
+                </a>
+            </td>
     </tr>
     <tr>
         <td>&nbsp;</td>
@@ -206,7 +211,6 @@ require SESSAO;
                 }
             }
             ?>
-            <br><br>Escolha uma das opções do menu para começar.
         </td>
 
         <?php
