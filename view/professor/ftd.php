@@ -216,7 +216,7 @@ require SESSAO;
     print "<table width=\"80%\" border=\"0\" summary=\"FTD\" id=\"tabela_boletim\">\n";
     print "<thead>\n";
     print "<tr>\n";
-    print "<th>Professor: </th><th><input type=\"text\" disabled style=\"width: 227pt\" id=\"campoNome\" name=\"campoNome\" maxlength=\"45\" value=\"" . utf8_encode($_SESSION["loginNome"]) . "\"/></th>\n";
+    print "<th>Professor: </th><th><input type=\"text\" disabled style=\"width: 227pt\" id=\"campoNome\" name=\"campoNome\" maxlength=\"45\" value=\"" . $_SESSION["loginNome"] . "\"/></th>\n";
     print "<th>&Aacute;rea: </th><th><input type=\"text\" $disabled style=\"width: 227pt\" id=\"campoArea\" name=\"campoArea\" maxlength=\"45\" value=\"$area\"/></th>\n";
     print "</tr>\n";
     print "<tr>\n";
