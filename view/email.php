@@ -35,7 +35,10 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
         $mensagem .= '<br />CAMPUS: '.$SITE_CIDADE;
         $mensagem .= '<br /><br />MENSAGEM: <br>'.$_POST['conteudo'];
        
-        if ($instituicao->sendEmail('webdiario@ifsp.edu.br;naylorgarcia@ifsp.edu.br', 'CONTATO-WEBDIARIO', $mensagem, $headers))
+        $email[0] = 'webdiario@ifsp.edu.br';
+        $email[1] = 'naylorgarcia@ifsp.edu.br';
+        
+        if ($instituicao->sendEmail($email, 'CONTATO-WEBDIARIO', $mensagem, $headers))
             mensagem('OK', 'EMAIL_SUGESTAO');
     }
 }

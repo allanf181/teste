@@ -13,7 +13,7 @@ class Instituicoes extends Generic {
 
     // MÉTODO PARA CARREGAR VARIÁVEIS DE AMBIENTE
     // USADO POR: INC/VARIAVEIS.PHP
-    public function sendEmail($email, $assunto, $mensagem, $headers) {
+    public function sendEmail($emails, $assunto, $mensagem, $headers) {
 
         $res = $this->listRegistros();
 
@@ -30,9 +30,11 @@ class Instituicoes extends Generic {
             $mail->SMTPSecure = $res[0]['email_secure'];
             $mail->Port = $res[0]['email_port'];
 
-            $mail->From = $email;
-            $mail->FromName = $email;
-            $mail->addAddress($email, $email);
+            foreach($emails as $email) {
+                $mail->From = $email;
+                $mail->FromName = $email;
+                $mail->addAddress($email, $email);
+            }
 
             $mail->WordWrap = 50;
             $mail->AddEmbeddedImage(PATH.VIEW."/css/images/logo.png", 'IFSP', 'IFSP.jpg');
