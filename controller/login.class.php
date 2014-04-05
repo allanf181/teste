@@ -109,8 +109,10 @@ class login extends Generic {
                 $headers .= "Return-Path: naoresponda@ifsp.edu.br \n";
                 $assunto = "Senha - WebDiario";
 
+                $email = array( $res[0]['email'] );
+
                 $instituicao = new Instituicoes();
-                if ($instituicao->sendEmail($res[0]['email'], $assunto, $mensagem, $headers)) {
+                if ($instituicao->sendEmail($email, $assunto, $mensagem, $headers)) {
                     return true;
                 }
             }
