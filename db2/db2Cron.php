@@ -66,9 +66,7 @@ $sql = "SELECT p.nome,
                 AND t.ano = $ano
                 GROUP BY pr.professor ORDER BY aula DESC, frequencia DESC, avaliacao DESC, nota DESC";
 $result = @mysql_query($sql);
-$uso = @mysql_fetch_object($result);
-
-foreach ($res as $reg) {
+while ($uso = mysql_fetch_object($result)) {
     if ($uso->aula || $uso->frequencia || $uso->avaliacao || $uso->nota)
         $usoSistema++;
     $count++;
