@@ -56,6 +56,8 @@ class Avaliacoes extends Generic {
 		(SELECT calculo FROM TiposAvaliacoes WHERE codigo = a.tipo AND tipo='recuperacao') as recuperacao,
 		(SELECT SUM(peso) FROM Avaliacoes a1, TiposAvaliacoes t1 
                         WHERE a1.tipo = t1.codigo AND t1.tipo = 'avaliacao' AND a1.atribuicao = at.codigo) as totalPeso,
+		(SELECT SUM(peso) FROM Avaliacoes a1, TiposAvaliacoes t1 
+                        WHERE a1.tipo = t1.codigo AND t1.tipo = 'pontoExtra' AND a1.atribuicao = at.codigo) as totalPonto,                        
 		(SELECT final FROM TiposAvaliacoes WHERE codigo = a.tipo AND tipo='recuperacao' AND final=1) as final,
 		at.bimestre, a.sigla, t.numero,
                 (SELECT CONCAT(nome, ' (', sigla,')') FROM Avaliacoes WHERE codigo = a.substitutiva) as substitutiva
