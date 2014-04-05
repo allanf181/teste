@@ -47,10 +47,22 @@ $sql = "SELECT c.nome as city, COUNT(c.nome) registros
 $result = @mysql_query($sql);
 $cidPr = @mysql_fetch_object($result);
 
-require $LOCATION_CRON.'../lib/nusoap/lib/nusoap.php';
+//VERIFICA O USO DO SISTEMA
+require("$LOCATION_CRON"."../controller/atribuicao.class.php");
+$atribuicao = new Atribuicoes();
 
+$params = array('ano' => $ano, 'semestre' => $semestre);
+$res = $atribuicao->getDadosUsoSistema($params);
+foreach ($res as $reg) {
+    if ($reg['aula'] || $reg['frequencia'] || $reg['avaliacao'] || $reg['nota'])
+        $uso++;
+    $count++;
+}
+$uso = round(($uso * 100) / $count);
+
+// INSERINDO INFOS VIA WS
+require $LOCATION_CRON.'../lib/nusoap/lib/nusoap.php';
 $client = new nusoap_client("https://200.133.218.2:80/wsWD/server.wsdl", true);
- 
 $client->setCredentials("WebDiarioWDWS", "W3bD1ari0_WS_WD_##!!", "basic");
 
 if ($client) {
@@ -60,7 +72,8 @@ $result = $client->call("setversion", array("nome" => "$SITE_TITLE",
                                             "versao" => "$VERSAO",
                                             "cidadePredominante" => $cidPr->city,
                                             "uname" => php_uname(),
-                                            "hostname" => gethostname()));
+                                            "hostname" => gethostname(),
+                                            "usoSistema" => $uso));
 }
 
 if ($result)
