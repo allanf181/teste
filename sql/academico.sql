@@ -589,7 +589,7 @@ CREATE TABLE IF NOT EXISTS `Pessoas` (
 --
 
 INSERT INTO `Pessoas` (`codigo`, `nome`, `prontuario`, `senha`, `cpf`, `rg`, `naturalidade`, `nascimento`, `endereco`, `bairro`, `cidade`, `cep`, `telefone`, `celular`, `email`, `observacoes`, `foto`, `sexo`, `raca`, `estadoCivil`, `numeroPessoasNaResidencia`, `renda`, `situacaoTrabalho`, `tipoTrabalho`, `empresaTrabalha`, `cargoEmpresa`, `tempo`, `meioTransporte`, `transporteGratuito`, `necessidadesEspeciais`, `descricaoNecessidadesEspeciais`, `dataSenha`, `recuperaSenha`, `ano1g`, `escola1g`, `escolaPublica`, `lattes`, `bloqueioFoto`, `dataAlteracao`) VALUES
-(1, 'Administrador', 'admin', 'admin', '', '', 0, '0000-00-00', '', '', 0, '', '', '', '', '', NULL, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, '', '', '', '2014-04-13 21:30:21', '', '', '', '', NULL, NULL, NULL);
+(1, 'Administrador', 'admin', '*4ACFE3202A5FF5CF467898FC58AAB1D615029441', '', '', 0, '0000-00-00', '', '', 0, '', '', '', '', '', NULL, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, '', '', '', '2014-04-13 21:30:21', '', '', '', '', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
