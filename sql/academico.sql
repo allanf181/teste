@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tempo de Geração: 12/07/2014 às 03h07min
+-- Tempo de Geração: 14/04/2014 às 00h58min
 -- Versão do Servidor: 5.5.34
 -- Versão do PHP: 5.3.10-1ubuntu3.9
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `Atribuicoes` (
   PRIMARY KEY (`codigo`,`disciplina`,`turma`),
   KEY `fk_Atribuicoes_Disciplinas1` (`disciplina`),
   KEY `fk_Atribuicoes_Turmas1` (`turma`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -68,21 +68,6 @@ CREATE TABLE IF NOT EXISTS `Atualizacoes` (
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `AtualizacoesSistema`
---
-
-CREATE TABLE IF NOT EXISTS `AtualizacoesSistema` (
-  `codigo` int(11) NOT NULL AUTO_INCREMENT,
-  `data` datetime NOT NULL,
-  `numero` varchar(50) NOT NULL,
-  `pessoa` int(11) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  KEY `pessoa` (`pessoa`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
 -- Estrutura da tabela `Aulas`
 --
 
@@ -96,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `Aulas` (
   `atribuicao` int(11) NOT NULL,
   PRIMARY KEY (`codigo`,`atribuicao`),
   KEY `fk_Aulas_Atribuicoes1` (`atribuicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -115,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `Avaliacoes` (
   PRIMARY KEY (`codigo`,`atribuicao`,`tipo`),
   KEY `fk_Avaliacoes_Atribuicoes1` (`atribuicao`),
   KEY `fk_Avaliacoes_2` (`tipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -135,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `Avisos` (
   PRIMARY KEY (`codigo`),
   KEY `atribuicao` (`atribuicao`),
   KEY `pessoa` (`pessoa`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -149,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `Calendarios` (
   `diaLetivo` int(1) NOT NULL,
   `ocorrencia` varchar(255) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -163,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `Cidades` (
   `estado` int(11) NOT NULL,
   PRIMARY KEY (`codigo`,`estado`),
   KEY `fk_Cidades_Estados1` (`estado`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -179,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `Coordenadores` (
   UNIQUE KEY `coordenador_2` (`coordenador`,`curso`),
   KEY `curso` (`curso`),
   KEY `coordenador` (`coordenador`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -195,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `Cursos` (
   `nomeAlternativo` varchar(145) DEFAULT NULL,
   PRIMARY KEY (`codigo`),
   KEY `modalidade` (`modalidade`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -213,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `Disciplinas` (
   PRIMARY KEY (`codigo`),
   UNIQUE KEY `un_curso_numero` (`numero`,`curso`),
   KEY `fk_Disciplinas_Cursos` (`curso`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -233,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `Ensalamentos` (
   KEY `sala` (`sala`),
   KEY `horario` (`horario`),
   KEY `professor` (`professor`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -247,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `Estados` (
   `sigla` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`codigo`),
   UNIQUE KEY `sigla` (`sigla`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -286,7 +271,7 @@ CREATE TABLE IF NOT EXISTS `Frequencias` (
   PRIMARY KEY (`codigo`,`matricula`,`aula`),
   KEY `fk_Frequencias_Matriculas1` (`matricula`),
   KEY `fk_Frequencias_Aulas1` (`aula`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -304,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `FrequenciasAbonos` (
   `tipo` char(1) NOT NULL,
   PRIMARY KEY (`codigo`),
   KEY `aluno` (`aluno`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -341,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `FTDDados` (
   `finalizado` datetime DEFAULT NULL,
   PRIMARY KEY (`codigo`),
   KEY `professor` (`professor`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -356,7 +341,7 @@ CREATE TABLE IF NOT EXISTS `FTDHorarios` (
   `horario` varchar(5) NOT NULL,
   PRIMARY KEY (`codigo`),
   KEY `ftd` (`ftd`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -370,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `Horarios` (
   `inicio` time NOT NULL,
   `fim` time NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -405,7 +390,7 @@ CREATE TABLE IF NOT EXISTS `Instituicoes` (
 --
 
 INSERT INTO `Instituicoes` (`codigo`, `nome`, `cidade`, `ged`, `adm`, `sec`, `prof`, `aluno`, `coord`, `diasAlterarSenha`, `limiteAltDiarioProf`, `limiteInsAulaProf`, `ipServidorAtualizacao`, `usuarioServidorAtualizacao`, `senhaServidorAtualizacao`, `bloqueioFoto`, `campiDigitaNotas`, `versao`) VALUES
-(1, '', '', 3, 5, 4, 2, 1, 10, 0, 3, 2, 'arq.ifsp.edu.br', 'academico', 'M3tr@t0n', '1', 'ST', '398');
+(1, '', '', 3, 5, 4, 2, 1, 10, 0, 7, 7, 'arq.ifsp.edu.br', 'academico', 'M3tr@t0n', '', NULL, '379');
 
 -- --------------------------------------------------------
 
@@ -422,7 +407,7 @@ CREATE TABLE IF NOT EXISTS `Logs` (
   PRIMARY KEY (`codigo`,`pessoa`),
   KEY `fk_Logs_1` (`codigo`),
   KEY `fk_Logs_2` (`pessoa`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -441,7 +426,7 @@ CREATE TABLE IF NOT EXISTS `Matriculas` (
   KEY `fk_Matriculas_Pessoas1` (`aluno`),
   KEY `fk_Matriculas_Situacoes1` (`situacao`),
   KEY `fk_Matriculas_Atribuicoes1` (`atribuicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -478,7 +463,7 @@ CREATE TABLE IF NOT EXISTS `Modalidades` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(145) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -494,7 +479,7 @@ CREATE TABLE IF NOT EXISTS `Notas` (
   PRIMARY KEY (`codigo`,`matricula`,`avaliacao`),
   KEY `fk_Notas_Avaliacoes1` (`avaliacao`),
   KEY `fk_Notas_Matriculas1` (`matricula`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -516,7 +501,7 @@ CREATE TABLE IF NOT EXISTS `NotasFinais` (
   PRIMARY KEY (`codigo`),
   KEY `matricula` (`matricula`),
   KEY `atribuicao` (`atribuicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -532,21 +517,21 @@ CREATE TABLE IF NOT EXISTS `Permissoes` (
   `menu` text,
   PRIMARY KEY (`codigo`),
   KEY `tipo` (`tipo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 
 --
 -- Extraindo dados da tabela `Permissoes`
 --
 
 INSERT INTO `Permissoes` (`codigo`, `tipo`, `permissao`, `nome`, `menu`) VALUES
-(1, 5, 'abono.php,atribuicao.php,atualizacaoSistema.php,aviso.php,boletim.php,boletimTurma.php,calendario.php,cidade.php,coordenador.php,curso.php,diario.php,disciplina.php,ensalamento.php,estado.php,frequenciaLista.php,ftd.php,horario.php,instituicao.php,logs.php,matricula.php,migracao.php,modalidade.php,notasFinais.php,permissao.php,pessoa.php,plano.php,prazoAula.php,prazoDiario.php,professorAtribuicao.php,relatorio.php,sala.php,sincronizadorNambei.php,situacao.php,socioEconomico.php,tipo.php,tipoAvaliacao.php,turma.php,turno.php,usoSistema.php', 'Abono de Faltas,Atribui&ccedil;&otilde;es,Atualiza&ccedil;&atilde;o do Sistema,Avisos,Boletim,Boletim por Turma,Calend&aacute;rio Acad&ecirc;mico,Cidades,Coordenadores,Cursos,Di&aacute;rios,Disciplinas,Ensalamento,Estados,Frequ&ecirc;ncias,FTDs,Hor&aacute;rios,Institui&ccedil;&atilde;o,Logs,Matr&iacute;&shy;culas,Migra&ccedil;&atilde;o BRT,Modalidades,Notas Finais,Permiss&otilde;es,Pessoas,Planos de Ensino,Prazos Aulas,Prazos Di&aacute;rios,Professores,Relat&oacute;rios,Salas,Sincronizar,Situa&ccedil;&otilde;es,Socioecon&ocirc;mico,Tipos,Tipos de Avalia&ccedil;&otilde;es,Turmas,Turnos,Uso do Sistema', 'abono.php,atribuicao.php,atualizacaoSistema.php,aviso.php,,boletimTurma.php,calendario.php,cidade.php,coordenador.php,curso.php,diario.php,disciplina.php,ensalamento.php,estado.php,frequenciaLista.php,ftd.php,horario.php,instituicao.php,logs.php,matricula.php,migracao.php,modalidade.php,notasFinais.php,permissao.php,pessoa.php,plano.php,prazoAula.php,prazoDiario.php,professorAtribuicao.php,relatorio.php,sala.php,sincronizadorNambei.php,situacao.php,socioEconomico.php,tipo.php,tipoAvaliacao.php,turma.php,turno.php,usoSistema.php'),
-(4, 2, 'aula.php,avaliacao.php,aviso.php,boletim.php,calendario.php,ensalamento.php,frequencia.php,ftdProfessor.php,nota.php,planoEnsino.php,professor.php', 'Aulas,Avalia&ccedil;&otilde;es,Avisos para Turma,Boletim,Calend&aacute;rio Acad&ecirc;mico,Hor&aacute;rio do Professor,Frequ&ecirc;ncias,FTD,Notas,Plano de Ensino,Disciplinas', ',,,,calendario.php,ensalamento.php,,ftdProfessor.php,,,professor.php'),
-(5, 3, 'aviso.php,boletim.php,boletimTurma.php,calendario.php,cidade.php,diario.php,frequenciaLista.php,ftd.php,horario.php,pessoa.php,plano.php,prazoAula.php,prazoDiario.php,relatorio.php,sala.php,socioEconomico.php,tipoAvaliacao.php,usoSistema.php', 'Avisos,Boletim,Boletim - Turmas,Calend&aacute;rio Acad&ecirc;mico,Cidades,Di&aacute;rios de Classe,Frequ&ecirc;ncias,FTDs,Hor&aacute;rios,Cadastro de Pessoas,Planos de Ensino,Prazos Aulas,Prazos Di&aacute;rios,Relat&oacute;rios,Salas,SocioEcon&ocirc;mico,Tipos de Avalia&ccedil;&otilde;es,Uso do Sistema', 'aviso.php,,boletimTurma.php,calendario.php,cidade.php,diario.php,frequenciaLista.php,ftd.php,horario.php,pessoa.php,plano.php,prazoAula.php,prazoDiario.php,relatorio.php,sala.php,socioEconomico.php,tipoAvaliacao.php,usoSistema.php'),
-(7, 10, 'aula.php,avaliacao.php,aviso.php,boletim.php,boletimTurma.php,diario.php,frequencia.php,frequenciaLista.php,ftd.php,nota.php,plano.php,prazoAula.php,prazoDiario.php,professor.php,relatorio.php', 'Aulas,Avalia&ccedil;&otilde;es,Avisos,Boletim do Aluno,Boletim da Turma,Di&aacute;rios,Frequ&ecirc;ncia,Listas de Frequ&ecirc;ncias,FTDs,Notas,Planos de Ensino,Prazos Aulas,Prazos Di&aacute;rios,Disciplinas,Relat&oacute;rios', ',,aviso.php,,boletimTurma.php,diario.php,,frequenciaLista.php,ftd.php,,plano.php,prazoAula.php,prazoDiario.php,professor.php,relatorio.php'),
-(8, 4, 'abono.php,atribuicao.php,aula.php,aviso.php,boletim.php,boletimTurma.php,calendario.php,cidade.php,coordenador.php,curso.php,diario.php,disciplina.php,ensalamento.php,estado.php,frequencia.php,frequenciaLista.php,horario.php,matricula.php,migracao.php,modalidade.php,nota.php,pessoa.php,plano.php,relatorio.php,sala.php,sincronizadorNambei.php,situacao.php,socioEconomico.php,tipoAvaliacao.php,turma.php,turno.php,usoSistema.php', 'Abono de Faltas,Atribui&ccedil;&atilde;o,Aulas,Avisos,Boletim,Boletim - Turmas,Calend&aacute;rio Acad&ecirc;mico,Cidades,Coordenadores,Cursos,Di&aacute;rios de Classe,Disciplinas,Ensalamento,Estados,Frequ&ecirc;ncias,Frequ&ecirc;ncias,Hor&aacute;rios,Matr&iacute;culas,Migra&ccedil;&atilde;o BRT,Modalidades,Notas,Cadastro de Pessoas,Planos de Ensino,Relat&oacute;rios,Salas,Sincronizar,Situa&ccedil;&otilde;es,SocioEcon&ocirc;mico,Tipos de Avalia&ccedil;&otilde;es,Turmas,Turnos,Uso do Sistema', 'abono.php,atribuicao.php,,aviso.php,,boletimTurma.php,calendario.php,cidade.php,coordenador.php,curso.php,diario.php,disciplina.php,ensalamento.php,estado.php,,frequenciaLista.php,horario.php,matricula.php,migracao.php,modalidade.php,,pessoa.php,plano.php,relatorio.php,sala.php,sincronizadorNambei.php,situacao.php,socioEconomico.php,tipoAvaliacao.php,turma.php,turno.php,usoSistema.php'),
-(9, 1, 'aluno.php,boletim.php,calendario.php,ensalamento.php,planoEnsino.php,socioEconomico.php', 'Boletim,Boletim,Calend&aacute;rio Acad&ecirc;mico,Hor&aacute;rio do Aluno,Plano de Ensino,Socioecon&ocirc;mico', 'aluno.php,,calendario.php,ensalamento.php,,socioEconomico.php'),
-(10, 11, 'calendario.php,frequencia.php,relatorio.php', 'Calend&aacute;rio,Frequ&ecirc;ncias,Relat&oacute;rios', 'calendario.php,frequencia.php,relatorio.php'),
-(11, 12, 'calendario.php,coordenador.php,professorAtribuicao.php,relatorio.php,sincronizadorNambei.php', 'Calend&aacute;rio,Coordenador,Professor,Relat&oacute;rios,Sincronizar', 'calendario.php,coordenador.php,professorAtribuicao.php,relatorio.php,sincronizadorNambei.php');
+(1, 5, 'view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/prazos/aula.php,view/secretaria/prazos/diario.php,view/secretaria/ensalamento/ensalamento.php,view/secretaria/ensalamento/horario.php,view/secretaria/ensalamento/sala.php,view/secretaria/cursos/atribuicao.php,view/secretaria/cursos/coordenador.php,view/secretaria/cursos/curso.php,view/secretaria/cursos/disciplina.php,view/secretaria/cursos/matricula.php,view/secretaria/cursos/modalidade.php,view/secretaria/cursos/notasFinais.php,view/secretaria/cursos/professorAtribuicao.php,view/secretaria/cursos/situacao.php,view/secretaria/cursos/tipoAvaliacao.php,view/secretaria/cursos/turma.php,view/secretaria/cursos/turno.php,view/secretaria/abono.php,view/secretaria/atendimento.php,view/secretaria/aviso.php,view/secretaria/calendario.php,view/secretaria/cidade.php,view/secretaria/estado.php,view/secretaria/ftd.php,view/secretaria/pessoa.php,view/secretaria/plano.php,view/secretaria/socioEconomico.php,view/aluno/boletim.php,view/admin/instituicao.php,view/admin/logs.php,view/admin/migracao.php,view/admin/permissao.php,view/admin/sincronizadorNambei.php,view/admin/tipo.php,view/admin/usoSistema.php', 'Boletim por Turma,Frequ&ecirc;ncias,Relat&oacute;rios,Prazos Aulas,Di&aacute;rios,Ensalamento,Hor&aacute;rios,Salas,Atribui&ccedil;&otilde;es,Coordenadores,Cursos,Disciplinas,Matr&iacute;&shy;culas,Modalidades,Notas Finais,Professores,Situa&ccedil;&otilde;es,Tipos de Avalia&ccedil;&otilde;es,Turmas,Turnos,Abono de Faltas,Atendimento,Avisos,Calend&aacute;rio Acad&ecirc;mico,Cidades,Estados,FTDs,Pessoas,Planos de Ensino,Socioecon&ocirc;mico,Boletim,Institui&ccedil;&atilde;o,Logs,Migra&ccedil;&atilde;o BRT,Permiss&otilde;es,Sincronizar,Tipos,Uso do Sistema', 'view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/prazos/aula.php,view/secretaria/prazos/diario.php,view/secretaria/ensalamento/ensalamento.php,view/secretaria/ensalamento/horario.php,view/secretaria/ensalamento/sala.php,view/secretaria/cursos/atribuicao.php,view/secretaria/cursos/coordenador.php,view/secretaria/cursos/curso.php,view/secretaria/cursos/disciplina.php,view/secretaria/cursos/matricula.php,view/secretaria/cursos/modalidade.php,view/secretaria/cursos/notasFinais.php,view/secretaria/cursos/professorAtribuicao.php,view/secretaria/cursos/situacao.php,view/secretaria/cursos/tipoAvaliacao.php,view/secretaria/cursos/turma.php,view/secretaria/cursos/turno.php,view/secretaria/abono.php,view/secretaria/atendimento.php,view/secretaria/aviso.php,view/secretaria/calendario.php,view/secretaria/cidade.php,view/secretaria/estado.php,view/secretaria/ftd.php,view/secretaria/pessoa.php,view/secretaria/plano.php,view/secretaria/socioEconomico.php,,view/admin/instituicao.php,view/admin/logs.php,view/admin/migracao.php,view/admin/permissao.php,view/admin/sincronizadorNambei.php,view/admin/tipo.php,view/admin/usoSistema.php'),
+(4, 2, 'view/professor/aula.php,view/professor/avaliacao.php,view/professor/aviso.php,view/professor/ensalamento.php,view/professor/frequencia.php,view/professor/ftd.php,view/professor/nota.php,view/professor/plano.php,view/professor/professor.php', 'Aulas,Avalia&ccedil;&otilde;es,Avisos,Ensalamento,Frequ&ecirc;ncias,FTD,Notas,Planos de Ensino,', ',,,view/professor/ensalamento.php,,view/professor/ftd.php,,,'),
+(5, 3, 'view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/prazos/aula.php,view/secretaria/prazos/diario.php,view/secretaria/ensalamento/ensalamento.php,view/secretaria/ensalamento/horario.php,view/secretaria/ensalamento/sala.php,view/secretaria/cursos/curso.php,view/secretaria/cursos/disciplina.php,view/secretaria/cursos/matricula.php,view/secretaria/cursos/modalidade.php,view/secretaria/cursos/situacao.php,view/secretaria/cursos/tipoAvaliacao.php,view/secretaria/cursos/turma.php,view/secretaria/cursos/turno.php,view/secretaria/aviso.php,view/secretaria/calendario.php,view/secretaria/cidade.php,view/secretaria/estado.php,view/secretaria/ftd.php,view/secretaria/pessoa.php,view/secretaria/plano.php,view/secretaria/socioEconomico.php,view/aluno/boletim.php,view/admin/tipo.php,view/admin/usoSistema.php', 'Boletim - Turmas,Frequ&ecirc;ncias,Relat&oacute;rios,Lan&ccedil;amento de Aulas,Fechamento de Di&aacute;rios,Ensalamento,Hor&aacute;rios,Salas,Cursos,Disciplinas,Matr&iacute;culas,Modalidades,Situa&ccedil;&otilde;es,Tipos de Avalia&ccedil;&otilde;es,Turmas,Turnos,Avisos,Calend&aacute;rio Acad&ecirc;mico,Cidades,Estados,FTDs,Cadastro de Pessoas,Planos de Ensino,SocioEcon&ocirc;mico,Boletim,Tipos de Pessoas,Uso do Sistema', 'view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/prazos/aula.php,view/secretaria/prazos/diario.php,view/secretaria/ensalamento/ensalamento.php,view/secretaria/ensalamento/horario.php,view/secretaria/ensalamento/sala.php,view/secretaria/cursos/curso.php,view/secretaria/cursos/disciplina.php,view/secretaria/cursos/matricula.php,view/secretaria/cursos/modalidade.php,view/secretaria/cursos/situacao.php,view/secretaria/cursos/tipoAvaliacao.php,view/secretaria/cursos/turma.php,view/secretaria/cursos/turno.php,view/secretaria/aviso.php,view/secretaria/calendario.php,view/secretaria/cidade.php,view/secretaria/estado.php,view/secretaria/ftd.php,view/secretaria/pessoa.php,view/secretaria/plano.php,view/secretaria/socioEconomico.php,,view/admin/tipo.php,view/admin/usoSistema.php'),
+(7, 10, 'view/secretaria/aviso.php,view/aluno/boletim.php,view/secretaria/relatorios/boletimTurma.php,view/secretaria/prazos/diario.php,view/secretaria/relatorios/frequencias.php,view/secretaria/ftd.php,view/secretaria/plano.php,view/secretaria/prazos/aula.php,view/secretaria/prazos/diario.php,view/secretaria/relatorios/listagem.php', 'Avisos,Boletim do Aluno,Boletim da Turma,Di&aacute;rios,Listas de Frequ&ecirc;ncias,FTDs,Planos de Ensino,Prazos Aulas,Prazos Di&aacute;rios,Relat&oacute;rios', 'view/secretaria/aviso.php,,view/secretaria/relatorios/boletimTurma.php,view/secretaria/prazos/diario.php,view/secretaria/relatorios/frequencias.php,view/secretaria/ftd.php,view/secretaria/plano.php,view/secretaria/prazos/aula.php,view/secretaria/prazos/diario.php,view/secretaria/relatorios/listagem.php'),
+(8, 4, 'view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/prazos/aula.php,view/secretaria/prazos/diario.php,view/secretaria/ensalamento/ensalamento.php,view/secretaria/ensalamento/horario.php,view/secretaria/ensalamento/sala.php,view/secretaria/cursos/atribuicao.php,view/secretaria/cursos/coordenador.php,view/secretaria/cursos/curso.php,view/secretaria/cursos/disciplina.php,view/secretaria/cursos/matricula.php,view/secretaria/cursos/modalidade.php,view/secretaria/cursos/notasFinais.php,view/secretaria/cursos/professorAtribuicao.php,view/secretaria/cursos/situacao.php,view/secretaria/cursos/tipoAvaliacao.php,view/secretaria/cursos/turma.php,view/secretaria/cursos/turno.php,view/secretaria/abono.php,view/secretaria/atendimento.php,view/secretaria/aviso.php,view/secretaria/calendario.php,view/secretaria/cidade.php,view/secretaria/estado.php,view/secretaria/ftd.php,view/secretaria/pessoa.php,view/secretaria/plano.php,view/secretaria/socioEconomico.php,view/aluno/boletim.php,view/admin/migracao.php,view/admin/sincronizadorNambei.php,view/admin/usoSistema.php', 'Boletim - Turmas,Frequ&ecirc;ncias,Relat&oacute;rios,Lan&ccedil;amento de Aulas,Fechamento de Di&aacute;rios,Ensalamento,Hor&aacute;rios,Salas,Atribui&ccedil;&otilde;es,Coordenadores,Cursos,Disciplinas,Matr&iacute;culas,Modalidades,Notas Finais,Professores,Situa&ccedil;&otilde;es,Tipos de Avalia&ccedil;&otilde;es,Turmas,Turnos,Abono de Faltas,Atendimento,Avisos,Calend&aacute;rio Acad&ecirc;mico,Cidades,Estados,FTD,Cadastro de Pessoas,Planos de Ensino,SocioEcon&ocirc;mico,Boletim,Migra&ccedil;&atilde;o BRT,Sincronizar,Uso do Sistema', 'view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/prazos/aula.php,view/secretaria/prazos/diario.php,view/secretaria/ensalamento/ensalamento.php,view/secretaria/ensalamento/horario.php,view/secretaria/ensalamento/sala.php,view/secretaria/cursos/atribuicao.php,view/secretaria/cursos/coordenador.php,view/secretaria/cursos/curso.php,view/secretaria/cursos/disciplina.php,view/secretaria/cursos/matricula.php,view/secretaria/cursos/modalidade.php,view/secretaria/cursos/notasFinais.php,view/secretaria/cursos/professorAtribuicao.php,view/secretaria/cursos/situacao.php,view/secretaria/cursos/tipoAvaliacao.php,view/secretaria/cursos/turma.php,view/secretaria/cursos/turno.php,view/secretaria/abono.php,view/secretaria/atendimento.php,view/secretaria/aviso.php,view/secretaria/calendario.php,view/secretaria/cidade.php,view/secretaria/estado.php,view/secretaria/ftd.php,view/secretaria/pessoa.php,view/secretaria/plano.php,view/secretaria/socioEconomico.php,,view/admin/migracao.php,view/admin/sincronizadorNambei.php,view/admin/usoSistema.php'),
+(9, 1, 'view/aluno/aluno.php,view/aluno/aula.php,view/aluno/avaliacao.php,view/aluno/aviso.php,view/aluno/boletim.php,view/aluno/ensalamento.php,view/aluno/planoEnsino.php,view/aluno/socioEconomico.php', ',Aulas,Avalia&ccedil;&otilde;es,Avisos,Boletim,Ensalamento,Plano de Ensino,Socioecon&ocirc;mico', ',,,,,view/aluno/ensalamento.php,,view/aluno/socioEconomico.php'),
+(10, 11, 'view/secretaria/calendario.php,view/secretaria/relatorios/listagem.php', 'Calend&aacute;rio,Relat&oacute;rios', 'view/secretaria/calendario.php,view/secretaria/relatorios/listagem.php'),
+(11, 12, 'view/secretaria/calendario.php,view/secretaria/cursos/coordenador.php,view/secretaria/cursos/professorAtribuicao.php,view/secretaria/relatorios/listagem.php,view/admin/sincronizadorNambei.php', 'Calend&aacute;rio,Coordenador,Professor,Relat&oacute;rios,Sincronizar', 'view/secretaria/calendario.php,view/secretaria/cursos/coordenador.php,view/secretaria/cursos/professorAtribuicao.php,view/secretaria/relatorios/listagem.php,view/admin/sincronizadorNambei.php');
 
 -- --------------------------------------------------------
 
@@ -604,7 +589,7 @@ CREATE TABLE IF NOT EXISTS `Pessoas` (
 --
 
 INSERT INTO `Pessoas` (`codigo`, `nome`, `prontuario`, `senha`, `cpf`, `rg`, `naturalidade`, `nascimento`, `endereco`, `bairro`, `cidade`, `cep`, `telefone`, `celular`, `email`, `observacoes`, `foto`, `sexo`, `raca`, `estadoCivil`, `numeroPessoasNaResidencia`, `renda`, `situacaoTrabalho`, `tipoTrabalho`, `empresaTrabalha`, `cargoEmpresa`, `tempo`, `meioTransporte`, `transporteGratuito`, `necessidadesEspeciais`, `descricaoNecessidadesEspeciais`, `dataSenha`, `recuperaSenha`, `ano1g`, `escola1g`, `escolaPublica`, `lattes`, `bloqueioFoto`, `dataAlteracao`) VALUES
-(1, 'Administrador', 'admin', '*4ACFE3202A5FF5CF467898FC58AAB1D615029441', '', '', 0, '0000-00-00', '', '', 0, '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, '', '', '', '2013-03-27 00:09:21', NULL, '', '', '', NULL, NULL, NULL);
+(1, 'Administrador', 'admin', 'admin', '', '', 0, '0000-00-00', '', '', 0, '', '', '', '', '', NULL, 0, 0, 0, 0, 0, 0, 0, '', '', 0, 0, '', '', '', '2014-04-13 21:30:21', '', '', '', '', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -642,7 +627,7 @@ CREATE TABLE IF NOT EXISTS `PlanosAula` (
   `conteudo` text NOT NULL,
   PRIMARY KEY (`codigo`),
   KEY `atribuicao` (`atribuicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -673,7 +658,7 @@ CREATE TABLE IF NOT EXISTS `PlanosEnsino` (
   `finalizado` datetime DEFAULT NULL,
   PRIMARY KEY (`codigo`),
   KEY `codigo` (`atribuicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -688,7 +673,7 @@ CREATE TABLE IF NOT EXISTS `PrazosAulas` (
   `motivo` varchar(200) NOT NULL,
   PRIMARY KEY (`codigo`),
   KEY `atribuicao` (`atribuicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -703,7 +688,7 @@ CREATE TABLE IF NOT EXISTS `PrazosDiarios` (
   `motivo` varchar(200) NOT NULL,
   PRIMARY KEY (`codigo`),
   KEY `atribuicao` (`atribuicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -718,7 +703,7 @@ CREATE TABLE IF NOT EXISTS `Professores` (
   PRIMARY KEY (`codigo`),
   KEY `professor` (`professor`),
   KEY `atribuicao` (`atribuicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -779,7 +764,25 @@ CREATE TABLE IF NOT EXISTS `Salas` (
   `nome` varchar(50) NOT NULL,
   `localizacao` varchar(100) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `schema_migrations`
+--
+
+CREATE TABLE IF NOT EXISTS `schema_migrations` (
+  `version` varchar(255) DEFAULT NULL,
+  UNIQUE KEY `idx_schema_migrations_version` (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `schema_migrations`
+--
+
+INSERT INTO `schema_migrations` (`version`) VALUES
+('20140719174655');
 
 -- --------------------------------------------------------
 
@@ -814,7 +817,7 @@ CREATE TABLE IF NOT EXISTS `Situacoes` (
   `listar` int(1) DEFAULT NULL,
   `habilitar` int(1) DEFAULT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -869,7 +872,7 @@ CREATE TABLE IF NOT EXISTS `Tipos` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
 --
 -- Extraindo dados da tabela `Tipos`
@@ -907,7 +910,7 @@ CREATE TABLE IF NOT EXISTS `TiposAvaliacoes` (
   `notaMaxima` float DEFAULT '10',
   PRIMARY KEY (`codigo`),
   KEY `modalidade` (`modalidade`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -950,7 +953,7 @@ CREATE TABLE IF NOT EXISTS `Turmas` (
   PRIMARY KEY (`codigo`),
   KEY `turno` (`turno`),
   KEY `curso` (`curso`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -964,7 +967,7 @@ CREATE TABLE IF NOT EXISTS `Turnos` (
   `sigla` varchar(1) DEFAULT NULL,
   PRIMARY KEY (`codigo`),
   UNIQUE KEY `nome` (`nome`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 --
 -- Restrições para as tabelas dumpadas
@@ -1080,8 +1083,8 @@ ALTER TABLE `Notas`
 -- Restrições para a tabela `NotasFinais`
 --
 ALTER TABLE `NotasFinais`
-  ADD CONSTRAINT `NotasFinais_ibfk_4` FOREIGN KEY (`atribuicao`) REFERENCES `Atribuicoes` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `NotasFinais_ibfk_5` FOREIGN KEY (`matricula`) REFERENCES `Matriculas` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `NotasFinais_ibfk_5` FOREIGN KEY (`matricula`) REFERENCES `Matriculas` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `NotasFinais_ibfk_4` FOREIGN KEY (`atribuicao`) REFERENCES `Atribuicoes` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Restrições para a tabela `Permissoes`
