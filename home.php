@@ -9,7 +9,7 @@ require FUNCOES;
 ?>
 <table border="0">
 <tr><td colspan="2"><font size="4"><b>Sistema Integrado para Gest&atilde;o Acad&ecirc;mica</b></font></font>
-<br><font size="1">Vers&atilde;o 1.<?php print $VERSAOAT; ?></font></td></tr>
+<br><font size="1">Vers&atilde;o 1.7</font></td></tr>
 <tr><td>
 <?php
 $user = $_SESSION["loginCodigo"];
@@ -70,12 +70,6 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
 }
 
 if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"])) {
-    // Verifica se a versão está atualizada.
-    if (trim($VERSAO) > trim($VERSAOAT)) {
-        ?>
-        <br><br><font size="4" color="red">Vers&atilde;o desatualizada. Vers&atilde;o atual: 1.<?php print $VERSAO; ?></font>
-        <?php
-    }
     
     // Verifica se o CRON está sendo executado.
     require CONTROLLER . "/log.class.php";

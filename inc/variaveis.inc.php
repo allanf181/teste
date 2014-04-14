@@ -1,5 +1,4 @@
 <?php
-print_r($_SESSION);
 
 // VERIFICANDO A SESSÃO DO USUÁRIO
 if (isset($_SESSION['timeout'])) {
@@ -60,8 +59,6 @@ if ($res = $instituicao->dadosInstituicao()) {
     $VERSAO = $res['versao'];
     $DIGITANOTAS = $res['campiDigitaNotas'];
 }
-
-$VERSAOAT = `svn info |grep Revision: |cut -c11-`;
 
 // GERA O VOLTAR AUTOMATICAMENTE
 if (strripos($_SERVER['REQUEST_URI'], 'menu=professor') != true &&

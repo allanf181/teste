@@ -18,7 +18,7 @@ ini_set("display_errors", 1);
 //           PATHs GLOBAIS           //
 //=======================================//
 // Localização do diretório raiz do sistema
-define("LOCATION", '/academico3', true);
+define("LOCATION", '/academico', true);
 define("PATH", $_SERVER['DOCUMENT_ROOT'], true);
 
 // Diretório de Includes
