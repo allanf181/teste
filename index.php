@@ -288,9 +288,11 @@ if (isset($_SESSION["loginTipo"])) {
 ?>
 </div>
 </div>
+
     <div class="footer" <?php if (!$_SESSION['loginCodigo']) print 'style="margin-right: 195px; "'; ?> >
 	<a class="link" href="javascript:$('#index').load('creditos.php');void(0);">Equipe de desenvolvimento do WebDi&aacute;rio IFSP</a>
 </a>
 </div>
+
 </body>
 </html>
