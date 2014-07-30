@@ -134,7 +134,6 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     </select> ou 
                 </td></tr>
             <?php
-
             if ($atribuicao)
                 $disabled = 'disabled';
             ?>
@@ -142,24 +141,24 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 <td><select name="aula" <?php print $disabled; ?> id="aula" style="width: 350px">
                         <option></option>
                         <?php
-                        require CONTROLLER.'/turno.class.php';
+                        require CONTROLLER . '/turno.class.php';
                         $turno = new Turnos();
                         $res = $turno->listRegistros();
                         foreach ($res as $reg) {
                             $selected = "";
                             if ($reg['sigla'] == $aula)
                                 $selected = "selected";
-                            echo "<option $selected value='" . crip($reg['sigla']) . "'>".$reg['nome']."</option>";
+                            echo "<option $selected value='" . crip($reg['sigla']) . "'>" . $reg['nome'] . "</option>";
                         }
 
-                        require CONTROLLER.'/horario.class.php';
+                        require CONTROLLER . '/horario.class.php';
                         $horario = new Horarios();
                         $res = $horario->listHorarios();
                         foreach ($res as $reg) {
                             $selected = "";
                             if ($reg['nome'] == $aula)
                                 $selected = "selected";
-                            echo "<option $selected value='" . crip($reg['nome']) . "'>".$reg['nome']." [".$reg['inicio']." - ".$reg['fim']."]</option>";
+                            echo "<option $selected value='" . crip($reg['nome']) . "'>" . $reg['nome'] . " [" . $reg['inicio'] . " - " . $reg['fim'] . "]</option>";
                         }
                         ?>
                     </select>
@@ -297,10 +296,10 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 }
             });
 
-<?php if (!$_GET["codigo"]) { ?>
+            <?php if (!$_GET["codigo"]) { ?>
                 $('#dataInicio, #dataFim, #aluno, #atribuicao').change(function() {
                     atualizar();
                 });
-<?php } ?>
+            <?php } ?>
         });
     </script>

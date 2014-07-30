@@ -1207,3 +1207,6 @@ Apr 13 06:37:57 [info] SELECT *
                                     AND COLUMN_NAME = 'versaoAtual'
 Apr 13 06:37:57 [info] UPDATE Instituicoes SET versao='380';
 Apr 13 06:37:57 [info] INSERT INTO schema_migrations (version) VALUES ('20140719174656')
+Jul 30 12:08:25 [info] SELECT version FROM schema_migrations
+Jul 30 12:08:25 [info] SELECT version FROM schema_migrations
+Jul 30 12:08:25 [info] SELECT version FROM schema_migrations

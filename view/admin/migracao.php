@@ -4,10 +4,13 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
-include("inc/mysql.php");
-include("inc/variaveis.inc.php");
-include("inc/mensagens.inc.php");
-include("inc/permissao.inc.php");
+require '../../inc/config.inc.php';
+require MYSQL;
+require VARIAVEIS;
+require MENSAGENS;
+require FUNCOES;
+require PERMISSAO;
+
 
 // FUNCAO QUE EXIBE AULAS E AVALIACOES DO WEBDIARIO ATUAL (OBS: NECESSARIO ESPECIFICAR CONFIGURAR mysqlMigracao.php
 $bdMigracao = $bd;
@@ -68,7 +71,7 @@ if (isset($_GET["ordem"])){
 // IMPORTACAO / ATUALIZACAO
 if (isset($_GET["importar"])){
     // BUSCANDO AULAS
-    include "inc/mysqlMigracao.php";
+    include INC."/mysqlMigracao.php";
     $sql = "select * from Aulas where atribuicao=$atribuicao2";
 //    //echo "<br>".$sql;
     $result = mysql_query($sql);
@@ -77,7 +80,7 @@ if (isset($_GET["importar"])){
     }
 
     // BUSCANDO TIPOS AVALIACOES
-    include "inc/mysqlMigracao.php";
+    include INC."/mysqlMigracao.php";
     $sql = "select * from TiposAvaliacoes";
 //    //echo "<br>".$sql;
     $result = mysql_query($sql);
@@ -86,7 +89,7 @@ if (isset($_GET["importar"])){
     }
 
     // BUSCANDO AVALIACOES
-    include "inc/mysqlMigracao.php";
+    include INC."/mysqlMigracao.php";
     $sql = "select * from Avaliacoes where atribuicao=$atribuicao2";
 //    //echo "<br>".$sql;
     $result = mysql_query($sql);
@@ -168,7 +171,7 @@ if (isset($_GET["importar"])){
     }            
     
     // BUSCANDO NOTAS ORIGEM
-    include "inc/mysqlMigracao.php";
+    include INC."/mysqlMigracao.php";
     $sql = "select p.prontuario as prontuario, a.data as data, n.nota as nota, a.nome as nome "
             . "from Notas n, Avaliacoes a, Pessoas p, Matriculas m "
             . "where a.codigo=n.avaliacao "
@@ -354,7 +357,7 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 			<option></option>
 			<?php
 
-                        include "inc/mysqlMigracao.php";
+                        include INC."/mysqlMigracao.php";
 			$resultado = mysql_query("select distinct t.codigo, t.numero, c.nome, m.nome, m.codigo 
                         							from Cursos c, Turmas t, Modalidades m
                         							where t.curso=c.codigo 
@@ -384,7 +387,7 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 			<option></option>
 			<?php
 
-                        include "inc/mysqlMigracao.php";
+                        include INC."/mysqlMigracao.php";
 			$resultado = mysql_query($sql);
 			$selected=""; // controla a alteraÃ§Ã£o no campo select
 			while ($linha = mysql_fetch_array($resultado)){
@@ -445,7 +448,7 @@ $ultimo=$ultimo-($ultimo % $itensPorPagina)+1;
 
 $SITENAV = $SITE."?turma=".crip($turma)."&disciplina=".crip($disciplina)."&professor=".crip($professor);
 
-require('inc/navegacao.php'); ?>
+require "../navegacao.php"; ?>
 
 <table id="listagem" border="0" align="center">
 	<tr><th align="left" width="30">Aula</th><th align="left" width="100">Data</th><th>Qtd</th><th>Conteúdo</th></tr>
@@ -474,7 +477,7 @@ require('inc/navegacao.php'); ?>
 	mysql_close($conexao);
 	?>
 
-	<?php require('inc/navegacao.php'); ?>
+	<?php require "../navegacao.php"; ?>
 	
 <script>
 function atualizar(getLink){
