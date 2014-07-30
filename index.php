@@ -68,7 +68,6 @@ $nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
     });
 
     $("#setTroca").click(atualizar);
-
 });
 
 $(document).ready(function() {
@@ -103,8 +102,7 @@ if (isset($nome)) {
     <div id="menu">
     <div id='barra_topo'>
     <?php
-    if (in_array($COORD, $_SESSION["loginTipo"]) || in_array($ADM, $_SESSION["loginTipo"]) 
-    	|| in_array($SEC, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
+    if (!in_array($PROFESSOR, $_SESSION["loginTipo"]) && !in_array($ALUNO, $_SESSION["loginTipo"])) {
     ?>
         <div id='ano_semestre'>
         <span style="color: white">Ano:<input type="text" maxlength="4" style="width: 50px" value="<?php print $_SESSION['ano']; ?>" name="campoAnoIndex" id="campoAnoIndex" /></span>
@@ -292,6 +290,5 @@ if (isset($_SESSION["loginTipo"])) {
 	<a class="link" href="javascript:$('#index').load('creditos.php');void(0);">Equipe de desenvolvimento do WebDi&aacute;rio IFSP</a>
 </a>
 </div>
-
 </body>
 </html>
