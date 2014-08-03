@@ -55,6 +55,7 @@ if ($res = $instituicao->dadosInstituicao()) {
     $LIMITE_AULA_PROF = $res[0]['limiteInsAulaProf'];
     $ALUNO = $res[0]['aluno'];
     $PROFESSOR = $res[0]['prof'];
+    $ENVIOFOTO = $res[0]['envioFoto'];
     $VERSAO = $res[0]['versao'];
     $VERSAOAT = $res[0]['versaoAtual'];
     $DIGITANOTAS = $res[0]['campiDigitaNotas'];

@@ -4,12 +4,6 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //0
 
-require '../inc/config.inc.php';
-
-require MYSQL;
-require VARIAVEIS;
-require FUNCOES;
-
 if ($tmp = $_GET['foto']) {
     $fp = fopen($tmp, "rb");
     $conteudo = fread($fp, filesize($tmp));
@@ -19,6 +13,18 @@ if ($tmp = $_GET['foto']) {
     echo $conteudo;
     die;
 }
+
+require '../inc/config.inc.php';
+
+require MYSQL;
+require VARIAVEIS;
+require FUNCOES;
+
+// PARA NAO ACESSAR DIRETAMENTE...
+if (strpos($_SERVER["HTTP_REFERER"],"/$LOCATION/") == false) {
+    header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
+}
+
 ?>
 <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/js/croppic/imgareaselect-default.css" />
 <script type="text/javascript" src="<?php print VIEW; ?>/js/croppic/jquery.min.js"></script>

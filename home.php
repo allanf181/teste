@@ -21,19 +21,58 @@ if ($user) {
     require CONTROLLER . "/pessoa.class.php";
     $pessoa = new Pessoas();
     
+    // REMOVER FOTO
     if (isset($_GET['removerFoto']))
         $pessoa->removeFoto($user);
     
+    // ALTERACAO DE EMAIL
+    if (isset($_GET['email'])) {
+        if ($_GET['email'] == 'undefined')
+            $_GET['email'] = null;
+        $params = array('codigo' => $user, 'email' => $_GET['email']);
+        $pessoa->insertOrUpdate($params);
+    }
+    
+    // ALTERACAO DO LATTES
+    if (isset($_GET['lattes'])) {
+        if ($_GET['lattes'] == 'undefined')
+            $_GET['lattes'] = null;
+        $params = array('codigo' => $user, 'lattes' => $_GET['lattes']);
+        $pessoa->insertOrUpdate($params);
+    }    
+    
+    $addFoto = "id='adiciona-foto' title='Alterar Foto'";
+    if (!$ENVIOFOTO && in_array($ALUNO, $_SESSION["loginTipo"]))
+            $addFoto='';
     ?>
-        <a href='#' id="adiciona-foto" title="Alterar Foto"><img alt="foto" style="width: 150px; height: 150px" src="<?php print INC; ?>/file.inc.php?type=pic&time=<?php print time(); ?>&id=<?php print crip($user); ?>" /></a>
+        <a href='#' <?php print $addFoto; ?>><img alt="foto" style="width: 150px; height: 150px" src="<?php print INC; ?>/file.inc.php?type=pic&time=<?php print time(); ?>&id=<?php print crip($user); ?>" /></a>
     <?php
    
-    if ($pessoa->hasPicture($user)) {
+    $params = array('codigo' => $user);
+    $userDados = $pessoa->listRegistros($params);
+    
+    if ($userDados[0]['foto'] && $addFoto) {
         ?>
         <br><img src="<?php print ICONS; ?>/remove.png" id="remover-foto" title='Remover Foto' style="width: 15px; height: 15px">
         <?php
     }
+
+    if (!$userDados[0]['email']) {
+        ?>
+        <br><br>Email: <input type="text" size="60" maxlength="100" name="email" id="email" value="" />
+        <img src="<?php print ICONS; ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
+        <?php
+    } else {
+        ?>
+        <br><br>Email: <?php print $userDados[0]['email']; ?></a>
+        &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="send-email" title='Remover Email' style="width: 15px; height: 15px">
+        <?php
+    }
+    ?>
+        <br><font size="1">Mantenha seu email sempre atualizado para avisos e recupera&ccedil;&atilde;o de senha.</font>
+    <?php
     
+    // INFOS DE SENHA
     $res = $pessoa->infoPassword($user);
     if ($res['dataSenha']) {
         ?>
@@ -117,22 +156,16 @@ if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTip
 
 // AVISOS PARA PROFESSOR
 if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
-    if (isset($_GET['lattes'])) {
-        if ($_GET['lattes'] == 'undefined')
-            $_GET['lattes'] = null;
-        $pessoa->updateLattes($user, $_GET['lattes']);
-    }
 
-    $lattes = $pessoa->showLattes($user);
-    if (!$lattes) {
+    if (!$userDados[0]['lattes']) {
         ?>
-        <br><br>Lattes: <input type="text" size="60" maxlength="200" name="campoLattes" id="campoLattes" value="" />
-        <img src="<?php print ICONS; ?>/accept.png" id="lattes" style="width: 20px; height: 20px">
+        <br><br>Lattes: <input type="text" size="60" maxlength="200" name="lattes" id="lattes" value="" />
+        <img src="<?php print ICONS; ?>/accept.png" id="send-lattes" style="width: 20px; height: 20px">
         <?php
     } else {
         ?>
-        <br><br>Lattes: <a href="<?php print $lattes; ?>" target="_blank"><?php print $lattes; ?></a>
-        &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="lattes" title='Remover Lattes' style="width: 15px; height: 15px">
+        <br><br>Lattes: <a href="<?php print $userDados[0]['lattes']; ?>" target="_blank"><?php print $userDados[0]['lattes']; ?></a>
+        &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="send-lattes" title='Remover Lattes' style="width: 15px; height: 15px">
         <?php
     }
 
@@ -246,9 +279,13 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 
 <script>
     $(document).ready(function() {
-        $('#lattes').click(function(event) {
-            var lattes = encodeURIComponent($('#campoLattes').val());
+        $('#send-lattes').click(function(event) {
+            var lattes = encodeURIComponent($('#lattes').val());
             $('#index').load('home.php?lattes=' + lattes);
+        });
+        $('#send-email').click(function(event) {
+            var email = encodeURIComponent($('#email').val());
+            $('#index').load('home.php?email=' + email);
         });
         
         $('#remover-foto').click(function(event) {

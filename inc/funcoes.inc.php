@@ -830,7 +830,7 @@ function dcripArray($array) {
             if ($value)
                 $new_array[$key] = $value;
             else
-                $new_array[$key] = 'NULL';
+                $new_array[$key] = '';
         }
     }
     return $new_array;

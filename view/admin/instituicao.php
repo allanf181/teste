@@ -27,18 +27,19 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $usuarioServidorAtualizacao = $_POST["campoUsuarioServidorAtualizacao"];
     $senhaServidorAtualizacao = $_POST["campoSenhaServidorAtualizacao"];
     $bloqueioFoto = $_POST["bloqueioFoto"];
+    $envioFoto = $_POST["envioFoto"];
     $campiDigitaNotas = $_POST["campoCampiDigitaNotas"];
 
 	$result = mysql_query("SELECT * FROM Instituicoes");
 	if (mysql_num_rows($result) == '') {
-  	$resultado = mysql_query("INSERT INTO Instituicoes VALUES(0,'$nome','$cidade', $ged, '$adm', '$sec', '$prof', '$aluno', '$coord', '$diasAlterarSenha', '$limiteAltDiarioProf', '$limiteInsAulaProf', '$ipServidorAtualizacao', '$usuarioServidorAtualizacao', '$senhaServidorAtualizacao', 'bloqueioFoto', '$campiDigitaNotas')");
+  	$resultado = mysql_query("INSERT INTO Instituicoes VALUES(0,'$nome','$cidade', $ged, '$adm', '$sec', '$prof', '$aluno', '$coord', '$diasAlterarSenha', '$limiteAltDiarioProf', '$limiteInsAulaProf', '$ipServidorAtualizacao', '$usuarioServidorAtualizacao', '$senhaServidorAtualizacao', '$envioFoto', '$bloqueioFoto', '$campiDigitaNotas')");
    	if ($resultado==1)
 			mensagem('OK', 'TRUE_INSERT');
     else
 			mensagem('NOK', 'FALSE_INSERT');
 
 	}	else {
-    	$resultado = mysql_query("UPDATE Instituicoes SET nome='$nome',cidade='$cidade', ged=$ged, adm='$adm', sec='$sec', prof='$prof', aluno='$aluno', coord='$coord', diasAlterarSenha='$diasAlterarSenha', limiteAltDiarioProf='$limiteAltDiarioProf', limiteInsAulaProf='$limiteInsAulaProf', ipServidorAtualizacao='$ipServidorAtualizacao', usuarioServidorAtualizacao='$usuarioServidorAtualizacao', senhaServidorAtualizacao='$senhaServidorAtualizacao', bloqueioFoto='$bloqueioFoto', campiDigitaNotas='$campiDigitaNotas'");
+    	$resultado = mysql_query("UPDATE Instituicoes SET nome='$nome',cidade='$cidade', ged=$ged, adm='$adm', sec='$sec', prof='$prof', aluno='$aluno', coord='$coord', diasAlterarSenha='$diasAlterarSenha', limiteAltDiarioProf='$limiteAltDiarioProf', limiteInsAulaProf='$limiteInsAulaProf', ipServidorAtualizacao='$ipServidorAtualizacao', usuarioServidorAtualizacao='$usuarioServidorAtualizacao', senhaServidorAtualizacao='$senhaServidorAtualizacao', bloqueioFoto='$bloqueioFoto', envioFoto='$envioFoto', campiDigitaNotas='$campiDigitaNotas'");
       if ($resultado==1)
 				mensagem('OK', 'TRUE_UPDATE');
       else
@@ -61,13 +62,14 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $aluno="";
     $coord="";
     $bloqueioFoto="";
+    $envioFoto="";
     $campiDigitaNotas="";
     
     // consulta no banco
     $resultado = mysql_query("SELECT i.nome, i.ged, i.adm, i.sec, i.prof, i.aluno, i.coord, i.cidade,
     							i.diasAlterarSenha, i.limiteAltDiarioProf, i.limiteInsAulaProf, i.bloqueioFoto,
     							i.ipServidorAtualizacao, i.usuarioServidorAtualizacao, i.senhaServidorAtualizacao,
-    							i.campiDigitaNotas
+    							i.campiDigitaNotas, i.envioFoto
     							FROM Instituicoes i");
     $linha = mysql_fetch_row($resultado);
 	if ($linha) { 
@@ -87,6 +89,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     	$usuarioServidorAtualizacao = $linha[13];
     	$senhaServidorAtualizacao = $linha[14];
     	$campiDigitaNotas = $linha[15];
+        $envioFoto = $linha[16];
     }
  	?>
 	<link rel="stylesheet" type="text/css" href="view/css/aba.css" media="screen" />
@@ -252,7 +255,8 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
      <tr><td>Senha: </td><td><input type="text" name="campoSenhaServidorAtualizacao" id="campoSenhaServidorAtualizacao" value="<?php echo $senhaServidorAtualizacao; ?>" /></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
 
-		<tr><td colspan="2"><h3><b>Valida&ccedil;&atilde;o de Fotos</b></h3></td></tr>
+		<tr><td colspan="2"><h3><b>Envio e Valida&ccedil;&atilde;o de Fotos</b></h3></td></tr>
+                <tr><td>Permitir envio de fotos por alunos: </td><td><input type='checkbox' <?php if ($envioFoto != '') print "checked"; ?> id='envioFoto' name='envioFoto' value='1' /></td></tr>
 		<tr><td>Validar fotos de alunos: </td><td><input type='checkbox' <?php if ($bloqueioFoto != '') print "checked"; ?> id='bloqueioFoto' name='bloqueioFoto' value='1' /></td></tr>
     </table>
 		<tr><td colspan="2">&nbsp;</td></tr>

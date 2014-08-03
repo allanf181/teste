@@ -25,7 +25,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
-    $ret = $pessoa->insertOrUpdatePessoa($_POST);
+    $ret = $pessoa->insertOrUpdate($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
@@ -34,7 +34,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 if ($codigo) { // se o parâmetro não estiver vazio
     // consulta no banco
     $params = array('codigo' => $codigo);
-    $res = $pessoa->listPessoas($params);
+    $res = $pessoa->listRegistros($params);
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 }
 
