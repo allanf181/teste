@@ -1,3 +1,181 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #e1f2d0 url(images/bg.jpg) repeat-y top center;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	color: #222;
+}
+
+a {
+	text-decoration: none;
+	color: #75B03C;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #111;
+}
+
+#wrap {
+	margin: 0 auto;
+	width: 1024px; 
+	height: 600px;
+	/*background: yellow;*/
+}
+
+#header {
+	height: 120px;
+	background: #e1f2d0 url(images/header_new.jpg) no-repeat;
+}
+
+#header h1 { 
+	font-size: 30px;
+	letter-spacing: -1px;
+	padding: 15px 0 0 20px;
+	color: #fff;
+}
+
+#header h1 a { 
+	color: #fff;
+	text-decoration: none;
+	font-weight: 100;
+	letter-spacing: -2px;
+}
+
+#header h1 a:hover {
+	color: #000;
+}
+
+#header h2 {
+	font-size: 22px;
+	color: #e1c70e;
+	padding: 5px 0 0 20px;
+	letter-spacing: -1px;
+	font-weight: 100;
+}
+
+#menu {
+	height: 30px;
+	line-height: 30px;
+	background: #00913d url(images/menu.jpg) no-repeat;
+}
+
+#menu ul {
+	list-style-type: none;
+	padding-left: 30px;
+}
+
+#menu ul li {
+	display: block;
+	float: left;
+}
+
+#menu ul li a {
+	padding: 0 20px 0 0;
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 12px;
+	color: #fff;
+}
+
+#menu ul li a:hover {
+	color: #000;
+	text-decoration: none;
+}
+
+#content {
+	/*background: #e1f2d0 url(images/content.jpg) repeat-y;*/
+	padding: 0 10px;
+	/*background:blue;*/
+}
+
+.right {
+	float: left;
+	width: 950px;
+	text-align: justify;
+	padding: 15px;
+	background: #e3f0e5;
+	margin-top: 4px;
+	margin-left: 10px;
+	min-height: 450px;
+}
+
+.left {
+	float: left;
+	width: 185px;
+	padding-top: 10px;
+	/*background: gray;*/
+}
+
+.left h2 {
+	margin: -6px 0 0 0;
+	padding-left: 10px;
+	height: 30px;
+	line-height: 30px;
+	background: #00913d ;
+	color: #fff;
+	font-size: 13px;
+}
+
+.left ul {
+	padding: 10px 0 15px 20px;
+	list-style-type: square;
+	color: #75B03C;
+}
+
+.left ul li a {
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.left ul li a:hover {
+
+}
+
+img {
+	border:0px;
+}
+
+.footer {
+	text-align: center;
+	font-size: 11px;
+	color: #aaa;
+	/*margin-top: 40px;*/
+	border-top: 1px dotted #aaa;
+	padding-top: 10px;
+	float: right;
+        margin-right: 25px;
+	width: 980px;
+	/*background: pink;*/
+}
+
+.footer a { color: #aaa; }
+.footer a:hover { color: #111; }
+
+th {
+     background: #F4F4F4;
+}
+
+#tabela_boletim{
+    width: 760px;
+}
+
+#tabela_boletim tr th{
+    background: #70bb84;
+}
+#tabela_boletim tr td{
+    background: #bedfc2;
+}
+
+#tabela_boletim tr.avaliacao_tr td{
+    background: #fff9c8;
+}
+
 #erro {
     color: red;
     font-weight: bold;
@@ -79,21 +257,11 @@ ul{
     background: #bedfc2;
 } 
 
-#preview{
-    position:absolute;
-    border:1px solid #ccc;
-    background:#333;
-    padding:5px;
-    display:none;
-    color:#fff;
-
-}
-#preview img{border:none;width: 100px;
-             height: 100px;}
 #listagems ul,li{
     margin:0;
     padding:0;
 }
+
 li{
     list-style:none;
     float:left;
@@ -106,24 +274,19 @@ li{
     display:  table-row;
     margin-right: 100px;
 }
-.versao li{
-    list-style: disc;
-    float: none;
-    display:  table-row;
-    margin-right: 100px;
 
-}
-#frequencias tr td{
-    font-size: 6pt;
-    border-left: solid 1px black;
-}
-#tooltip{
-    position:absolute;
-    border:1px solid #333;
-    background:#f7f5d1;
-    padding:2px 5px;
-    color:#333;
-    display:none;
+.tooltip {
+	display:none;
+	position:absolute;
+	border:1px solid #333;
+	background-color:#161616;
+	border-radius:5px;
+	padding:10px;
+	color:#fff;
+	font-size:12px Arial;
+        white-space:pre-wrap;
+        min-width: 50px;
+        max-width: 400px;
 }
 
 #screenshot{
@@ -142,52 +305,6 @@ li{
     height: 10px;
 }
 
-.loading-indicator {
-	height: 400px;
-	width: 400px;
-	background: url( '../js/jquery-treeview/images/ajax-loader.gif' );
-	background-repeat: no-repeat;
-	background-position: center center;
-        /*margin-top: 200px;*/
-}
-
-.loading-indicator-overlay {
-	background-color: #FFFFFF;
-	opacity: 0.6;
-	filter: alpha(opacity = 60);
-        width: 1000px;
-}
-
-#dialog-confirm{
-    display:none;
-}
-#dialog-confirm2{
-    display:none;
-}
-#dialog-input1{
-    display:none;
-}
-
-.shadow {
-	margin: 10px;
-	/*background-color: rgb(68,68,68);  Needed for IEs */
-
-	-moz-box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
-	-webkit-box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
-	box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
-
-	filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3,MakeShadow=true,ShadowOpacity=0.30);
-	-ms-filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=3,MakeShadow=true,ShadowOpacity=0.30)";
-	zoom: 1;
-        border: solid lightgray 1px;
-	padding: 5px;
-}
-.shadow .content {
-	position: relative; /* This protects the inner element from being blurred */
-        /*pad*/
-	/*background-color: #DDD;*/
-}
-
 #form{
     background: white;
     padding: 10px;
@@ -198,34 +315,16 @@ li{
     color: #02933d;
 }
 
-
-#tabelaMatriculaMassa{    
-    padding: 5px;
-    border: 1px green groove;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    width: 98%;
-    margin: 5px auto 5px auto;
-}
-
 .data1{
     width: 100px;
 }
 
-.notaRuim{
-    font-weight: bold;
-    color: red;
-}
-
-.notaBoa{
-    font-weight: normal;
-    color: black;
-}
-
+// frequencia lista
 .foto_lista{
     width: 20px; height: 20px;
     margin-top: 5px;
 }
+
 .socioeconomico #total{
     width:10%; 
     color:red; 
@@ -235,6 +334,7 @@ li{
     -moz-border-radius: 5px;
     border-radius: 5px;
 }
+
 .socioeconomico{
     width: 100%;
     /*border: 1px solid black;*/
@@ -244,39 +344,12 @@ li{
     border-radius: 5px;
 }
 
-#botoesRodape{
-    text-align: center;
-    margin-top: 10px;
-    
-}
-
-#campoObservacoes{
-    width: 400px;
-    height: 100px;
-}
-
-#campoDescricao{
-    width: 400px;
-    height: 100px;
-}
-
-#reserva{
-    width: 800px;
-    border: none; 
-    height: 900px;
-}
-.icone{
-    width: 30px;
-    height: 30px;
-}
-.info{
-    font-size: 8pt;
-}
 
 .sincronizador tr td{
     height: 20px;
 }
 
+// Senha.php
 .errorBalloon{
     background: lightcoral;
 }
@@ -403,7 +476,7 @@ li{
     border: none;
 }
 
-#cap{
+#cap {
     float: right;
     margin-right: 33px;
 }
@@ -446,28 +519,6 @@ li{
     position: absolute;
     margin-top: -114px;
     margin-left: 834px;
-}
-
-.menu_link a{
-    margin-left: 30px;
-}
-.menu_link{
-    width: 150px;
-    /*background: blue;*/
-    /*padding: 8px;*/
-    text-align: center;
-    color: #00913d;
-    /*margin-left: 10px;*/
-}
-
-#login_msg{
-    /*background: blue;*/
-    width: 395px;
-    text-align: center;
-    margin-top: -50px;
-    margin-left: 85px;
-    /*margin: -50px auto 0 -50px;*/
-    position: absolute;
 }
 
 #home{
@@ -539,19 +590,6 @@ select{
     max-width: 600px;
 }
 
-
-.prof_atribuicao a:hover{
-    font-weight: bold;
-}
-.prof_atribuicao{
-    background: #fffac9;
-    padding: 4px;
-    width: 176px;
-    margin-bottom: -13px;
-    text-align: center;
-    margin-left: -20px;
-}
-
 .rotulo_professor{
     font-weight: bold;
 }
@@ -592,24 +630,6 @@ select{
     height: 220px;
     margin-top: 5px;
 }
-
-#mask {
-    position:absolute;
-    z-index:9000; 
-    background-color:#000;
-    display:none;
-}
-
-
-/*#fundo_login{
-    width: 995px;
-    height: 463px;
-    background: #e3f0e5;
-    position: absolute;
-    margin-top: -115px;
-    margin-left: -210px;
-    z-index: -1;
-}*/
 
 #form_login_logo{
     /*border: 1px solid lightgray;*/
@@ -709,10 +729,6 @@ ul.menu_esquerdo li span.menu_item a{
     font-weight: normal;
 }
 
-#div_login_capcha{
-    background: blue;
-}
-
 #senhaTip2{
     /*background: red;*/
     margin-top: 73px;
@@ -776,4 +792,43 @@ div.flash {
     display: none;
     text-indent: -9999px;
     background: url('icons/top.png') no-repeat;
+}
+
+// DAQUI PARA BAIXO UTILIZADO EM PESSOA
+#upload-wrapper {
+	width: 50%;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 50px;
+	background: #F5F5F5;
+	padding: 50px;
+	border-radius: 10px;
+	box-shadow: 1px 1px 3px #AAA;
+}
+#upload-wrapper h3 {
+	padding: 0px 0px 10px 0px;
+	margin: 0px 0px 20px 0px;
+	margin-top: -30px;
+	border-bottom: 1px dotted #DDD;
+}
+#upload-wrapper input[type=file] {
+	border: 1px solid #DDD;
+	padding: 6px;
+	background: #FFF;
+	border-radius: 5px;
+}
+#upload-wrapper #submit-btn {
+	border: none;
+	padding: 10px;
+	background: #61BAE4;
+	border-radius: 5px;
+	color: #FFF;
+}
+#output{
+	padding: 5px;
+	font-size: 12px;
+}
+#output img {
+	border: 1px solid #DDD;
+	padding: 5px;
 }

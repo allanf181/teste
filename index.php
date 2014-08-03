@@ -8,26 +8,26 @@ include_once "inc/config.inc.php";
 <meta http-equiv="Content-Language" content="pt-br" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="shortcut icon" type="image/x-icon" href="<?php print ICONS; ?>/favicon.ico">
-<link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/style2.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/estilo.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/menu/styles.css" media="screen" />
 
 <script>!window.jQuery && document.write('<script src="<?php print VIEW; ?>/js/1.7.2.jquery.min.js"><\/script>')</script>
 <script src="<?php print VIEW; ?>/js/jquery.loading.js" type="text/javascript"></script>
-
 <script src="<?php print VIEW; ?>/js/jquery.html5form-1.5-min.js"></script>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?php print VIEW; ?>/css/menu/script.js" type="text/javascript"></script>
 
 <script type="text/javascript" src="<?php print LIB; ?>/Zebra_Dialog/public/javascript/zebra_dialog.js"></script>
 <link rel="stylesheet" href="<?php print LIB; ?>/Zebra_Dialog/public/css/flat/zebra_dialog.css" type="text/css"></link>
+
 <script src="<?php print VIEW; ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
 <link href="<?php print VIEW; ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css" media="screen" />
 <script src="<?php print VIEW; ?>/js/jquery-ui/jquery.alerts.js" type="text/javascript"></script>
 <link href="<?php print VIEW; ?>/js/jquery-ui/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
+
 <script src="<?php print VIEW; ?>/js/jquery.maskedinput-1.3.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/jquery-maxlength-min.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/jquery.form.min.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/css/menu/script.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/menu/styles.css" media="screen" />
 
 <script type="text/javascript">
     function display_c(start){
