@@ -30,7 +30,7 @@ if (isset($_POST["opcao"]) && $_POST["opcao"] == 'alterarToBanco') {
             @session_unset($_SESSION_NAME);
             @session_destroy($_SESSION_NAME); 
             print "Sua senha foi alterada com sucesso.<br />";
-	    print "<a href=\"$SITE\">Clique aqui e acesse o sistema com sua nova senha.</a><br/><br/>";
+	    print "<a href=\"?\">Clique aqui e acesse o sistema com sua nova senha.</a><br/><br/>";
             die;
 	} else {
             if ($senha)
@@ -66,20 +66,21 @@ if ($_GET["opcao"] == 'alterar') {
 }
 
 if ($_GET["opcao"] == 'recuperar' || $_GET["opcao"] == 'alterar'){
-    print "<script>\n";
-    print "    $('#form_padrao').html5form({ \n";
-    print "        method : 'POST', \n";
-    print "        action : '".VIEW."/senha.php', \n";
-    print "        responseDiv : '#index', \n";
-    print "        colorOn: '#000', \n";
-    print "        colorOff: '#999', \n";
-    print "        messages: 'br' \n";
-    print "    }) \n";
-    print "</script>\n";
-
-    print "<div id=\"html5form\" class=\"main\">\n";
-    print "<form action=\"".VIEW."/senha.php\" method=\"post\" id=\"form_padrao\">\n"; 
     ?>
+    <script>
+        $('#form_padrao').html5form({
+            method : 'POST',
+            action : '<?php print VIEW; ?>/senha.php',
+            responseDiv : '#index',
+            colorOn: '#000',
+            colorOff: '#999',
+            messages: 'br'
+        })
+    </script>
+
+    <div id="html5form" class="main">
+    <form id="form_padrao">
+    
     Digite uma nova senha, em seguida confirme.<Br/>
     <strong>Dicas de segurança:</strong><Br/>
     -Não utilize sequenciais. ex: 123456 ou abcd<Br/>
@@ -90,8 +91,10 @@ if ($_GET["opcao"] == 'recuperar' || $_GET["opcao"] == 'alterar'){
     <?php
     // Se for alteração de senha, precisa digitar a senha atual
     if ($_GET["opcao"] == 'alterar') {
-        print "<tr><td>Senha Atual: </td></tr>\n";
-        print "<tr><td><input type='password' id='senhaAtual' name=\"senhaAtual\" value='' /></td></tr>\n";
+        ?>
+        <tr><td>Senha Atual: </td></tr>
+        <tr><td><input type='password' id='senhaAtual' name="senhaAtual" value='' /></td></tr>
+        <?php
     }
     ?>	
         <tr><td>Nova Senha: </td></tr>

@@ -182,7 +182,7 @@ if (isset($_GET['est']) && isset($_GET['p'])){
     ?>
     <script>
         $(document).ready(function() {
-            $('#index').load('<?php print VIEW; ?>/senha.php?opcao=recuperar&est=$est&p=$p');
+            $('#index').load('<?php print VIEW; ?>/senha.php?opcao=recuperar&est=<?php print $est; ?>&p=<?php print $p; ?>');
         });
     </script>
 <?php

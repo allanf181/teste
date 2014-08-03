@@ -64,6 +64,8 @@ class login extends Generic {
                 $headers .= "Return-Path: naoresponda@ifsp.edu.br \n";
                 $assunto = 'Recupera&ccedil;&atilde;o de Senha';
                 mail($res[0]['email'], $assunto, $mensagem, $headers);
+                print $res[0]['email'];
+                print $mensagem;
             }
             return true;
         }
