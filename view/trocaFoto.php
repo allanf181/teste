@@ -21,17 +21,15 @@ require VARIAVEIS;
 require FUNCOES;
 
 // PARA NAO ACESSAR DIRETAMENTE...
-if (strpos($_SERVER["HTTP_REFERER"],"/$LOCATION/") == false) {
-    header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
+if (strpos($_SERVER["HTTP_REFERER"], "/$LOCATION/") == false) {
+    header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
 }
-
 ?>
 <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/js/croppic/imgareaselect-default.css" />
 <script type="text/javascript" src="<?php print VIEW; ?>/js/croppic/jquery.min.js"></script>
 <script type="text/javascript" src="<?php print VIEW; ?>/js/croppic/jquery.imgareaselect.pack.js"></script>
 <?php
-
-$path = sys_get_temp_dir().'/';
+$path = sys_get_temp_dir() . '/';
 
 if ($_POST['submit'] == 'Carregar') {
     $name = $_FILES['ImageFile']['name'];
@@ -62,7 +60,7 @@ print "<hr>\n";
 print "<div id='ret'></div>";
 if ($name) {
     $filePath = $_POST['filePath'];
-    print "<form id=\"cropimage\" method=\"post\" action=\"".INC."/processupload.inc.php\" enctype=\"multipart/form-data\">\n";
+    print "<form id=\"cropimage\" method=\"post\" action=\"" . INC . "/processupload.inc.php\" enctype=\"multipart/form-data\">\n";
     print "<input type=\"hidden\" name=\"codigo\" value=\"" . $_SESSION['loginCodigo'] . "\"/>\n";
     print "<input type=\"hidden\" name=\"x_axis\" id=\"x_axis\" value=\"\" />\n";
     print "<input type=\"hidden\" name=\"x2_axis\" id=\"x2_axis\" value=\"\" />\n";
@@ -73,7 +71,7 @@ if ($name) {
     print "<input type=\"hidden\" name=\"fileType\" id=\"filePath\" value=\"$type\" />\n";
     print "<input type=\"submit\" name=\"submit\" id='1' value=\"Salvar\" />\n";
     if ($tmp)
-        print "<br><img src=\"".VIEW."/trocaFoto.php?foto=$foto\" id=\"photo\" style='max-width:300px'>";
+        print "<br><img src=\"" . VIEW . "/trocaFoto.php?foto=$foto\" id=\"photo\" style='max-width:300px'>";
 } else {
     print "<form id=\"cropimage\" method=\"post\" enctype=\"multipart/form-data\">\n";
     print "<input type=\"file\" name=\"ImageFile\" id=\"ImageFile\" value=\"\" />\n";
@@ -81,6 +79,7 @@ if ($name) {
 }
 print "</form>\n";
 ?>
+
 <script type="text/javascript">
     function getSizes(im, obj)
     {
@@ -106,7 +105,25 @@ print "</form>\n";
         });
 
         $('#ImageFile').change(function() {
-            $("#ret").html("<p>Aguarde um momento...</p>");
+
+            $("#ret").html("<progress id='barraprogresso' value='0' max='100'></progress>");
+            var barraprogresso = $('#barraprogresso'),
+                    max = barraprogresso.attr('max'),
+                    time = (1000 / max) * 15,
+                    value = barraprogresso.val();
+
+            var loading = function() {
+                value += 1;
+                addValue = barraprogresso.val(value);
+
+                if (value == max) {
+                    value = 0;
+                }
+            }
+
+            var animate = setInterval(function() {
+                loading();
+            }, time);
             $('#1').click();
         });
     });

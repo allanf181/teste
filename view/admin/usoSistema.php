@@ -13,28 +13,8 @@ require PERMISSAO;
 
 ?>
 <style>
-#principal{
-  width:300px;
-  height:60px;
-  margin-left:10px;
-  font-family:Arial;
-  font-size: 16px;
-  text-align:center;
-}
-#barras{
-  width:328px;
-  height:20px;
-  float:left;
-  margin: 2px 0;
-}
-.barra1, .barra2 { 	
-  color:#FFF;
-  padding-left:0px;
-  height:20px;
-  line-height:20px;
-}
-.barra1{ background-color: #0000FF; }
-.barra2{ background-color: #FF0000; }
+progress::-webkit-progress-bar { /* Estilizando barra de progresso */ } progress::-webkit-progress-value { /* Estilizando apenas valor do progresso */ }
+progress { /* Estilizando barra de progresso */ } progress::-webkit-progress-value { /* Estilizando apenas valor do progresso */ }
 </style>
 
 <?php
@@ -59,18 +39,11 @@ while ($linha = mysql_fetch_array($resultado)) {
 	$count++;
 }
 $uso = round (($uso*100)/$count);
-$width1 = "$uso%";
-$width2 = (100-$uso).'%';
-$total  = 2;
-print "<div id=\"principal\">\n";
-print "<p><b>Porcentagem de Uso do Sistema</b></p>\n";
-for($i=1;$i <= $total;$i++){
-	$width = ${'width' . $i};
-	print "<div id=\"barras\">\n";
-    print "<div class=\"barra$i\" style=\"width:$width\">$width</div>\n";
-	print "</div>\n";
-}
-print "</div>\n";
+$width1 = "$uso";
+$width2 = (100-$uso);
+        
+print "Utilizando: <progress max=\"100\" value=\"$width1\"></progress>$width1%\n";
+print "<br>N&atilde;o utilizado: <progress max=\"100\" value=\"$width2\"></progress>$width2%\n";
 
 // inicializando as vari?veis
 $item = 1;
