@@ -102,6 +102,8 @@ function conv($string) {
             if ($p == 225 && $q == 112)
                 $p = 193; //&Aacute;
 
+
+
                 
 // NAYLOR SCRIPT CRON
             if ($a != 32 && $q != 32 && $p == 200)
@@ -225,22 +227,23 @@ function modalidadesCursoNovo() {
 
     foreach ($MOD as $cod => $nome) {
         $sql = "insert into Modalidades (codigo, nome) values($cod,'" . formatarTexto(utf8_decode($nome)) . "')";
-        if ($res = mysql_query($sql)) {
-            mysql_set_charset('utf8');
-            //INSERIR AVALIAÇÃO
-            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Avaliação', 'avaliacao', $cod, '', 1, 0, 0, 'AVA', 0, 0, 2, 0)";
-            $res = mysql_query($sql);
+        $res = mysql_query($sql);
 
-            if ($cod == 1004) {
-                $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Instrumento Final de Avaliação', 'recuperacao', $cod, 'sub_media', 1, 4, 6, 'IFA', 0, 6, 1, 10)";
-                $res = mysql_query($sql);
-            }
-            
-            if ($cod == 1001 || $cod == 1003) {
-                $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $cod, 'sub_media', 1, 4, 6, 'REF', 1, 4, 0, 10)";
-                $res = mysql_query($sql);
-            }
+        mysql_set_charset('utf8');
+        //INSERIR AVALIAÇÃO
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Avaliação', 'avaliacao', $cod, '', 1, 0, 0, 'AVA', 0, 0, 2, 0)";
+        $res = mysql_query($sql);
+
+        if ($cod == 1004) {
+            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Instrumento Final de Avaliação', 'recuperacao', $cod, 'sub_media', 1, 4, 6, 'IFA', 0, 6, 1, 10)";
+            $res = mysql_query($sql);
         }
+
+        if ($cod == 1001 || $cod == 1003) {
+            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $cod, 'sub_media', 1, 4, 6, 'REF', 1, 4, 0, 10)";
+            $res = mysql_query($sql);
+        }
+
         mysql_set_charset('latin1');
     }
 }
@@ -254,24 +257,24 @@ function modalidadesCursoAntigo() {
         if (!is_int($r->MD_MODAL))
             $r->MD_MODAL += (ord($r->MD_MODAL) + 2000); // PARA BASE DE SP...
         $sql = "insert into Modalidades VALUES ($r->MD_MODAL,'" . formatarTexto(addslashes((conv($r->MD_NOME)))) . "')";
-        if ($res3 = mysql_query($sql)) {
+        $res3 = mysql_query($sql);
 
-            mysql_set_charset('utf8');
-            //INSERIR AVALIAÇÃO
-            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Avaliação', 'avaliacao', $r->MD_MODAL, '', 1, 0, 0, 'AVA', 0, 0, 2, 0)";
-            $res = mysql_query($sql);
+        mysql_set_charset('utf8');
+        //INSERIR AVALIAÇÃO
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Avaliação', 'avaliacao', $r->MD_MODAL, '', 1, 0, 0, 'AVA', 0, 0, 2, 0)";
+        $res = mysql_query($sql);
 
-            //INSERIR RECUPERAÇÃO
-            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Adiciona valor na média', 'recuperacao', $r->MD_MODAL, 'add_media', 1, 0, 0, 'REB', 0, 0, 0, 5)";
-            $res = mysql_query($sql);
+        //INSERIR RECUPERAÇÃO
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Adiciona valor na média', 'recuperacao', $r->MD_MODAL, 'add_media', 1, 0, 0, 'REB', 0, 0, 0, 5)";
+        $res = mysql_query($sql);
 
-            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Adiciona valor na menor nota', 'recuperacao', $r->MD_MODAL, 'add_menor_nota', 1, 0, 0, 'REB', 0, 0, 0, 5)";
-            $res = mysql_query($sql);
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Adiciona valor na menor nota', 'recuperacao', $r->MD_MODAL, 'add_menor_nota', 1, 0, 0, 'REB', 0, 0, 0, 5)";
+        $res = mysql_query($sql);
 
-            //REAVALIAÇÃO FINAL
-            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $r->MD_MODAL, 'sub_media', 1, 0, 6, 'REF', 1, 4, 0, 10)";
-            $res = mysql_query($sql);
-        }
+        //REAVALIAÇÃO FINAL
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $r->MD_MODAL, 'sub_media', 1, 0, 6, 'REF', 1, 4, 0, 10)";
+        $res = mysql_query($sql);
+
         mysql_set_charset('latin1');
     }
 }
