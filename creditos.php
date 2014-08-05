@@ -44,10 +44,12 @@ require SESSAO;
 </td>
 <td valign="top" align="center">Naylor Garcia Bachiega (Birigui)
 	<br>Carlos Eduardo Alves da Silva (Votuporanga)
+        <br>Fernando Parreira (Votuporanga)
 </td>
 <td valign="top" align="center">
 	Mauro de Lucca (Araraquara)
 	<br>Marcelo Fernandes (Campos do Jord&atilde;o)
+        <br>Ricardo Takazu (S&atilde;o Paulo)
 </td>
 </tr>
 </table>
