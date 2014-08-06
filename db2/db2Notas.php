@@ -14,6 +14,7 @@ if (!$LOCATION_CRON) {
 // A TABELA É MUITO GRANDE.
 // SOMENTE 1 e 2 BIMESTRE DOS CURSOS ANTIGOS
 
+$i=0;
 if ($semestre == 2) {
     $db2 = "SELECT NTA_DISC, NTA_PRONT, NTA_NOTA, NTA_FALTA, NTA_BIM, NTA_EVENTOD "
             . "FROM ESCOLA.NOTASAL "
@@ -53,7 +54,7 @@ if ($semestre == 2) {
                         . "$row->NTA_FALTA, NOW(), '5', "
                         . "'FROM IMPORT NOTAS')";
                 mysql_query($sql);
-                
+                $i++;
                 // ATUALIZACAO A ATRIBUICAO PARA FECHADA, 
                 // ASSIM A FUNCAO RESULTADO BUSCA A NOTA NA TABELA NOTASFINAIS
                 $sql = "UPDATE Atribuicoes SET status = 4 WHERE codigo = $row2->atribuicao";
@@ -61,6 +62,6 @@ if ($semestre == 2) {
             }
         }
     }
-    if ($DEBUG) print "NOTAS \n";
+    if ($DEBUG) print "NOTAS IMPORTADAS: $i \n";
 }
 ?>
