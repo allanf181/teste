@@ -42,6 +42,8 @@ if ($res = $instituicao->dadosInstituicao()) {
     $VERSAO = $res[0]['versao'];
     $VERSAOAT = $res[0]['versaoAtual'];
     $DIGITANOTAS = $res[0]['campiDigitaNotas'];
+    $LDAP_ATIVADO = $res[0]['ldap_ativado'];
+    $LDAP_CACHE = $res[0]['ldap_cache'];
 }
 
 // PARA MIGRAÃ‡ÃƒO

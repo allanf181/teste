@@ -9,13 +9,41 @@ class login extends Generic {
     // MÉTODO PARA AUTENTICAÇÃO
     // USADO POR: VIEW/LOGIN.PHP
     public function autentica($prontuario, $senha) {
+        require VARIAVEIS;
         $bd = new database();
-        $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+
+        $rs = null;
+        if ($LDAP_ATIVADO){
+            if ($LDAP_CACHE) { // SE CACHE
+                $sql = "SELECT prontuario, senha "
+                        . "FROM schema_ldap_cache "
+                        . "WHERE prontuario=:prontuario "
+                        . "AND senha=PASSWORD(:senha) "
+                        . "AND DATEDIFF(NOW(), data) < $LDAP_CACHE";
+                $params = array(':prontuario'=> $prontuario,':senha'=> $senha);
+                $rs = $bd->selectDB($sql, $params);
+            }
+            if (!$rs) {
+                require PATH.INC.'/ldap.inc.php';
+                $ldap = new ldap();
+                $rs = $ldap->autentica($prontuario, $senha);
+            }
+        }
+       
+        if (!$rs) { // SE NAO AUTENTICOU PELO LDAP, TENTA PELO BANCO.
+            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
                 . " FROM Pessoas"
                 . " WHERE prontuario=:prontuario"
                 . " AND senha=PASSWORD(:senha)";
-        $params = array(':prontuario'=> $prontuario,':senha'=> $senha);
+            $params = array(':prontuario'=> $prontuario,':senha'=> $senha);
+        } else { // SE AUTENTICOU PELO LDAP, PEGA OS DADOS PARA A SESSAO.
+            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+                . " FROM Pessoas"
+                . " WHERE prontuario=:prontuario";
+            $params = array(':prontuario'=> $prontuario);            
+        }
         $res = $bd->selectDB($sql, $params);
+
         if ( $res )
         {
             $_SESSION["loginCodigo"] = $res[0]['codigo'];

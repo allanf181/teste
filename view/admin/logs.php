@@ -10,6 +10,8 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
+
 ?>
 
 <h2><?php print $TITLE; ?></h2>

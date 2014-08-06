@@ -10,6 +10,7 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+require SESSAO;
 
 ?>
 <h2><?php print $TITLE; ?></h2>
@@ -91,7 +92,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Alunos: </td><td><? if ($enabled) { ?><input type="button" id="alunos" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?> <div id='alunosRetorno'></div></td></tr>
+        <tr><td align="right">Alunos: </td><td><? if ($enabled) { ?><input type="button" id="alunos" value="<?=$rotulo?>" /><? } ?></td><td><div id='alunosRetorno'><?=$situacao?></div></td></tr>
         <?php
             $sql = "select * from Atualizacoes a, Pessoas p where (a.tipo=2 OR a.tipo=102) and a.pessoa=p.codigo  order by a.codigo desc limit 1";
             $result = mysql_query($sql);
@@ -109,7 +110,7 @@ $(document).ready(function(){
                 $enabled=true;
             }
         ?>
-        <tr><td align="right">Professores: </td><td><? if ($enabled) { ?><input type="button" id="professores" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='professoresRetorno'></div></td></tr>
+        <tr><td align="right">Professores: </td><td><? if ($enabled) { ?><input type="button" id="professores" value="<?=$rotulo?>" /><? } ?></td><td><div id='professoresRetorno'><?=$situacao?></div></td></tr>
       
         <?php
             $sql = "select * from Atualizacoes a, Pessoas p where (a.tipo=11 OR a.tipo=111) and a.pessoa=p.codigo  order by a.codigo desc limit 1";
@@ -127,7 +128,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Hor&aacute;rios e Feriados: </td><td><? if ($enabled) { ?><input type="button" id="horarios" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='horariosRetorno'></div></td></tr>
+        <tr><td align="right">Hor&aacute;rios e Feriados: </td><td><? if ($enabled) { ?><input type="button" id="horarios" value="<?=$rotulo?>" /><? } ?></td><td><div id='horariosRetorno'><?=$situacao?></div></td></tr>
 	         
         <tr><td colspan="3"><hr></td></tr>
         
@@ -147,7 +148,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Cursos Novos: </td><td><? if ($enabled) { ?><input type="button" id="cursosn" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='cursosnRetorno'></div></td></tr>
+        <tr><td align="right">Cursos Novos: </td><td><? if ($enabled) { ?><input type="button" id="cursosn" value="<?=$rotulo?>" /><? } ?></td><td><div id='cursosnRetorno'><?=$situacao?></div></td></tr>
 	    
 
         <?php
@@ -166,7 +167,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Turmas (Cursos Novos): </td><td><? if ($enabled) { ?><input type="button" id="turmasn" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='turmasnRetorno'></div></td></tr>
+        <tr><td align="right">Turmas (Cursos Novos): </td><td><? if ($enabled) { ?><input type="button" id="turmasn" value="<?=$rotulo?>" /><? } ?></td><td><div id='turmasnRetorno'><?=$situacao?></div></td></tr>
     
         <?php
             $sql = "select * from Atualizacoes a, Pessoas p where (a.tipo=7 OR a.tipo=107) and a.pessoa=p.codigo  order by a.codigo desc limit 1";
@@ -184,7 +185,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Atribui&ccedil;&otilde;es (Cursos Novos): </td><td><? if ($enabled) { ?><input type="button" id="atribuicoesn" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='atribuicoesnRetorno'></div></td></tr>
+        <tr><td align="right">Atribui&ccedil;&otilde;es (Cursos Novos): </td><td><? if ($enabled) { ?><input type="button" id="atribuicoesn" value="<?=$rotulo?>" /><? } ?></td><td><div id='atribuicoesnRetorno'><?=$situacao?></div></td></tr>
 	    
 
         <?php
@@ -203,7 +204,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Matr&iacute;culas (Cursos Novos): </td><td><? if ($enabled) { ?><input type="button" id="matriculasn" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='matriculasnRetorno'></div></td></tr>
+        <tr><td align="right">Matr&iacute;culas (Cursos Novos): </td><td><? if ($enabled) { ?><input type="button" id="matriculasn" value="<?=$rotulo?>" /><? } ?></td><td><div id='matriculasnRetorno'><?=$situacao?></div></td></tr>
         <tr><td colspan="3"><hr></td></tr>
 
         <?php
@@ -222,7 +223,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Cursos Antigos: </td><td><? if ($enabled) { ?><input type="button" id="cursosa" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='cursosaRetorno'></div></td></tr>
+        <tr><td align="right">Cursos Antigos: </td><td><? if ($enabled) { ?><input type="button" id="cursosa" value="<?=$rotulo?>" /><? } ?></td><td><div id='cursosaRetorno'><?=$situacao?></div></td></tr>
 
         <?php
             $sql = "select * from Atualizacoes a, Pessoas p where (a.tipo=6 OR a.tipo=106) and a.pessoa=p.codigo  order by a.codigo desc limit 1";
@@ -239,7 +240,7 @@ $(document).ready(function(){
                 $enabled=true;
             }
         ?>
-        <tr><td align="right">Turmas (Cursos Antigos): </td><td><? if ($enabled) { ?><input type="button" id="turmasa" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='turmasaRetorno'></div></td></tr>
+        <tr><td align="right">Turmas (Cursos Antigos): </td><td><? if ($enabled) { ?><input type="button" id="turmasa" value="<?=$rotulo?>" /><? } ?></td><td><div id='turmasaRetorno'><?=$situacao?></div></td></tr>
 
         <?php
             $sql = "select * from Atualizacoes a, Pessoas p where (a.tipo=8 OR a.tipo=108) and a.pessoa=p.codigo  order by a.codigo desc limit 1";
@@ -257,7 +258,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Atribui&ccedil;&otilde;es (Cursos Antigos): </td><td><? if ($enabled) { ?><input type="button" id="atribuicoesa" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='atribuicoesaRetorno'></div></td></tr>
+        <tr><td align="right">Atribui&ccedil;&otilde;es (Cursos Antigos): </td><td><? if ($enabled) { ?><input type="button" id="atribuicoesa" value="<?=$rotulo?>" /><? } ?></td><td><div id='atribuicoesaRetorno'><?=$situacao?></div></td></tr>
 		    
         <?php
             $sql = "select * from Atualizacoes a, Pessoas p where (a.tipo=10 OR a.tipo=110) and a.pessoa=p.codigo order by a.codigo desc limit 1";
@@ -275,7 +276,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Matr&iacute;culas (Cursos Antigos): </td><td><? if ($enabled) { ?><input type="button" id="matriculasa" value="<?=$rotulo?>" /><? } ?></td><td><?=$situacao?><div id='matriculasaRetorno'></div></td></tr>
+        <tr><td align="right">Matr&iacute;culas (Cursos Antigos): </td><td><? if ($enabled) { ?><input type="button" id="matriculasa" value="<?=$rotulo?>" /><? } ?></td><td><div id='matriculasaRetorno'><?=$situacao?></div></td></tr>
 				</td></tr>
          <tr><td colspan="3"><hr></td></tr>
 
@@ -295,7 +296,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Dispensas: </td><td><? if ($enabled) { ?><input type="button" id="dispensa" value="Sincronizar" /><? } ?></td><td><?=$situacao?><div id='dispensaRetorno'></div></td></tr>
+        <tr><td align="right">Dispensas: </td><td><? if ($enabled) { ?><input type="button" id="dispensa" value="Sincronizar" /><? } ?></td><td><div id='dispensaRetorno'><?=$situacao?></div></td></tr>
 
     <tr><td colspan="3"><hr></td></tr>
 
@@ -315,7 +316,7 @@ $(document).ready(function(){
             }
 
         ?>
-        <tr><td align="right">Digita Notas: </td><td><? if ($enabled) { ?><input type="button" id="digitaNotas" value="Sincronizar" /><? } ?></td><td><?=$situacao?><div id='digitaNotasRetorno'></div></td></tr>
+        <tr><td align="right">Digita Notas: </td><td><? if ($enabled) { ?><input type="button" id="digitaNotas" value="Sincronizar" /><? } ?></td><td><div id='digitaNotasRetorno'><?=$situacao?></div></td></tr>
 
     		<tr><td colspan="3"><hr></td></tr>
     		<tr><td colspan="3" align="center"><a id="atualizar" href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);" title="Atualizar Resumos"><img class="botao" src="<?php print ICONS; ?>/sync.png" /></td></tr>
