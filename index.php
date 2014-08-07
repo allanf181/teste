@@ -11,23 +11,27 @@ include_once "inc/config.inc.php";
 <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/estilo.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/menu/styles.css" media="screen" />
 
+<!-- JS PADRAO -->
 <script>!window.jQuery && document.write('<script src="<?php print VIEW; ?>/js/1.7.2.jquery.min.js"><\/script>')</script>
 <script src="<?php print VIEW; ?>/js/jquery.loading.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/jquery.html5form-1.5-min.js"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/css/menu/script.js" type="text/javascript"></script>
+<script src="<?php print VIEW; ?>/js/jquery.form.min.js" type="text/javascript"></script>
+<script src="<?php print VIEW; ?>/js/jquery.maskedinput-1.3.js" type="text/javascript"></script>
+<script src="<?php print VIEW; ?>/js/jquery-maxlength-min.js" type="text/javascript"></script>
 
+<!-- Alertas -->
 <script type="text/javascript" src="<?php print LIB; ?>/Zebra_Dialog/public/javascript/zebra_dialog.js"></script>
 <link rel="stylesheet" href="<?php print LIB; ?>/Zebra_Dialog/public/css/flat/zebra_dialog.css" type="text/css"></link>
 
+<!-- utilizado pelo calendário -->
 <script src="<?php print VIEW; ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
 <link href="<?php print VIEW; ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css" media="screen" />
+
+<!-- desabilitar quando o Zebra tornar-se padrao -->
 <script src="<?php print VIEW; ?>/js/jquery-ui/jquery.alerts.js" type="text/javascript"></script>
 <link href="<?php print VIEW; ?>/js/jquery-ui/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
-
-<script src="<?php print VIEW; ?>/js/jquery.maskedinput-1.3.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/jquery-maxlength-min.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/jquery.form.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
     function display_c(start){

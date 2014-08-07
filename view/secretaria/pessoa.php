@@ -132,7 +132,6 @@ if ($_GET["opcao"] == 'removeFoto') {
 <h2><?php print $TITLE; ?></h2>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 
-
 <?php
 if ($_GET["opcao"] == 'validacao') {
     if ($_GET["codigo"]) {

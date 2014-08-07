@@ -25,11 +25,12 @@ class Frequencias extends Generic {
                 AND at.turma = t.codigo
                 AND t.curso = c.codigo
                 AND d.codigo = at.disciplina
-                AND DATE_FORMAT(a.data, '%m') = $mes
-                AND DATE_FORMAT(a.data, '%Y') = $ano
+                AND DATE_FORMAT(a.data, '%m') = :mes
+                AND DATE_FORMAT(a.data, '%Y') = :ano
                 ORDER BY p.nome";
 
-        $res = $bd->selectDB($sql);
+        $params = array ('ano' => $ano, 'mes' => str_pad($mes, 2, "0", STR_PAD_LEFT));
+        $res = $bd->selectDB($sql, $params);
         foreach ($res as $reg) {
             if (strpos($reg['quantidade'], 'F') !== false) {
                 $new[$reg['prontuario']][$reg['atribuicao']] += 1;
@@ -40,7 +41,7 @@ class Frequencias extends Generic {
         }
         foreach ($new as $pront => $reg) {
             foreach ($reg as $atr => $r) {
-                if ($r >= 3) {
+                if ($r >= 3 && $new[$atr]) {
                     $arr[$pront]['aluno'] = $new[$pront]['aluno'];
                     $arr[$pront]['disciplina'][] = $new[$atr];
                     $arr[$pront]['codigo'] = $new[$pront]['codigo'];
