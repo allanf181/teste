@@ -17,7 +17,7 @@ if (isset($_GET["mes"]))
     $mes = $_GET["mes"];
 ?>
 <h2><?php print $TITLE; ?></h2>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 
 <table align="center" id="form" width="100%">
     <tr><td align="right" style="width: 100px">Mês:</td><td>
@@ -32,13 +32,13 @@ if (isset($_GET["mes"]))
                 ?>
             </select>
     <tr><td>&nbsp;</td><td><font size="1">Mostra alunos com mais de 3 faltas no m&ecirc;s em uma mesma disciplina.</font></td><td></tr>
-        </td></tr>
+</td></tr>
 </table>    
 <?php
 if (!empty($_GET["mes"])) {
     require CONTROLLER . "/frequencia.class.php";
     $frequencia = new Frequencias();
-    $res = $frequencia->listAusencias($_GET["mes"] + 1);
+    $res = $frequencia->listAusencias($_GET["mes"] + 1, $ANO);
     ?>
     <table id="frequencias" border="0" align="center" width="100%">
         <tr><th align="center" style='width: 100px'>Prontu&aacute;rio</th><th align="center" style='width: 300px'>Nome</th><th align="center">Disciplina/Cursos</th></tr>
@@ -48,14 +48,23 @@ if (!empty($_GET["mes"])) {
                     $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                     ?>
 
-            <tr <?php print $cdif; ?>><td align='center'><?php print $pront; ?></td>
-                <td><?php print mostraTexto($reg['aluno']); ?></td>
-                <td align='center'><?php print $reg['disciplina']; ?></td>
+            <tr <?php print $cdif; ?>><td align='center'>
+                <?=$pront?></td>
+                <td>
+                <a href='#' rel='<?=INC?>/file.inc.php?type=pic&id=<?=crip($reg['codigo'])?>&timestamp=<?=time()?>' class='screenshot' title='<?=mostraTexto($reg['aluno'])?>'>
+                <img style='width: 20px; height: 20px' alt='Embedded Image' src='<?=INC?>/file.inc.php?type=pic&id=<?=crip($reg['codigo'])?>&timestamp=<?=time()?>' /></a>
+                <?=mostraTexto($reg['aluno'])?></td>
+                <td align='center'><?php
+                foreach ($reg['disciplina'] as $disc) {
+                    print $disc.'<br>';
+                }
+                ?>
+                </td>
             </tr>
-                <?php
-            }
+            <?php
             $i++;
-            ?>
+        }
+        ?>
     </table>
     <?php
 }
