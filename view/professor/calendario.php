@@ -11,7 +11,7 @@ require MENSAGENS;
 require FUNCOES;
 require SESSAO;
 
-if (in_array($ALUNO, $_SESSION["loginTipo"])) {
+if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
     ?>
 
     <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/calendario.css" media="screen" />
