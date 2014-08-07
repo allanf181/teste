@@ -574,20 +574,24 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
                                 S1 = $("#" + IS).text();
                             if (l == 2) {
                                 E2 = $("#" + IE).text();
-                                difer = subtime(S1, E2);
-                                if (TI != 0)
-                                    TI = addtime(TI, difer);
-                                else
-                                    TI = difer;
-                                S2 = $("#" + IS).text();
+                                if (S1 && E2) {
+                                    difer = subtime(S1, E2);
+                                    if (TI != 0)
+                                        TI = addtime(TI, difer);
+                                    else
+                                        TI = difer;
+                                    S2 = $("#" + IS).text();
+                                }
                             }
                             if (l == 3) {
                                 E3 = $("#" + IE).text();
-                                difer = subtime(S2, E3);
-                                if (TI != 0)
-                                    TI = addtime(TI, difer);
-                                else
-                                    TI = difer;
+                                if (S2 && E3) {
+                                    difer = subtime(S2, E3);
+                                    if (TI != 0)
+                                        TI = addtime(TI, difer);
+                                    else
+                                        TI = difer;
+                                }
                             }
                         }
                     }
@@ -864,8 +868,10 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
         }
 
         function subtime(start, end) {
-            start = start.split(":");
-            end = end.split(":");
+            if (start)
+                start = start.split(":");
+            if (end)
+                end = end.split(":");
             var startDate = new Date(0, 0, 0, start[0], start[1], 0);
             var endDate = new Date(0, 0, 0, end[0], end[1], 0);
             var diff = endDate.getTime() - startDate.getTime();
@@ -876,8 +882,10 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
         }
 
         function addtime(start, end) {
-            start = start.split(":");
-            end = end.split(":");
+            if (start)
+                start = start.split(":");
+            if (end)
+                end = end.split(":");
 
             var hours = parseInt(start[0]) + parseInt(end[0]);
             var minutes = parseInt(start[1]) + parseInt(end[1]);
