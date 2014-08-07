@@ -88,7 +88,9 @@ class Avisos extends Generic {
         $params['codigo'] = $POST['codigo'];
         $params['conteudo'] =  $POST['conteudo'];        
         $params['pessoa'] =  $POST['pessoa'];
-            
+        
+        $params['atribuicao'] = 0;
+        
         $to = explode(',', $POST['to']);
 
         $res=0;
