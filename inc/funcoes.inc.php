@@ -806,7 +806,7 @@ function dirToArray($dir) {
     foreach ($objects as $name => $object) {
         $arquivo = str_replace(PATH . LOCATION . '/', '', $name);
 
-        if (!preg_match('/\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\//', $name)) {
+        if (!preg_match('/\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html/', $name)) {
             if (is_dir($name)) {
                 $files[$arquivo] = '';
             } else {

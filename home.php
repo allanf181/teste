@@ -78,7 +78,7 @@ if ($user) {
     $res = $pessoa->infoPassword($user);
     if ($res['dataSenha']) {
         ?>
-        <br><br>&Uacute;ltima altera&ccedil;&atilde;o da senha: <?php print formata($res['dataSenha']); ?>
+        <br><br><a href="javascript:$('#index').load('<?=VIEW?>/senha.php?opcao=alterar'); void(0);" title='Clique aqui para alterar sua senha!'>&Uacute;ltima altera&ccedil;&atilde;o da senha: <?php print formata($res['dataSenha']); ?></a>
         <?php
     }
 
