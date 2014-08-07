@@ -16,7 +16,7 @@ Abstract class Generic {
         // decriptografa elementos que possam
         // estar criptografados dentro do Array
         $params = dcripArray($params);
-        
+
         foreach(array_keys($params) as $key) {
             if ($key == 'codigo') { 
                 $INS[] = 'NULL';
@@ -36,7 +36,7 @@ Abstract class Generic {
         if (!$params['codigo']) {
             $sql = "INSERT INTO $table ($COL) VALUES ($INS)";
             unset($params['codigo']);
-            $res = $bd->insertDB($sql, $params);        
+            $res = $bd->insertDB($sql, $params);   
         } else {
             $sql = "UPDATE $table SET $UP "
                 . "WHERE codigo=:codigo";

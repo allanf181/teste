@@ -31,7 +31,7 @@ if ($user) {
     if (isset($_GET['email'])) {
         if ($_GET['email'] == 'undefined')
             $_GET['email'] = null;
-        $params = array('codigo' => $user, 'email' => $_GET['email']);
+        $params = array('codigo' => crip($user), 'email' => $_GET['email']);
         $pessoa->insertOrUpdate($params);
     }
     
@@ -39,7 +39,7 @@ if ($user) {
     if (isset($_GET['lattes'])) {
         if ($_GET['lattes'] == 'undefined')
             $_GET['lattes'] = null;
-        $params = array('codigo' => $user, 'lattes' => $_GET['lattes']);
+        $params = array('codigo' => crip($user), 'lattes' => $_GET['lattes']);
         $pessoa->insertOrUpdate($params);
     }    
     

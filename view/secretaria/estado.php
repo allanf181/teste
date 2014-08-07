@@ -73,7 +73,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 </div>
 
 <div id="sitelist">
-    <?php
+<?php
 // PAGINACAO
     $itensPorPagina = 20;
     $item = 1;
@@ -102,8 +102,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 <td><?php print $reg['nome']; ?>
                 </td><td><?php print $reg['sigla']; ?></td>
                 <td align='center'>
-                    <input type='checkbox' id='deletar' name='deletar[]' value='<?php print $codigo; ?>' />
-                    <a href='#' title='Alterar' class='item-alterar' id='<?php print $codigo; ?>'><img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
+                    <input type='checkbox' id='deletar' name='deletar[]' value='<?=$codigo?>' />
+                    <a href='#' title='Alterar' class='item-alterar' id='<?=$codigo?>'><img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
                 </td>
             </tr>
             <?php

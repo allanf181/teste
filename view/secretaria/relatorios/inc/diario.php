@@ -394,7 +394,8 @@ $sql = "SELECT au.conteudo, au.quantidade, DATE_FORMAT(au.data, '%m') as mes,
 //print $sql;
 $resultado = mysql_query($sql);
 $linha = mysql_fetch_array($resultado);
-      
+
+$limit = 105; // tamanho limite
 $limit2=120;
 
 $observ = $linha[4];

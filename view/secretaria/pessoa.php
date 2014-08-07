@@ -416,12 +416,12 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\" enctype=\"multi
             </tr>
             <tr>
                 <td align="right">Prontuario: </td>
-                <td><input type="text" <?php if ($codigo) print "readonly"; ?> id="campoProntuario" name="campoProntuario" maxlength="45" value="<?php echo $prontuario; ?>"/>
+                <td><input type="text" <?php if ($codigo) print "readonly"; ?> id="campoProntuario" autocomplete="off" name="campoProntuario" maxlength="45" value="<?php echo $prontuario; ?>"/>
                     <a href="#" id="setProntuario" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/sync.png' /></a>
             </tr>
             <tr>
                 <td align="right">Senha: </td>
-                <td><input type="password" name="campoSenha" id="campoSenha1" maxlength="20" value="<?php echo $senha; ?>"/></td>
+                <td><input type="password" name="campoSenha" id="campoSenha1" autocomplete="off" maxlength="20" value="<?php echo $senha; ?>"/></td>
             </tr>
             <tr>
                 <td align="right">Estado: </td>

@@ -7,252 +7,176 @@
 require '../../inc/config.inc.php';
 require MYSQL;
 require VARIAVEIS;
+
+if ($_GET['dados']) {
+    $query = sprintf("SELECT CONCAT('P:', codigo) as id, nome as name from Pessoas "
+            . "WHERE nome LIKE '%%%s%%' ORDER BY nome DESC LIMIT 10", mysql_real_escape_string($_GET["q"]));
+    $arr = array();
+    $rs = mysql_query($query);
+    while ($obj = mysql_fetch_object($rs))
+        $arr[] = $obj;
+
+    $query = sprintf("select CONCAT('C:', c.codigo) as id,
+                        CONCAT(IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome), '[', m.nome, ']') as name 
+               		from Cursos c, Modalidades m 
+               		where c.modalidade = m.codigo 
+                        AND c.nome LIKE '%%%s%%' 
+                        ORDER BY c.nome DESC LIMIT 10", mysql_real_escape_string($_GET["q"]));
+    $rs = mysql_query($query);
+    while ($obj = mysql_fetch_object($rs))
+        $arr[] = $obj;
+
+    $query = sprintf("select CONCAT('T:', t.codigo) as id, t.numero as name
+          		from Turmas t, Cursos c
+           		where t.curso=c.codigo
+           		and t.ano=2013 
+           		and (t.semestre=1 OR t.semestre=0)
+                        and t.numero LIKE '%%%s%%' 
+                        ORDER BY t.numero DESC LIMIT 10", mysql_real_escape_string($_GET["q"]));
+    $rs = mysql_query($query);
+    while ($obj = mysql_fetch_object($rs))
+        $arr[] = $obj;
+
+    $json_response = json_encode($arr);
+
+    if ($_GET["callback"])
+        $json_response = $_GET["callback"] . "(" . $json_response . ")";
+
+    echo $json_response;
+    die;
+}
+
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-if ($_POST["opcao"] == 'InsertOrUpdate') {
-    $aviso = $_POST["campoAviso"];
-    $atribuicao = dcrip($_POST["campoAtribuicao"]);
-    $destinatario = (dcrip($_POST["campoDestinatario"]) == 'Todos') ? '' : dcrip($_POST["campoPessoa"]);
-    $pessoa = $_SESSION['loginCodigo'];
-    $turma = (dcrip($_SESSION['campoTurma']) == 'Todos') ? '' : dcrip($_POST["campoTurma"]);
-    $curso = (dcrip($_SESSION['campoCurso']) == 'Todos') ? '' : dcrip($_POST["campoCurso"]);
+require CONTROLLER . "/aviso.class.php";
+$aviso = new Avisos();
 
-    $resultado = mysql_query("insert into Avisos values(NULL, '$pessoa', '$atribuicao', '$turma', '$curso', '$destinatario', now(), '$aviso')");
-    if ($resultado == 1)
-        mensagem('OK', 'TRUE_INSERT');
+// INSERT E UPDATE
+if ($_POST["opcao"] == 'InsertOrUpdate') {
+    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
+    unset($_POST['opcao']);
+
+    $_POST['pessoa'] = crip($_SESSION['loginCodigo']);
+    $ret = $aviso->insertOrUpdateAvisos($_POST);
+
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    if ($_POST['codigo'])
+        $_GET["codigo"] = $_POST['codigo'];
     else
-        mensagem('NOK', 'FALSE_INSERT');
-    $_GET['atribuicao'] = $_POST["campoAtribuicao"];
+        $_GET["codigo"] = crip($ret['RESULTADO']);
 }
 
+// DELETE
 if ($_GET["opcao"] == 'delete') {
-    $codigo = dcrip($_GET["codigo"]);
-    $resultado = mysql_query("delete from Avisos where codigo=$codigo");
-    if ($resultado == 1)
-        mensagem('OK', 'TRUE_DELETE');
-    else
-        mensagem('NOK', 'FALSE_DELETE');
+    $ret = $aviso->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
+}
+
+// LISTAGEM
+if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
+    // consulta no banco
+    $params = array('codigo' => dcrip($_GET["codigo"]));
+    $res = $aviso->listRegistros($params);
+    extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
+    $params = null;
 }
 ?>
 
 <h2><?php print $TITLE; ?></h2>
+<script type="text/javascript" src="<?= VIEW ?>/js/AutocompleteList/src/jquery.tokeninput.js"></script>
+<link rel="stylesheet" href="<?= VIEW ?>/js/AutocompleteList/styles/token-input.css" type="text/css" />
+<link rel="stylesheet" href="<?= VIEW ?>/js/AutocompleteList/styles/token-input-facebook.css" type="text/css" />
 
-<?php
-$atribuicao = dcrip($_GET["atribuicao"]);
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#to").tokenInput("<?= VIEW ?>/secretaria/aviso.php?dados=1", {
+            theme: "facebook"
+        });
+    });
+</script>
 
-if (isset($_GET["turma"]) && $_GET["turma"] != "")
-    $turma = dcrip($_GET["turma"]);
-if (isset($_GET["curso"]))
-    $curso = dcrip($_GET["curso"]);
+<script>
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?php print $SITE; ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
+</script>
 
-print "<script>\n";
-print "    $('#form_padrao').html5form({ \n";
-print "        method : 'POST', \n";
-print "        action : '$SITE', \n";
-print "        responseDiv : '#index', \n";
-print "        colorOn: '#000', \n";
-print "        colorOff: '#999', \n";
-print "        messages: 'br' \n";
-print "    }) \n";
-print "</script>\n";
-
-if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"])) {
-    $C = 1;
-    $T = 1;
-}
-
-print "<div id=\"html5form\" class=\"main\">\n";
-print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
-?> 
-<table align="center" width="100%" id="form"> <input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" /> 
-    <?php if ($C) { ?>
-        <tr><td align="right">Curso: </td><td><select name="campoCurso" id="campoCurso" style="width: 350px">
-                    <?php
-                    if (!$restricaoCoordenador && !$restricaoCoordenadorAnd) {
-                        echo "<option value='" . crip("Todos") . "'>Todos os Cursos</option>";
-                    }
-                    $sql = "select c.codigo, c.nome, m.nome, m.codigo 
-	               		from Cursos c, Modalidades m 
-	               		where c.modalidade = m.codigo $restricaoCoordenadorAnd
-	               		order by c.nome";
-                    $resultado = mysql_query($sql);
-                    $selected = "";
-                    while ($linha = mysql_fetch_array($resultado)) {
-                        if ($linha[0] == $curso)
-                            $selected = "selected";
-                        if ($linha[3] < 1000 || $linha[3] >= 2000)
-                            $linha[1] = "$linha[1] [$linha[2]]";
-                        echo "<option $selected value='" . crip($linha[0]) . "'>[$linha[0]] $linha[1]</option>";
-                        $selected = "";
-                    }
-                    ?>
-                </select>
-            </td></tr>
-        <?php
-    }
-    if ($T) {
-        ?>
-        <tr><td align="right">Turma: </td>
-            <td><select name="campoTurma" id="campoTurma" style="width: 350px">
-                    <?php
-                    $resultado = mysql_query("select t.codigo, t.numero, c.nome, tu.nome, t.semestre, t.ano, c.fechamento
-          							from Turmas t, Cursos c, Turnos tu 
-           							where t.curso=c.codigo 
-           							and t.ano=$ano 
-           							and t.turno=tu.codigo
-           							and c.codigo = $curso
-           							and (t.semestre=$semestre OR t.semestre=0) $restricaoCoordenadorAnd");
-                    $selected = "";
-                    if (mysql_num_rows($resultado) > 0) {
-                        if ($turma == 'Todos')
-                            $selected = 'selected';
-                        echo "<option $selected  value='" . crip("Todos") . "'>Todos as Turmas</option>";
-                        while ($linha = mysql_fetch_array($resultado)) {
-                            if ($linha[6] == 'b' && $relatorio != 'matriculas')
-                                $S = 1;
-                            if ($linha[0] == $turma)
-                                $selected = "selected";
-                            echo "<option $selected value='" . crip($linha[0]) . "'>$linha[1]</option>";
-                            $selected = "";
-                        }
-                    }
-                    ?>
-                </select>
-            </td></tr>
-                    <?php }
-                ?>
-    <tr><td align="right">Aluno: </td><td><select name="campoPessoa" id="campoPessoa" style="width: 350px"> 
-                <?php
-                if (in_array($PROFESSOR, $_SESSION["loginTipo"]))
-                    $sqlADD = " AND a.codigo = $atribuicao";
-                else
-                    $sqlADD = "AND t.codigo = $turma";
-
-                $sql = "SELECT p.codigo, p.nome 
-    							FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
-    							WHERE t.codigo = a.turma AND m.atribuicao = a.codigo 
-    							AND m.aluno = p.codigo 
-    							AND t.codigo = a.turma 
-     							$sqlADD
-    							GROUP BY p.codigo ORDER BY p.nome";
-                $resultado = mysql_query($sql);
-                $selected = "";
-                if (mysql_num_rows($resultado) > 0) {
-                    echo "<option value='" . crip("Todos") . "'>Todos da Turma</option>";
-
-                    while ($linha = mysql_fetch_array($resultado)) {
-                        if ($linha[0] == $turma)
-                            $selected = "selected";
-                        echo "<option $selected value='" . crip($linha[0]) . "'>$linha[1]</option>";
-                        $selected = "";
-                    }
-                }
-                ?>
-            </select>
-        </td></tr>
-    <tr><td align="right" style="width: 120px">Aviso: </td> 
-        <td><textarea rows="5" cols="60" maxlength='500' id='campoAviso' name='campoAviso'><?php print $aviso; ?></textarea></tr>
-    <tr><td></td><td>
-            <input type="hidden" name="campoAtribuicao" value="<?php echo $_GET['atribuicao']; ?>" /> 
-            <input type="hidden" name="opcao" value="InsertOrUpdate" />
-            <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                    <td><a href="javascript:$('#index').load('<?php print $SITE . "?atribuicao=" . $_GET['atribuicao']; ?>'); void(0);">Novo/Limpar</a></td> 
-                </tr></table> 
-        </td></tr> 
-</table>
-</form>
+<div id="html5form" class="main">
+    <form id="form_padrao">
+        <table align="center" width="100%" id="form">
+            <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
+            <tr><td align="right">Para: </td><td><input type="text" id="to" name="to" /></td></tr>
+            <tr><td></td><td align="left"><font size='1'>Digite a pessoa, curso ou turma para enviar a mensagem. Deixe em branco para enviar para todos.</font></td></tr>
+            <tr><td align="right" style="width: 120px">Aviso: </td> 
+                <td><textarea rows="5" cols="60" maxlength='500' id='conteudo' name='conteudo'><?php print $conteudo; ?></textarea></tr>
+            <tr><td></td><td>
+                    <input type="hidden" name="opcao" value="InsertOrUpdate" />
+                    <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
+                            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td> 
+                        </tr></table> 
+                </td></tr> 
+        </table>
+    </form>
 </div>
 <?php
-// inicializando as vari?veis
+// PAGINACAO
+$itensPorPagina = 20;
 $item = 1;
-$itensPorPagina = 10;
-$primeiro = 1;
-$anterior = $item - $itensPorPagina;
-$proximo = $item + $itensPorPagina;
-$ultimo = 1;
+$ordem = '';
 
-// validando a p?gina atual
-if (!empty($_GET["item"])) {
+if (isset($_GET['item']))
     $item = $_GET["item"];
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-}
 
-// validando a p?gina anterior
-if ($item - $itensPorPagina < 1)
-    $anterior = 1;
+$params['pessoa'] = $_SESSION['loginCodigo'];
+$res = $aviso->listAvisos($params, $item, $itensPorPagina);
 
-// descobrindo a quantidade total de registros
-$resultado = mysql_query("select count(*) from Avisos a 
-				WHERE pessoa = " . $_SESSION['loginCodigo'] . "");
-$linha = mysql_fetch_row($resultado);
-$ultimo = $linha[0];
-
-// validando o pr?ximo item
-if ($proximo > $ultimo) {
-    $proximo = $item;
-    $ultimo = $item;
-}
-
-// validando o ?ltimo item
-if ($ultimo % $itensPorPagina > 0)
-    $ultimo = $ultimo - ($ultimo % $itensPorPagina) + 1;
-
-$SITENAV = $SITE . "?atribuicao=" . crip($atribuicao);
-require(PATH . VIEW . '/navegacao.php');
+$totalRegistros = count($aviso->listAvisos($params));
+$SITENAV = $SITE . '?';
+require PATH . VIEW . '/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
-    <tr><th align="left" width="40">#</th><th>Data</th><th>Aviso</th><th>Para</th><th width="40">A&ccedil;&atilde;o</th></tr>
+    <tr><th align="left" width="40">#</th><th>Data</th><th>Aviso</th><th>Para</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
     <?php
     // efetuando a consulta para listagem
-    $sql = "SELECT a.codigo, date_format(a.data, '%d/%m/%Y %H:%i'), 
-        	a.conteudo, a.atribuicao,
-		(SELECT p1.nome FROM Pessoas p1 WHERE p1.codigo = a.destinatario),
-		(SELECT CONCAT('[', c.codigo, '] ', c.nome) FROM Cursos c WHERE c.codigo = a.curso),
- 		(SELECT t.numero FROM Turmas t WHERE t.codigo = a.turma)
-  		FROM Avisos a 
-  		WHERE pessoa = " . $_SESSION['loginCodigo'] . "
-  		ORDER BY a.data DESC limit " . ($item - 1) . ",$itensPorPagina";
-    //print $sql;
-    $resultado = mysql_query($sql);
     $i = $item;
-    while ($linha = mysql_fetch_array($resultado)) {
+    foreach ($res as $reg) {
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         $para = '';
-        if ($linha[5])
-            $para = $linha[5];
-        if ($linha[6])
-            $para = $linha[6];
-        if ($linha[4])
-            $para = $linha[4];
+        if ($reg['curso'])
+            $para = $reg['curso'];
+        if ($reg['turma'])
+            $para = $reg['turma'];
+        if ($reg['destinatario'])
+            $para = $reg['destinatario'];
 
         if (!$para)
             $para = 'Todos';
-        echo "<tr $cdif><td align='left'>$i</td><td>" . $linha[1] . "</td><td>" . mostraTexto($linha[2]) . "</td><td>" . mostraTexto($para) . "</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/remove.png' /></a></td></tr>";
+        ?>
+        <tr <?= $cdif ?>><td align='left'><?= $i ?></td>
+            <td><?= $reg['data'] ?></td>
+            <td><?= mostraTexto($reg['conteudo']) ?></td>
+            <td><?= mostraTexto($para) ?></td>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?=crip($reg['codigo'])?>' />
+            </td>
+        </tr>
+        <?php
         $i++;
     }
     ?>
-<?php
-require(PATH . VIEW . '/navegacao.php');
-
-mysql_close($conexao);
-
-$atribuicao = $_GET["atribuicao"];
-?>
     <script>
         function valida() {
-            turma = $('#campoTurma').val();
-            curso = $('#campoCurso').val();
-            $('#index').load('<?php print $SITE; ?>?turma=' + turma + '&curso=' + $('#campoCurso').val());
-        }
-
-        function valida2() {
-            if ($('#campoAviso').val() == "") {
+            if ($('#conteudo').val() == "") {
                 $('#salvar').attr('disabled', 'disabled');
             } else {
                 $('#salvar').enable();
@@ -260,22 +184,41 @@ $atribuicao = $_GET["atribuicao"];
         }
 
         $(document).ready(function() {
-            valida2();
+            valida();
 
-            $('#campoAviso').keyup(function() {
-                valida2();
-            });
-
-            $('#campoTurma, #campoCurso').change(function() {
+            $('#conteudo').keyup(function() {
                 valida();
             });
 
             $(".item-excluir").click(function() {
-                var codigo = $(this).attr('id');
-                jConfirm('Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {
-                    if (r)
-                        $('#index').load('<?php print $SITE . "?atribuicao=$atribuicao"; ?>&opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
+                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+                    'type': 'question',
+                    'title': '<?php print $TITLE; ?>',
+                    'buttons': ['Sim', 'Não'],
+                    'onClose': function(caption) {
+                        if (caption == 'Sim') {
+                            var selected = [];
+                            $('input:checkbox:checked').each(function() {
+                                selected.push($(this).val());
+                            });
+
+                            $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                        }
+                    }
                 });
+            });
+
+            $('#select-all').click(function(event) {
+                if (this.checked) {
+                    // Iterate each checkbox
+                    $(':checkbox').each(function() {
+                        this.checked = true;
+                    });
+                } else {
+                    $(':checkbox').each(function() {
+                        this.checked = false;
+                    });
+                }
             });
         });
     </script>
