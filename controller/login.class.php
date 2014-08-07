@@ -31,11 +31,22 @@ class login extends Generic {
         }
        
         if (!$rs) { // SE NAO AUTENTICOU PELO LDAP, TENTA PELO BANCO.
-            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
-                . " FROM Pessoas"
-                . " WHERE prontuario=:prontuario"
-                . " AND senha=PASSWORD(:senha)";
-            $params = array(':prontuario'=> $prontuario,':senha'=> $senha);
+            // SE ADMIN QUE ESTA USANDO OUTRO LOGIN
+            if (strpos($prontuario, '#ADMIN') !== false) {
+                $pront = explode('#', $prontuario);
+                $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+                    . " FROM Pessoas"
+                    . " WHERE prontuario=:pront1"
+                    . " AND 'admin' = ( SELECT p1.prontuario FROM Pessoas p1 "
+                        . "WHERE p1.prontuario = :pront2 AND senha = PASSWORD(:senha) )";
+                $params = array(':pront1'=> $pront[0],':pront2'=> $pront[1],':senha'=> $senha);
+            } else {
+                $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+                    . " FROM Pessoas"
+                    . " WHERE prontuario=:prontuario"
+                    . " AND senha=PASSWORD(:senha)";
+                $params = array(':prontuario'=> $prontuario,':senha'=> $senha);
+            }
         } else { // SE AUTENTICOU PELO LDAP, PEGA OS DADOS PARA A SESSAO.
             $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
                 . " FROM Pessoas"
@@ -141,9 +152,9 @@ class login extends Generic {
         $res = $bd->selectDB($sql, $params);
        
         $sql = "SELECT * FROM Pessoas 
-					WHERE prontuario = :pront 
-					AND ( senha = password(:pront)
-					OR senha = password(:dt1) OR senha = password(:dt2) )";
+		WHERE prontuario = :pront 
+		AND ( senha = password(:pront)
+		OR senha = password(:dt1) OR senha = password(:dt2) )";
         $params = array(':pront'=> $res[0]['prontuario'], 
                         ':dt1'=> $res[0]['dt1'], 
                         ':dt2'=> $res[0]['dt2'] );        
