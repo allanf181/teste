@@ -114,22 +114,28 @@ if ($_GET['opcao'] == 'insert') {
 
         });
         function valida() {
-            var Siglas = new Array();
             <?php
-            $i = 0;
-            foreach ($avalSiglas as $r) {
-            ?>
-                Siglas[<?= $i ?>] = '<?= $r['sigla'] ?>';
+            if (!$_GET['codigo']) {
+                ?>
+                var Siglas = new Array();
+                <?php
+                $i = 0;
+                foreach ($avalSiglas as $r) {
+                ?>
+                    Siglas[<?= $i ?>] = '<?= $r['sigla'] ?>';
+                <?php
+                $i++;
+                }
+                ?>
+                if (Siglas.indexOf($('#sigla').val()) != -1) {
+                    $('#Siglas').html('Essa sigla já existe, escolha outra');
+                    $('#sigla').val('');
+                } else {
+                    $('#Siglas').html('');
+                }
             <?php
-            $i++;
             }
             ?>
-            if (Siglas.indexOf($('#sigla').val()) != -1) {
-                $('#Siglas').html('Essa sigla já existe, escolha outra');
-                $('#sigla').val('');
-            } else {
-                $('#Siglas').html('');
-            }
 
             if ($('#data').val() != "" && $('#tipo').val() != null &&
                     $('#nome').val() != "" && $('#sigla').val() != "" <?= $P ?>)
@@ -166,7 +172,7 @@ if ($_GET['opcao'] == 'insert') {
                 <table>
                     <tr><td align="right">Data: </td><td><input type="text" readonly size="10" id="data" name="data" value="<?php echo $data; ?>" /></td></tr>
                     <tr><td align="right">Nome: </td><td><input style="width: 350px" type="text" id="nome" maxlength="145" name="nome" value="<?php echo $nome; ?>"/></td></tr>
-                    <tr><td align="right">Sigla: </td><td><input type="text" id="sigla" size="2" maxlength="2" name="sigla" value="<?php echo $sigla; ?>"/> <spam id="Siglas"></spam></td></tr>
+                    <tr><td align="right">Sigla: </td><td><input type="text" <?php if ($_GET['codigo']) print 'readonly'; ?> id="sigla" size="2" maxlength="2" name="sigla" value="<?php echo $sigla; ?>"/> <spam id="Siglas"></spam></td></tr>
                     <tr><td align="right">Tipo: </td><td>
                             <select name="tipo" id="tipo" value="<?php echo $tipo; ?>">
                                 <?php
