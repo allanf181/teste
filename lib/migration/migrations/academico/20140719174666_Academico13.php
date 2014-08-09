@@ -12,7 +12,7 @@ class Academico13 extends Ruckusing_Migration_Base {
         $this->execute("ALTER TABLE  `Avaliacoes` ADD FOREIGN KEY (  `substitutiva` ) REFERENCES  `academico`.`Avaliacoes` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE ");
         
         // ATUALIZAR VERSAO ATUAL
-        $this->execute("UPDATE Instituicoes SET versao='395', versaoAtual='395'");
+        $this->execute("UPDATE Instituicoes SET versao='396', versaoAtual='396'");
         printf("<br>Patch Academico13: OK");
     }
 
