@@ -17,7 +17,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     
     require CONTROLLER . "/avaliacao.class.php";
     $avaliacao = new Avaliacoes();
-    $res = $avaliacao->listAvaliacoes($aluno, $atribuicao);
+    $res = $avaliacao->listAvaliacoesAluno($aluno, $atribuicao);
     
     print "<h2>Avalia&ccedil;&otilde;es</h2>\n";
     print "<div class='professores_textarea'>\n";

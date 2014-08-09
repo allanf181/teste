@@ -11,7 +11,7 @@ class Avaliacoes extends Generic {
     
     // LISTA AVALIACOES DO ALUNO
     // USADO POR: VIEW/ALUNO/AVALIACAO.PHP
-    public function listAvaliacoes($aluno, $atribuicao) {
+    public function listAvaliacoesAluno($aluno, $atribuicao) {
         $bd = new database();
         
         $sql = "SELECT date_format(a.data, '%d/%m/%Y') as data, a.nome as conteudo,
@@ -23,6 +23,46 @@ class Avaliacoes extends Generic {
     			FROM Avaliacoes a WHERE a.atribuicao = :atr";
 
         $params = array(':aluno'=> $aluno,':atr'=> $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+        if ( $res )
+        {
+            return $res;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // LISTA AVALIACOES DO PROFESSOR
+    // USADO POR: VIEW/PROFESSOR/AVALIACAO.PHP
+    public function listAvaliacoes($atribuicao, $tipo = null) {
+        $bd = new database();
+        
+        if ($tipo == 'substitutiva')
+            $sqlAdicional = " AND ( ( a.codigo NOT IN (SELECT a2.substitutiva FROM Avaliacoes a2 "
+                                                      . "WHERE a2.atribuicao = at.codigo AND a2.substitutiva IS NOT NULL) )"
+                            . " AND ( a.substitutiva IS NULL  )"
+                            . " AND ( a.tipo IN ( SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'avaliacao') ) )";
+        
+        $sql = "SELECT date_format(a.data, '%d/%m/%Y') dataFormatada, a.nome as nome,
+		a.peso, a.codigo, d.nome as disciplina, tu.nome as turno, a.data, a.tipo, at.status,
+		DATEDIFF(prazo, NOW()) as prazo, at.calculo, ti.tipo,
+		(SELECT calculo FROM TiposAvaliacoes WHERE codigo = a.tipo AND tipo='recuperacao') as recuperacao,
+		(SELECT SUM(peso) FROM Avaliacoes a1, TiposAvaliacoes t1 
+                        WHERE a1.tipo = t1.codigo AND t1.tipo = 'avaliacao' AND a1.atribuicao = at.codigo) as totalPeso,
+		(SELECT final FROM TiposAvaliacoes WHERE codigo = a.tipo AND tipo='recuperacao' AND final=1) as final,
+		at.bimestre, a.sigla, t.numero,
+                (SELECT CONCAT(nome, ' (', sigla,')') FROM Avaliacoes WHERE codigo = a.substitutiva) as substitutiva
+                FROM Turnos tu, Turmas t, Disciplinas d, Atribuicoes at
+                LEFT JOIN Avaliacoes a ON a.atribuicao=at.codigo $sqlAdicional
+            LEFT JOIN TiposAvaliacoes ti ON ti.codigo = a.tipo
+            WHERE at.codigo = :atr
+            AND at.turma=t.codigo 
+            AND at.disciplina=d.codigo 
+            AND t.turno=tu.codigo";
+
+        $params = array(':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
         if ( $res )
         {

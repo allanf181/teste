@@ -1,4 +1,20 @@
 <?php
+// AVALIAÇÕES
+$SUB_MENOR_NOTA = "Substitui a menor nota";
+$SUB_MEDIA = "Substitui a m&eacute;dia das avalia&ccedil;&otilde;es";
+$ADD_MENOR_NOTA = "Adiciona o valor da recupera&ccedil;&atilde;o no valor da menor nota";
+$ADD_MEDIA = "Adicionar o valor da recupera&ccedil;&atilde;o na m&eacute;dia";
+
+$MEDIA = 'M&eacute;dia';
+$SOMA = 'Soma';
+$FORMULA = 'F&oacute;rmula';
+$PESO = 'Peso';
+
+$AVALIACAO = 'Avalia&ccedil;&atilde;o';
+$RECUPERACAO = 'Recupera&ccedil;&atilde;o';
+$PONTOEXTRA = 'Ponto Extra';
+$SUBSTITUTIVA = 'Substitutiva';
+
 function mensagem($TIPO, $MSG, $OPT=null) {
 
         $OK_DELETE 	= 'Registros deletados: '.$OPT;
@@ -22,6 +38,8 @@ function mensagem($TIPO, $MSG, $OPT=null) {
         
       	$INFO_UPDATE 	= 'Esse registro já está cadastrado no banco de dados.';
      
+        $INFO_PRAZO_DIARIO = 'O seu di&aacute;rio foi reaberto at&eacute: '.$OPT;
+        
 	$INFO_DELETE = 'Problema ao excluir registro! Esse registro possui depend&ecirc;ncias.';
         
         $INFO_FALSE_DELETE_DEP = 'Problema ao excluir registro! Esse registro possui depend&ecirc;ncias.';
@@ -36,6 +54,8 @@ function mensagem($TIPO, $MSG, $OPT=null) {
 
 	$OK_TRUE_COPY_PLANO_AULA = 'Plano de aula copiado com sucesso.';
 	$NOK_FALSE_COPY_PLANO_AULA = 'Problema ao copiar plano de aula.';
+        
+        $INFO_EMPTY_PLANO_ENSINO = 'Necess&aacute;rio cadastrar o Plano de Ensino primeiro.';
 
 	$OK_TRUE_COPY_MODALIDADE = 'Modalidade copiada com sucesso.';
 	$NOK_FALSE_COPY_MODALIDADE = 'Problema ao copiar a modalidade.';
@@ -58,12 +78,6 @@ function mensagem($TIPO, $MSG, $OPT=null) {
         $OK_EMAIL_ENVIADO = "As instru&ccedil;&otilde;es para recupera&ccedil;&atilde;o de senha foram enviadas para seu e-mail!";
     	$ERRO_EMAIL_NAO_CADASTRADO = "E-mail n&atilde;o cadastrado ou prontu&aacute;rio n&atilde;o localizado.";
 	$INFO_PRONTUARIO_VAZIO = "Por favor, digite o prontu&aacute;rio!";
-
-        // AVALIAÇÕES
-        $SUB_MENOR_NOTA = "Substitui a menor nota";
-        $SUB_MEDIA = "Substitui a m&eacute;dia das avalia&ccedil;&otilde;es";
-        $ADD_MENOR_NOTA = "Adiciona o valor da recupera&ccedil;&atilde;o no valor da menor nota";
-        $ADD_MEDIA = "Adicionar o valor da recupera&ccedil;&atilde;o na m&eacute;dia";
 
         // CODIGOS DE ERROS - PDO/MYSQL
         if ($OPT) {

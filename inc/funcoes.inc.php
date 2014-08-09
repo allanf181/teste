@@ -397,17 +397,19 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
     }
 
     if ($final == 0)
-        $sqlFinal = "AND t.final=0";
+        $sqlFinal = " AND t.final=0 ";
     // CALCULANDO AS NOTAS
     $sql = "SELECT n.nota,a.peso,t.tipo,t.calculo,at.calculo,
-			t.arredondar,at.bimestre,t.final,a.sigla,at.formula
+			t.arredondar,at.bimestre,t.final,a.sigla,at.formula,
+                        (SELECT a1.sigla FROM Avaliacoes a1 WHERE a1.codigo = a.substitutiva)
 			FROM Notas n, Avaliacoes a, Atribuicoes at, TiposAvaliacoes t
 			WHERE n.avaliacao = a.codigo
 			AND a.atribuicao = at.codigo
 			AND t.codigo = a.tipo
 			AND at.codigo = $atribuicao
 			AND n.matricula = $matricula
-			$sqlFinal";
+			$sqlFinal
+                        ORDER BY substitutiva ASC ";
     //echo $sql.";<br>";
     $res = mysql_query($sql);
 
@@ -424,14 +426,24 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
         if ($l[2] == 'avaliacao') {
             $total++;
             if ($tipo == 'peso')
-                $medias[] = $l[0] * $l[1];
+                $medias[$l[8]] = $l[0] * $l[1];
 
             if ($tipo == 'media' || $tipo == 'soma')
-                $medias[] = $l[0];
+                $medias[$l[8]] = $l[0];
 
             if ($tipo == 'formula')
                 $medias[$l[8]] = $l[0];
         }
+        
+        if ($l[2] == 'pontoExtra') {
+            $medias[$l[8]] = $l[0];
+        }
+        
+        if ($l[2] == 'substitutiva') {
+            if ($medias[$l[10]] < $l[0])
+                $medias[$l[10]] = $l[0];
+        }
+        
         if ($l[2] == 'recuperacao' && !$l[7]) {
             $rec = $l[0];
             $calculo = $l[3];
@@ -454,7 +466,7 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
     }
 
     if ($tipo == 'formula') {
-        require_once 'lib/PHPMathParser/Math.php';
+        require_once PATH.LIB.'/PHPMathParser/Math.php';
         $math = new Math();
 
         foreach ($medias as $VAR => $VAL) {
@@ -728,6 +740,13 @@ function genRandomString() {
 function dataMysql($data) {
     $data = explode('/', $data);
     $data = $data[2] . '-' . $data[1] . '-' . $data[0];
+    return $data;
+}
+
+//formata a data PT
+function dataPTBR($data) {
+    $data = explode('-', $data);
+    $data = $data[2] . '/' . $data[1] . '/' . $data[0];
     return $data;
 }
 

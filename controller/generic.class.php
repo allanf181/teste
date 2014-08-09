@@ -2,7 +2,6 @@
 if(!class_exists('database'))
     require_once MYSQL;
 
-
 Abstract class Generic {
     
     public function __construct(){
@@ -42,7 +41,7 @@ Abstract class Generic {
                 . "WHERE codigo=:codigo";
             $res = $bd->updateDB($sql, $params);
         }
-        
+
         if ( $res )
         {
             return $res;
@@ -69,7 +68,7 @@ Abstract class Generic {
             return false;
         }
     }
-    
+
     public function listRegistros($params=null, $item=null, $itensPorPagina=null) {
         $bd = new database();
         $table = get_called_class();

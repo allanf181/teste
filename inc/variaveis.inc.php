@@ -45,7 +45,6 @@ if ($res = $instituicao->dadosInstituicao()) {
     $LDAP_ATIVADO = $res[0]['ldap_ativado'];
     $LDAP_CACHE = $res[0]['ldap_cache'];
 }
-
 // PARA MIGRAÃ‡ÃƒO
 //$BD1 = "brtacademico";
 //$BD2 = "academico";

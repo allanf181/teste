@@ -59,7 +59,7 @@ for ($n = 1; $n <= 2; $n++) {
             if (abs(date('m', strtotime("$row->ED_DTFINAL")) - date('m', strtotime("$row->ED_DTINICIO"))) > 6)
                 $semestre = 0;
             else
-                $semestre = date('m', strtotime("$row->ED_DTFINAL")) > 10 ? 2 : 1;
+                $semestre = $n;
 
             // VERIFICA SE H� TURMA
             $sql = "SELECT * FROM Turmas t 

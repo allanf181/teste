@@ -28,7 +28,7 @@ if ($_GET["atribuicao"]) {
     require CONTROLLER . "/atribuicao.class.php";
     $att = new Atribuicoes();
     $res = $att->getAtribuicao($atribuicao);
-    
+
     $bimestre="SEMESTRAL";
     $fechamento=$res['fechamento'];
     $_SESSION['semestre']=$res['semestre'];

@@ -16,7 +16,7 @@ if (!empty($turma))
   $restricao.= " and t.codigo=$turma";
 	    	
 $sql="SELECT DISTINCT p.prontuario, p.nome, d.nome, e.diaSemana, s.nome, 
-					CONCAT(DATE_FORMAT(h.inicio, '%h:%i'), ' - ', DATE_FORMAT(h.fim, '%h:%i'))
+					CONCAT(DATE_FORMAT(h.inicio, '%h:%i'), ' - ', DATE_FORMAT(h.fim, '%h:%i')) as horario
 					FROM Ensalamentos e, Atribuicoes a, Professores pr, Pessoas p, Disciplinas d, Horarios h, Turmas t, Salas s
 					WHERE e.atribuicao = a.codigo
 					AND pr.atribuicao = a.codigo
@@ -58,34 +58,40 @@ $dias = diasDaSemana();
 
 $pdf->SetFont ( $fonte, 'B', $tamanho+5 );
 $pdf->Cell(10, 5, utf8_decode("N."), 1, 0, 'L', true);
-$pdf->Cell(15, 5, utf8_decode("Prontuário"), 1, 0, 'L', true);
+$pdf->Cell(20, 5, utf8_decode("Prontuário"), 1, 0, 'L', true);
 $pdf->Cell(72, 5, utf8_decode("Professor"), 1, 0, 'L', true);
 $pdf->Cell(72, 5, utf8_decode("Disciplina"), 1, 0, 'L', true);
 $pdf->Cell(32, 5, utf8_decode("Dia da Semana"), 1, 0, 'L', true);
 $pdf->Cell(22, 5, utf8_decode("Sala"), 1, 0, 'L', true);
 $pdf->Cell(42, 5, utf8_decode("Horário"), 1, 0, 'L', true);
+$pdf->Cell(10, 5, utf8_decode("Total"), 1, 0, 'L', true);
 $pdf->Ln();
 
 $pdf->SetFont ( $fonte, '', $tamanho+3);
 
-$i = 1;
-$j=1;
-while ($l = mysql_fetch_array($resultado)) {
+for($i=0; $i < mysql_num_rows($resultado); $i++) {
 	if ($i % 2 == 0)
   	$pdf->SetFillColor(240, 240, 240);
   else
   	$pdf->SetFillColor(255, 255, 255);
 
- 	$pdf->Cell(10, 5, $j++, 1, 0, 'L', true);
-	$pdf->Cell(15, 5, utf8_decode($l[0]), 1, 0, 'L', true);
-	$pdf->Cell(72, 5, utf8_decode($l[1]), 1, 0, 'L', true);
-	$pdf->Cell(72, 5, utf8_decode($l[2]), 1, 0, 'L', true);
-	$pdf->Cell(32, 5, html_entity_decode ($dias[$l[3]]), 1, 0, 'L', true);
-	$pdf->Cell(22, 5, utf8_decode($l[4]), 1, 0, 'L', true);
-	$pdf->Cell(42, 5, utf8_decode($l[5]), 1, 0, 'L', true);
+ 	$pdf->Cell(10, 5, $i+1, 1, 0, 'L', true);
+	$pdf->Cell(20, 5, utf8_decode(mysql_result($resultado, $i, 'p.prontuario')), 1, 0, 'L', true);
+	$pdf->Cell(72, 5, utf8_decode(mysql_result($resultado, $i, 'p.nome')), 1, 0, 'L', true);
+	$pdf->Cell(72, 5, utf8_decode(mysql_result($resultado, $i, 'd.nome')), 1, 0, 'L', true);
+	$pdf->Cell(32, 5, html_entity_decode ($dias[mysql_result($resultado, $i, 'e.diaSemana')]), 1, 0, 'L', true);
+	$pdf->Cell(22, 5, utf8_decode(mysql_result($resultado, $i, 's.nome')), 1, 0, 'L', true);
+	$pdf->Cell(42, 5, utf8_decode(mysql_result($resultado, $i, 'horario')), 1, 0, 'L', true);
+        
+        if (mysql_result($resultado, $i, 'p.prontuario') <> @mysql_result($resultado, $i+1, 'p.prontuario')) {
+            $pdf->Cell(10, 5, utf8_decode($c), 1, 0, 'L', true);
+            $c=1;
+        } else {
+            $pdf->Cell(10, 5, '', 0, 0, 'L', true);
+            $c++;
+        }
+        
 	$pdf->Ln();
- $i++;
-
 }
 
 $pdf->Output();

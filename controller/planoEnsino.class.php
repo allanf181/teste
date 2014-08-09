@@ -86,7 +86,7 @@ class PlanosEnsino extends Generic {
                 pe.bibliografiaComplementar as bibliografiaComplementar,
 		d.nome as disciplina, d.ch as ch, d.numero as numero,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
-                m.nome as modalidade
+                m.nome as modalidade, m.codigo as codModalidade
 		FROM PlanosEnsino pe, Atribuicoes a, Disciplinas d,
 		Cursos c, Modalidades m, Turmas t
 		WHERE pe.atribuicao = a.codigo 

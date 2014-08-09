@@ -10,7 +10,7 @@ class Ensalamentos extends Generic {
     
     // MÉTODO PARA INSERÇÃO DE OBJETO
     // USADO POR: VIEW/ALUNO/HORARIO.PHP
-    public function getEnsalamento($codigo, $tipo, $subturma=null) {
+    public function getEnsalamento($codigo, $tipo, $ano, $semestre, $subturma=null) {
         $bd = new database();
         
 	$professor = "AND pr.professor =:cod ";
@@ -48,13 +48,16 @@ class Ensalamentos extends Generic {
                     AND pr.professor = e.professor
                     AND pr.professor = p.codigo
                     AND pr.atribuicao = a.codigo
+                    AND t.ano = :ano
+                    AND (t.semestre = :sem OR t.semestre = 0)
                     $sql2
                     ".$$tipo." ".$subSQL."
                 GROUP BY diaSemana, h.inicio, h.fim, d.numero, s.nome
 		ORDER BY diaSemana, inicio, disciplina";
 
-        $params = array(':cod'=> $codigo);
-        if ($subturma) $params = array(':cod'=> $codigo, ':sub'=> $subturma);
+        $params = array(':cod'=> $codigo, ':ano' => $ano, ':sem' => $semestre);
+        if ($subturma) $params = array(':cod'=> $codigo, ':sub'=> $subturma,
+                        ':ano' => $ano, ':sem' => $semestre);
 
         $res = $bd->selectDB($sql, $params);
 

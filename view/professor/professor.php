@@ -52,7 +52,6 @@ $atribuicao = $_GET["atribuicao"];
         $atribuicao = dcrip($_GET["atribuicao"]);
 
         $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF);
-
         extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
 
         if (!$bimestre && !$semestre)
@@ -61,17 +60,27 @@ $atribuicao = $_GET["atribuicao"];
             $bimestre .= 'º BIMESTRE';
         elseif (!$bimestre && $semestre)
             $bimestre = 'SEMESTRAL';
-
+        
         // verificando se o prazo foi atingido.
-        if ((!$prazoDiff && $dataFimDiff < 0) || ($prazoDiff && $prazoDiff < 0)) {
-            $params['codigo'] = $atribuicao;
+        $dataExpirou = false;
+        if ($status == 0 && (!$prazoDiff && $dataFimDiff < 0) || ($prazoDiff && $prazoDiff < 0)) {
+            $params['codigo'] = crip($atribuicao);
+            $params['status'] = crip(4);
             $att->insertOrUpdate($params);
             $status = 4;
             $dataExpirou = true;
         } else
             $dataExpirou = false;
-        $_SESSION['dataExpirou'] = $dataExpirou;
 
+        if ($status != 0)
+            $dataExpirou = true;
+        
+        $_SESSION['dataExpirou'] = $dataExpirou;
+        
+        // Informa se o diário foi aberto
+        if ($prazoFormat)
+            mensagem('INFO', 'PRAZO_DIARIO', $prazoFormat);
+        
         require CONTROLLER . "/aula.class.php";
         $aula = new Aulas();
         $qdeAulas = $aula->countQdeAulas($atribuicao);
@@ -129,7 +138,7 @@ $atribuicao = $_GET["atribuicao"];
             }
             ?>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aviso.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/aviso.png' /><br />Avisos para Turma</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/ensalamento.php?turma=<?php print crip($atribuicao); ?>&subturma=<?php print crip($subturma); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/ensalamento.php?turma=<?php print crip($turmaCodigo); ?>&subturma=<?php print crip($subturma); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
         </tr>
         <tr><td colspan="7"><hr></td></tr>
     </table>

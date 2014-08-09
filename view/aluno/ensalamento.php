@@ -26,7 +26,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     
     require CONTROLLER . "/ensalamento.class.php";
     $ensalamento = new Ensalamentos();
-    $res = $ensalamento->getEnsalamento($codigo, $tipo);
+    $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE);
 
     foreach ($res as $reg) {
         preg_match('#\[(.*?)\]#', $reg['horario'], $match);

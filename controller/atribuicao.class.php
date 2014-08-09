@@ -4,13 +4,32 @@ if(!class_exists('Generic'))
 
 class Atribuicoes extends Generic {
 
-    // USADO POR: ALUNO/ALUNO.PHP
+    // USADO POR: PROFESSOR/AVALIACAO.PHP
+    // Retorna dados da atribuicao (Disciplina, Turma, etc..)
+    // Pode ser colocado com função no MySQL futuramente
+    public function insertIfNotCalculo($codigo) {
+        $bd = new database();
+
+        $sql = "SELECT calculo FROM Atribuicoes a WHERE a.codigo = :cod";
+        $params = array(':cod' => $codigo);
+
+        $res = $bd->selectDB($sql, $params);
+        if ($res[0]['calculo'] == null) {
+            $params = array('codigo' => crip($codigo), 'calculo' => crip('peso'));
+            $res = $this->insertOrUpdate($params);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    // USADO POR: ALUNO/ALUNO.PHP, PROFESSOR/PROFESSOR.PHP, PROFESSOR/PLANO.PHP
     // Retorna dados da atribuicao (Disciplina, Turma, etc..)
     // Pode ser colocado com função no MySQL futuramente
     public function getAtribuicao($codigo, $LIMITE_AULA_PROF=0) {
         $bd = new database();
 
-        $sql = "SELECT d.nome as disciplina, t.numero as turma, c.nome as curso,
+        $sql = "SELECT d.nome as disciplina, t.numero as turma, c.nome as curso, a.status,
                 c.nomeAlternativo as cursoAlt, a.bimestre as bimestre, c.fechamento as fechamento,
         	t.semestre as semestre, t.ano as ano, t.codigo as turmaCodigo, a.subturma as subturma,
                 c.fechamento as fechamento, a.observacoes as observacoes, a.competencias as competencias,
@@ -21,7 +40,7 @@ class Atribuicoes extends Generic {
                 DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_AULA_PROF DAY), NOW()) as dataFimDiff
                 FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
                 WHERE a.disciplina=d.codigo
-                AND d.curso=c.codigo
+                AND t.curso=c.codigo
                 AND a.turma=t.codigo
                 AND t.turno=tu.codigo
                 AND m.codigo = c.modalidade

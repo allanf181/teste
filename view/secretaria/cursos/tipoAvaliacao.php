@@ -139,7 +139,8 @@ if ($_GET["opcao"] == 'delete') {
                 <select name="campoTipo" id="campoTipo" value="<?php print $tipo; ?>">
                 	<option></option>
                 	<option <?=($tipo=='avaliacao')?"selected='selected'":""; ?> value="avaliacao">Avalia&ccedil;&atilde;o</option>
-                	<option <?=($tipo=='recuperacao')?"selected='selected'":""; ?> value="recuperacao">Recupera&ccedil;&atilde;o</option>
+                        <option <?=($tipo=='pontoExtra')?"selected='selected'":""; ?> value="pontoExtra">Ponto Extra</option>
+                        <option <?=($tipo=='recuperacao')?"selected='selected'":""; ?> value="recuperacao">Recupera&ccedil;&atilde;o</option>
                 </select>
             </td></tr>
         	<tr><td align="right">Modalidade: </td><td>
@@ -182,8 +183,8 @@ if ($_GET["opcao"] == 'delete') {
         <tr><td></td><td>
         <input type="hidden" value="<?php echo $codigo; ?>" name="campoCodigo" />
 		<input type="hidden" name="opcao" value="InsertOrUpdate" />
-		<table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-			<td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
+		<table width="100%"><tr><td></td>
+			<td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td>
 		</tr></table>
 	</td></tr>
     </table>
@@ -242,6 +243,7 @@ require(PATH.VIEW.'/navegacao.php'); ?>
     while ($linha = mysql_fetch_array($resultado)) {
     	if ($linha[3] == 'avaliacao') $linha[3] = 'Avalia&ccedil;&atilde;o';
     	if ($linha[3] == 'recuperacao') $linha[3] = 'Recupera&ccedil;&atilde;o';
+        if ($linha[3] == 'pontoExtra') $linha[3] = 'Ponto Extra';
     	if ($linha[4]) $linha[4] = 'Final';
     	else $linha[4] = '';
         $i%2==0 ? $cdif="class='cdif'" : $cdif="";
