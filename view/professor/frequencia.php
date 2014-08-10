@@ -95,7 +95,7 @@ if ( $status || ($_SESSION['dataExpirou'] && ($linha[7] < 0 || $linha[7]=='')))
 <hr><br>
 
 <table id="listagem" border="0" align="center" style="border: 0px solid black">
-	<tr class="listagem_tr"><th align="center" style="width: 100px">Prontuário</th><th align="center">Aluno</th><th width="100" align='center'>Faltas</th><th width="50" align='center'>Total</th><th width="50" align='center'>Frequ&ecirc;ncia</th></tr>
+	<tr class="listagem_tr"><th align="center" style="width: 100px">Prontuário</th><th align="center">Aluno</th><th width="100" align='center'>Faltas</th><th width="50" align='center'>Total</th><th width="85" align='center'>Frequ&ecirc;ncia na Disciplina</th></tr>
 
 		<?php
 		$i = 1;
@@ -134,8 +134,8 @@ if ( $status || ($_SESSION['dataExpirou'] && ($linha[7] < 0 || $linha[7]=='')))
 					}
 					print "</td>\n";
 					echo "<td align='center'>".$frequencia['faltas']."</td>";
-					echo "<td align='center'>".arredondar($frequencia['frequencia'])."%</td></tr>";
-				} else {
+					echo "<td align='center'>".arredondar($frequencia['frequencia'])."%</td>";
+                                    } else {
 					print "<td align='center' colspan='3'>".$l[8]."</td>\n";
 				}
 			}

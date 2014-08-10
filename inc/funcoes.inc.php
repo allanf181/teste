@@ -72,10 +72,10 @@ function getFrequencia($matricula, $atribuicao) {
 
 
     if (!$auladada = mysql_result($res, 0, "aulas"))
-        $auladada = 0;
+        $auladada = $ch;
 
     if ($faltas)
-        $frequencia = 100 - (($faltas * 100) / $ch);
+        $frequencia = 100 - (($faltas * 100) / $auladada);
     else {
         $frequencia = 100;
         $faltas = 0;
