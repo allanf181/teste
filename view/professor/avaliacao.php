@@ -249,7 +249,6 @@ if ($_GET['opcao'] == 'insert') {
         <div id="etiqueta" align="center">
             <b>Turma: </b><?= $res[0]['numero'] ?><br />
             <b>Disciplina: </b><?= $res[0]['disciplina'] ?><br />
-            <b>Recupera&ccedil;&atilde;o:</b> <?= $res[0]['recuperacao'] ?><br />
             <b>M&eacute;todo de C&aacute;lculo: </b>
             <select name="campoCalculo" <?= $disabled ?> id="campoCalculo" value="<?= $calculo ?>" onChange="$('#professor').load('<?= $SITE ?>?opcao=calculo&atribuicao=<?= crip($atribuicao) ?>&calculo=' + this.value);">
                 <?php
