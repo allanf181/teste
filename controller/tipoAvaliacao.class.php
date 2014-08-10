@@ -36,6 +36,7 @@ class TiposAvaliacoes extends Generic {
 		ORDER BY t.nome";
         $params = array(':cod' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
+
         if ($res) {
             foreach ($res as $reg) {
                 if ($calculo == 'peso' && $pontos < $PONTO && $reg['tipo'] != 'recuperacao') {

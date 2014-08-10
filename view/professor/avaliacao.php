@@ -31,7 +31,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
         $params['codigo'] = $_POST['tipo'];
         $p = $avaliacao->listRegistros($params);
         $_POST['peso'] = $p[0]['peso'];
-        $_POST['substitutiva'] = $_POST['tipo'];
+        $_POST['substitutiva'] = crip($_POST['tipo']);
         $_POST['tipo'] = $_POST['codigo'];
         unset($_POST['codigo']);
     }
@@ -130,7 +130,7 @@ if ($_GET['opcao'] == 'insert') {
                 $i++;
                 }
                 ?>
-                if (Siglas.indexOf($('#sigla').val()) != -1) {
+                if ($('#sigla').val() && Siglas.indexOf($('#sigla').val()) != -1) {
                     $('#Siglas').html('Essa sigla já existe, escolha outra');
                     $('#sigla').val('');
                 } else {
