@@ -104,11 +104,14 @@ if ($_GET['opcao'] == 'insert') {
                         $(this).val('<?= str_pad(number_format($maxPontos, 2), 5, "0", STR_PAD_LEFT) ?>');
                 });
                 <?php
-                $P = "&& $('#valor').val()!=\"00.00\"";
-                $P1 = ', #valor';
+                if ($maxPontos > 0.1) {
+                    $P = "&& $('#valor').val()!=\"00.00\" && $('#valor').val()!=\"\" && $('#valor').val()!=\"__.__\" ";
+                    $P1 = ', #valor';
+                }
             }
             ?>
             $('#data1, #tipo, #nome <?= $P1 ?>, #sigla').keyup(function() {
+                $('#sigla').val($('#sigla').val().toUpperCase());
                 valida();
             });
 
@@ -122,7 +125,7 @@ if ($_GET['opcao'] == 'insert') {
                 $i = 0;
                 foreach ($avalSiglas as $r) {
                 ?>
-                    Siglas[<?= $i ?>] = '<?= $r['sigla'] ?>';
+                    Siglas[<?= $i ?>] = '<?= strtoupper($r['sigla']) ?>';
                 <?php
                 $i++;
                 }
@@ -298,7 +301,8 @@ if ($_GET['opcao'] == 'insert') {
                 <?php
                 $i = 1;
                 foreach ($res as $reg) {
-                    $final .= $reg['final'];
+                    $bimestre = $reg['bimestre'];
+                    $recFinal .= $reg['final'];
                     $recuperacao .= $reg['recuperacao'];
                     $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
 
@@ -339,7 +343,7 @@ if ($_GET['opcao'] == 'insert') {
         <?php } ?>
         <center>
             <br />
-            <?php if (($calculo == 'media' || $calculo == 'formula') || ($res[0]['totalPeso'] < $PONTO || !$recuperacao)) { ?>
+            <?php if ( (($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4) )) { ?>
                 <input type="hidden" id="campoAtribuicao" name="campoAtribuicao" value="<?php echo crip($atribuicao); ?>" />
                 <?php if ($_SESSION['dataExpirou'] == 0) {
                     ?>

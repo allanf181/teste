@@ -54,12 +54,12 @@ if (isset($_GET["turma"]) && $_GET["turma"]!="") {
 if (in_array($COORD, $_SESSION["loginTipo"]))
 	$restricaoCoord = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador=".$_SESSION['loginCodigo'].")";
 	$resultado = mysql_query("select distinct c.codigo, c.nome, m.nome, m.codigo
-															from Cursos c, Turmas t, Modalidades m
-															where t.curso=c.codigo
-															and m.codigo = c.modalidade
-															and (t.semestre=$semestre OR t.semestre=0)
-															and t.ano=$ano $restricaoCoord order by c.nome");
-															$selected=""; // controla a alteração no campo select
+				from Cursos c, Turmas t, Modalidades m
+				where t.curso=c.codigo
+				and m.codigo = c.modalidade
+                		and (t.semestre=$semestre OR t.semestre=0)
+				and t.ano=$ano $restricaoCoord order by c.nome");
+				$selected=""; // controla a alteração no campo select
 while ($linha = mysql_fetch_array($resultado)){
 	if ($linha[0]==$curso)
 		$selected="selected";
@@ -75,12 +75,12 @@ while ($linha = mysql_fetch_array($resultado)){
 <option></option>
 <?php
 $resultado = mysql_query("select t.codigo, t.numero, c.nome, tu.nome, t.semestre, t.ano, c.fechamento
-														from Turmas t, Cursos c, Turnos tu 
-														where t.curso=c.codigo 
-														and t.ano=$ano 
-														and t.turno=tu.codigo
-														and c.codigo = $curso
-														and (t.semestre=$semestre OR t.semestre=0) $restricaoCoord");
+			from Turmas t, Cursos c, Turnos tu 
+                	where t.curso=c.codigo 
+			and t.ano=$ano 
+			and t.turno=tu.codigo
+			and c.codigo = $curso
+			and (t.semestre=$semestre OR t.semestre=0) $restricaoCoord");
 $selected = "";
 if (mysql_num_rows($resultado) > 0) {
 	while ($linha = mysql_fetch_array($resultado)) {
@@ -102,20 +102,18 @@ if (mysql_num_rows($resultado) > 0) {
 if (!empty($curso) && !empty($turma)){
 ?>
 	<table id="form" border="0" align="center" width="100%">
-	<tr><th align="center">Aluno</th><th align="center">Disciplina</th><th align="center" width="50">Turma</th><th width="140" align="center">Sincronizado</th><th width="140" align="center">Retorno</th><th width="20" align="center">&nbsp;</th></tr>
+	<tr><th align="center" width="220">Aluno</th><th align="center" width="200">Disciplina</th><th align="center" width="50">Turma</th><th width="140" align="center">Sincronizado</th><th width="140" align="center">Retorno</th><th width="20" align="center">&nbsp;</th><th width="20" align="center">FLAG</th></tr>
 	<?php
 	// efetuando a consulta para listagem
-	$sql = "SELECT n.codigo, p.nome, n.sincronizado, a.bimestre, n.atribuicao, d.nome, t.numero, n.retorno
-	    					FROM NotasFinais n, Atribuicoes a, Matriculas m, Pessoas p, Cursos c, Turmas t, Disciplinas d
-								WHERE n.atribuicao = a.codigo
-								AND m.atribuicao = a.codigo
-								AND m.codigo = n.matricula
-								AND p.codigo = m.aluno
-								AND c.codigo = t.curso
-								AND t.codigo = a.turma
-								AND d.codigo = a.disciplina
-								$restricao
-								ORDER BY t.numero, d.nome, p.nome";
+	$sql = "SELECT n.codigo, p.nome, n.sincronizado, a.bimestre, n.atribuicao, d.nome, t.numero, n.retorno, n.flag
+                    FROM NotasFinais n, Atribuicoes a, Matriculas m, Turmas t, Disciplinas d, Pessoas p
+                    WHERE n.atribuicao = a.codigo
+                    AND n.matricula = m.codigo
+                    AND a.turma = t.codigo
+                    AND a.disciplina = d.codigo
+                    AND p.codigo = m.aluno
+                    $restricao
+                    ORDER BY t.numero, d.nome, p.nome";
 	//echo $sql;
 	$resultado = mysql_query($sql);
 	$i = 1;
@@ -130,17 +128,23 @@ if (!empty($curso) && !empty($turma)){
 	    print "<td align=left>$linha[6]</td>";
 	    print "<td align=left>$linha[2]</td>";
 	    print "<td align=left><div id=\"S".$linha[0]."\">$linha[7]</div></td>";
-	    print "<td align=left><a href='#' title='Sincronizar' class='sync' id='" . $linha[0] . "'>\n";
-	    if ($linha[7] == '')
-	    	print "<img src=\"".ICONS."/sync.png\" class='botao'>\n";
-	    if ($linha[7] == '1')
-	    	print "<img src=\"".ICONS."/true.png\" class='botao'>\n";
-	    if ($linha[7] == '0')
-	    	print "<img src=\"".ICONS."/exclamation.png\" class='botao'>\n";
-	    print "</a></td>";
+	    if ($linha[8] != 5) {
+                print "<td align=left><a href='#' title='Sincronizar' class='sync' id='" . $linha[0] . "'>\n";
+                if ($linha[7] == '')
+        	    	print "<img src=\"".ICONS."/sync.png\" class='botao'>\n";
+                if ($linha[7] == '1')
+                	print "<img src=\"".ICONS."/true.png\" class='botao'>\n";
+                if ($linha[7] == '0')
+                    print "<img src=\"".ICONS."/exclamation.png\" class='botao'>\n";
+        	print "</a></td>";
+            } else {
+                print "<td align=left><img src=\"".ICONS."/true.png\" class='botao'></td>"; 
+           }
+                    
+            print "<td align=center>$linha[8]</td>";
 	    $i++;
 	  }
-	}
+        }
 	mysql_close($conexao);
 	?>
 	</table>
