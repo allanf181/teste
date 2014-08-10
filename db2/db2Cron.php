@@ -45,7 +45,7 @@ mysql_select_db("BrtAtualizacao");
 
 // REGISTRANDO A VERSAO DO CAMPUS
 @mysql_query("INSERT INTO BrtAtualizacao.campus (codigo, nome, cidade, sigla, versao, data) "
-        . "VALUES (NULL, '$SITE_TITLE', '$SITE_CIDADE', '$DIGITANOTAS', '$VERSAO', NOW() ");
+        . "VALUES (NULL, '$SITE_TITLE', '$SITE_CIDADE', '$DIGITANOTAS', '$VERSAO', NOW()) ");
 
 $resultado = mysql_query("SELECT versao FROM BrtAtualizacao.versao");
  if (mysql_num_rows($resultado) != '') {
