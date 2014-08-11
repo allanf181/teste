@@ -85,56 +85,57 @@ while ($row = db2_fetch_object($res)) {
             }
         }
     }
+}
 
-    $db2 = "SELECT * FROM ESCOLA.SALAS";
-    $res = db2_exec($conn, $db2);
+$db2 = "SELECT * FROM ESCOLA.SALAS";
+$res = db2_exec($conn, $db2);
 
-    if (db2_stmt_error() == 42501) {
-        $ERRO = "SEM ACESSO NA TABELA SALAS";
-        mysql_query("INSERT INTO Logs VALUES (0, '" . addslashes($ERRO) . "', now(), 'CRON_ERRO', 1)");
-        print $ERRO;
-    }
+if (db2_stmt_error() == 42501) {
+    $ERRO = "SEM ACESSO NA TABELA SALAS";
+    mysql_query("INSERT INTO Logs VALUES (0, '" . addslashes($ERRO) . "', now(), 'CRON_ERRO', 1)");
+    print $ERRO;
+}
 
-    while ($row = db2_fetch_object($res)) {
-        $nome = 'SALA ' . $row->SL_SALA;
-        $sql = "SELECT * FROM Salas WHERE nome = '$nome'";
-        $res2 = mysql_query($sql);
-        if (!$horario = mysql_fetch_object($res2)) {// SALA NÃO EXISTE, ENTÃO IMPORTA
-            // IMPORTA A SALA
-            $sql = "INSERT INTO Salas VALUES (NULL, '$nome', '')";
-            if (!$result = mysql_query($sql)) {
-                mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
-                if ($DEBUG)
-                    echo "<br>Erro ao importar SALA: $sql \n";
-            } else {
-                mysql_query("insert into Logs values(0, '$nome', now(), 'CRON_HORARIO', 1)");
-                if ($DEBUG)
-                    print "SALA: " . $nome . "<br>\n";
-                $s++;
-            }
+while ($row = db2_fetch_object($res)) {
+    $nome = 'SALA ' . $row->SL_SALA;
+    $sql = "SELECT * FROM Salas WHERE nome = '$nome'";
+    $res2 = mysql_query($sql);
+    if (!$horario = mysql_fetch_object($res2)) {// SALA NÃO EXISTE, ENTÃO IMPORTA
+        // IMPORTA A SALA
+        $sql = "INSERT INTO Salas VALUES (NULL, '$nome', '')";
+        if (!$result = mysql_query($sql)) {
+            mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
+            if ($DEBUG)
+                echo "<br>Erro ao importar SALA: $sql \n";
+        } else {
+            mysql_query("insert into Logs values(0, '$nome', now(), 'CRON_HORARIO', 1)");
+            if ($DEBUG)
+                print "SALA: " . $nome . "<br>\n";
+            $s++;
         }
     }
+}
 
 // REGISTRA A ATUALIZACAO
-    if (!$LOCATION_CRON) {
-        $sql = "insert into Atualizacoes values(0,11," . $_SESSION['loginCodigo'] . ", now())";
-        mysql_query($sql);
-        ?>
-        <script>
-            $('#horariosRetorno').text('Feriados: <?php print $f; ?> |Horas: <?php print $h; ?> |Salas: <?php print $s; ?>');
-        </script><?php
-    } else {
-        $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
-        $resultAdmin = mysql_query($sqlAdmin);
-        $admin = mysql_fetch_object($resultAdmin);
-
-        $sql = "insert into Atualizacoes values(0,111," . $admin->codigo . ", now())";
-        mysql_query($sql);
-
-        $URL = "FERIADOS IMPORTADOS: $f |HORAS IMPORTADAS: $h |SALAS IMPORTADAS: $s ";
-        if ($DEBUG)
-            print "$URL \n";
-        $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
-        mysql_query($sql);
-    }
+if (!$LOCATION_CRON) {
+    $sql = "insert into Atualizacoes values(0,11," . $_SESSION['loginCodigo'] . ", now())";
+    mysql_query($sql);
     ?>
+    <script>
+        $('#horariosRetorno').text('Feriados: <?php print $f; ?> |Horas: <?php print $h; ?> |Salas: <?php print $s; ?>');
+    </script><?php
+} else {
+    $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
+    $resultAdmin = mysql_query($sqlAdmin);
+    $admin = mysql_fetch_object($resultAdmin);
+
+    $sql = "insert into Atualizacoes values(0,111," . $admin->codigo . ", now())";
+    mysql_query($sql);
+
+    $URL = "FERIADOS IMPORTADOS: $f |HORAS IMPORTADAS: $h |SALAS IMPORTADAS: $s ";
+    if ($DEBUG)
+        print "$URL \n";
+    $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
+    mysql_query($sql);
+}
+?>
