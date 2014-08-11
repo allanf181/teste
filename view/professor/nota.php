@@ -148,7 +148,7 @@ while ($l = mysql_fetch_array($res)){
 	<td align='center'>";
 
 	if ($l[4]) {
-		if ($l[5]) {
+		if (1) {
 			echo "<input $disabled tabindex='$i' style='width: 30px' type='text' value='$l[2]' size='4' maxlength='4' name='matricula[" . $l[1] . "]' onchange=\"validaItem(this)\" /></td>";
 			if ($numeroBimestre > 0) { 
 				foreach($AT_BIM as $nBim => $at) {

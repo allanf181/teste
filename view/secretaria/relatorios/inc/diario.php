@@ -266,17 +266,17 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
     $pdf->Cell(6, $alturaLinha, "", 1, 0, 'C', true);
 
     if ($slistagem) {
-        if ($shabilitar) {
+        if (1) {
             // Verificar Frequencia
             $sql = "SELECT (
-							SELECT quantidade
-							FROM Frequencias
-							WHERE aula = a.codigo
-							AND matricula = $matricula
-							) as freq, quantidade as auladada,a.data
-						FROM Aulas a
-						WHERE a.atribuicao = $atribuicao
-						ORDER BY data, codigo";
+			SELECT quantidade
+			FROM Frequencias
+			WHERE aula = a.codigo
+			AND matricula = $matricula
+			) as freq, quantidade as auladada,a.data
+			FROM Aulas a
+			WHERE a.atribuicao = $atribuicao
+			ORDER BY data, codigo";
             //print "$sql <br>";
             $faltas = mysql_query($sql);
             for ($j = 0; $j < mysql_num_rows($faltas); $j++) {
