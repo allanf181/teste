@@ -71,10 +71,9 @@ while ($row = db2_fetch_object($res)) {
                 print "HORARIO: $nome <br>\n";
         }
     } else {
-        $inico = $horario->inicio.':00';
-        $fim = $horario->HA_FIM.':00';
+        $inicio = $row->HA_INICIO.':00';
+        $fim = $row->HA_FIM.':00';
         if ($horario->nome != $nome || $horario->inicio != $inicio || $horario->fim != $fim) {
-            print "ok";
             $sql = "UPDATE Horarios SET nome = '$nome', inicio = '" . $row->HA_INICIO . "', fim = '" . $row->HA_FIM . "' WHERE codigo = $horario->codigo";
             if (!$result = mysql_query($sql)) {
                 mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
