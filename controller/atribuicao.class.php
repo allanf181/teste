@@ -135,21 +135,22 @@ class Atribuicoes extends Generic {
     // --> Enviar essa query para o Banco no futuro.
     public function listProfOutOfLimitAddAula($codigo, $ano, $semestre) {
         $bd = new database();
-        $sql = "SELECT p.nome as Professor, date_format(data, '%d/%m/%Y') as Data 
-			FROM Pessoas p, Atribuicoes a, Professores pr, Aulas au, Turmas t, Cursos c
-			WHERE p.codigo = pr.professor
-			AND a.codigo = pr.atribuicao
-			AND au.atribuicao = a.codigo
-			AND t.codigo = a.turma
-			AND t.curso = c.codigo
-			AND t.semestre = :sem
+        $sql = "SELECT p.nome as Professor, date_format(au.data, '%d/%m/%Y') as Data
+                        FROM Pessoas p, Atribuicoes a, Professores pr, Aulas au, Turmas t, Cursos c
+                        WHERE a.codigo = pr.atribuicao 
+                        AND pr.professor = p.codigo 
+                        AND pr.atribuicao = a.codigo
+                        AND au.atribuicao = a.codigo
+                        AND a.turma = t.codigo
+                        AND t.curso = c.codigo
+       			AND t.semestre = :sem
 			AND t.ano = :ano
-			AND DATEDIFF(NOW(), au.data) > 7
+                        AND (SELECT DATEDIFF( NOW(), MAX(a1.data) ) FROM Aulas a1
+                        WHERE a1.codigo = au.codigo 
+                        GROUP BY a1.atribuicao ORDER BY a1.data DESC) > 7
 			AND c.codigo IN (SELECT curso 
                         FROM Coordenadores co 
-                        WHERE co.coordenador=:cod)
-			GROUP BY p.codigo
-			ORDER BY data ASC";
+                        WHERE co.coordenador=:cod)";
         $params = array(':cod' => $codigo, ':sem' => $semestre, ':ano' => $ano);
         $res = $bd->selectDB($sql, $params);
         if ($res) {
