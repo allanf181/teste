@@ -752,6 +752,11 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
             else if (atendimento != 0)
                 AtvDocente = atendimento;
 
+            if (AtvDocente != 0 && deducao != 0)
+                AtvDocente = addtime(AtvDocente, deducao);
+            else if (deducao != 0)
+                AtvDocente = deducao;
+            
             if (AtvDocente != 0 && rArea != 0)
                 AtvDocente = addtime(AtvDocente, rArea);
             else if (rArea != 0)
