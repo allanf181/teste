@@ -131,7 +131,7 @@ for ($n = 1; $n <= 2; $n++) {
                         }
                     } else {
                         $COD = mysql_result($att, 0, "codigo");
-                        $G = round( (($disciplina->CH * 6) / 5), 2);
+                        $G = round( (($disciplina->ch * 6) / 5), 2);
                         $sql = "UPDATE Atribuicoes SET aulaPrevista='".$G."', dataInicio='" . $B_INI[$i] . "', dataFim='" . $B_FIN[$i] . "' WHERE codigo = $COD";
                         if (!$result = mysql_query($sql)) {
                             if ($DEBUG)
