@@ -142,18 +142,19 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
 
         // CASO O PROFESSOR NAO TENHO FEITO O FTD, O SISTEMA IMPORTA DE ENSALAMENTOS.
         $sql = "SELECT e.diaSemana, h.nome, date_format(h.inicio, '%H:%i') as ini, 
-											date_format(h.fim, '%H:%i') as fim, p.telefone, p.celular, p.email
-			            		FROM Ensalamentos e, Horarios h, Pessoas p, Atribuicoes a, Turmas t, Professores pr
-			                WHERE h.codigo = e.horario
-			                AND a.turma = t.codigo
-			                AND pr.atribuicao = a.codigo
-			                AND pr.professor = e.professor
-			                AND p.codigo = e.professor
-			                AND t.ano = '$ano' 
-		    							AND (t.semestre = '$semestre' OR t.semestre = 0)
-		    							AND e.professor = " . $_SESSION['loginCodigo'] . " 
-			                GROUP BY h.inicio, h.fim, e.diaSemana
-			                ORDER BY e.diaSemana, h.inicio ASC";
+                    date_format(h.fim, '%H:%i') as fim, p.telefone, p.celular, p.email
+                    FROM Ensalamentos e, Horarios h, Pessoas p, Atribuicoes a, Turmas t, Professores pr
+		    WHERE h.codigo = e.horario
+                    AND a.turma = t.codigo
+                    AND pr.atribuicao = a.codigo
+		    AND pr.professor = e.professor
+		    AND p.codigo = e.professor
+                    AND e.atribuicao = a.codigo
+		    AND t.ano = '$ano' 
+                    AND (t.semestre = '$semestre' OR t.semestre = 0)
+                    AND e.professor = " . $_SESSION['loginCodigo'] . " 
+		    GROUP BY h.inicio, h.fim, e.diaSemana
+		    ORDER BY e.diaSemana, h.inicio ASC";
 
         //print $sql;
         $resultado = mysql_query($sql);
