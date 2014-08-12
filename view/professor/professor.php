@@ -89,9 +89,6 @@ $atribuicao = $_GET["atribuicao"];
         $avaliacao = new Avaliacoes();
         $qdeAvaliacoes = $avaliacao->getQdeAvaliacoes($atribuicao);
 
-        if ($bimestre <> 0 && $CH)
-            $CH = $CH / 4;
-
         // desabilita edição se o status for igual a 1 e informa se o prazo foi estendido.
         if ($status > 0 || ($prazoFormat != '00:00 de 00/00/0000' && $prazoFormat != NULL)) {
             if ($status > 0)
@@ -146,14 +143,9 @@ $atribuicao = $_GET["atribuicao"];
     <div id="professor">
 
         <table border="0">
-            <tr><td><b><font size="1">Aulas dadas:</b> <?php print $qdeAulas; ?><br><b>Carga Hor&aacute;ria:</b> <?php print $CH; ?>
-                    <?php
-                    if ($bimestre == 0) {
-                        ?>
-                        <br><b>Aulas previstas:</b> <?php print $aulaPrevista; ?></font>
-                        <?php
-                    }
-                    ?>
+            <tr><td><b><font size="1">Aulas dadas:</b> <?php print $qdeAulas; ?><br>
+                    <b>Carga Hor&aacute;ria:</b> <?php print $CH; ?>
+                    <br><b>Aulas previstas:</b> <?php print $aulaPrevista; ?></font>
                 </td>
                 <?php
                 $professores = '';
