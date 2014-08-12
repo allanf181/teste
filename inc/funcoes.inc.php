@@ -712,10 +712,11 @@ function abreviar($texto, $tamanho) {
 }
 
 function crip($texto) {
-    return base64_encode($_SESSION["cripto"] . $texto);
+    return base64_encode($_SESSION["cripto"] . $texto).'+++';
 }
 
 function dcrip($texto) {
+    $texto = str_replace('+++', '', $texto);
     $texto = base64_decode($texto);
     $r = explode($_SESSION["cripto"], $texto);
     if (sizeof($r) > 1)
@@ -843,7 +844,7 @@ function dirToArray($dir) {
 // Autor: Naylor - 29/07
 function dcripArray($array) {
     foreach ($array as $key => $value) {
-        if (base64_encode(base64_decode($value)) === $value) {
+        if (strpos($value, '+++') !== false) {
             if ($value)
                 $new_array[$key] = dcrip($value);
         } else {
