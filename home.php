@@ -238,27 +238,7 @@ if ($res) {
 // INFOMRAR AO COORDENADOR PROFESSORES QUE NÃO CADASTRAM 
 // DISCIPLINAS DE ACORDO COM O LIMITE IMPOSTO EM INSTITUIÇÕES
 if (in_array($COORD, $_SESSION["loginTipo"])) {
-    require CONTROLLER . "/atribuicao.class.php";
-    $atribuicao = new Atribuicoes();
-    
-    $res = $atribuicao->listProfOutOfLimitAddAula($user, $ANO, $SEMESTRE);
-    if ($res) {
-        ?>
-        <br><table id="listagem" align="center">
-        <caption>Lista de professores sem registro de aulas nos &uacute;ltimos 7 dias.</caption>
-        <tr><th width='220'>Nome</th><th align='center' width='80'>&Uacute;ltimo Lan&ccedil;amento</th></tr>
-        <?php
-        $i = $item;
-        foreach($res as $reg) {
-            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            print "<tr $cdif><td>".$reg['Professor']."</td><td>".$reg['Data']."</td></tr>";
-            $i++;
-        }
-        ?>
-        </table>
-        <?php
-    }
-    
+
     $res = $plano->listChangePlano($user);
     if ($res) {
         ?>
