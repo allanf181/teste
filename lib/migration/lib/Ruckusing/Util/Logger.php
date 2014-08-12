@@ -50,7 +50,7 @@ class Ruckusing_Util_Logger
     public function __construct($file)
     {
         $this->_file = $file;
-        $this->_fp = fopen($this->_file, "a+");
+        //$this->_fp = fopen($this->_file, "a+");
     }
 
     /**
@@ -60,7 +60,7 @@ class Ruckusing_Util_Logger
      */
     public function __destruct()
     {
-        $this->close();
+        //$this->close();
     }
 
     /**
@@ -87,16 +87,16 @@ class Ruckusing_Util_Logger
      */
     public function log($msg)
     {
-        if ($this->_fp) {
+        //if ($this->_fp) {
             $ts = date('M d H:i:s', time());
             $line = sprintf("%s [info] %s\n", $ts, $msg);
-            fwrite($this->_fp, $line);
-        } else {
-            throw new Ruckusing_Exception(
-                    sprintf("Error: logfile '%s' not open for writing!", $this->_file),
-                    Ruckusing_Exception::INVALID_LOG
-            );
-        }
+            //fwrite($this->_fp, $line);
+        //} else {
+        //    throw new Ruckusing_Exception(
+        //            sprintf("Error: logfile '%s' not open for writing!", $this->_file),
+        //            Ruckusing_Exception::INVALID_LOG
+        //    );
+        //}
 
     }
 
@@ -106,7 +106,7 @@ class Ruckusing_Util_Logger
     public function close()
     {
         if ($this->_fp) {
-            $closed = fclose($this->_fp);
+            //$closed = fclose($this->_fp);
             if ($closed) {
                 $this->_fp = null;
                 self::$_instance = null;

@@ -282,15 +282,15 @@ class Ruckusing_FrameworkRunner
     public function initialize_logger()
     {
         if (!$this->logger) {
-            if (is_dir($this->_config['log_dir']) && !is_writable($this->_config['log_dir'])) {
-                throw new Ruckusing_Exception(
-                                "\n\nCannot write to log directory: " . $this->_config['log_dir'] . "\n\nCheck permissions.\n\n",
-                                Ruckusing_Exception::INVALID_LOG
-                );
-            } elseif (!is_dir($this->_config['log_dir'])) {
+            //if (is_dir($this->_config['log_dir']) && !is_writable($this->_config['log_dir'])) {
+            //    throw new Ruckusing_Exception(
+            //                    "\n\nCannot write to log directory: " . $this->_config['log_dir'] . "\n\nCheck permissions.\n\n",
+            //                    Ruckusing_Exception::INVALID_LOG
+            //    );
+            //} elseif (!is_dir($this->_config['log_dir'])) {
                 //try and create the log directory
-                mkdir($this->_config['log_dir'], 0755, true);
-            }
+                //mkdir($this->_config['log_dir'], 0755, true);
+            //}
             $log_name = sprintf("%s.log", $this->_env);
             $this->logger = Ruckusing_Util_Logger::instance($this->_config['log_dir'] . DIRECTORY_SEPARATOR . $log_name);
         }
