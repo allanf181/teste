@@ -261,6 +261,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
     $atividade[31] = 'Reuniões';
     $atividade[37] = 'Projeto Interno';
     $atividade[43] = 'Projeto Externo';
+    $atividade[49] = 'Complement. Aula';
 
     ksort($dias);
 
@@ -290,7 +291,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
         print "<th>Aula</th>";
         $c = 1;
         $l = 1;
-        for ($i = 1; $i <= 48; $i++) {
+        for ($i = 1; $i <= 54; $i++) { // LINHAS DA TABELA
             if ($c >= 7) {
                 print "<tr align=\"center\">";
                 print "<th>" . $atividade[$i] . "</th>";
@@ -392,6 +393,8 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
     $atividade[4] = 'Reunião de Área';
     $atividade[5] = 'Projeto Interno';
     $atividade[6] = 'Projeto Externo';
+    $atividade[7] = 'Complemen. Aula';
+    $atividade[8] = 'Dedução Intervalos';
 
     print "<br><table width=\"100%\" border=\"0\" summary=\"FTD\" id=\"tabela_boletim\">\n";
     print "<tr><th>\n";
@@ -400,7 +403,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
     print "<th><span style='font-weight: bold; color: white'>Atividade</span></th>\n";
     print "<th><span style='font-weight: bold; color: white'>Horas/Semana</span></th>";
     print "</tr>\n";
-    for ($a = 1; $a <= 6; $a++) {
+    for ($a = 1; $a <= 8; $a++) {
         print "<tr align=\"left\">\n";
         print "<th>" . $atividade[$a] . "</th><th align=\"center\" id=\"A" . $a . "\"></th>";
         print "</tr>\n";
@@ -477,7 +480,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
         function clean() {
             //PERIODOS
             for (p = 1; p <= 2; p++) {
-                for (l = 1; l <= 8; l++) {
+                for (l = 1; l <= 9; l++) {
                     var TL = p + 'T' + l;
                     $("#" + TL).text('');
                 }
@@ -608,13 +611,14 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
             var rArea = 0;
             var pInterno = 0;
             var pExterno = 0;
+            var compAula = 0;
             var CH = 0;
 
             var T = 0; // total dos 2 periodos
 
             for (p = 1; p <= 2; p++) {
                 var TP = 0; // var para --> Total Período
-                for (l = 1; l <= 8; l++) {
+                for (l = 1; l <= 9; l++) {
                     var diff_time = 0;
                     var difer = 0;
                     for (c = 1; c <= 6; c++) {
@@ -677,6 +681,12 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
                                 else
                                     pExterno = difer;
                             }
+                            if (l == 9) {
+                                if (compAula != 0)
+                                    compAula = addtime(compAula, difer);
+                                else
+                                    compAula = difer;
+                            }                            
                         }
                     }
                 }
@@ -700,7 +710,18 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
             $("#A4").text(rArea);
             $("#A5").text(pInterno);
             $("#A6").text(pExterno);
+            $("#A7").text(compAula);
 
+            var Intervalos = calcIntervalo();
+            $("#Intervalos").text(Intervalos);
+            
+            $("#A8").text(Intervalos);
+
+            if (CH != 0 && Intervalos != 0) {
+                CH = addtime(CH, Intervalos);
+            } else if (Intervalos != 0)
+                CH = Intervalos;
+            
             if (CH != 0 && aula != 0) {
                 CH = addtime(CH, aula);
             } else if (aula != 0)
@@ -731,14 +752,16 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
             else if (pExterno != 0)
                 CH = pExterno;
 
+            if (CH != 0 && compAula != 0)
+                CH = addtime(CH, compAula);
+            else if (compAula != 0)
+                CH = compAula;
+            
             $("#AT").text(CH);
 
             // TABELA LATERAL A ATIVIDADES, ABAIXO DA FTD
             var AtvDocente = 0;
             var Projetos = 0;
-
-            var Intervalos = calcIntervalo();
-            $("#Intervalos").text(Intervalos);
 
             var Total = 0;
 
@@ -756,6 +779,11 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
                 AtvDocente = addtime(AtvDocente, deducao);
             else if (deducao != 0)
                 AtvDocente = deducao;
+
+            if (AtvDocente != 0 && compAula != 0)
+                AtvDocente = addtime(AtvDocente, compAula);
+            else if (compAula != 0)
+                AtvDocente = compAula;
             
             if (AtvDocente != 0 && rArea != 0)
                 AtvDocente = addtime(AtvDocente, rArea);
@@ -801,7 +829,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
                 var diff_time = 0;
                 var P1 = 0;
                 var P2 = 0;
-                for (l = 1; l <= 8; l++) {
+                for (l = 1; l <= 9; l++) {
                     for (p = 1; p <= 2; p++) {
                         var c_temp = c;
                         var IE = p + '' + l + '' + c + '1';
@@ -937,8 +965,8 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
             var j = 0;
             var n = 0;
             for (p = 1; p <= 2; p++) {
-                for (l = 1; l <= 8; l++) {
-                    for (c = 1; c <= 6; c++) {
+                for (l = 1; l <= 9; l++) {
+                    for (c = 1; c <= 8; c++) {
                         var IE = p + '' + l + '' + c + '' + 1;
                         var IS = p + '' + l + '' + c + '' + 2;
                         if ($("#" + IE).text() != '')
