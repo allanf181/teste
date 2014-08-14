@@ -288,7 +288,7 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
     $pdf->Cell(6, $alturaLinha, "", 1, 0, 'C', true);
 
     if ($shabilitar) {
-        if (1) {
+        if ($slistagem) {
             // Verificar Frequencia
             $sql = "SELECT (
 			SELECT quantidade
@@ -301,6 +301,7 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
 			ORDER BY data, codigo";
             //print "$sql <br>";
             $faltas = mysql_query($sql);
+            $quantidadeTotal=0;
             for ($j = 0; $j < mysql_num_rows($faltas); $j++) {
                 $quantidade = mysql_result($faltas, $j, "auladada");
                 if ($quantidade <= 2)
@@ -375,10 +376,10 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
             $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['media'], 1, 0, 'C', true);
             $pdf->Cell(8, $alturaLinha, $MEDIAS['faltas'], 1, 0, 'C', true);
         } else {
-            $pdf->Cell($largura[4] - 8, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
+            $pdf->Cell((($totalDias*4)+$quantidadeTotal)-4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
         }
     } else {
-        $pdf->Cell($largura[4] - 8, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
+        $pdf->Cell((($totalDias*4)+$quantidadeTotal)-4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
     }
     // Pular linha
     $pdf->Ln();
