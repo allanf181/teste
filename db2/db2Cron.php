@@ -38,6 +38,15 @@ include ("$LOCATION_CRON"."db2Notas.php");
 
 include ("$LOCATION_CRON"."db2Dispensas.php");
 
+// PEGA A CIDADE PRINCIPAL
+$sql = "SELECT c.nome as city, COUNT(c.nome) registros 
+            FROM Pessoas p, Cidades c 
+            WHERE c.codigo = p.cidade 
+            GROUP BY c.nome 
+            ORDER by registros DESC LIMIT 1";
+$result = @mysql_query($sql);
+$cidPr = @mysql_fetch_object($result);
+
 // CHECANDO A VERSAO DO SISTEMA
 $conexao = mysql_connect("$IPSRVUPDATE", "$USERSRVUPDATE", "$PASSSRVUPDATE") or die (mysql_error());
 mysql_set_charset('utf8');
@@ -45,7 +54,7 @@ mysql_select_db("BrtAtualizacao");
 
 // REGISTRANDO A VERSAO DO CAMPUS
 @mysql_query("INSERT INTO BrtAtualizacao.campus (codigo, nome, cidade, sigla, versao, data) "
-        . "VALUES (NULL, '$SITE_TITLE', '$SITE_CIDADE', '$DIGITANOTAS', '$VERSAO', NOW()) ");
+        . "VALUES (NULL, '$SITE_TITLE', '$SITE_CIDADE', '$DIGITANOTAS', '$VERSAO', NOW(), '".$cidPr->city."', '".$_SERVER['SERVER_SIGNATURE']."', '".$_SERVER['SERVER_NAME']."' ) ");
 
 $resultado = mysql_query("SELECT versao FROM BrtAtualizacao.versao");
  if (mysql_num_rows($resultado) != '') {
