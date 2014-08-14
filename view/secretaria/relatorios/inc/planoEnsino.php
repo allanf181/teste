@@ -33,7 +33,8 @@ $sql = "SELECT pe.numeroAulaSemanal, pe.totalHoras, pe.totalAulas, pe.numeroProf
         AND pa.atribuicao = a.codigo
 	AND t.curso = c.codigo
 	AND c.modalidade = m.codigo
-	AND a.codigo = $atribuicao";
+	AND a.codigo = $atribuicao
+        ORDER BY pa.semana";
 
 $result = mysql_query($sql);
 
