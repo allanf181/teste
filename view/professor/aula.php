@@ -186,9 +186,12 @@ $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF);
             });
         });
 
-        $('#data, #conteudo, #quantidade').change(function() {
+        $('#data, #conteudo, #quantidade, #plano').hover(function() {
             valida();
         });
+        $('#data, #conteudo, #quantidade, #plano').change(function() {
+            valida();
+        });        
 
         $('#plano').change(function() {
             $('#conteudo').val($('#plano').val());
