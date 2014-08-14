@@ -53,8 +53,8 @@ mysql_set_charset('utf8');
 mysql_select_db("BrtAtualizacao");
 
 // REGISTRANDO A VERSAO DO CAMPUS
-@mysql_query("INSERT INTO BrtAtualizacao.campus (codigo, nome, cidade, sigla, versao, data) "
-        . "VALUES (NULL, '$SITE_TITLE', '$SITE_CIDADE', '$DIGITANOTAS', '$VERSAO', NOW(), '".$cidPr->city."', '".$_SERVER['SERVER_SIGNATURE']."', '".$_SERVER['SERVER_NAME']."' ) ");
+@mysql_query("INSERT INTO BrtAtualizacao.campus (codigo, nome, cidade, sigla, versao, data, cidadePredominante, serverSignature, serverName) "
+        . "VALUES (NULL, '$SITE_TITLE', '$SITE_CIDADE', '$DIGITANOTAS', '$VERSAO', NOW(), '".$cidPr->city."', '".php_uname()."', '".gethostname()."' ) ");
 
 $resultado = mysql_query("SELECT versao FROM BrtAtualizacao.versao");
  if (mysql_num_rows($resultado) != '') {
