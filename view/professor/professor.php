@@ -83,6 +83,11 @@ $atribuicao = $_GET["atribuicao"];
         if ($status != 0)
             $dataExpirou = true;
 
+        if ($diarioAberto < 0) { // diário ainda não começou
+            $dataExpirou = true;
+            $status = 100;
+        }
+        
         $_SESSION['dataExpirou'] = $dataExpirou;
 
         // Informa se o diário foi aberto
@@ -109,6 +114,8 @@ $atribuicao = $_GET["atribuicao"];
                 $info = "Este diário foi fechado pela Secretaria!";
             if ($status == 4)
                 $info = "Este diário foi fechado pelo Sistema pois o prazo para finalização do diário foi atingido!";
+            if ($status == 100)
+                $info = "Esse di&aacute;rio ainda n&atilde;o come&ccedil;ou!";
             if ($prazo && !$status)
                 $info = "Seu prazo para altera&ccedil;&atilde;o do di&aacute;rio foi estentido at&eacute; &agrave;s $prazoFormat";
         }
