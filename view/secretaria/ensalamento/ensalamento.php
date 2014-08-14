@@ -114,170 +114,175 @@ require(PATH . VIEW . '/paginacao.php');
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
             </td>
         </tr>
-            <?php
-            $i++;
-        }
-        ?>
+        <?php
+        $i++;
+    }
+    ?>
 </table>
 
 <style>
-.ontop {
-	z-index: 999;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	display: none;
-	position: absolute;				
-	background-color: #cccccc;
-	color: #aaaaaa;
-	opacity: .95;
-}
-#popup {
-	width: 800px;
-	min-height: 200px;
-	position: absolute;
-	color: #000000;
-	background-color: #fff;
-	top: 40%;
-	left: 30%;
-	margin-top: -100px;
-	margin-left: -150px;
-}
+    .ontop {
+        z-index: 999;
+        width: 100%;
+        height: 1000px;
+        top: 0;
+        left: 0;
+        display: none;
+        position: absolute;				
+        background-color: #696969;
+        color: #aaaaaa;
+        opacity: .95;
+    }
+    #popup {
+        width: 800px;
+        min-height: 200px;
+        position: absolute;
+        color: #000000;
+        background-color: #fff;
+        top: 40%;
+        left: 30%;
+        margin-top: -100px;
+        margin-left: -150px;
+    }
 </style>
 
-    <div id="popDiv" class="ontop">
-        <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<div id="popDiv" class="ontop">
+    <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
-        <?php
-        // MOSTRA ENSALAMENTO
-        if ($turma) {
+    <?php
+    // MOSTRA ENSALAMENTO
+    if ($turma) {
 
-            $codigo = dcrip($_GET['turma']);
-            $tipo = 'turma';
+        $codigo = dcrip($_GET['turma']);
+        $tipo = 'turma';
 
-            $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
+        $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
 
-            foreach ($res as $reg) {
-                preg_match('#\[(.*?)\]#', $reg['horario'], $match);
-                $turno[$res['horCodigo']] = $match[1];
-                $reg['horario'] = str_ireplace("[$match[1]]", "", $reg['horario']);
-                $horas[$reg['diaSemana']][$res['inicio']][$reg['atribuicao']][$reg['horCodigo']] = $reg['inicio'] . " - " . $reg['fim'];
-                $disciplinas[$reg['atribuicao']] = 'SALA:' . $reg['sala'] . ' - LOCAL:' . $reg['localizacao'] . " - DISC:" . $reg['disciplina'] . " - PROF:" . $reg['professor'];
-                $siglas[$reg['atribuicao']] = $reg['discNumero'];
-                $aulas[$reg['horCodigo']] = $reg['horario'];
-                $discNome[$reg['atribuicao']] = $reg['disciplina'];
-                $turmaNome = $reg['turma'];
-            }
-
-            require CONTROLLER . "/turno.class.php";
-            $t = new Turnos();
-            $res = $t->listRegistros();
-            foreach ($res as $reg)
-                $turnos[$reg['sigla']] = $reg['nome'];
-
-            $MOSTRA = "Turma $turmaNome";
-
-            if ($atribuicao)
-                $MOSTRA = $discNome[$atribuicao];
-            print "<center><table id=\"popup\" id=\"tabela_boletim\">\n";
-            print "<tr><td colspan=\"7\" align='center'><font size=\"4\"><b>$MOSTRA</b></font></td></tr>\n";
-            print "<tr><td colspan=\"7\" align=\"right\"><a href=\"#\" onClick=\"hide('popDiv');\">Fechar</a></td></tr>\n";
-            print "<tr>\n";
-            foreach (diasDaSemana() as $dCodigo => $dNome) {
-                print "<th abbr=\"Domingo\" title=\"$dNome\"><span style='font-weight: bold; color: black'>$dNome</span></th>\n";
-            }
-
-            print "</tr>\n";
-            print "</thead>\n";
-            print "<tr align=\"center\">\n";
-            for ($i = 1; $i <= 7; $i++) {
-                $turnoAnterior = '';
-                print "<td style='width: 10%' valign=\"top\">";
-                if (isset($horas[$i]))
-                    foreach ($horas[$i] as $disc) {
-                        foreach ($disc as $dNum => $dHor) {
-                            foreach ($dHor as $cHor => $dSala) {
-                                if (isset($turno[$cHor]) && $turno[$cHor] != $turnoAnterior)
-                                    print "<br>" . strtoupper($turnos[$turno[$cHor]]) . "<hr><br>\n";
-                                print "<a href='#' title='$disciplinas[$dNum]'>$siglas[$dNum] - $aulas[$cHor]</a><br>$dSala<br>";
-                                if (count($horas[$i]) > 1)
-                                    print "<hr>";
-
-                                if (isset($turno[$cHor]))
-                                    $turnoAnterior = $turno[$cHor];
-                            }
-                        }
-                    }
-                print "</td>";
-            }
-            print "</tr>\n";
-            print "</table></center>\n";
+        foreach ($res as $reg) {
+            $reg['horario'] = str_ireplace("[$match[1]]", "", $reg['horario']);
+            $link = $reg['disciplina'] . ' (' . $reg['professor'] . '): ' . $reg['sala'] . ' - ' . $reg['localizacao'];
+            $horas[$reg['diaSemana']][] = "<a href='#' title='$link'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
+            $turmaNome = $reg['turma'];
         }
+
+        require CONTROLLER . "/turno.class.php";
+        $t = new Turnos();
+        $res = $t->listRegistros();
+        foreach ($res as $reg)
+            $turnos[$reg['sigla']] = $reg['nome'];
+
+        $MOSTRA = "Turma $turmaNome";
+
+        if ($atribuicao)
+            $MOSTRA = $discNome[$atribuicao];
         ?>
-    </div>
-    
-    <script>
-        function atualizar(getLink) {
-            var turma = $('#campoTurma').val();
-            var URLS = '<?php print $SITE; ?>?turma=' + turma;
-            if (!getLink)
-                $('#index').load(URLS + '&item=<?php print $item; ?>');
-            else
-                return URLS;
-        }
+        <h2><font color="white"><?= $MOSTRA ?></h2>
 
-        function pop(div) {
-            document.getElementById(div).style.display = 'block';
-        }
-        function hide(div) {
-            document.getElementById(div).style.display = 'none';
-        }
-
-        document.onkeydown = function(evt) {
-            evt = evt || window.event;
-            if (evt.keyCode == 27) {
-                hide('popDiv');
-            }
-        };
-
-        $(document).ready(function() {
-            $('#select-all').click(function(event) {
-                if (this.checked) {
-                    // Iterate each checkbox
-                    $(':checkbox').each(function() {
-                        this.checked = true;
-                    });
-                } else {
-                    $(':checkbox').each(function() {
-                        this.checked = false;
-                    });
-                }
-            });
-
-            $('#campoTurma').change(function() {
-                atualizar();
-            });
-
-            $(".ensalamento").click(function() {
-                pop('popDiv');
-            });
-
-            $(".item-excluir").click(function() {
-                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
-                    'type': 'question',
-                    'title': '<?php print $TITLE; ?>',
-                    'buttons': ['Sim', 'Não'],
-                    'onClose': function(caption) {
-                        if (caption == 'Sim') {
-                            var selected = [];
-                            $('input:checkbox:checked').each(function() {
-                                selected.push($(this).val());
-                            });
-                            $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+        <center><table width="80%" border="0" summary="Calendário" id="tabela_boletim">
+                <thead>
+                <tr><td colspan="7" align="right"><a href="#" onClick="hide('popDiv');">Fechar</a></td></tr>
+                    <tr>
+                        <?php
+                        foreach (diasDaSemana() as $dCodigo => $dNome) {
+                            ?>
+                            <th abbr="Domingo" title="<?= $dNome ?>"><span style='font-weight: bold; color: white'><?= $dNome ?></span></th>
+                            <?php
                         }
+                        ?>
+                    </tr>
+                </thead>
+                <tr align="center">
+                    <?php
+                    for ($i = 1; $i <= 7; $i++) {
+                        $TA = '';
+                        ?>
+                        <td style='width: 10%;' valign="top">
+                            <?php
+                            if (isset($horas[$i]))
+                                foreach ($horas[$i] as $disc) {
+                                    preg_match('#\[(.*?)\]#', $disc, $match);
+                                    $T = $match[1];
+                                    if ($T != $TA) {
+                                        print strtoupper($turnos[$T]) . "<hr>\n";
+                                        $TA = $T;
+                                    }
+                                    print str_ireplace("[$match[1]]", "", $disc);
+                                    print '<br>-----------------<br>';
+                                }
+                            ?>
+                        </td>
+                        <?php
                     }
-                });
+                    ?>
+                </tr>
+            </table>
+        </center>
+        <?php
+    }
+    ?>
+</div>
+
+<script>
+function atualizar(getLink) {
+    var turma = $('#campoTurma').val();
+    var URLS = '<?php print $SITE; ?>?turma=' + turma;
+    if (!getLink)
+        $('#index').load(URLS + '&item=<?php print $item; ?>');
+    else
+        return URLS;
+}
+
+function pop(div) {
+    document.getElementById(div).style.display = 'block';
+}
+function hide(div) {
+    document.getElementById(div).style.display = 'none';
+}
+
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+        hide('popDiv');
+    }
+};
+
+$(document).ready(function() {
+    $('#select-all').click(function(event) {
+        if (this.checked) {
+            // Iterate each checkbox
+            $(':checkbox').each(function() {
+                this.checked = true;
             });
+        } else {
+            $(':checkbox').each(function() {
+                this.checked = false;
+            });
+        }
+    });
+
+    $('#campoTurma').change(function() {
+        atualizar();
+    });
+
+    $(".ensalamento").click(function() {
+        pop('popDiv');
+    });
+
+    $(".item-excluir").click(function() {
+        $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+            'type': 'question',
+            'title': '<?php print $TITLE; ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function(caption) {
+                if (caption == 'Sim') {
+                    var selected = [];
+                    $('input:checkbox:checked').each(function() {
+                        selected.push($(this).val());
+                    });
+                    $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                }
+            }
         });
-    </script>
+    });
+});
+</script>

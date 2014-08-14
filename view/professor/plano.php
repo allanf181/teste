@@ -451,7 +451,7 @@ if ($_GET['pagina'] == "planoAula") {
         </tr>
         <tr>
             <td align="left">Conte&uacute;do: </td>
-            <td colspan="10"><textarea rows="5" <?php print $disabled; ?> cols="80" maxlength='2000' id='3' name='campoConteudo'><?php print $conteudo; ?></textarea>
+            <td colspan="10"><textarea rows="3" <?php print $disabled; ?> cols="80" maxlength='200' id='3' name='campoConteudo'><?php print $conteudo; ?></textarea>
         </tr>
     </table>
     <table width="100%"><tr><td><input type="submit" <?php print $disabled; ?> value="Salvar" /></td>
@@ -491,6 +491,18 @@ $atribuicao = $_GET['atribuicao'];
     }
 
     $(document).ready(function() {
+        $('#3').maxlength({
+            events: [], // Array of events to be triggerd    
+            maxCharacters: 200, // Characters limit   
+            status: true, // True to show status indicator bewlow the element    
+            statusClass: "status", // The class on the status div  
+            statusText: "caracteres restando", // The status text  
+            notificationClass: "notification", // Will be added when maxlength is reached  
+            showAlert: false, // True to show a regular alert message    
+            alertText: "Limite de caracteres excedido!", // Text in alert message   
+            slider: true // True Use counter slider    
+        });
+        
         $(".item-excluir").click(function() {
             var codigo = $(this).attr('id');
             jConfirm('Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {

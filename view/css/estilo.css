@@ -358,12 +358,11 @@ li{
   border:2px solid #666666;
   font-size:13px;
   line-height:1.3em;
-  margin:-20px 190px;  
   position:absolute;
   text-align:center;
   width:185px;
   left: 262px;
-  margin-top: -22px;  
+  margin-top: -22px;
   -moz-border-radius:10px;
   -webkit-border-radius:10px;
   -moz-box-shadow:0 0 5px #888888;

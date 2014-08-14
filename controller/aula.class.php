@@ -36,7 +36,7 @@ class Aulas extends Generic {
             return false;
         }
     }
-    
+
     // CONTA A QDE DE AULAS DO PROFESSOR
     // USADO POR: VIEW/PROFESSOR/PROFESSOR.PHP
     public function countQdeAulas($atribuicao) {
@@ -53,7 +53,34 @@ class Aulas extends Generic {
         } else {
             return 0;
         }
-    }    
+    }
+
+    // LISTA AS AULAS AULAS DO PROFESSOR
+    // USADO POR: VIEW/PROFESSOR/AULA.PHP
+    public function listAulasProfessor($codigo) {
+        $bd = new database();
+
+        $sql = "SELECT date_format(data, '%d/%m/%Y') data_formatada,
+                    a.quantidade, a.codigo, a.conteudo, a.data, 
+                    d.nome as disciplina,  t.numero as turma,
+                    at.status, DATEDIFF(at.prazo, NOW()) as prazo,
+                    (SELECT SUM(quantidade) FROM Aulas WHERE atribuicao = at.codigo) as aulasDadas,
+                    (SELECT COUNT(*) FROM Aulas WHERE atribuicao = at.codigo) as dias
+                    FROM Disciplinas d, Turmas t, Atribuicoes at
+                    LEFT JOIN Aulas a ON a.atribuicao=at.codigo 
+                    WHERE at.disciplina=d.codigo 
+                    AND at.turma=t.codigo 
+                    AND at.codigo= :cod
+                    ORDER BY data";
+
+        $params = array(':cod' => $codigo);
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
 
 }
 

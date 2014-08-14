@@ -95,21 +95,21 @@ if ($_GET['opcao'] == 'insert') {
     <script>
         valida();
         $(document).ready(function() {
-            <?php
-            if ($calculo == 'peso' || $calculo == 'soma' || $tipoAval == 'pontoExtra') {
-                ?>
+    <?php
+    if ($calculo == 'peso' || $calculo == 'soma' || $tipoAval == 'pontoExtra') {
+        ?>
                 $("#valor").mask("99.99");
                 $("#valor").change(function() {
                     if ($(this).val() > <?= $maxPontos ?>)
                         $(this).val('<?= str_pad(number_format($maxPontos, 2), 5, "0", STR_PAD_LEFT) ?>');
                 });
-                <?php
-                if ($maxPontos > 0.1) {
-                    $P = "&& $('#valor').val()!=\"00.00\" && $('#valor').val()!=\"\" && $('#valor').val()!=\"__.__\" ";
-                    $P1 = ', #valor';
-                }
-            }
-            ?>
+        <?php
+        if ($maxPontos > 0.1) {
+            $P = "&& $('#valor').val()!=\"00.00\" && $('#valor').val()!=\"\" && $('#valor').val()!=\"__.__\" ";
+            $P1 = ', #valor';
+        }
+    }
+    ?>
             $('#data1, #tipo, #nome <?= $P1 ?>, #sigla').keyup(function() {
                 $('#sigla').val($('#sigla').val().toUpperCase());
                 valida();
@@ -117,28 +117,28 @@ if ($_GET['opcao'] == 'insert') {
 
         });
         function valida() {
-            <?php
-            if (!$_GET['codigo']) {
-                ?>
+    <?php
+    if (!$_GET['codigo']) {
+        ?>
                 var Siglas = new Array();
-                <?php
-                $i = 0;
-                foreach ($avalSiglas as $r) {
-                ?>
+        <?php
+        $i = 0;
+        foreach ($avalSiglas as $r) {
+            ?>
                     Siglas[<?= $i ?>] = '<?= strtoupper($r['sigla']) ?>';
-                <?php
-                $i++;
-                }
-                ?>
+            <?php
+            $i++;
+        }
+        ?>
                 if ($('#sigla').val() && Siglas.indexOf($('#sigla').val()) != -1) {
                     $('#Siglas').html('Essa sigla já existe, escolha outra');
                     $('#sigla').val('');
                 } else {
                     $('#Siglas').html('');
                 }
-            <?php
-            }
-            ?>
+        <?php
+    }
+    ?>
 
             if ($('#data').val() != "" && $('#tipo').val() != null &&
                     $('#nome').val() != "" && $('#sigla').val() != "" <?= $P ?>)
@@ -202,16 +202,16 @@ if ($_GET['opcao'] == 'insert') {
                                 ?>
                             </select>
                         </td></tr>
-    <?php
-    if (($calculo == 'peso' || $calculo == 'soma') && ($tipoAval != 'substitutiva')) {
-        if ($maxPontos <= 0)
-            $enabled = 'disabled';
-
-        $peso = number_format($res[0]['peso'], 2);
-        $peso = str_pad($peso, 5, "0", STR_PAD_LEFT);
-        ?>
-                        <tr><td align="right">Valor</td><td><input type="text" id="valor" style="width: 50px" <?php echo $enabled; ?> name="peso" value="<?= $peso ?>"/> (m&aacute;ximo <?= $maxPontos ?>)</td></tr>
                     <?php
+                    if (($calculo == 'peso' || $calculo == 'soma') && ($tipoAval != 'substitutiva')) {
+                        if ($maxPontos <= 0)
+                            $enabled = 'disabled';
+
+                        $peso = number_format($res[0]['peso'], 2);
+                        $peso = str_pad($peso, 5, "0", STR_PAD_LEFT);
+                        ?>
+                        <tr><td align="right">Valor</td><td><input type="text" id="valor" style="width: 50px" <?php echo $enabled; ?> name="peso" value="<?= $peso ?>"/> (m&aacute;ximo <?= $maxPontos ?>)</td></tr>
+                        <?php
                     }
                     if ($tipoAval == 'substitutiva') {
                         $codigo = key($tipo);
@@ -229,187 +229,187 @@ if ($_GET['opcao'] == 'insert') {
                         </td></tr>
                 </table>
         </form>
-        <br><div style='margin: auto'><a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='voltar' title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
-        <?php
+    </div>
+    <br><div style='margin: auto'><a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='voltar' title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
+    <?php
+}
+
+
+if ($_GET['opcao'] == '') {
+
+    // INSERINDO O CALCULO PESO POR PADRAO, CASO ESTEJA VAZIO
+    if (!$calculo && !$_POST) {
+        $att->insertIfNotCalculo($atribuicao);
+        $calculo = 'peso';
     }
 
-
-    if ($_GET['opcao'] == '') {
-
-        // INSERINDO O CALCULO PESO POR PADRAO, CASO ESTEJA VAZIO
-        if (!$calculo && !$_POST) {
-            $att->insertIfNotCalculo($atribuicao);
-            $calculo = 'peso';
-        }
-
-        $res = $avaliacao->listAvaliacoes($atribuicao);
-        if ($res[0]['nome'])
-            $disabled = 'disabled';
-        ?>
-        <div id="etiqueta" align="center">
-            <b>Turma: </b><?= $res[0]['numero'] ?><br />
-            <b>Disciplina: </b><?= $res[0]['disciplina'] ?><br />
-            <b>M&eacute;todo de C&aacute;lculo: </b>
-            <select name="campoCalculo" <?= $disabled ?> id="campoCalculo" value="<?= $calculo ?>" onChange="$('#professor').load('<?= $SITE ?>?opcao=calculo&atribuicao=<?= crip($atribuicao) ?>&calculo=' + this.value);">
-                <?php
-                $MC = array('soma', 'media', 'peso', 'formula');
-                foreach ($MC as $c) {
-                    $selected = null;
-                    if ($c == $calculo)
-                        $selected = 'selected';
-                    $n = strtoupper($c);
-                    ?>
-                    <option <?= $selected ?> value='<?= $c ?>'><?= $$n ?></option>
-                    <?php
-                }
+    $res = $avaliacao->listAvaliacoes($atribuicao);
+    if ($res[0]['nome'])
+        $disabled = 'disabled';
+    ?>
+    <div id="etiqueta" align="center">
+        <b>Turma: </b><?= $res[0]['numero'] ?><br />
+        <b>Disciplina: </b><?= $res[0]['disciplina'] ?><br />
+        <b>M&eacute;todo de C&aacute;lculo: </b>
+        <select name="campoCalculo" <?= $disabled ?> id="campoCalculo" value="<?= $calculo ?>" onChange="$('#professor').load('<?= $SITE ?>?opcao=calculo&atribuicao=<?= crip($atribuicao) ?>&calculo=' + this.value);">
+            <?php
+            $MC = array('soma', 'media', 'peso', 'formula');
+            foreach ($MC as $c) {
+                $selected = null;
+                if ($c == $calculo)
+                    $selected = 'selected';
+                $n = strtoupper($c);
                 ?>
-            </select>
-            <?php if ($calculo == 'peso' || $calculo == 'soma') { ?>
-                <br><b>Pontos atribu&iacute;dos: </b><?= round($res[0]['totalPeso'], 2) ?>
-                <?php
-            }
-            if ($calculo == 'formula') {
-                ?>
-                <script>
-                    $('#form_padrao').html5form({
-                        method: 'POST',
-                        action: '<?= $SITE ?>',
-                        responseDiv: '#professor',
-                        colorOn: '#000',
-                        colorOff: '#999',
-                        messages: 'br'
-                    })
-                </script>
-                <div id="html5form" class="main">
-                    <form id="form_padrao">
-                        <font size="2">M&eacute;dia: </font><input type="text" size="15" maxlength="50" name="formula" value="<?= $formula ?>"/>
-                        <font size="1">" . 'Exemplo: <b>($A1+$A2)/2</b>  --> onde A1 &eacute; a sigla da avalia&ccedil;&atilde;o precedida de $' . "</font>
-                        <input type="hidden" name="opcao" value="InsertFormula" />
-                        <input type="hidden" name="codigo" value=<?= crip($atribuicao) ?> />
-                        <input type="submit" value="Salvar" />
-                    </form>
-                </div>
+                <option <?= $selected ?> value='<?= $c ?>'><?= $$n ?></option>
                 <?php
             }
             ?>
-        </div>
-        <hr><br>
-        <?php if ($res[0]['nome']) { ?>
-            <table id="listagem" border="0" align="center">
-                <tr><th width="40">#</th><th width="100">Data</th><th>Avalia&ccedil;&atilde;o</th><th>Sigla</th><th>Tipo</th><th width="150">Valor</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
-                <?php
-                $i = 1;
-                foreach ($res as $reg) {
-                    $bimestre = $reg['bimestre'];
-                    $recFinal .= $reg['final'];
-                    $recuperacao .= $reg['recuperacao'];
-                    $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        </select>
+        <?php if ($calculo == 'peso' || $calculo == 'soma') { ?>
+            <br><b>Pontos atribu&iacute;dos: </b><?= round($res[0]['totalPeso'], 2) ?>
+            <?php
+        }
+        if ($calculo == 'formula') {
+            ?>
+            <script>
+                $('#form_padrao').html5form({
+                    method: 'POST',
+                    action: '<?= $SITE ?>',
+                    responseDiv: '#professor',
+                    colorOn: '#000',
+                    colorOff: '#999',
+                    messages: 'br'
+                })
+            </script>
+            <div id="html5form" class="main">
+                <form id="form_padrao">
+                    <font size="2">M&eacute;dia: </font><input type="text" size="15" maxlength="50" name="formula" value="<?= $formula ?>"/>
+                    <font size="1">" . 'Exemplo: <b>($A1+$A2)/2</b>  --> onde A1 &eacute; a sigla da avalia&ccedil;&atilde;o precedida de $' . "</font>
+                    <input type="hidden" name="opcao" value="InsertFormula" />
+                    <input type="hidden" name="codigo" value=<?= crip($atribuicao) ?> />
+                    <input type="submit" value="Salvar" />
+                </form>
+            </div>
+            <?php
+        }
+        ?>
+    </div>
+    <hr><br>
+    <?php if ($res[0]['nome']) { ?>
+        <table id="listagem" border="0" align="center">
+            <tr><th width="40">#</th><th width="100">Data</th><th>Avalia&ccedil;&atilde;o</th><th>Sigla</th><th>Tipo</th><th width="150">Valor</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+            <?php
+            $i = 1;
+            foreach ($res as $reg) {
+                $bimestre = $reg['bimestre'];
+                $recFinal .= $reg['final'];
+                $recuperacao .= $reg['recuperacao'];
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
 
-                    if ($calculo == 'media' || $calculo == 'formula')
-                        $reg['peso'] = '';
-                    if ($reg['recuperacao'])
-                        $reg['peso'] = $reg['recuperacao'];
+                if ($calculo == 'media' || $calculo == 'formula')
+                    $reg['peso'] = '';
+                if ($reg['recuperacao'])
+                    $reg['peso'] = $reg['recuperacao'];
 
-                    $sub = null;
-                    if ($reg['tipo'] == 'substitutiva')
-                        $sub = ' de ' . $reg['substitutiva'];
-                    $reg['tipo'] = strtoupper($reg['tipo']);
-                    $titleAval = strtoupper($reg['recuperacao']);
-                    ?>
-                    <tr <?= $cdif ?>><td><?= $i ?></td>
-                        <td><a class='nav' title='Clique aqui para lan&ccedil;ar as notas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/nota.php?atribuicao=<?= crip($atribuicao) ?>&avaliacao=<?= crip($reg['codigo']) ?>'); void(0);"><?= $reg['dataFormatada'] ?></a></td>
-                        <td><?= $reg['nome'] ?></td>
-                        <td><?= $reg['sigla'] ?></td>
-                        <td><?= $$reg['tipo'] . $sub ?> </td>
-                        <td><a title='<?= $$titleAval ?>' href='#'><?= $reg['peso'] ?></a></td>
+                $sub = null;
+                if ($reg['tipo'] == 'substitutiva')
+                    $sub = ' de ' . $reg['substitutiva'];
+                $reg['tipo'] = strtoupper($reg['tipo']);
+                $titleAval = strtoupper($reg['recuperacao']);
+                ?>
+                <tr <?= $cdif ?>><td><?= $i ?></td>
+                    <td><a class='nav' title='Clique aqui para lan&ccedil;ar as notas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/nota.php?atribuicao=<?= crip($atribuicao) ?>&avaliacao=<?= crip($reg['codigo']) ?>'); void(0);"><?= $reg['dataFormatada'] ?></a></td>
+                    <td><?= $reg['nome'] ?></td>
+                    <td><?= $reg['sigla'] ?></td>
+                    <td><?= $$reg['tipo'] . $sub ?> </td>
+                    <td><a title='<?= $$titleAval ?>' href='#'><?= $reg['peso'] ?></a></td>
+                    <?php
+                    if ($_SESSION['dataExpirou']) {
+                        ?>
+                        <td align='center'><a href='#' title='Di&aacute;rio Fechado'>Fechado</a></td>
                         <?php
-                        if ($_SESSION['dataExpirou']) {
-                            ?>
-                            <td align='center'><a href='#' title='Di&aacute;rio Fechado'>Fechado</a></td>
-                            <?php
-                        } else {
-                            ?>
-                            <td align='center' width="20"><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
-                                <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= round($reg['totalPeso'] - $reg['peso'], 2) ?>&atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='nav' title='Alterar'>
-                                    <img class='botao' src='<?= ICONS ?>/config.png' /></a>
-                            </td>
-                            <?php
-                        }
-                        $i++;
+                    } else {
+                        ?>
+                        <td align='center' width="20"><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
+                            <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= round($reg['totalPeso'] - $reg['peso'], 2) ?>&atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='nav' title='Alterar'>
+                                <img class='botao' src='<?= ICONS ?>/config.png' /></a>
+                        </td>
+                        <?php
                     }
-                    ?>
-            </table>
-        <?php } ?>
-        <center>
-            <br />
-            <?php if ( (($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4) )) { ?>
-                <input type="hidden" id="campoAtribuicao" name="campoAtribuicao" value="<?php echo crip($atribuicao); ?>" />
-                <?php if ($_SESSION['dataExpirou'] == 0) {
-                    ?>
-                    <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= round($reg['totalPeso'], 2) ?>'); void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
-                    &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=pontoExtra'); void(0);" title="Cadastrar Ponto Extra"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
-                    &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=substitutiva'); void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
-                    <?php
-                } else {
-                    ?>
-                    <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
-                    <?php
-                }
-            } else if ($status == 0) {
-                ?>
-                <p style='text-align: center; font-weight: bold; color: red'>Não é possível cadastrar mais avaliações, pois a soma dos pontos distribuídos é igual a <?= $PONTO ?><br />Exclua ou altere o peso de alguma avaliação para adicionar uma nova.</p>
-                    <?php
+                    $i++;
                 }
                 ?>
-        </center>
-        <?php
-    }
+        </table>
+    <?php } ?>
+    <center>
+        <br />
+        <?php if ((($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4))) { ?>
+            <input type="hidden" id="campoAtribuicao" name="campoAtribuicao" value="<?php echo crip($atribuicao); ?>" />
+            <?php if ($_SESSION['dataExpirou'] == 0) {
+                ?>
+                <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= round($reg['totalPeso'], 2) ?>'); void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
+                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=pontoExtra'); void(0);" title="Cadastrar Ponto Extra"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
+                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=substitutiva'); void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
+                <?php
+            } else {
+                ?>
+                <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
+                <?php
+            }
+        } else if ($status == 0) {
+            ?>
+            <p style='text-align: center; font-weight: bold; color: red'>Não é possível cadastrar mais avaliações, pois a soma dos pontos distribuídos é igual a <?= $PONTO ?><br />Exclua ou altere o peso de alguma avaliação para adicionar uma nova.</p>
+                <?php
+            }
+            ?>
+    </center>
+    <?php
+}
 
-    // DATA DE INICIO E FIM DA ATRIBUICAO PARA RESTRINGIR O CALENDARIO
-    $dataInicio = dataPTBR($atrib[0]['dataInicio']);
-    $dataFim = dataPTBR($atrib[0]['dataFim']);
-    ?>
-    <script>
-        $(document).ready(function() {
-            $(".item-excluir").click(function() {
-                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
-                    'type': 'question',
-                    'title': '<?= $TITLE ?>',
-                    'buttons': ['Sim', 'Não'],
-                    'onClose': function(caption) {
-                        if (caption == 'Sim') {
-                            var selected = [];
-                            $('input:checkbox:checked').each(function() {
-                                selected.push($(this).val());
-                            });
-                            $('#professor').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&atribuicao=<?= crip($atribuicao) ?>');
-                        }
+$res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF);
+
+?>
+<script>
+    $(document).ready(function() {
+        $(".item-excluir").click(function() {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+                        $('#professor').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&atribuicao=<?= crip($atribuicao) ?>');
                     }
-                });
-            });
-            $("#data").datepicker({
-                dateFormat: 'dd/mm/yy',
-                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                nextText: 'Próximo',
-                prevText: 'Anterior',
-                minDate: '<?= $dataInicio ?>',
-                maxDate: '<?= $dataFim ?>'
-            });
-            $('#select-all').click(function(event) {
-                if (this.checked) {
-                    // Iterate each checkbox
-                    $(':checkbox').each(function() {
-                        this.checked = true;
-                    });
-                } else {
-                    $(':checkbox').each(function() {
-                        this.checked = false;
-                    });
                 }
             });
         });
-    </script>
+        $("#data").datepicker({
+            dateFormat: 'dd/mm/yy',
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            nextText: 'Próximo',
+            prevText: 'Anterior',
+            minDate: '<?=$res['inicioCalendar']?>',
+            maxDate: '<?=$res['fimCalendar']?>'
+        });
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+    });
+</script>

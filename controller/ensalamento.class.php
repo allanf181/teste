@@ -86,7 +86,7 @@ class Ensalamentos extends Generic {
                     $sql2
                     " . $$tipo . " " . $subSQL . "
                 GROUP BY diaSemana, h.inicio, h.fim, d.numero, s.nome
-		ORDER BY diaSemana, inicio, disciplina";
+		ORDER BY h.inicio, h.fim";
 
         $params = array(':cod' => $codigo, ':ano' => $ano, ':sem' => $semestre);
         if ($subturma)

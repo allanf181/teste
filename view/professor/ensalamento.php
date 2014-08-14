@@ -34,14 +34,9 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
     $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
 
     foreach ($res as $reg) {
-        preg_match('#\[(.*?)\]#', $reg['horario'], $match);
-        $turno[$res['horCodigo']] = $match[1];
         $reg['horario'] = str_ireplace("[$match[1]]", "", $reg['horario']);
-        $horas[$reg['diaSemana']][$res['inicio']][$reg['atribuicao']][$reg['horCodigo']] = $reg['inicio'] . " - " . $reg['fim'];
-        $disciplinas[$reg['atribuicao']] = 'SALA:'.$reg['sala'] . ' - LOCAL:' . $reg['localizacao'] . " - DISC:" . $reg['disciplina'] . " - PROF:" . $reg['professor'];
-        $siglas[$reg['atribuicao']] = $reg['discNumero'];
-        $aulas[$reg['horCodigo']] = $reg['horario'];
-        $discNome[$reg['atribuicao']] = $reg['disciplina'];
+        $link = $reg['disciplina'] . ' (' . $reg['professor'] . '): ' . $reg['sala'] . ' - ' . $reg['localizacao'];
+        $horas[$reg['diaSemana']][] = "<a href='#' title='$link'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
         $turmaNome = $reg['turma'];
     }
 
@@ -55,41 +50,50 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
         $MOSTRA = 'HOR&Aacute;RIO INDIVIDUAL';
     else
         $MOSTRA = "Turma $turmaNome [$subturma]";
-    
-    if ($atribuicao) $MOSTRA = $discNome[$atribuicao];
-    print "<h2><font color=\"white\">$MOSTRA</h2>\n";
 
-    print "<center><table width=\"80%\" border=\"0\" summary=\"Calendário\" id=\"tabela_boletim\">\n";
-    print "<thead>\n";
-    print "<tr>\n";
-    foreach (diasDaSemana() as $dCodigo => $dNome) {
-        print "<th abbr=\"Domingo\" title=\"$dNome\"><span style='font-weight: bold; color: white'>$dNome</span></th>\n";
-    }
-    
-    print "</tr>\n";
-    print "</thead>\n";
-    print "<tr align=\"center\">\n";
-    for ($i = 1; $i <= 7; $i++) {
-        $turnoAnterior = '';
-        print "<td style='width: 10%' valign=\"top\">";
-        if (isset($horas[$i]))
-            foreach ($horas[$i] as $disc) {
-                foreach ($disc as $dNum => $dHor) {
-                    foreach ($dHor as $cHor => $dSala) {
-                        if (isset($turno[$cHor]) && $turno[$cHor] != $turnoAnterior)
-                            print "<br>" . strtoupper($turnos[$turno[$cHor]]) . "<hr><br>\n";
-                        print "<a href='#' title='$disciplinas[$dNum]'>$siglas[$dNum] - $aulas[$cHor]</a><br>$dSala<br>";
-                        if (count($horas[$i]) > 1)
-                            print "<hr>";
-                        
-                        if (isset($turno[$cHor]))
-                            $turnoAnterior = $turno[$cHor];
+    if ($atribuicao)
+        $MOSTRA = $discNome[$atribuicao];
+    ?>
+    <h2><font color="white"><?= $MOSTRA ?></h2>
+
+    <center><table width="80%" border="0" summary="Calendário" id="tabela_boletim">
+            <thead>
+                <tr>
+                    <?php
+                    foreach (diasDaSemana() as $dCodigo => $dNome) {
+                        ?>
+                        <th abbr="Domingo" title="<?= $dNome ?>"><span style='font-weight: bold; color: white'><?= $dNome ?></span></th>
+                        <?php
                     }
+                    ?>
+                </tr>
+            </thead>
+            <tr align="center">
+                <?php
+                for ($i = 1; $i <= 7; $i++) {
+                    $TA = '';
+                    ?>
+                    <td style='width: 10%' valign="top">
+                        <?php
+                        if (isset($horas[$i]))
+                            foreach ($horas[$i] as $disc) {
+                                preg_match('#\[(.*?)\]#', $disc, $match);
+                                $T = $match[1];
+                                if ($T != $TA) {
+                                    print strtoupper($turnos[$T]) . "<hr>\n";
+                                    $TA = $T;
+                                }
+                                print str_ireplace("[$match[1]]", "", $disc);
+                                print '<br>-----------------<br>';
+                            }
+                        ?>
+                    </td>
+                    <?php
                 }
-            }
-        print "</td>";
-    }
-    print "</tr>\n";
-    print "</table></center>\n";
+                ?>
+            </tr>
+        </table>
+    </center>
+    <?php
 }
 ?>

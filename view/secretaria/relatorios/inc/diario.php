@@ -149,42 +149,14 @@ function cabecalho() {
     $pdf->Cell($larguraDia, $alturaLinha, utf8_decode(""), 0, 0, 'C', true);
     $pdf->Cell($larguraDia * 24.3, $alturaLinha, utf8_decode(mostraTexto($curso)), 1, 0, 'C', true);
     $pdf->Cell($larguraDia, $alturaLinha, utf8_decode(""), 0, 0, 'C', true);
-    $pdf->Cell($larguraDia * 5, $alturaLinha, utf8_decode($numeroTurma), 1, 0, 'C', true);
+    $pdf->Cell($larguraDia * 5.2, $alturaLinha, utf8_decode($numeroTurma), 1, 0, 'C', true);
     $pdf->Ln();
     $alturaLinha-=3;
     $pdf->Cell($larguraDia * 8, $alturaLinha, utf8_decode(""), 0, 0, 'C', true);
     $pdf->Ln();
 
     // 3ª LINHA
-    global $result2, $qde_avaliacao;
-
-    $RETM = $larguraDia * (36 - $qde_avaliacao);
-    $RET = $larguraDia * (1 * (3 + $qde_avaliacao));
-
-    $pdf->Cell(78, $alturaLinha - 3, utf8_decode(""), 'LRT', 0, 'C', true);
-    $pdf->Cell($RETM, $alturaLinha - 3, '', 'LRT', 0, 'C', true);
-    $pdf->Cell($RETM, $alturaLinha - 3, '', 'LRT', 0, 'C', true);
-    $pdf->Cell($larguraDia * 1, $alturaLinha - 3, '', 0, 0, 'C', true);
-    $pdf->Cell($RET, $alturaLinha - 3, '', 'LRT', 0, 'C', true);
-    $pdf->Cell($RET, $alturaLinha - 3, '', 'LRT', 0, 'C', true);
-    $pdf->Cell($larguraDia * 2, $alturaLinha - 3, '', 'LRT', 0, 'C', true);
-    $pdf->Ln();
-
-
-    // 4ª LINHA
-    $pdf->Cell(78, $alturaLinha, utf8_decode("Nome do Aluno"), 'L,R', 0, 'C', true);
-    $pdf->Cell($RETM, $alturaLinha, utf8_decode("Meses"), 'LR', 0, 'C', true);
-    $pdf->Cell($RETM, $alturaLinha, utf8_decode("Meses"), 'LR', 0, 'C', true);
-    $pdf->Cell($larguraDia * 1, $alturaLinha, '', 0, 0, 'C', true);
-
-
-    $pdf->Cell($RET, $alturaLinha, utf8_decode("Avaliações"), 'LR', 0, 'C', true);
-    $pdf->Cell($RET, $alturaLinha, utf8_decode("Notas"), 'LR', 0, 'C', true);
-    $pdf->Cell($larguraDia * 2, $alturaLinha, utf8_decode("Faltas"), 'LR', 0, 'C', true);
-    $pdf->Ln();
-
-    // 5ª LINHA
-    global $atribuicao, $HAS_DATA, $totalDias;
+    global $result2, $qde_avaliacao, $atribuicao, $totalDias;
 
     $sql = "SELECT DATE_FORMAT(data, '%d') as dia, 
 		DATE_FORMAT(data, '%m') as mes, quantidade, codigo 
@@ -193,20 +165,59 @@ function cabecalho() {
 		ORDER BY data, codigo";
     $result = mysql_query($sql);
     if (mysql_num_rows($result) != 0) {
+        $pdf->SetFont($fonte, '', $tamanho - 2);
+        for ($i = 0; $i < mysql_num_rows($result); ++$i) {
+            $quantidade = mysql_result($result, $i, "quantidade");
+            if ($quantidade <= 2)
+                $quantidade = 3;
+            $quantidadeTotal += $quantidade;
+        }
+    }
 
+    $totalDias = intval((293 - $quantidadeTotal) / 4);
+    $totalDias -= $qde_avaliacao * 2;
+    $M = ($totalDias * 4) + $quantidadeTotal - 4;
+    $N = (12) + ($qde_avaliacao * 4);
+
+    $pdf->SetFont($fonte, '', $tamanho - 1);
+    $pdf->Cell(78, $alturaLinha - 3, utf8_decode(""), 'LRT', 0, 'C', true);
+    $pdf->Cell($M, $alturaLinha - 3, '', 'LRT', 0, 'C', true);
+    $pdf->Ln();
+
+    // 4ª LINHA
+    $pdf->Cell(78, $alturaLinha, utf8_decode("Nome do Aluno"), 'LR', 0, 'C', true);
+    $pdf->Cell($M, $alturaLinha, utf8_decode("M E S E S"), 'LR', 0, 'C', true);
+    $pdf->Cell($larguraDia * 1, $alturaLinha, '', 0, 0, 'C', true);
+
+    $pdf->Ln();
+
+    // 5ª LINHA
+    if (mysql_num_rows($result) != 0) {
         $pdf->Cell(78, 5, utf8_decode(""), 0, 0, 'C', true);
+
+        $pdf->SetFont($fonte, '', $tamanho - 2);
 
         // imprime o MES
         for ($i = 0; $i < mysql_num_rows($result); ++$i) {
             $mes = mysql_result($result, $i, "mes");
-            $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("$mes"), 1, 0, 'C', true);
+            $quantidade = mysql_result($result, $i, "quantidade");
+            if ($quantidade <= 2)
+                $quantidade = 3;
+
+            $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$mes"), 1, 0, 'C', true);
             $linha ++;
         }
 
         // completa quadros
-        for ($j = 1; $j < ($totalDias - $linha - $qde_avaliacao); $j ++) {
-            $pdf->Cell($larguraDia, $alturaLinha, "", 1, 0, 'C', true);
+        for ($j = 1; $j < ($totalDias); $j ++) {
+            $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
         }
+
+        $pdf->Cell(4, $alturaLinha, "", 0, 0, 'C', true);
+        $pdf->SetFont($fonte, '', $tamanho - 1);
+        $pdf->Cell($N, $alturaLinha, utf8_decode("Avaliações"), 1, 0, 'C', true);
+        $pdf->Cell($N, $alturaLinha, utf8_decode("Notas"), 1, 0, 'C', true);
+        $pdf->Cell($larguraDia * 2, $alturaLinha, utf8_decode("Faltas"), 1, 0, 'C', true);
 
         // Pular linha
         $pdf->Ln();
@@ -219,16 +230,27 @@ function cabecalho() {
 
 
         // imprime o dia
+        $pdf->SetFont($fonte, '', $tamanho - 2);
         for ($i = 0; $i < mysql_num_rows($result); $i ++) {
             $dia = mysql_result($result, $i, "dia");
-            $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("$dia"), 1, 0, 'C', true);
+            $quantidade = mysql_result($result, $i, "quantidade");
+            if ($quantidade <= 2)
+                $quantidade = 3;
+
+            $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$dia"), 1, 0, 'C', true);
             $linha++;
         }
 
-        // completando com quadros
-        for ($j = 1; $j < ($totalDias - $linha - $qde_avaliacao); $j ++) {
-            $pdf->Cell($larguraDia, $alturaLinha, "", 1, 0, 'C', true);
+        // completa quadros
+        for ($j = 1; $j < ($totalDias); $j ++) {
+            $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
         }
+
+        $pdf->Cell(4, $alturaLinha, "", 0, 0, 'C', true);
+        $pdf->SetFont($fonte, '', $tamanho);
+        $pdf->Cell($N, $alturaLinha, "", 0, 0, 'C', true);
+        $pdf->Cell($N, $alturaLinha, "", 0, 0, 'C', true);
+        $pdf->Cell($larguraDia * 2, $alturaLinha, "", 0, 0, 'C', true);
     }
     $pdf->Ln();
 }
@@ -265,7 +287,7 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
     $pdf->Cell(15, $alturaLinha, "$prontuario", 1, 0, 'C', true);
     $pdf->Cell(6, $alturaLinha, "", 1, 0, 'C', true);
 
-    if ($slistagem) {
+    if ($shabilitar) {
         if (1) {
             // Verificar Frequencia
             $sql = "SELECT (
@@ -280,6 +302,10 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
             //print "$sql <br>";
             $faltas = mysql_query($sql);
             for ($j = 0; $j < mysql_num_rows($faltas); $j++) {
+                $quantidade = mysql_result($faltas, $j, "auladada");
+                if ($quantidade <= 2)
+                    $quantidade = 3;
+                $quantidadeTotal += $quantidade;
                 if (!$A = getFrequenciaAbono($aluno, $atribuicao, mysql_result($faltas, $j, "a.data"))) {
                     $falta = mysql_result($faltas, $j, "freq");
                     if ($falta) {
@@ -292,12 +318,13 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
                 }
 
                 $pdf->SetFont($fonte, '', $tamanho - 3);
-                $pdf->Cell($larguraDia, $alturaLinha, $F, 1, 0, 'C', true);
+                $pdf->Cell($quantidade, $alturaLinha, $F, 1, 0, 'C', true);
                 $linha ++;
             }
 
-            for ($j = 1; $j < ($totalDias - $linha - $qde_avaliacao); $j ++) {
-                $pdf->Cell($larguraDia, $alturaLinha, "", 1, 0, 'C', true);
+            // completa quadros
+            for ($j = 1; $j < ($totalDias); $j ++) {
+                $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
             }
 
             $pdf->Cell($larguraDia, $alturaLinha, "", 0, 0, 'C', true);
@@ -308,10 +335,6 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
 
                     $pdf->SetFont($fonte, '', 6);
                     $pdf->Cell($larguraDia, $alturaLinha, utf8_decode($avaliacao), 1, 0, 'C', true);
-
-                    // PARA IMPRIMIR NO VERSO
-                    //$REG2[$n]['nome'] = mysql_result ( $result2, $n, "a.nome" );
-                    //$REG2[$n]['data'] = mysql_result ( $result2, $n, "data" );
                 }
             }
 
@@ -354,6 +377,8 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
         } else {
             $pdf->Cell($largura[4] - 8, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
         }
+    } else {
+        $pdf->Cell($largura[4] - 8, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
     }
     // Pular linha
     $pdf->Ln();
