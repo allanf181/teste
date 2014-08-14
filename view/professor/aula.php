@@ -186,7 +186,7 @@ $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF);
             });
         });
 
-        $('#data, #conteudo, #quantidade').keyup(function() {
+        $('#data, #conteudo, #quantidade').change(function() {
             valida();
         });
 
