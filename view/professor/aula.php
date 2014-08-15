@@ -68,7 +68,7 @@ if ($_GET['opcao'] == 'insert') {
                 <tr><td align="right">Semana:</td><td><select name="plano" id="plano"><option></option>;
                             <?php
                             require CONTROLLER . "/planoAula.class.php";
-                            $planoAula = new PlanosAulas();
+                            $planoAula = new PlanosAula();
                             $res = $planoAula->listPlanoAulas($atribuicao);
                             foreach ($res as $reg) {
                                 echo "<option $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";

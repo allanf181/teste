@@ -29,7 +29,7 @@ class Atribuicoes extends Generic {
     public function getAtribuicao($codigo, $LIMITE_AULA_PROF=0) {
         $bd = new database();
         
-        $LIMITE_AULA_PROF1 = $LIMITE_AULA_PROF * 2;
+        $LIMITE_AULA_PROF1 = 365;
         
         $sql = "SELECT d.nome as disciplina, t.numero as turma, c.nome as curso, a.status, a.prazo,
                 c.nomeAlternativo as cursoAlt, a.bimestre as bimestre, c.fechamento as fechamento,

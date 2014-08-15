@@ -52,7 +52,7 @@ if ($_GET["atribuicao"]) {
     <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/aviso?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/aviso.png' /><br />Avisos</a></td>
     <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/boletim.php?turma=<?=crip($res['turmaCodigo'])?>&aluno=<?=crip($aluno)?>&bimestre=<?=crip($numeroBimestre)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/boletim.png' /><br />Boletim Escolar</a></td>
     <?php
-    if ($bimestre=="SEMESTRAL" || $bimestre=="1&ordm; BIMESTRE") {
+    if ($bimestre=="ANUAL" || $bimestre=="SEMESTRAL" || $bimestre=="1&ordm; BIMESTRE") {
         ?>
     	<td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/planoEnsino.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
         <?php } ?>

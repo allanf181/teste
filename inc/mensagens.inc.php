@@ -56,7 +56,9 @@ function mensagem($TIPO, $MSG, $OPT=null) {
 	$NOK_FALSE_COPY_PLANO_AULA = 'Problema ao copiar plano de aula.';
         
         $INFO_EMPTY_PLANO_ENSINO = 'Necess&aacute;rio cadastrar o Plano de Ensino primeiro.';
-
+        $ERRO_SOLICITACAO_PLANO = $OPT[0].", solicitou corre&ccedil;&atilde;o em seu Plano: <br>".$OPT[1];
+        $OK_PLANO_VALIDO = $OPT." validou seu plano!";
+    
 	$OK_TRUE_COPY_MODALIDADE = 'Modalidade copiada com sucesso.';
 	$NOK_FALSE_COPY_MODALIDADE = 'Problema ao copiar a modalidade.';
 
