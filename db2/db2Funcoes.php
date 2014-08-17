@@ -260,7 +260,7 @@ function modalidadesCursoAntigo() {
     $db2 = "SELECT DISTINCT MD_NOME, MD_MODAL FROM ESCOLA.TURMAS, ESCOLA.MODALID WHERE T_MODAL = MD_MODAL AND T_ANO = $ano";
     $res2 = db2_exec($conn, $db2);
     while ($r = db2_fetch_object($res2)) {
-        if (!is_int(trim($r->MD_MODAL)))
+        if (!is_numeric(trim($r->MD_MODAL)))
             $r->MD_MODAL += (ord($r->MD_MODAL) + 2000); // PARA BASE DE SP...
         $sql = "insert into Modalidades VALUES ($r->MD_MODAL,'" . formatarTexto(addslashes((conv($r->MD_NOME)))) . "')";
         $res3 = mysql_query($sql);
