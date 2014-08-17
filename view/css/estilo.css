@@ -250,7 +250,7 @@ ul{
     margin-top: 4px;
 }
 .cdif { 
-    background: #fff9c8;
+    background: #fff;
 } 
 
 .cdif2 { 
@@ -701,7 +701,7 @@ h3{
     text-align: center;
 }
 #tabela_boletim tr.cdif td{
-    background: #fff9c8;
+    background: #fff;
     cursor: default;
 }
 #tabela_boletim tr.cdif2 td{

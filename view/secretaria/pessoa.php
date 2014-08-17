@@ -857,7 +857,6 @@ function bytesToSize(bytes) {
 }
 
     </script>
-    <div id="upload-wrapper">
 <?php
 if ($codigo)
     print "<img id=\"divFoto\" style=\"width: 200px; height: 200px\" src='" . INC . "/file.inc.php?type=pic&id=" . crip($codigo) . "&timestamp=" . time() . "' />\n";
@@ -870,8 +869,6 @@ if ($codigo)
                 <br><br><a href="javascript:$('#index').load('<?php print "$SITE?opcao=removeFoto&codigo=" . crip($codigo) . ""; ?>'); void(0);">Remover Foto</a>
             </form>
         </div>
-    </div>
-
 
     <table width="100%"><tr><td>&nbsp;</td>
             <td align="right"><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar
