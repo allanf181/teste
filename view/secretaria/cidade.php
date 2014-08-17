@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Possibilita visualizar os dados importados das cidades cadastradas na base de dados do Nambei.
+//Possibilita visualizar os dados das cidades importadas do Nambei.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -74,7 +74,9 @@ if ($_GET["opcao"] == 'delete') {
 }
 ?>
 
-<h2><font color="white"><?php print $TITLE; ?></font></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+
 
 <?php
 // inicializando as vari�veis do formul�rio
@@ -117,7 +119,7 @@ print "</script>\n";
 print "<div id=\"html5form\" class=\"main\">\n";
 print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 ?>        
-<table align="center" width="100%" id="form" style="background:#ECF5E2">
+<table align="center" width="100%" id="form">
     <tr><td align="right">Estado: </td><td>
             <select name="campoEstado" id="campoEstado" value="<?php echo $estado; ?>">
                 <option></option>

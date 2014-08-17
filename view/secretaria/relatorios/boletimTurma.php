@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Possibilita visualizar todas as notas de todos os módulos dos alunos que fazem parte dela.
+//Possibilita visualizar todas as notas de todos os alunos de uma determinada disciplina.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -23,7 +23,6 @@ if (isset($_GET["bimestre"]))
     $bimestre = dcrip($_GET["bimestre"]);
 ?>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <script>
     function Links() {
@@ -117,7 +116,9 @@ if (isset($_GET["bimestre"]))
             $('#titulo').css('width', '100%');
     });
 </script>
-<h2><?php print $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+
 <table align="center" id="form" width="100%">
     <tr><td align="right" style="width: 100px">Turma: </td><td>
             <select name="campoTurma" id="campoTurma" value="<?php echo $turma; ?>" style="width: 650px">

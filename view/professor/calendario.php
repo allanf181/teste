@@ -15,6 +15,7 @@ require PERMISSAO;
 
 <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/calendario.css" media="screen" />
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
 <?php
 require CONTROLLER . "/calendario.class.php";
@@ -33,7 +34,7 @@ for ($j = 1; $j <= 12; $j++) {
     $dia = date("d");
     $ano_ = substr($ano, -2);
     ?>
-    <table><tr><td valign="top">
+    <br /><table><tr><td valign="top">
 
                 <h3 align='center'><?= ucfirst(meses($mes)) . " " . $ano ?></h3>
                 <table id='tabela_boletim' style='width: 400px' summary="Calendário" class="calendario">

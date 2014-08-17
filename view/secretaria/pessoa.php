@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Possibilita a visualização dos dados pessoais dos docentes e discentes com prontuário ativo do Campus.
+//Possibilita a visualização dos dados cadastrais de docentes e discentes do Campus e desbloqueio de fotos enviadas pelos alunos.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -130,7 +130,9 @@ if ($_GET["opcao"] == 'removeFoto') {
         mensagem('NOK', 'FALSE_UPDATE');
 }
 ?>
-<h2><?php print $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 
 <?php

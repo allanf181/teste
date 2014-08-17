@@ -71,9 +71,9 @@ if (dcrip($_GET["bimestre"]) != '') {
    	$restricao.=" and a.bimestre=$bimestre";
 }
 
-echo "<h2>$TITLE</h2>";
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <?php
     print "<script>\n";
     print "    $('#form_padrao').html5form({ \n";

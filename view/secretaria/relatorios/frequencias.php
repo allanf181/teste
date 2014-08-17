@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Possibilita visualizar o percentual de frequência de todos os alunos da disciplina que é selecionada no momento da consulta pelo usuário do sistema.
+//Possibilita visualizar o percentual de frequência de todos os alunos de uma determinada disciplina.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -22,8 +22,8 @@ if (isset($_GET["turma"])){
 }
 
 ?>
-<h2><?php print $TITLE; ?></h2>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
 <script>
     $(document).ready(function(){

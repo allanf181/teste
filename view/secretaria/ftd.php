@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Exibe a Folha de Trabalho Docente dos Professores.
+//Exibe a Folha de Trabalho Docente cadastradas e finalizadas pelos Professores.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -13,8 +13,9 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 ?>
-<h2><font color="white"><?php print $TITLE; ?></font></h2>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+
 <?php
 if ($_GET["opcao"] == 'controleFTD') {
     $codigo = $_GET["codigo"];

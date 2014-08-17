@@ -43,7 +43,8 @@ $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
 // não está no banco e sincroniza.
 $arq->syncFolder($local);
 ?>
-<h2><?= $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
 <ul class="tabs">
@@ -249,7 +250,6 @@ if ($_GET['pagina'] == "inserir") {
     $res = $arq->listArquivos($params, $item, $itensPorPagina);
     ?>
     <br />
-    <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
     <table id="listagem" border="0" align="center">
         <tr><th align="center" width="30">#</th><th align="center" width="300">Descri&ccedil;&atilde;o</th><th align="left" width="255">Link</th><th align="left">Arquivo</th><th align="left" width="150">Data</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>

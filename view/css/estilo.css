@@ -276,7 +276,7 @@ li{
 }
 
 .tooltip {
-    	z-index: 9999;
+    	z-index: 9998;
 	display:none;
 	position:absolute;
 	border:1px solid #333;
@@ -291,6 +291,7 @@ li{
 }
 
 #screenshot{
+        z-index: 9999;
 	position:absolute;
 	border:1px solid #ccc;
 	background:#333;

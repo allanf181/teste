@@ -43,7 +43,8 @@ if ($_POST['atribuicao'])
     $_GET['atribuicao'] = $_POST['atribuicao'];
 $atribuicao = $_GET["atribuicao"];
 ?>
-<h2><?= $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
 <ul class="tabs">

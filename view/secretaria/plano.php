@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Possibilita a visualização das informações dos docentes nas suas respectivas disciplinas e identificação co código das turmas em que a disciplina é lecionada.
+//Visualização do plano de ensino cadastrado e finalizado pelo professor.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -30,9 +30,8 @@ if ($_GET["opcao"] == 'controlePlano') {
         mensagem('NOK', 'FALSE_INSERT');
 }
 ?>
-
-<h2><?php print $TITLE; ?></h2>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
 <script>
     function valida() {

@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Visualização de todas as disciplinas de todos os cursos dados pelo Campus bem como seus respectivos códigos.
+//Visualização de todas as disciplinas de todos os cursos ministrados e seus respectivos códigos.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -22,8 +22,8 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["curso"] = null;
 }
 ?>
-<h2><?php print $TITLE; ?></h2>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
 <?php
 if (dcrip($_GET["curso"])) {

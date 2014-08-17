@@ -1,6 +1,6 @@
 <?php
 //Esse arquivo é fixo para o professor.
-//Permite a inserção de avaliaçãoes no WebDiário.
+//Permite a inserção de avaliações no WebDiário.
 //Link visível no menu: PADRÃO NÃO, pois este arquivo tem uma visualização diferente, ele aparece como ícone.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -73,8 +73,8 @@ $atrib = $att->listRegistros($params);
 $calculo = $atrib[0]['calculo'];
 $formula = $atrib[0]['formula'];
 ?>
-<h2><?= $TITLE ?></h2>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <?php
 if ($calculo == 'peso')
     $PONTO = 1;

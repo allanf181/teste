@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Permite que os coordenadores dos cursos liberam de forma temporária o lançamento de aulas não registradas no dia.
+//Permite que os coordenadores dos cursos liberem, de forma temporária, o lançamento de aulas não registradas no dia.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -38,8 +38,8 @@ if ($_GET["opcao"] == 'controlePrazo') {
     $_GET["curso"] = crip($_GET["curso"]);
 }
 ?>
-<h2><?php print $TITLE; ?></h2>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
 <?php
 $curso = "";
@@ -209,7 +209,6 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 <?php
 if (!empty($curso)) {
     ?>
-    <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
     <table id="form" border="0" align="center" width="100%">
         <tr><th align="center" width="40">#</th><th align="left">Disciplina</th><th align="left">Professor</th><th align="left">Turma</th>

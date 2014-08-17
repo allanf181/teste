@@ -74,7 +74,9 @@ if ($_GET["opcao"] == 'delete') {
     $_GET['dataInicio'] = null;
 }
 ?>
-<h2><?php print $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+
 
 <?php
 // inicializando as variáveis do formulário

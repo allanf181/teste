@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Possibilita visualizar os horários de disponibilidade de atendimento aos discentes de cada docente do Campus.
+//Permite a visualização do horário de atendimento do professor para os alunos.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -18,7 +18,9 @@ if (isset($_GET["professor"])) {
 	if ($professor != 'Todos') $restricao = " AND p.codigo = $professor";
 }
 ?>
-<h2><?php print $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+
 
 <table border="0" width="100%" id="form" width="100%">
 	<tr><td>Professor: </td><td><select name="campoProfessor" id="campoProfessor" style="width: 350px">

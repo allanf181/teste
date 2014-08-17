@@ -12,9 +12,9 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-print "<h2>$TITLE</h2>\n";
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <?php
 $atribuicao = dcrip($_GET["atribuicao"]);
 

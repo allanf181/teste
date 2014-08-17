@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Exibe uma lista com os códigos, nomes dos cursos e modalidades de todos os cursos dados pelo Campus.
+//Exibe uma lista com os códigos, nomes e modalidades de todos os cursos ministrados pelo Campus.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -39,7 +39,8 @@ if ($_GET["opcao"] == 'delete') {
 }
 ?> 
 
-<h2><?php print $TITLE; ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
 <?php
     // inicializando as variï¿½veis do formulï¿½rio

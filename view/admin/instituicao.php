@@ -65,7 +65,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 <div class="tab_container">
 <input type="hidden" name="opcao" value="InsertOrUpdate" />
 <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
-<div class="cont_tab" id="Dados">
+<div class="cont_tab professores_textarea" id="Dados">
     <table align="center" width="60%">
       <tr><td align="left">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="200" value="<?php echo $nome; ?>"/></td></tr>
       <tr><td align="left">Cidade: </td><td><input type="text" name="cidade" id="cidade" maxlength="200" value="<?php echo $cidade; ?>"/></td></tr>
@@ -74,9 +74,9 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
     
     </div>
 
-<div class="cont_tab" id="Dados2">
+<div class="cont_tab professores_textarea" id="Dados2">
     <table align="center" width="60%">
- 	  <tr><td colspan="2"><hr><p align="center">Tipos (Pap&eacute;is)</p></td></tr>
+ 	  <tr><td colspan="2"><p align="center">Tipos (Pap&eacute;is)</p></td></tr>
         <tr><td align="left">Administrador: </td><td><select name="adm" value="<?php echo $adm; ?>">
         	<option></option>
                         <?php
@@ -159,7 +159,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
     </div>
 
-<div class="cont_tab" id="Dados3">
+<div class="cont_tab professores_textarea" id="Dados3">
     <table align="left" width="100%">
 	<tr><td colspan="2"><b>Papel Professor</b></td></tr>
    	<tr><td colspan="2"><hr></td></tr>
@@ -177,7 +177,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
     </div>
 
-<div class="cont_tab" id="Dados4">
+<div class="cont_tab professores_textarea" id="Dados4">
     <table align="left" width="100%">
 		<tr><td colspan="2"><h3><b>Campus - Digita Notas</b></h3></td></tr>
      <tr><td>Campus: </td><td><input style="width: 50px" type="text" name="campiDigitaNotas" id="campiDigitaNotas" value="<?php echo $campiDigitaNotas; ?>" maxlength="2" /></td></tr>
@@ -202,7 +202,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 <br><input type="submit" value="Salvar" id="salvar" />
 </div>
 
-<div class="cont_tab" id="Dados5">
+<div class="cont_tab professores_textarea" id="Dados5">
     <table align="left" width="100%">
 		<tr><td colspan="2"><h3><b>Autentica&ccedil;&atilde;o LDAP</b></h3></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
