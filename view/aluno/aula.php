@@ -1,6 +1,6 @@
 <?php
 //Esse arquivo é fixo para o aluno.
-//Tela em que o aluno visualiza o conteúdo de aula e faltas.
+//Visualização do conteúdo de aula e falta.
 //Link visível no menu: PADRÃO NÃO, pois este arquivo tem uma visualização diferente, ele aparece como ícone.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -19,7 +19,8 @@ require CONTROLLER . "/aula.class.php";
 $aula = new Aulas();
 $res = $aula->listAulasAluno($aluno, $atribuicao);
 ?>
-<h2><?= $TITLE ?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <div class='professores_textarea'>
     <table width="100%" align="center" style="border: 0px solid black">
         <tr class="listagem_tr"><th align="center" style="width: 100px">Data</th>

@@ -86,8 +86,9 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     $params = null;
 }
 ?>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
-<h2><?php print $TITLE; ?></h2>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <script type="text/javascript" src="<?= VIEW ?>/js/AutocompleteList/src/jquery.tokeninput.js"></script>
 <link rel="stylesheet" href="<?= VIEW ?>/js/AutocompleteList/styles/token-input.css" type="text/css" />
 <link rel="stylesheet" href="<?= VIEW ?>/js/AutocompleteList/styles/token-input-facebook.css" type="text/css" />

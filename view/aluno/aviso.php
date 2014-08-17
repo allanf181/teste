@@ -1,6 +1,6 @@
 <?php
 //Esse arquivo é fixo para o aluno.
-//Tela em que o aluno visualiza os avisos enviados por professores.
+//Visualização dos avisos enviados pelos professores.
 //Link visível no menu: PADRÃO NÃO, pois este arquivo tem uma visualização diferente, ele aparece como ícone.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -19,7 +19,8 @@ require PERMISSAO;
     $aviso = new Avisos();
     $res = $aviso->getAvisoAtribuicao($aluno, $atribuicao);
     ?>
-    <h2><?=$TITLE?></h2>
+    <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+    <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
     <div class='professores_textarea'>
     <table width="100%" align="center" style="border: 0px solid black">
     <tr class="listagem_tr"><th align="center" style="width: 150px">Data</th>

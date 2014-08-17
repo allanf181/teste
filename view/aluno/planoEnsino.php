@@ -19,6 +19,11 @@ require CONTROLLER . "/planoEnsino.class.php";
 $plano = new PlanosEnsino();
 $res = $plano->listPlanoEnsino($atribuicao, 'validado');
 
+?>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<?php
+
 if ($res) {
     $numeroAulaSemanal = $res["numeroAulaSemanal"];
     $totalHoras = $res["totalHoras"];

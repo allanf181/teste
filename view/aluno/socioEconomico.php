@@ -1,6 +1,6 @@
 <?php
 //Esse arquivo é fixo para o aluno.
-//Permite ao aluno responder o questionário socioeconômico.
+//Permite responder o questionário socioeconômico.
 //Link visível no menu: PADRÃO SIM.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -13,7 +13,8 @@ require PERMISSAO;
 require SESSAO;
 
 ?>
-<h2><?=$TITLE?></h2>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <?php
 
 $codigo = $_SESSION["loginCodigo"];

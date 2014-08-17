@@ -15,6 +15,11 @@ if (isset($_SESSION["loginTipo"])) {
     $TITLE='';
     $TITLE = $permissao->isAllowed($_SESSION["loginTipo"], $SITE);
   
+    if ($TITLE) {
+        $TITLE_DESCRICAO = $permissao->fileDescricao($SITE);
+        $TITLE_DESCRICAO = "<span class=\"help\"><a title=\"".$TITLE_DESCRICAO['descricaoArquivo']."\" href=\"#\"><img src=\"".ICONS."/help.png\"></a></span>";
+    }
+    
     if (!$TITLE) {
         print "Voc&ecirc; n&atilde;o tem permiss&atilde;o para acessar esse arquivo.\n";
     die;

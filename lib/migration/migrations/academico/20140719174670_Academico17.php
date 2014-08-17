@@ -69,7 +69,7 @@ class Academico17 extends Ruckusing_Migration_Base {
 
                 if (!in_array($calendario, $P['permissao'])) {
                     $P['permissao'][] = $calendario;
-                    $P['menu'][] = $calendario;
+                    $P['menu'][] = '';
                     $P['nome'][] = 'Material de Aula';
                 }
 
@@ -92,7 +92,7 @@ class Academico17 extends Ruckusing_Migration_Base {
 
                 if (!in_array($calendario, $P['permissao'])) {
                     $P['permissao'][] = $calendario;
-                    $P['menu'][] = $calendario;
+                    $P['menu'][] = '';
                     $P['nome'][] = 'Material de Aula';
                 }
 

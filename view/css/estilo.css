@@ -525,6 +525,7 @@ li{
 }
 
 h2{
+    vertical-align: top;
     text-align: center;
     background: #bfe0c5;
     /*color: #23a35d;*/
@@ -853,4 +854,9 @@ div.flash {
 .status {
     border-color: #FDBF3B;
     color: #A6750C;
+}
+
+.help {
+    display: inline-block;
+    float: left;
 }

@@ -57,8 +57,8 @@ if ($_POST["opcao"] == 'Copiar') {
     $_GET['tipo'] = $_POST['codigo'];
 }
 ?>
-<h2><font color="white"><?php print $TITLE; ?></font></h2>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
 <?php
 $nome = "";

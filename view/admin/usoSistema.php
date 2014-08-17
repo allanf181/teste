@@ -14,6 +14,9 @@ require PERMISSAO;
 require SESSAO;
 
 ?>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+
 <style>
 progress::-webkit-progress-bar { /* Estilizando barra de progresso */ } progress::-webkit-progress-value { /* Estilizando apenas valor do progresso */ }
 progress { /* Estilizando barra de progresso */ } progress::-webkit-progress-value { /* Estilizando apenas valor do progresso */ }
