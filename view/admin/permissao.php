@@ -37,12 +37,10 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $ret['RESULTADO'] = '1';
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 
-    if ($resultado == 1) {
-        $pergunta = "Aten&ccedil;&atilde;o: o registro foi salvo com sucesso, por&eacute;m o site deve ser recarregado para exibir as novas altera&ccedil;&otilde;es. Deseja recarregar?";
-        print "<script>jConfirm('$pergunta', '$TITLE', function(r) {
-			if ( r ) location.reload();
-			}); </script>\n";
+    if (in_array(dcrip($_POST["tipo"]), $_SESSION["loginTipo"])) {
+        print "<script> reload(); </script>\n";
     }
+
     $_GET["tipo"] = $_POST["tipo"];
 }
 
@@ -58,7 +56,7 @@ if ($_POST["opcao"] == 'Copiar') {
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
 $nome = "";
@@ -271,6 +269,18 @@ if (isset($_GET["tipo"]))
             pop('popDiv');
         });
     });
+    function reload() {
+        $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o: o registro foi salvo com sucesso, por&eacute;m o site deve ser recarregado para exibir as novas altera&ccedil;&otilde;es. Deseja recarregar?', {
+            'type': 'question',
+            'title': '<?= $TITLE ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function(caption) {
+                if (caption == 'Sim') {
+                    location.reload();
+                }
+            }
+        });
+    }
 </script>
 <script>
     function libera(campo, valor) {

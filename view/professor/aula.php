@@ -112,6 +112,7 @@ if ($_GET['opcao'] == '') {
             <?php
             $i = 1;
             foreach ($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?= $cdif ?>><td><?= $i++ ?></td>
                     <td><a class='nav' title='Clique aqui para lan&ccedil;ar as faltas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/frequencia.php?atribuicao=<?= crip($atribuicao) ?>&aula=<?= crip($reg['codigo']) ?>'); void(0);"><?= $reg['data_formatada'] ?></a></td>
