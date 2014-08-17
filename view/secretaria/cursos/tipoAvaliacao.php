@@ -237,7 +237,7 @@ require(PATH . VIEW . '/navegacao.php');
     <tr><th align="center" width="40">#</th><th align="left">Nome</th><th>Tipo</th><th>Modalidade</th><th width="60">A&ccedil;&atilde;o</th></tr>
     <?php
     // efetuando a consulta para listagem
-    $sql = "SELECT t.codigo, t.nome, c.nome, t.tipo, t.final FROM TiposAvaliacoes t, Modalidades c
+    $sql = "SELECT t.codigo, t.nome, c.nome, t.tipo, t.final, c.codigo FROM TiposAvaliacoes t, Modalidades c
     		WHERE t.modalidade = c.codigo $restricao ORDER BY t.nome limit " . ($item - 1) . ",$itensPorPagina";
 //    echo $sql;
     $resultado = mysql_query($sql);
@@ -254,7 +254,7 @@ require(PATH . VIEW . '/navegacao.php');
         else
             $linha[4] = '';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-        echo "<tr $cdif><td align='left'>$i</td><td align='left'>" . mostraTexto($linha[1]) . "</td><td align='left'>$linha[3] $linha[4]</td><td align='left'>" . mostraTexto($linha[2]) . "</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/remove.png' /></a><a href='#' title='Alterar' class='item-alterar' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/config.png' /></a><a href='#' title='Copiar' class='item-copiar' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/copiar.gif' /></a></td></tr>";
+        echo "<tr $cdif><td align='left'>$i</td><td align='left'>" . mostraTexto($linha[1]) . "</td><td align='left'>$linha[3] $linha[4]</td><td align='left'>" . mostraTexto($linha[2]) . " [$linha[5]]</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/remove.png' /></a><a href='#' title='Alterar' class='item-alterar' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/config.png' /></a><a href='#' title='Copiar' class='item-copiar' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/copiar.gif' /></a></td></tr>";
         $i++;
     }
     ?>
@@ -313,7 +313,7 @@ require(PATH . VIEW . '/navegacao.php');
 $resultado = mysql_query("SELECT * FROM Modalidades ORDER BY nome");
 $selected = ""; // controla a alteração no campo select
 while ($linha = mysql_fetch_array($resultado)) {
-    echo "<option value='$linha[0]'>$linha[1]</option>";
+    echo "<option value='$linha[0]'>$linha[1] [$linha[0]]</option>";
 }
 ?>
                 </select>

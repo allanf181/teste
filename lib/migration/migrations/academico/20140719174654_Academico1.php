@@ -870,7 +870,7 @@ class Academico1 extends Ruckusing_Migration_Base {
             `codigo` int(11) NOT NULL AUTO_INCREMENT,
             `nome` varchar(45) NOT NULL,
             `tipo` varchar(15) NOT NULL,
-            `modalidade` int(1) NOT NULL,
+            `modalidade` int(11) NOT NULL,
             `calculo` varchar(15) DEFAULT NULL,
             `arredondar` int(1) DEFAULT NULL,
             `notaMaior` float DEFAULT NULL,

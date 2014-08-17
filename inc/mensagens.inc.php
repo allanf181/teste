@@ -73,6 +73,9 @@ function mensagem($TIPO, $MSG, $OPT=null) {
         $INFO_INVALID_FTD = $OPT[0].', solicitou corre&ccedil;&atilde;o em seu FTD: <br>'.$OPT[1];
 	$OK_NOT_SAVE_FTD = "Ol&aacute; Professor, como ainda n&atilde;o salvou sua FTD, o sistema tentou buscar seus hor&aacute;rios para facilitar.";
 	
+        $ERRO_ARQUIVO = $OPT;
+        $INFO_ARQUIVO = $OPT;
+        
         // LOGIN
         $ERRO_MANY_TRY = "Tentativas restantes: ".$OPT;
         $ERRO_USER_OR_PASS_INVALID = "Usu&aacute;rio ou senha inv&aacute;lidos.";

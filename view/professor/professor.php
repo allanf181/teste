@@ -140,8 +140,8 @@ $atribuicao = $_GET["atribuicao"];
         <tr valign="top" align='center'>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aula.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/aulas.png' /><br />Aulas</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/avaliacao.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-            <td valign="top" width="90"><a class='professores_item' id='diario' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?php print crip($atribuicao); ?>');  void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
-            <td valign="top" width="90"><a class='professores_item' id='listaChamada' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/chamada.php?atribuicao=<?php print crip($atribuicao); ?>');  void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/chamada.png' /><br />Lista de Chamada</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' id='diario' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?php print crip($atribuicao); ?>'><img style='width: 80px' src='<?php print IMAGES; ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' id='listaChamada' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/chamada.php?atribuicao=<?php print crip($atribuicao); ?>'><img style='width: 80px' src='<?php print IMAGES; ?>/chamada.png' /><br />Lista de Chamada</a></td>
             <?php
             if ($bimestre == "SEMESTRAL" || $bimestre == "1º BIMESTRE" || $bimestre == "ANUAL") {
                 ?>
@@ -151,8 +151,9 @@ $atribuicao = $_GET["atribuicao"];
             ?>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aviso.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/aviso.png' /><br />Avisos para Turma</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/ensalamento.php?turma=<?php print crip($turmaCodigo); ?>&subturma=<?php print crip($subturma); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/arquivo.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/arquivo.png' /><br />Material de Aula</a></td>
         </tr>
-        <tr><td colspan="7"><hr></td></tr>
+        <tr><td colspan="8"><hr></td></tr>
     </table>
 
     <div id="professor">
@@ -170,16 +171,16 @@ $atribuicao = $_GET["atribuicao"];
                 ?>
                 <td><b><font size="1">N&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es:</b> <?php print $qdeAvaliacoes['qdeMinima']; ?><br><b>Avalia&ccedil;&otilde;es aplicadas:</b> <?php print $qdeAvaliacoes['avalCadastradas']; ?></font></td></tr>
             <tr><td colspan="2"><font size="1"><b>Professores da disciplina:</b> <?php print $professor_disc; ?></font></td></tr>
-            <tr><td colspan="7"><hr></td></tr>
+            <tr><td colspan="8"><hr></td></tr>
 
-            <tr><td colspan="7"><font size="1">Para esse di&aacute;rio ser finalizado, &eacute; necess&aacute;rio que a quantidade de aulas dadas seja maior ou igual a carga hor&aacute;ria e atingido o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es.
+            <tr><td colspan="8"><font size="1">Para esse di&aacute;rio ser finalizado, &eacute; necess&aacute;rio que a quantidade de aulas dadas seja maior ou igual a carga hor&aacute;ria e atingido o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es.
                     Caso deseje finalizar o di&aacute;rio manualmente, <a href='#' title='Excluir' class='finalizar' id='2'>clique aqui</a></td></tr>
 
             <tr><td colspan="2"><hr></td></tr>
             <tr><td colspan="2"><font size="1">Aten&ccedil;&atilde;o: esse di&aacute;rio ser&aacute; bloqueado automaticamente pelo sistema em <?php print $dataFimFormat; ?>.</font></td></tr>
         </table>
 
-        <tr><td colspan=\"7\"><hr></td></tr>
+        <tr><td colspan=\"8\"><hr></td></tr>
         <?php
         if ($bimestre == "SEMESTRAL" || $bimestre == "1º BIMESTRE") {
             // Verificando se há correções para o Plano de Ensino.
@@ -223,16 +224,15 @@ $atribuicao = $_GET["atribuicao"];
                                 <form id="form_padrao">
                                     <h2>Competências Desenvolvidas:</h2>
                                     <div class='professores_textarea'>
-                                        <textarea <?php print $disabled; ?> maxlength='1500' id='4' name='competencias'><?php print $competencias; ?></textarea>
+                                        <textarea <?php print $disabled; ?> maxlength='1500' id='competencias' name='competencias'><?php print $competencias; ?></textarea>
                                     </div>
                                     <h2>Observações a serem incluídas no diário da disciplina:</h2>
                                     <div class='professores_textarea'>
-                                        <textarea <?php print $disabled; ?> maxlength='1500' id='3' name='observacoes'><?php print $observacoes; ?></textarea>
+                                        <textarea <?php print $disabled; ?> maxlength='1500' id='observacoes' name='observacoes'><?php print $observacoes; ?></textarea>
                                     </div>
                                     <input type='hidden' value='<?php print crip($atribuicao); ?>' name='atribuicao' id='atribuicao' />
                                     <input type='hidden' name='opcao' value='InsertOrUpdateObs' />
                                     <input id='professores_botao' <?php print $disabled; ?> type='submit' value='Salvar' />
-
                                 </form>
                             </div>
                         </td></tr>
@@ -248,7 +248,7 @@ $atribuicao = $_GET["atribuicao"];
 <?php if ($info) print "info();" ?>
 <?php if ($pergunta) print "pergunta();" ?>
                 $(document).ready(function() {
-                    $('#3, #4').maxlength({
+                    $('#competencias, #observacoes').maxlength({
                         events: [], // Array of events to be triggerd    
                         maxCharacters: 1500, // Characters limit   
                         status: true, // True to show status indicator bewlow the element    

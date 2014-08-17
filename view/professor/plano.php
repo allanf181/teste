@@ -33,13 +33,14 @@ if ($_GET['pagina']) {
 
         $tipo = $_GET['pagina'];
         $ret = $$tipo->insertOrUpdate($_POST);
-
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+        if ($_POST['codigo']) $_GET["codigo"] = $_POST['codigo'];
+        else $_GET["codigo"] = crip($ret['RESULTADO']);        
     }
 }
 
 if ($_POST['atribuicao'])
-    $_GET['atribuicao'] = crip($_POST['atribuicao']);
+    $_GET['atribuicao'] = $_POST['atribuicao'];
 $atribuicao = $_GET["atribuicao"];
 ?>
 <h2><?= $TITLE; ?></h2>
@@ -128,7 +129,7 @@ $atribuicao = $_GET["atribuicao"];
         <div id="html5form" class="main">
             <form id="form_padrao">
                 <table border="0" width="100%">
-                    <tr><td align="left" style="width: 150px">Disciplina equivalentes: </td><td>
+                    <tr><td align="left" style="width: 160px">Disciplinas equivalentes: </td><td>
                             <select name="campoDisciplina" <?= $disabled ?> id="campoDisciplina" value="<?php echo $disciplina; ?>" >
                                 <option></option>
                                 <?php
@@ -193,7 +194,7 @@ if ($_GET['pagina'] == "planoEnsino") {
             <input type="hidden" name="opcao" value="InsertOrUpdate" />
             <input type="hidden" name="pagina" value="planoEnsino" />
             <input type="hidden" name="codigo" value="<?= crip($codigo); ?>" />
-            <input type="hidden" name="atribuicao" value="<?= dcrip($_GET['atribuicao']); ?>" />
+            <input type="hidden" name="atribuicao" value="<?= $_GET['atribuicao']; ?>" />
             <table id="form" border="0" width="100%">
                 <tr>
                     <td align="left">N&uacute;m. Aulas Semanais: </td>
@@ -281,6 +282,7 @@ if ($_GET['pagina'] == "planoAula") {
         $params = array('codigo' => dcrip($_GET["codigo"]));
         $res = $planoAula->listRegistros($params);
         extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
+        $codigo = crip($codigo);
     }
     ?>
     <script>
@@ -299,7 +301,7 @@ if ($_GET['pagina'] == "planoAula") {
             <input type="hidden" name="pagina" value="planoAula" />
             <input type="hidden" name="opcao" value="InsertOrUpdate" />
             <input type="hidden" name="codigo" value="<?= $codigo; ?>" />
-            <input type="hidden" name="atribuicao" value="<?= dcrip($_GET['atribuicao']); ?>" />
+            <input type="hidden" name="atribuicao" value="<?= $_GET['atribuicao']; ?>" />
             <table id="form" border="0" width="100%">
                 <tr>
                     <td align="left">Semana: </td>

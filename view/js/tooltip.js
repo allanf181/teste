@@ -5,8 +5,9 @@ $(document).ready(function() {
         var title = $(this).attr('title');
         if (!title)
             return false;
+        for (i=0; i<20; i++)
+            title = title.replace("<br>", " \n");  
         $(this).data('tipText', title).removeAttr('title');
-        title = title.replace("<br>", "<br />");
         $('<p class="tooltip"></p>')
                 .text(title)
                 .appendTo('body')

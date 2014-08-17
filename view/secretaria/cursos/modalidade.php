@@ -65,7 +65,7 @@ $SITENAV = $SITE.'?';
 require(PATH.VIEW.'/navegacao.php'); ?>
 
 <table id="listagem" border="0" align="center">
-    <tr><th align="center" width="40">#</th><th align="left">Modalidade</th><th width="40">A&ccedil;&atilde;o</th></tr>
+    <tr><th align="center" width="70">#</th><th align="left">Modalidade</th><th width="40">A&ccedil;&atilde;o</th></tr>
     <?php
     // efetuando a consulta para listagem
     $resultado = mysql_query("select * from Modalidades $restricao order by nome limit " . ($item - 1) . ",$itensPorPagina");
@@ -73,7 +73,7 @@ require(PATH.VIEW.'/navegacao.php'); ?>
     while ($linha = mysql_fetch_array($resultado)) {
         $i%2==0 ? $cdif="class='cdif'" : $cdif="";
     	$codigo = crip($linha[0]);
-		echo "<tr $cdif><td align='left'>$i</td><td>".mostraTexto($linha[1])."</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
+		echo "<tr $cdif><td align='left'>$linha[0]</td><td>".mostraTexto($linha[1])."</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
         $i++;
     }
     ?>

@@ -746,8 +746,12 @@ function dataMysql($data) {
 
 //formata a data PT
 function dataPTBR($data) {
-    $data = explode('-', $data);
+    $parts = explode(' ', $data);
+    $data = explode('-', $parts[0]);
     $data = $data[2] . '/' . $data[1] . '/' . $data[0];
+
+    if ($parts[1])
+        $data = $parts[1].' de '.$data;
     return $data;
 }
 
@@ -821,12 +825,14 @@ if (!function_exists('sys_get_temp_dir')) {
 // Saída: Lista de Diretórios e Arquivos (Array)
 // Arquivos que utilizam essa função: view/admin/permissao.php
 // Autor: Naylor - 17/07
-function dirToArray($dir) {
+function dirToArray($dir, $regex=null) {
     $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST);
     foreach ($objects as $name => $object) {
         $arquivo = str_replace(PATH . LOCATION . '/', '', $name);
-
-        if (!preg_match('/\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html/', $name)) {
+        
+        if (!$regex) $regex = '\/..$|\/.$';
+        
+        if (!preg_match("/$regex/", $name)) {
             if (is_dir($name)) {
                 $files[$arquivo] = '';
             } else {

@@ -154,8 +154,9 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
                 $diretorio = dir($path);
                 print "<table border=\"0\">\n";
                 $i = 0;
-
-                $cdir = dirToArray($path . 'view/');
+                
+                $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html';
+                $cdir = dirToArray($path . 'view/', $regex);
 
                 krsort($cdir);
                 foreach ($cdir as $dir => $reg) {
