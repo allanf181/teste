@@ -1,11 +1,11 @@
 <?php
-//Esse arquivo é fixo para o aluno. Não entra em permissões
-//
+//Esse arquivo é fixo para o aluno.
+//Permite ao aluno responder o questionário socioeconômico.
+//Link visível no menu: PADRÃO SIM.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -13,7 +13,7 @@ require PERMISSAO;
 require SESSAO;
 
 ?>
-<h2><?php print_r( $TITLE); ?></h2>
+<h2><?=$TITLE?></h2>
 <?php
 
 $codigo = $_SESSION["loginCodigo"];

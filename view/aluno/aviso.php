@@ -1,18 +1,17 @@
 <?php
-
-//Esse arquivo é fixo para o aluno. Não entra em permissões
-//
+//Esse arquivo é fixo para o aluno.
+//Tela em que o aluno visualiza os avisos enviados por professores.
+//Link visível no menu: PADRÃO NÃO, pois este arquivo tem uma visualização diferente, ele aparece como ícone.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require SESSAO;
+require PERMISSAO;
 
-if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     $atribuicao = dcrip($_GET["atribuicao"]);
     $aluno = $_SESSION["loginCodigo"];
 
@@ -20,7 +19,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     $aviso = new Avisos();
     $res = $aviso->getAvisoAtribuicao($aluno, $atribuicao);
     ?>
-    <h2>Avisos</h2>
+    <h2><?=$TITLE?></h2>
     <div class='professores_textarea'>
     <table width="100%" align="center" style="border: 0px solid black">
     <tr class="listagem_tr"><th align="center" style="width: 150px">Data</th>
@@ -40,6 +39,3 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
     ?>
     </table>
     </div>
-    <?php
-}
-?>

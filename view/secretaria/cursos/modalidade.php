@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela onde é possível visualizar a codificação utilizada pelo Nambei para identificação dos níveis dos cursos ministrados nos Campi do instituto, do ensino médio ao nível de pós-graduação.
+//Visualização da codificação utilizada pelo Nambei para identificação dos níveis dos cursos ministrados nos Campi do instituto, do ensino médio ao nível de pós-graduação.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

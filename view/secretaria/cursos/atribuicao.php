@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita uma tela em que é possível visualizar as atribuições das disciplinas de todos os módulos aos respectivos professores.
+//Possibilita visualizar as atribuições dos professores/disciplinas de todos os cursos.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

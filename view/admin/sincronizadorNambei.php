@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita a tela em que é possível realizar a sincronização da base de dados utilizado pelo Web Diário com relação à base de dados do Nambei.
+//Realiza a sincronização da base de dados utilizada pelo WebDiário com relação à base de dados do Nambei.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

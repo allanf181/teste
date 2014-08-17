@@ -1,11 +1,11 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela em que é possível a visualização da alocação das salas dos respectivos professores e das disciplinas dadas nesta sala em determinado horário.
+//Possível a visualização da alocação das salas dos respectivos professores e das disciplinas dadas nesta sala em determinado horário.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -129,7 +129,7 @@ require(PATH . VIEW . '/paginacao.php');
         left: 0;
         display: none;
         position: absolute;				
-        background-color: #696969;
+        background-color: #666;
         color: #aaaaaa;
         opacity: .95;
     }

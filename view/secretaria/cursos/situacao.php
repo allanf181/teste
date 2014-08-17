@@ -1,12 +1,11 @@
 <?php
-//Modificação Testes Carlos Kdu.
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita a tela que exibe uma lista contendo todos os possíveis status dos discentes relativos à sua situação na disciplina, módulo ou curso que ele frequenta.
+//Exibe uma lista contendo todos os possíveis status dos discentes relativos à sua situação na disciplina ou curso que ele frequenta.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;

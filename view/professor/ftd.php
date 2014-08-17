@@ -1,6 +1,7 @@
 <?php
-//A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita a tela de visualização da Folha de Trabalho dos docentes. Os campos relativos aos horários das aulas dadas pelos docentes são editáveis.
+//Esse arquivo é fixo para o professor.
+//Permite ao professor o registro da Folha de Trabalho Docente.
+//Link visível no menu: PADRÃO SIM.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
@@ -11,10 +12,10 @@ require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
 require SESSAO;
+
 ?>
 <h2><font color="white"><?php print $TITLE; ?></font></h2>
 <?php
-if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
 
     if ($_GET["dte"] && $_GET["dts"]) {
         $telefone = $_GET["telefone"];
@@ -1016,7 +1017,3 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
             $('#index').load('<?php print $SITE; ?>?AT=' + AT + '&AtvDocente=' + AtvDocente + '&Projetos=' + Projetos + '&Intervalos=' + Intervalos + '&Total=' + Total + '&ITS=' + ITS + '&ITE=' + ITE + '&TDT=' + TDT + '&A=' + A + '&TP=' + TP + '&TPT=' + TPT + '&TD=' + TD + '&dte=' + DTE + '&dts=' + DTS + '&obs=' + obs + '&telefone=' + telefone + '&celular=' + celular + '&email=' + email + '&area=' + area + '&regime=' + regime + '&tipo=' + tipo);
         }
     </script>
-    <?php
-// FIM DA FTD DO PROFESSOR
-}
-?>

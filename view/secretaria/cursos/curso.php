@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela em que é exibida uma lista com os códigos, nomes dos cursos e modalidades de todos os cursos dados pelo Campus.
+//Exibe uma lista com os códigos, nomes dos cursos e modalidades de todos os cursos dados pelo Campus.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

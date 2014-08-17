@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita a tela em que é exibida os dados estatísticos obtidos pela pesquisa sócio econômico dos discentes do Campus.
+//Exibe os dados estatísticos obtidos pela pesquisa sócio econômico dos discentes do Campus.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

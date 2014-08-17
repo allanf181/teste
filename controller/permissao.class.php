@@ -9,6 +9,7 @@ class Permissoes extends Generic {
     }
 
     // NECESSITA REFATORAÇÃO
+    // Entrada: Array de Permissões
     public function listaPermissoes($codigo, $tipo = null) {
         $bd = new database();
 
@@ -22,7 +23,7 @@ class Permissoes extends Generic {
         $param = implode($new_params, ',');
         $params = $new_array;
 
-        $sql = "SELECT nome,menu,permissao FROM Permissoes WHERE tipo IN ($param)";
+        $sql = "SELECT codigo,nome,menu,permissao FROM Permissoes WHERE tipo IN ($param)";
         $res = $bd->selectDB($sql, $params);
         
         // Concatenando todas as permissões do usuário
@@ -50,6 +51,9 @@ class Permissoes extends Generic {
         $P['menu'] = explode(",", $P['menu']);
         $P['permissao'] = explode(",", $P['permissao']);
 
+        // Pegando o codigo em caso de alteracao de alguma permissao
+        if ($res) $P['codigo'] = $res[0]['codigo'];
+        
         if ($tipo == 'permissao') return $P;
 
         // BUSCANDO A BASE DOS ARQUIVOS;
@@ -93,14 +97,38 @@ class Permissoes extends Generic {
     // UTILIZADO EM ADMIN/PERMISSAO.PHP
     public function fileDescricao($arquivo) {
         try {
-            $arquivoNome = pathinfo($arquivo, PATHINFO_BASENAME);
-            $getDescription = file($arquivo);
-            $descricao = htmlentities(substr($getDescription[2], 2), ENT_COMPAT, 'UTF-8');
+            $descricao['nome'] = pathinfo($arquivo, PATHINFO_FILENAME);
+            $descricao['extensao'] = pathinfo($arquivo, PATHINFO_EXTENSION);
+            $getDescription = file(PATH.LOCATION. "/$arquivo");
+            $descricao['descricaoArquivo'] = htmlentities(substr($getDescription[2], 2), ENT_COMPAT, 'UTF-8');
+            $descricao['descricaoLink'] = htmlentities(substr($getDescription[3], 2), ENT_COMPAT, 'UTF-8');
+            $descricao['lista'] = trim(substr($getDescription[5], 2));
             return $descricao;
         } catch (Exception $erro) {
             return $erro;
         }
     }
+    
+    // REPLICA AS PERMISSOES DE UM TIPO PARA OUTRO
+    public function copyTipo($params) {
+        $bd = new database();
+
+        $params = dcripArray($params);
+
+        $sql = "SELECT nome,menu,permissao,(SELECT codigo FROM Permissoes WHERE tipo = :codigo) as codigo"
+                . " FROM Permissoes WHERE tipo = :tipo";
+        
+        $res = $bd->selectDB($sql, $params);
+
+        $params1['codigo'] = $res[0]['codigo'];
+        $params1['permissao'] = $res[0]['permissao'];
+        $params1['nome'] = $res[0]['nome'];
+        $params1['menu'] = $res[0]['menu'];
+        $params1['tipo'] = $params['codigo'];
+        
+        if ($res[0])
+            $res = $this->insertOrUpdate($params1);
+    }    
 }
 
 ?>

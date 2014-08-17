@@ -1,28 +1,29 @@
 <?php
-//A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//
+//Esse arquivo é fixo para o aluno.
+//Tela em que o aluno faz download de material de aula.
+//Link visível no menu: PADRÃO NÃO, pois este arquivo tem uma visualização diferente, ele aparece como ícone.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
-require PERMISSAO;
 require SESSAO;
+require PERMISSAO;
+
 
 require CONTROLLER . "/arquivo.class.php";
 $arq = new Arquivos();
 
-$atribuicao = $_GET["atribuicao"];
-
-$params = array('codigo' => $atribuicao);
+$params = array('codigo' => $_GET["atribuicao"]);
 $res = $arq->listArquivos($params, $item, $itensPorPagina);
 ?>
-<br />
-<table id="listagem" border="0" align="center">
-    <tr><th align="center" width="30">#</th><th align="center" width="300">Descri&ccedil;&atilde;o</th><th align="left" width="255">Link</th><th align="left">Arquivo</th><th align="left" width="160">Data</th></tr>
+<h2><?= $TITLE ?></h2>
+<div class='professores_textarea'>
+    <table width="100%" align="center" style="border: 0px solid black">
+        <tr class="listagem_tr">
+        <th align="center" width="30">#</th><th align="center" width="300">Descri&ccedil;&atilde;o</th><th align="left" width="255">Link</th><th align="left">Arquivo</th><th align="left" width="160">Data</th></tr>
     <?php
     // efetuando a consulta para listagem
     $i = 1;
@@ -64,7 +65,4 @@ $res = $arq->listArquivos($params, $item, $itensPorPagina);
     }
     ?>
 </table>
-
-<?php
-$atribuicao = $_GET['atribuicao'];
-?>
+</div>

@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela em que os coordenadores dos cursos liberam de forma temporária a edição do diário após encerrado o prazo limite para a sua edição.
+//Permite que os coordenadores dos cursos liberam de forma temporária o lançamento de aulas não registradas no dia.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

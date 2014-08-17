@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita a tela em que é possível a visualização completa de acessos ao sistema, sendo possível identificar qual perfil o acessou e em qual data e hora.
+//Visualização de Registros de acessos ao sistema e importação de dados.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

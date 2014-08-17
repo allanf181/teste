@@ -1,11 +1,11 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela em que é possível o cadastro da identificação do Campus que está utilizando o sistema, as atribuições dos perfis de usuários que terão acesso ao sistema, as datas limites do docente para alteração do diário e inserção de registros de aulas após a data real da mesma.
+//Permite o cadastro da identificação do Campus que está utilizando o sistema, as atribuições dos perfis de usuários que terão acesso ao sistema, as datas limites do docente para alteração do diário e inserção de registros de aulas após a data real da mesma.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;

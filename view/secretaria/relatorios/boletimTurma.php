@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela em que o docente é possível visualizar todas as notas de todos os módulos dos alunos que fazem parte dela.
+//Possibilita visualizar todas as notas de todos os módulos dos alunos que fazem parte dela.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

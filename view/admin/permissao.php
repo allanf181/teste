@@ -1,11 +1,11 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela onde é possível a concessão de acesso as funcionalidades disponíveis do Web Diário.
+//Tela onde é possível a concessão de acesso as funcionalidades disponíveis do WebDiário.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -13,213 +13,172 @@ require PERMISSAO;
 require SESSAO;
 
 if ($_POST["opcao"] == 'InsertOrUpdate') {
-    $tipo = $_POST["campoTipo"];
-    $perms = $_POST["campoPerms"];
-    $nomes = $_POST["campoNome"];
-    $menus = $_POST["campoMenu"];
+    unset($_POST['opcao']);
+    $perms = $_POST["permissao"];
+    $nome = $_POST["nome"];
+    $menu = $_POST["menu"];
 
+    $nomes = array();
+    $menus = array();
     foreach ($perms as $perm) {
-        $nome[] = $nomes[$perm];
-        $menu[] = $menus[$perm];
+        $nomes[] = $nome[$perm];
+        $menus[] = $menu[$perm];
     }
-    $perms = implode(",", $perms);
-    $nomes = implode(",", $nome);
-    $menus = implode(",", $menu);
 
-    $nomes = htmlentities($nomes, ENT_COMPAT, 'UTF-8');
+    $_POST['permissao'] = implode(",", $perms);
+    $_POST['nome'] = implode(",", $nomes);
+    $_POST['menu'] = implode(",", $menus);
+    $_POST['nome'] = htmlentities($_POST['nome'], ENT_COMPAT, 'UTF-8');
 
-    $resultado = mysql_query("SELECT * FROM Permissoes WHERE tipo = '$tipo'");
-    if (mysql_num_rows($resultado) == '') {
-        $resultado = mysql_query("insert into Permissoes values(0,'$tipo','$perms','$nomes','$menus')");
-        if ($resultado != 1)
-            mensagem('NOK', 'FALSE_INSERT');
-    }
-    else {
-        $resultado = mysql_query("update Permissoes set permissao='$perms',nome='$nomes',menu='$menus' where tipo=$tipo");
-        if ($resultado != 1)
-            mensagem('NOK', 'FALSE_UPDATE');
-    }
+    $ret = $permissao->insertOrUpdate($_POST);
+
+    $ret['TIPO'] = 'UPDATE';
+    $ret['STATUS'] = 'OK';
+    $ret['RESULTADO'] = '1';
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+
     if ($resultado == 1) {
         $pergunta = "Aten&ccedil;&atilde;o: o registro foi salvo com sucesso, por&eacute;m o site deve ser recarregado para exibir as novas altera&ccedil;&otilde;es. Deseja recarregar?";
         print "<script>jConfirm('$pergunta', '$TITLE', function(r) {
 			if ( r ) location.reload();
 			}); </script>\n";
     }
-    $_GET["tipo"] = $tipo;
+    $_GET["tipo"] = $_POST["tipo"];
 }
 
 
 if ($_POST["opcao"] == 'Copiar') {
-    $codigo = dcrip($_POST["campoCopia"]);
-    $tipo = dcrip($_POST["campoTipo"]);
-    $update = dcrip($_POST["campoUpdate"]);
-
-    if (!$update)
-        $sql = "INSERT INTO Permissoes
-        	SELECT 
-                NULL,$codigo,p.permissao,p.nome,p.menu
-                FROM Permissoes p
-                WHERE p.tipo=$tipo";
-
-    if ($update)
-        $sql = "UPDATE Permissoes p
-                INNER JOIN
-                Permissoes p1
-                ON p1.tipo = $tipo
-                SET p.permissao=p1.permissao,p.nome=p1.nome,p.menu=p1.menu
-                WHERE p.tipo = $codigo";
-
-    //print $sql;
-    $resultado = mysql_query($sql);
-    if ($resultado == 1)
-        mensagem('OK', 'TRUE_COPY_PERMISSAO');
-    else
-        mensagem('NOK', 'PERMISSAO');
+    unset($_POST['opcao']);
+    $ret = $permissao->copyTipo($_POST);
+    $ret['TIPO'] = 'TRUE_COPY_PERMISSAO';
+    $ret['STATUS'] = 'OK';
+    $ret['RESULTADO'] = '';
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    $_GET['tipo'] = $_POST['codigo'];
 }
 ?>
 <h2><font color="white"><?php print $TITLE; ?></font></h2>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-
-<script>
-    function libera(campo, valor) {
-        if (valor) {
-            document.getElementById(campo).disabled = false;
-            document.getElementById('M_' + campo).disabled = false;
-        }
-        else
-        {
-            document.getElementById(campo).disabled = true;
-            document.getElementById('M_' + campo).checked = false;
-            document.getElementById('M_' + campo).disabled = true;
-            document.getElementById(campo).value = '';
-        }
-    }
-</script>
 
 <?php
 $nome = "";
 $tipo = "";
 if (isset($_GET["tipo"]))
     $codigo = $_GET["tipo"];
-
-print "<script>\n";
-print "    $('#form_padrao').html5form({ \n";
-print "        method : 'POST', \n";
-print "        action : '$SITE', \n";
-print "        responseDiv : '#index', \n";
-print "        colorOn: '#000', \n";
-print "        colorOff: '#999', \n";
-print "        messages: 'br' \n";
-print "    }) \n";
-print "</script>\n";
-
-print "<div id=\"html5form\" class=\"main\">\n";
-print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 ?>
-<table align="center" id="form" width="100%">
-    <tr><td align="right" style="width: 100px">Tipo: </td><td>
-            <select name="campoTipo" id="campoTipo" value="<?php echo $tipo; ?>" onChange="$('#index').load('<?php print $SITE; ?>?tipo=' + this.value);">
-                <option></option>
-                <?php
-                $resultado = mysql_query("select * from Tipos order by nome");
-                $selected = ""; // controla a alteração no campo select
-                while ($linha = mysql_fetch_array($resultado)) {
-                    if ($linha[0] == $codigo)
-                        $selected = "selected";
-                    echo "<option $selected value='$linha[0]'>$linha[1]</option>";
-                    $selected = "";
-                }
-                ?>
-            </select>
-        </td><td>
-            <?php if ($codigo) {
-                ?>
-                <a href='#' title='Copiar' class='item-copiar' id='" . crip($linha[0]) . "'><img class='botao' src='<?php print ICONS; ?>/copiar.gif' /></a>
-                <?php
-            }
-            ?>
-        </td></tr>
-    <tr><td align="right"></td><td>
-            <?php
-            if ($codigo) {
-                $is_update = 0;
-                $resultado = mysql_query("SELECT permissao,nome,menu FROM Permissoes WHERE tipo = '$codigo'");
-                if (mysql_num_rows($resultado) != '') {
-                    $is_update = 1;
-                    $permsPer = explode(",", mysql_result($resultado, 0, "permissao"));
-                    $nomesPer = explode(",", mysql_result($resultado, 0, "nome"));
-                    $menusPer = explode(",", mysql_result($resultado, 0, "menu"));
-                }
-                $path = $_SERVER['DOCUMENT_ROOT'] . "/$LOCATION/";
-                $diretorio = dir($path);
-                print "<table border=\"0\">\n";
-                $i = 0;
-                
-                $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html';
-                $cdir = dirToArray($path . 'view/', $regex);
+<script>
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?= $SITE ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
+</script>
 
-                krsort($cdir);
-                foreach ($cdir as $dir => $reg) {
-                    sort($reg);
-                    foreach ($reg as $arquivo) {
-                        $arquivoNome = pathinfo($arquivo, PATHINFO_BASENAME);
-                        $getDescription = file($path . $arquivo);
-                        $descricao = htmlentities(substr($getDescription[2], 2), ENT_COMPAT, 'UTF-8');
-                        $lista = trim(substr($getDescription[4], 2));
-                        if ($lista) {
-                            $j = 0;
-                            foreach ($permsPer as $perm) {
-                                $checked1 = "";
-                                $checked2 = "";
-                                $arqNome = "";
-                                $disabled = 'disabled';
-                                if ($arquivo == $perm) {
-                                    if (in_array($arquivo, $menusPer))
-                                        $checked2 = "checked='checked'";
-                                    $checked1 = "checked='checked'";
-                                    $disabled = '';
-                                    $arqNome = $nomesPer[$j];
-                                    $arqNome = html_entity_decode($arqNome, ENT_COMPAT, 'UTF-8');
-                                    break;
-                                }
-                                $j++;
-                            }
-
-                            if ($dir != $lastDir) {
-                                print "</tr><tr><td colspan=\"4\">&nbsp;</td></tr>\n";
-                                print "</tr><tr><td colspan=\"4\">&nbsp;</td></tr>\n";
-                                print "</tr><tr><td colspan=\"4\"><hr><font size=\"3\"><b>$dir</b></font><hr></td></tr>\n";
-                                $lastDir = $dir;
-                            }
-
-                            if ($i == 0)
-                                print "<tr>\n";
-                            print "<td>\n";
-                            $nc = str_replace('.php', '', $arquivo);
-                            print "<input type='checkbox' $checked1 name='campoPerms[]' value='$arquivo' onclick=\"return libera('$nc', this.checked);\" />\n";
-                            print "<b><font size=\"1\"><a href=\"#\" title=\"$descricao\">$arquivoNome</a></font></b>";
-                            print "<br><input type='checkbox' $disabled $checked2 name='campoMenu[$arquivo]' id=\"M_$nc\" value='$arquivo' />\n";
-                            print "<font size=\"1\"> - link vis&iacute;vel</font>";
-                            print "<br><input type=\"text\" $disabled name=\"campoNome[$arquivo]\" id=\"$nc\" value=\"$arqNome\" />\n";
-                            print "</td>\n";
-                            $i++;
-                            if ($i == 4) {
-                                print "</tr><tr><td colspan=\"4\"><hr></td></tr>\n";
-                                $i = 0;
-                            }
+<div id="html5form" class="main">
+    <form id="form_padrao">
+        <table align="center" id="form" width="100%">
+            <tr><td align="right" style="width: 100px">Tipo: </td><td>
+                    <select name="tipo" id="tipo" value="<?= $tipo ?>" onChange="$('#index').load('<?= $SITE ?>?tipo=' + this.value);">
+                        <option></option>
+                        <?php
+                        require CONTROLLER . '/tipo.class.php';
+                        $tipo = new Tipos();
+                        $res = $tipo->listRegistros(null, null, null, 'ORDER BY nome');
+                        foreach ($res as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == dcrip($codigo))
+                                $selected = "selected";
+                            echo "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
                         }
+                        ?>
+                    </select>
+                </td><td>
+                    <?php if ($codigo) {
+                        ?>
+                        <a href='#' title='Copiar' class='item-copiar' id='<?= $codigo ?>'><img class='botao' src='<?= ICONS ?>/copiar.gif' /></a>
+                        <?php
                     }
+                    ?>
+                </td></tr>
+            <tr><td align="right"></td><td>
+                    <?php
+                    if ($codigo) {
+                        $perms = $permissao->listaPermissoes(array(dcrip($codigo)), 'permissao');
+
+                        // Listando os diretórios dentro da VIEW.
+                        $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html';
+                        $cdir = dirToArray(PATH . LOCATION . '/view/', $regex);
+                        krsort($cdir);
+                        $i = 0;
+                        ?>
+                        <table border="0">
+                            <?php
+                            foreach ($cdir as $dir => $reg) {
+                                sort($reg);
+                                foreach ($reg as $arquivo) {
+                                    $descricao = $permissao->fileDescricao($arquivo);
+                                    if ($descricao['lista']) {
+                                        $j = 0;
+                                        foreach ($perms['permissao'] as $perm) {
+                                            $checkedPermissao = "";
+                                            $checkedLink = "";
+                                            $arquivoNomeMenu = "";
+                                            $disabled = 'disabled';
+                                            if ($arquivo == $perm) {
+                                                if (in_array($arquivo, $perms['menu']))
+                                                    $checkedLink = "checked='checked'";
+                                                $checkedPermissao = "checked='checked'";
+                                                $disabled = '';
+                                                $arquivoNomeMenu = html_entity_decode($perms['nome'][$j], ENT_COMPAT, 'UTF-8');
+                                                break;
+                                            }
+                                            $j++;
+                                        }
+
+                                        if ($dir != $lastDir) {
+                                            ?>
+                                </tr><tr><td colspan="4">&nbsp;</td></tr>
+                            </tr><tr><td colspan="4">&nbsp;</td></tr>
+                    </tr><tr><td colspan="4"><hr><font size="3"><b><?= $dir ?></b></font><hr></td></tr>
+                    <?php
+                    $lastDir = $dir;
+                }
+
+                if ($i == 0)
+                    print "<tr>\n";
+                ?>
+                <td>
+                    <input type='checkbox' <?= $checkedPermissao ?> name='permissao[]' value='<?= $arquivo ?>' onclick="return libera('<?= $descricao['nome'] ?>', this.checked);" />
+                    <b><font size="1"><a href="#" title='<?= $descricao['descricaoArquivo'] ?><br><?= $descricao['descricaoLink'] ?>'><?= $descricao['nome'] ?></a></font></b>
+                    <br><input type='checkbox' <?= $disabled ?> <?= $checkedLink ?> name='menu[<?= $arquivo ?>]' id="M_<?= $descricao['nome'] ?>" value='<?= $arquivo ?>' />
+                    <font size="1"> - link vis&iacute;vel</font>
+                    <br><input type="text" <?= $disabled ?> name="nome[<?= $arquivo ?>]" id="<?= $descricao['nome'] ?>" value="<?= $arquivoNomeMenu ?>" />
+                </td>
+                <?php
+                $i++;
+                if ($i == 4) {
+                    print "</tr><tr><td colspan=\"4\"><hr></td></tr>\n";
+                    $i = 0;
                 }
             }
-            print "</table>\n";
-            ?>   	
-        </td></tr>
-    <tr><td></td><td>
-            <input type="hidden" name="opcao" value="InsertOrUpdate" />
-            <?php if ($codigo) { ?>
-                <input type="submit" value="Salvar" />
-            <?php } ?>
-        </td></tr>
+        }
+    }
+    ?>
+    <input type="hidden" name="codigo" value="<?= crip($perms['codigo']) ?>" />
+    <?php
+}
+?>
+</table>
+</td></tr>
+<tr><td></td><td>
+        <input type="hidden" name="opcao" value="InsertOrUpdate" />
+        <?php if ($codigo) { ?>
+            <input type="submit" value="Salvar" />
+        <?php } ?>
+    </td></tr>
 </table>
 </form>
 </div>
@@ -235,7 +194,7 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
         left: 0;
         display: none;
         position: absolute;				
-        background-color: #cccccc;
+        background-color: #666;
         color: #aaaaaa;
         opacity: .95;
     }
@@ -253,49 +212,45 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 </style>
 
 <div id="popDiv" class="ontop">
-    <?php
-    print "<script>\n";
-    print "    $('#form_copiar').html5form({ \n";
-    print "        method : 'POST', \n";
-    print "        action : '$SITE', \n";
-    print "        responseDiv : '#index', \n";
-    print "        colorOn: '#000', \n";
-    print "        colorOff: '#999', \n";
-    print "        messages: 'br' \n";
-    print "    }) \n";
-    print "</script>\n";
+    <script>
+        $('#form_copiar').html5form({
+            method: 'POST',
+            action: '<?= $SITE ?>',
+            responseDiv: '#index',
+            colorOn: '#000',
+            colorOff: '#999',
+            messages: 'br'
+        })
+    </script>
 
-    print "<div id=\"html5form\" class=\"main\">\n";
-    print "<form action=\"$SITE\" method=\"post\" id=\"form_copiar\">\n";
-    ?>
-    <table border="0" id="popup">
-        <tr><td colspan="2" align="right"><a href="#" onClick="hide('popDiv');">Fechar</a></td></tr>
-        <tr><td colspan="2">Copiar as permiss&otilde;es de:</td></tr>
-        <input type="hidden" name="campoCopia" id="campoCopia" value="<?php print crip($codigo); ?>">
-        <input type="hidden" name="campoUpdate" id="campoUpdate" value="<?php print crip($is_update); ?>">
-        <tr><td><select name="campoTipo" id="campoTipo">
-                    <?php
-                    $resultado = mysql_query("SELECT codigo,nome FROM Tipos ORDER BY nome");
-                    $selected = ""; // controla a alteração no campo select
-                    while ($linha = mysql_fetch_array($resultado)) {
-                        echo "<option value='" . crip($linha[0]) . "'>$linha[1]</option>";
-                    }
-                    ?>
-                </select>
-            </td></tr>
-        <tr>
-            <td colspan="2">
-                <input type="hidden" name="opcao" value="Copiar" />    
-                <input type="submit" value="Copiar" onClick="hide('popDiv');" />
-            </td>
-        </tr>
-    </table>
-</form>
+    <div id="html5form" class="main">
+        <form id="form_copiar">
+            <table border="0" id="popup">
+                <tr><td colspan="2" align="right"><a href="#" onClick="hide('popDiv');">Fechar</a></td></tr>
+                <tr><td colspan="2">Copiar as permiss&otilde;es de:</td></tr>
+                <input type="hidden" name="codigo" id="codigo" value="<?= $codigo ?>">
+                <tr><td><select name="tipo" id="tipo">
+                            <?php
+                            foreach ($res as $reg) {
+                                $selected = "";
+                                if ($reg['codigo'] == $codigo)
+                                    $selected = "selected";
+                                echo "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </td></tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="hidden" name="opcao" value="Copiar" />    
+                        <input type="submit" value="Copiar" onClick="hide('popDiv');" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>
-</div>
-<?php
-mysql_close($conexao);
-?>
+
 <script>
     function pop(div) {
         document.getElementById(div).style.display = 'block';
@@ -316,4 +271,19 @@ mysql_close($conexao);
             pop('popDiv');
         });
     });
+</script>
+<script>
+    function libera(campo, valor) {
+        if (valor) {
+            document.getElementById(campo).disabled = false;
+            document.getElementById('M_' + campo).disabled = false;
+        }
+        else
+        {
+            document.getElementById(campo).disabled = true;
+            document.getElementById('M_' + campo).checked = false;
+            document.getElementById('M_' + campo).disabled = true;
+            document.getElementById(campo).value = '';
+        }
+    }
 </script>

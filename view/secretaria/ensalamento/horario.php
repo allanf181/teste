@@ -1,6 +1,7 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela em que é possível a visualização dos intervalos das aulas e seus horários do período matutino, vespertino e noturno.
+//Possibilita a visualização dos intervalos das aulas e seus horários do período matutino, vespertino e noturno.
+//Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 

@@ -1,49 +1,52 @@
 <?php
-
-//Esse arquivo é fixo para o aluno. Não entra em permissões
-//
+//Esse arquivo é fixo para o aluno.
+//Tela em que o aluno visualiza o conteúdo de aula e faltas.
+//Link visível no menu: PADRÃO NÃO, pois este arquivo tem uma visualização diferente, ele aparece como ícone.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require SESSAO;
+require PERMISSAO;
 
-if (in_array($ALUNO, $_SESSION["loginTipo"])) {
-    $atribuicao=dcrip($_GET["atribuicao"]);
-    $aluno = $_SESSION["loginCodigo"];
-    
-    require CONTROLLER . "/aula.class.php";
-    $aula = new Aulas();
-    $res = $aula->listAulasAluno($aluno, $atribuicao);
-    print "<h2>Aulas</h2>\n";
-    print "<div class='professores_textarea'>\n";
-    print "<table width=\"100%\" align=\"center\" style=\"border: 0px solid black\">\n";
-    print "<tr class=\"listagem_tr\"><th align=\"center\" style=\"width: 100px\">Data</th><th align=\"center\">Conte&uacute;do</th><th width=\"50\" align='center'>Falta</th></tr>\n";
-    $i = 0;
-    foreach ($res as $reg) {
-        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-        if (isset($reg['freqMat'])) $regFreq = explode(',', $reg['freqMat']);
-        if (!$A = getFrequenciaAbono($aluno, $atribuicao, $reg['data'])) {
-            $falta = $regFreq[0];
-            if ($falta) {
-                $F = $falta;
-            } else {
-                $F = str_repeat('*', $reg['quantidade']);
-            }
-        } else {
-            $F = $A['nome'];
-        }
+$atribuicao = dcrip($_GET["atribuicao"]);
+$aluno = $_SESSION["loginCodigo"];
 
-        echo "<tr $cdif><td align='left'>".$reg['dataFormatada']."</td>";
-        echo "<td align='left'>".$reg['conteudo']."</td>";
-        echo "<td align='center'>$F</td></tr>";
-        $i++;
-    }
-    print "</table>\n";
-    print "</div>\n";
-}
+require CONTROLLER . "/aula.class.php";
+$aula = new Aulas();
+$res = $aula->listAulasAluno($aluno, $atribuicao);
 ?>
+<h2><?= $TITLE ?></h2>
+<div class='professores_textarea'>
+    <table width="100%" align="center" style="border: 0px solid black">
+        <tr class="listagem_tr"><th align="center" style="width: 100px">Data</th>
+            <th align="center">Conte&uacute;do</th><th width="50" align='center'>Falta</th></tr>
+        <?php
+        $i = 0;
+        foreach ($res as $reg) {
+            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+            if (isset($reg['freqMat']))
+                $regFreq = explode(',', $reg['freqMat']);
+            if (!$A = getFrequenciaAbono($aluno, $atribuicao, $reg['data'])) {
+                $falta = $regFreq[0];
+                if ($falta) {
+                    $F = $falta;
+                } else {
+                    $F = str_repeat('*', $reg['quantidade']);
+                }
+            } else {
+                $F = $A['nome'];
+            }
+            ?>
+            <tr <?= $cdif ?>><td align='left'><?= $reg['dataFormatada'] ?></td>
+                <td align='left'><?= $reg['conteudo'] ?></td>
+                <td align='center'><?= $F ?></td></tr>
+            <?php
+            $i++;
+        }
+        ?>
+    </table>
+</div>

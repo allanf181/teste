@@ -69,19 +69,21 @@ Abstract class Generic {
         }
     }
 
-    public function listRegistros($params=null, $item=null, $itensPorPagina=null) {
+    public function listRegistros($params=null, $item=null, $itensPorPagina=null, $sqlAdicional=null) {
         $bd = new database();
         $table = get_called_class();
 
         if ($item && $itensPorPagina)
-            $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina";
+            $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina ";
         
         if (!$params['codigo']) {
-            $sql = "SELECT * FROM $table $nav";
+            $sql = "SELECT * FROM $table $nav ";
         } else {
             $sql = "SELECT * FROM $table "
-                . "WHERE codigo=:codigo $nav";
+                . "WHERE codigo=:codigo $nav ";
         }
+
+        $sql .= $sqlAdicional;
 
         $res = $bd->selectDB($sql, $params);
         if ( $res )

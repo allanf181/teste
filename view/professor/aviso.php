@@ -1,7 +1,8 @@
 <?php
-//A descri��o abaixo � utilizada em Permiss�es para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Habilita tela referente ao envio de avisos a um discente ou a todos os discentes da disciplina dada pelo professor.
-//O n�mero abaixo indica se o arquivo deve entrar nas permiss�es (respeitar a ordem da linha)
+//Esse arquivo é fixo para o professor.
+//Permite a inserção de avisos para os alunos.
+//Link visível no menu: PADRÃO NÃO, pois este arquivo tem uma visualização diferente, ele aparece como ícone.
+//O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
 require '../../inc/config.inc.php';
