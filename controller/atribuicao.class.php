@@ -27,11 +27,11 @@ class Atribuicoes extends Generic {
     // BOLETIM.PHP
     // Retorna dados da atribuicao (Disciplina, Turma, etc..)
     // Pode ser colocado com função no MySQL futuramente
-    public function getAtribuicao($codigo, $LIMITE_AULA_PROF=0) {
+    public function getAtribuicao($codigo, $LIMITE_AULA_PROF=0, $LIMITE_DIARIO_PROF=0) {
         $bd = new database();
         
-        $LIMITE_AULA_PROF1 = 365;
-        
+        $LIMITE_AULA_PROF1 = $LIMITE_AULA_PROF * 2;
+       
         $sql = "SELECT d.nome as disciplina, t.numero as turma, a.status, a.prazo,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
                 a.bimestre as bimestre, c.fechamento as fechamento,
@@ -41,10 +41,10 @@ class Atribuicoes extends Generic {
                 IF(a.prazo, date_format(a.prazo, '%H:%i de %d/%m/%Y'), '') as prazoFormat,
                 DATEDIFF(NOW(), a.dataInicio) as diarioAberto,
                 DATEDIFF(a.prazo, NOW()) as prazoDiff,
-                date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_AULA_PROF DAY), '%d/%m/%Y') as dataFimFormat,
+                date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), '%d/%m/%Y') as dataFimFormat,
                 date_format( DATE_SUB(NOW(), INTERVAL $LIMITE_AULA_PROF1 DAY), '%d/%m/%Y') as dataInicioCal,
                 date_format( a.prazo, '%d/%m/%Y') as dataFimCal,
-                DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_AULA_PROF DAY), NOW()) as dataFimDiff
+                DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), NOW()) as dataFimDiff
                 FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
                 WHERE a.disciplina=d.codigo
                 AND t.curso=c.codigo

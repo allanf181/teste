@@ -52,7 +52,7 @@ $atribuicao = $_GET["atribuicao"];
     if ($_GET["atribuicao"]) {
         $atribuicao = dcrip($_GET["atribuicao"]);
 
-        $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF);
+        $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF, $LIMITE_DIARIO_PROF);
         extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
 
         if (!$bimestre && !$semestre)
@@ -62,30 +62,39 @@ $atribuicao = $_GET["atribuicao"];
         elseif (!$bimestre && $semestre)
             $bimestre = 'SEMESTRAL';
 
-        // Anulando o prazo se a dataFim está maior
-        $dataExpirou = false;
-        if ($prazoDiff && $prazoDiff <= 0 && $dataFimDiff >= 0) {
-            $params['codigo'] = crip($atribuicao);
-            $params['prazo'] = crip('NULL');
-            $params['status'] = crip(0);
-            $status = 0;
-            $prazo = null;
-            $att->insertOrUpdate($params);
-        } else {
-            // verificando se o prazo foi atingido.
+        // CASO O LIMITE NÃO ESTEJA DESATIVADO
+        if ($LIMITE_DIARIO_PROF != 0) {
+            // Anulando o prazo se a dataFim está maior
             $dataExpirou = false;
-            if ($status == 0 && (!$prazoDiff && $dataFimDiff < 0) || ($prazoDiff && $prazoDiff < 0)) {
+            if ($prazoDiff && $prazoDiff <= 0 && $dataFimDiff >= 0) {
+                print "ok";
                 $params['codigo'] = crip($atribuicao);
-                $params['status'] = crip(4);
+                $params['prazo'] = crip('NULL');
+                $params['status'] = crip(0);
+                $status = 0;
+                $prazo = null;
                 $att->insertOrUpdate($params);
-                $status = 4;
-                $dataExpirou = true;
+            } else {
+                // verificando se o prazo foi atingido.
+                $dataExpirou = false;
+                if ($status == 0 && (!$prazoDiff && $dataFimDiff < 0) || ($prazoDiff && $prazoDiff < 0)) {
+                    $params['codigo'] = crip($atribuicao);
+                    $params['status'] = crip(4);
+                    $att->insertOrUpdate($params);
+                    $status = 4;
+                    $dataExpirou = true;
+                }
             }
+
+            if ($status != 0)
+                $dataExpirou = true;
+            
+        } else {
+            $status = 0; // SEM LIMITE
+            $prazo = null;
+            $prazoDiff = -1;
+            $dataExpirou = false;
         }
-
-
-        if ($status != 0)
-            $dataExpirou = true;
 
         if ($diarioAberto < 0) { // diário ainda não começou
             $dataExpirou = true;

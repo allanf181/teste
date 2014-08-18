@@ -20,12 +20,12 @@ if ($_GET["opcao"] == 'controlePrazo') {
 
     $erro = 0;
     foreach ($prazos as $atribuicao) {
-        $sql = "update Atribuicoes set prazo=DATE_ADD(NOW(), INTERVAL $LIMITE_DIARIO_PROF DAY), status='0' where codigo=$atribuicao";
+        $sql = "update Atribuicoes set prazo=DATE_ADD(NOW(), INTERVAL $LIMITE_AULA_PROF DAY), status='0' where codigo=$atribuicao";
         if (!$resultado = mysql_query($sql))
             $erro = 1;
 
         if ($atribuicao) {
-            $sql = "INSERT INTO PrazosDiarios VALUES (NULL, $atribuicao, now(), '$v')";
+            $sql = "INSERT INTO PrazosDiarios VALUES (NULL, $atribuicao, now(), 'AULA LIBERADA: $v')";
             if (!$resultado = mysql_query($sql))
                 $erro = 1;
         }
@@ -200,7 +200,7 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
                 }
             }
             else {
-                echo "<option>Não há professores cadastrados.</option>";
+                echo "<option value=''>Não há professores cadastrados.</option>";
             }
             ?>
         </select>
@@ -371,7 +371,7 @@ if (!empty($curso)) {
             curso = $('#campoCurso').val();
             bimestre = $('#campoBimestre').val();
             professor = $('#campoProfessor').val();
-            $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre + '&professor=' + professor);
+            $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre + '&professor=' + professor );
         }
 
         $('#campoTurma, #campoCurso, #campoBimestre, #campoProfessor').change(function() {

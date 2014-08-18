@@ -365,7 +365,11 @@ if ($_GET['opcao'] == '') {
     <?php
 }
 
-$res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF);
+if ($LIMITE_AULA_PROF != 0) {
+    // DATA DE INICIO E FIM DA ATRIBUICAO PARA RESTRINGIR O CALENDARIO
+    $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF, $LIMITE_DIARIO_PROF);
+}
+
 
 ?>
 <script>

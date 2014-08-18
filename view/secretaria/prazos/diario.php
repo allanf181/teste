@@ -25,7 +25,7 @@ if ($_GET["opcao"] == 'controleDiario') {
             $erro = 1;
 
         if ($atribuicao) {
-            $sql = "INSERT INTO PrazosDiarios VALUES (NULL, $atribuicao, now(), 'FECHADO: $v')";
+            $sql = "INSERT INTO PrazosDiarios VALUES (NULL, $atribuicao, now(), 'DIÁRIO FECHADO: $v')";
             if (!$resultado = mysql_query($sql))
                 $erro = 1;
         }
@@ -60,7 +60,7 @@ if ($_GET["opcao"] == 'controlePrazo') {
             $erro = 1;
 
         if ($atribuicao) {
-            $sql = "INSERT INTO PrazosDiarios VALUES (NULL, $atribuicao, now(), 'LIBERADO: $v')";
+            $sql = "INSERT INTO PrazosDiarios VALUES (NULL, $atribuicao, now(), 'DIÁRIO LIBERADO: $v')";
             if (!$resultado = mysql_query($sql))
                 $erro = 1;
         }
@@ -237,7 +237,7 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
                 }
             }
             else {
-                echo "<option>Não há professores cadastrados.</option>";
+                echo "<option value=''>Não há professores cadastrados.</option>";
             }
             ?>
         </select>
