@@ -468,14 +468,23 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
     }
 
     if ($tipo == 'formula') {
-        require_once PATH.LIB.'/PHPMathParser/Math.php';
-        $math = new Math();
+        try {
+            require_once PATH.LIB.'/PHPMathParser/Math.php';
+            $math = new Math();
 
-        foreach ($medias as $VAR => $VAL) {
-            if ($VAL)
-                $math->registerVariable($VAR, $VAL);
+            foreach ($medias as $VAR => $VAL) {
+                if ($VAL)
+                    $math->registerVariable($VAR, $VAL);
+            }
+            $media = $math->evaluate($formula);
+        } catch(Exception $e) {
+            print "<div class=\"flash error\" id=\"flash_error\">"
+            . "Existe um erro na f&oacute;rmula: $formula"
+                    . "<br>Erro encontrado: ".$e->getMessage().""
+                    . "<br />Verifique se faltou algum $ em alguma vari&aacute;vel ou algum sinal ou ponto estranho."
+                    . "<br />Verifique ainda se todos os par&ecirc;nteses foram devidamente fechados.</div><br />";
+            die;
         }
-        $media = $math->evaluate($formula);
     }
 
     if ($arredondar) {

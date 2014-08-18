@@ -39,16 +39,16 @@ $larguraDia = 4; // campos de dias
 include PATH . LIB . '/fpdf17/pdfDiario.php';
 
 $sql = "SELECT DATE_FORMAT(data, '%m'), c.nome, d.ch,
-						t.numero, tu.nome, t.semestre, d.nome, d.numero, a.bimestre,
-						a.calculo, c.fechamento, c.nomeAlternativo, a.subturma, m.nome, m.codigo
-						FROM Atribuicoes a, Aulas au, Cursos c, Modalidades m, Disciplinas d, Turmas t, Turnos tu 
-						WHERE au.atribuicao = a.codigo 
-						AND d.codigo = a.disciplina 
-						AND d.curso = c.codigo
-						AND c.modalidade = m.codigo
-						AND t.codigo = a.turma 
-						AND tu.codigo = t.turno
-						AND a.codigo = $atribuicao";
+	t.numero, tu.nome, t.semestre, d.nome, d.numero, a.bimestre,
+	a.calculo, c.fechamento, c.nomeAlternativo, a.subturma, m.nome, m.codigo
+	FROM Atribuicoes a, Aulas au, Cursos c, Modalidades m, Disciplinas d, Turmas t, Turnos tu 
+	WHERE au.atribuicao = a.codigo 
+	AND d.codigo = a.disciplina 
+	AND d.curso = c.codigo
+	AND c.modalidade = m.codigo
+	AND t.codigo = a.turma 
+	AND tu.codigo = t.turno
+	AND a.codigo = $atribuicao";
 //print $sql;						
 $result = mysql_query($sql);
 if (mysql_num_rows($result) != '') {
@@ -91,7 +91,8 @@ $result2 = mysql_query("SELECT a.codigo,a.sigla,a.nome,
 			FROM Avaliacoes a, TiposAvaliacoes t 
 			WHERE a.tipo = t.codigo 
 			AND atribuicao = $atribuicao 
-			AND t.tipo <> 'recuperacao'");
+			AND t.tipo <> 'recuperacao' 
+                        ORDER BY a.sigla, a.codigo");
 $qde_avaliacao = mysql_num_rows($result2);
 
 $totalDias = 80 - $qde_avaliacao - $CAMPO_ESTATICO;
@@ -347,13 +348,14 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
 
             // Verificar Avalicao do Aluno
             $sql = "SELECT n.nota, a.peso,
-						(SELECT COUNT(*) FROM Avaliacoes WHERE atribuicao=$atribuicao AND tipo NOT IN (SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'recuperacao') ) as total
-						FROM Notas n, Atribuicoes at, Avaliacoes a
-						WHERE n.avaliacao = a.codigo
-						AND a.atribuicao = at.codigo
-						AND a.atribuicao = $atribuicao
-						AND n.matricula = $matricula
-						AND a.tipo NOT IN (SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'recuperacao') ";
+			(SELECT COUNT(*) FROM Avaliacoes WHERE atribuicao=$atribuicao AND tipo NOT IN (SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'recuperacao') ) as total
+			FROM Notas n, Atribuicoes at, Avaliacoes a
+			WHERE n.avaliacao = a.codigo
+			AND a.atribuicao = at.codigo
+			AND a.atribuicao = $atribuicao
+			AND n.matricula = $matricula
+			AND a.tipo NOT IN (SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'recuperacao')
+                        ORDER BY a.sigla, a.codigo";
             //print "$sql<br><br>";
             $notas = mysql_query($sql);
             for ($j = 0; $j < mysql_num_rows($notas); $j++) {
