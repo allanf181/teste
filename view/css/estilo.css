@@ -884,3 +884,7 @@ div.flash {
     display: inline-block;
     float: left;
 }
+
+.main {
+    clear:both;
+}
