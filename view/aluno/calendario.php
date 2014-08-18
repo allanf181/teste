@@ -34,7 +34,7 @@ for ($j = 1; $j <= 12; $j++) {
     $dia = date("d");
     $ano_ = substr($ano, -2);
     ?>
-    <br /><div class='fundo_listagem'>
+    <div class='fundo_listagem'>
         <table><tr><td valign="top">
 
                     <h3 align='center'><?= ucfirst(meses($mes)) . " " . $ano ?></h3>
