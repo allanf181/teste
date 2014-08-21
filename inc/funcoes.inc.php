@@ -477,6 +477,8 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
                     $math->registerVariable($VAR, $VAL);
             }
             $media = $math->evaluate($formula);
+            if ($media > 10)
+                $media = 10;
         } catch(Exception $e) {
             print "<div class=\"flash error\" id=\"flash_error\">"
             . "Existe um erro na f&oacute;rmula: $formula"
