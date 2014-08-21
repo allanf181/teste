@@ -44,7 +44,7 @@ if ($_POST['submit'] == 'Carregar') {
         if (move_uploaded_file($tmp, $path . $actual_image_name)) {
             
         } else {
-            echo "Foto n&atilde;o suportada, verifique a extens&atilde;o ou o tamanho (M&aacute;x. 2MB)";
+            echo "Foto n&atilde;o suportada, verifique a extens&atilde;o ou o tamanho (Tamanho M&aacute;ximo: ".ini_get(upload_max_filesize).")";
             $name = '';
             $tmp = '';
         }

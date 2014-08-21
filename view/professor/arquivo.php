@@ -39,9 +39,6 @@ $atribuicao = $_GET["atribuicao"];
 
 $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
 
-// Verifica no diretório se há algo que
-// não está no banco e sincroniza.
-$arq->syncFolder($local);
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
@@ -136,8 +133,8 @@ if ($_GET['pagina'] == "inserir") {
         $codigo = crip($codigo);
     }
 
-    $max_file = ini_get('post_max_size') * 1024 * 1024;
-    print "Tamanho m&aacute;ximo do arquivo: " . ini_get('post_max_size') . "<br>";
+    $max_file = ini_get('upload_max_filesize') * 1024 * 1024;
+    print "Tamanho m&aacute;ximo do arquivo: " . ini_get('upload_max_filesize') . "<br>";
     ?>
 
     <script type="text/javascript" src="js/jquery.form.min.js"></script>
@@ -179,7 +176,7 @@ if ($_GET['pagina'] == "inserir") {
 
                         if (fsize ><?php print $max_file; ?>)
                         {
-                            $("#retorno").html("<b>" + bytesToSize(fsize) + "</b> Arquivo muito grande!");
+                            $("#retorno").html("Arquivo muito grande, tamanho limite: <b> " + bytesToSize(fsize) + "</b>");
                             return false
                         }
                     }
@@ -234,6 +231,7 @@ if ($_GET['pagina'] == "inserir") {
                             <?php
                         }
                         ?>
+                            <div id='retorno'></div>
                     </td>
                 </tr>
 
@@ -246,6 +244,10 @@ if ($_GET['pagina'] == "inserir") {
     </div>
 
     <?php
+    // Verifica no diretório se há algo que
+    // não está no banco e sincroniza.
+    $arq->syncFolder($local, dcrip($atribuicao));
+
     $params = array('codigo' => $atribuicao);
     $res = $arq->listArquivos($params, $item, $itensPorPagina);
     ?>

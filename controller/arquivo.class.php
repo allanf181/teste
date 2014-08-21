@@ -10,9 +10,10 @@ class Arquivos extends Generic {
     }
 
     // Sincroniza pasta do usuário com o banco
-    public function syncFolder($dir) {
+    public function syncFolder($dir, $atribuicao) {
         $bd = new database();
 
+        // VERIFICANDO SE HÁ ARQUIVOS NO DIR, MAS NÃO NO BANCO
         $dir = ARQUIVOS . '/' . $dir;
         if (is_dir($dir)) {
             $files = dirToArray($dir);
@@ -30,6 +31,18 @@ class Arquivos extends Generic {
                     $params['descricao'] = 'SEM DESCRIÇÃO';
                     $res = $this->insertOrUpdate($params);
                 }
+            }
+        }
+
+        //VERIFICANDO SE HÁ NO BANCO, MAS NÃO NO DIR
+        $sql = "SELECT codigo, pessoa, arquivo FROM Arquivos WHERE atribuicao = :att";
+        $params = array(':att' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            foreach ($res as $reg) {
+                $file = ARQUIVOS . '/' . $reg['pessoa'] . '/' . $atribuicao . '/' . $reg['arquivo'];
+                if (!is_file($file))
+                    $this->delete(crip($reg['codigo']));
             }
         }
     }

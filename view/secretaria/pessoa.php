@@ -772,7 +772,7 @@ foreach ($TPS as $TP_COD => $TP_NM)
     <div id="retorno"></div>
 
 <?php
-$max_file = ini_get('post_max_size') * 1024 * 1024;
+$max_file = ini_get('upload_max_filesize') * 1024 * 1024;
 
 if (!$codigo) {
     print "<font size=\"2\">Aten&ccedil;&atilde;o: as fotos podem ser inseridas de 3 formas: </font><br>\n";
@@ -781,7 +781,7 @@ if (!$codigo) {
     print "<font size=\"1\">3 - Com um arquivo ZIP contendo todas as fotos com o padr&atilde;o: XXXXXXX.JGP</font><br>\n";
     print "<br>\n";
 }
-print "Tamanho m&aacute;ximo do arquivo: " . ini_get('post_max_size') . "<br>";
+print "Tamanho m&aacute;ximo do arquivo: " . ini_get('upload_max_filesize') . "<br>";
 ?>
 
     <script type="text/javascript" src="js/jquery.form.min.js"></script>

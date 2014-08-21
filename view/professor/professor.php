@@ -88,19 +88,19 @@ $atribuicao = $_GET["atribuicao"];
 
             if ($status != 0)
                 $dataExpirou = true;
-            
         } else {
             $status = 0; // SEM LIMITE
             $prazo = null;
             $prazoDiff = -1;
             $dataExpirou = false;
-        }
 
-        if ($diarioAberto < 0) { // diário ainda não começou
-            $dataExpirou = true;
-            $status = 100;
-        }
 
+            if ($diarioAberto < 0) { // diário ainda não começou
+                $dataExpirou = true;
+                $status = 100;
+            }
+        }
+        
         $_SESSION['dataExpirou'] = $dataExpirou;
 
         // Informa se o diário foi aberto
