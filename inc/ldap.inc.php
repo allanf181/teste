@@ -8,7 +8,7 @@ Class ldap {
 
     public function __construct() {
         $bd = new database();
-        $sql = "SELECT ldap_user, ldap_password, ldap_basedn, "
+        $sql = "SELECT ldap_user, ldap_password, ldap_basedn, ldap_filter, "
                 . "ldap_dominio, ldap_porta, ldap_cache "
                 . "FROM Instituicoes";
         $res = $bd->selectDB($sql);
@@ -16,6 +16,7 @@ Class ldap {
         $this->user = $res[0]['ldap_user'];
         $this->password = $res[0]['ldap_password'];;
         $this->basedn = $res[0]['ldap_basedn'];
+        $this->ldap_filter = $res[0]['ldap_filter'];        
         $this->porta = $res[0]['ldap_porta'];
         $this->dominio = $res[0]['ldap_dominio'];
         $this->ldap_cache = $res[0]['ldap_cache'];
@@ -114,7 +115,7 @@ Class ldap {
     
     public function autentica($user, $password) {
         // compare value
-        $userA = "(sAMAccountName=$user)";
+        $userA = "(".$this->ldap_filter."=$user)";
 
         $userDn = $this->getObjDN($userA);
         

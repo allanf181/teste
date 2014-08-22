@@ -207,10 +207,11 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 		<tr><td colspan="2"><h3><b>Autentica&ccedil;&atilde;o LDAP</b></h3></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
                 <tr><td width="400"><b>Ativar LDAP para autentica&ccedil;&atilde;o:</b> </td><td><input type='checkbox' <?php if ($ldap_ativado != '') print "checked"; ?> id='ldap_ativado' name='ldap_ativado' value='1' /></td></tr>
-                <tr><td><b>Usu&aacute;rio:</b> </td><td><input type="text" name="ldap_user" id="ldap_user" maxlength="50" value="<?php echo $ldap_user; ?>" /></td></tr>
+                <tr><td><b>Usu&aacute;rio</b><br>(Ex. AD(MS): Administrador@dominio.com)<br>(OpenLDAP: cn=admin,dc=dominio,dc=com): </td><td><input type="text" name="ldap_user" id="ldap_user" maxlength="50" value="<?php echo $ldap_user; ?>" /></td></tr>
                 <tr><td><b>Senha:</b> </td><td><input type="text" name="ldap_password" id="ldap_password" maxlength="50" value="<?php echo $ldap_password; ?>" /></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
                 <tr><td><b>BASE DN</b> <br>(Ex. DC=ifsp,DC=local): </td><td><input type="text" name="ldap_basedn" id="ldap_basedn" maxlength="200" value="<?php echo $ldap_basedn; ?>" /></td></tr>
+                <tr><td><b>FILTER DN</b> <br>(Ex. AD(MS): sAMAccountName)<br>(OpenLDAP: cn) </td><td><input type="text" name="ldap_filter" id="ldap_filter" maxlength="50" value="<?php echo $ldap_filter; ?>" /></td></tr>
                 <tr><td><b>Dom&iacute;nio</b> <br>(Ex. ldap://ifsp.local e ldaps://ifsp.local para SSL): </td><td><input type="text" name="ldap_dominio" id="ldap_dominio" maxlength="200" value="<?php echo $ldap_dominio; ?>" /></td></tr>
                 <tr><td><b>Porta</b> <br>(Ex. 389 -> NO SSL e 636 -> SSL): </td><td><input type="text" name="ldap_porta" id="ldap_porta" maxlength="5" value="<?php echo $ldap_porta; ?>" /></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
