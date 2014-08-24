@@ -4,34 +4,34 @@ include_once "inc/config.inc.php";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title><?php print $SITE_TITLE; ?></title>
+    <title><?= $SITE_TITLE ?></title>
 <meta http-equiv="Content-Language" content="pt-br" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="shortcut icon" type="image/x-icon" href="<?php print ICONS; ?>/favicon.ico">
-<link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/estilo.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/menu/styles.css" media="screen" />
+<link rel="shortcut icon" type="image/x-icon" href="<?= ICONS ?>/favicon.ico">
+<link rel="stylesheet" type="text/css" href="<?= VIEW ?>/css/estilo.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?= VIEW ?>/css/menu/styles.css" media="screen" />
 
 <!-- JS PADRAO -->
-<script>!window.jQuery && document.write('<script src="<?php print VIEW; ?>/js/1.7.2.jquery.min.js"><\/script>')</script>
-<script src="<?php print VIEW; ?>/js/jquery.loading.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/jquery.html5form-1.5-min.js"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/css/menu/script.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/jquery.form.min.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/jquery.maskedinput-1.3.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/jquery-maxlength-min.js" type="text/javascript"></script>
+<script>!window.jQuery && document.write('<script src="<?= VIEW ?>/js/1.7.2.jquery.min.js"><\/script>')</script>
+<script src="<?= VIEW ?>/js/jquery.loading.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/jquery.html5form-1.5-min.js"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/css/menu/script.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/jquery.form.min.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/jquery.maskedinput-1.3.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/jquery-maxlength-min.js" type="text/javascript"></script>
 
 <!-- Alertas -->
-<script type="text/javascript" src="<?php print LIB; ?>/Zebra_Dialog/public/javascript/zebra_dialog.js"></script>
-<link rel="stylesheet" href="<?php print LIB; ?>/Zebra_Dialog/public/css/flat/zebra_dialog.css" type="text/css"></link>
+<script type="text/javascript" src="<?= LIB ?>/Zebra_Dialog/public/javascript/zebra_dialog.js"></script>
+<link rel="stylesheet" href="<?= LIB ?>/Zebra_Dialog/public/css/flat/zebra_dialog.css" type="text/css"></link>
 
 <!-- utilizado pelo calendário -->
-<script src="<?php print VIEW; ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
-<link href="<?php print VIEW; ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css" media="screen" />
+<script src="<?= VIEW ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
+<link href="<?= VIEW ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css" media="screen" />
 
 <!-- desabilitar quando o Zebra tornar-se padrao -->
-<script src="<?php print VIEW; ?>/js/jquery-ui/jquery.alerts.js" type="text/javascript"></script>
-<link href="<?php print VIEW; ?>/js/jquery-ui/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
+<script src="<?= VIEW ?>/js/jquery-ui/jquery.alerts.js" type="text/javascript"></script>
+<link href="<?= VIEW ?>/js/jquery-ui/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
 
 <script type="text/javascript">
     function display_c(start){
@@ -42,7 +42,7 @@ include_once "inc/config.inc.php";
             mytime=setTimeout('display_ct()',refresh)
         }
         else {
-            $('#index').load('<?php print VIEW; ?>/logoff.php');
+            $('#index').load('<?= VIEW ?>/logoff.php');
         }
     }
 
@@ -65,7 +65,7 @@ include_once "inc/config.inc.php";
         onAjax: true,
         text: 'Aguarde Carregando...',
         mask: true,
-        img: '<?php print IMAGES; ?>/loader.gif',
+        img: '<?= IMAGES ?>/loader.gif',
         align: 'center'
     });
 
@@ -130,8 +130,8 @@ $nome = (isset($_SESSION["loginNome"])) ? $_SESSION["loginNome"] : null;
 if (isset($nome)) {
     ?>
     <script> 
-        display_c(<?php print $TIMEOUT*60; ?>); 
-        document.title = '<?php print $SITE_TITLE; ?>';
+        display_c(<?= $TIMEOUT*60 ?>); 
+        document.title = '<?= $SITE_TITLE ?>';
     </script>    
     <div id="header" style='height: 80px;'>
     </div>
@@ -143,16 +143,16 @@ if (isset($nome)) {
         ( !in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"]) ) ) {
     ?>
         <div id='ano_semestre'>
-        <span style="color: white">Ano:<input type="text" maxlength="4" style="width: 50px" value="<?php print $_SESSION['ano']; ?>" name="campoAnoIndex" id="campoAnoIndex" /></span>
-        <span style="color: white">Sem:<input type="text" maxlength="1" style="width: 50px" value="<?php print $_SESSION['semestre']; ?>" name="campoSemestreIndex" id="campoSemestreIndex" /></span>
-        <div id='botao_ano_semestre'><a href="#" id="setTroca"><img src="<?php print ICONS; ?>/change.png" /></a></div>&nbsp;
+        <span style="color: white">Ano:<input type="text" maxlength="4" style="width: 50px" value="<?= $_SESSION['ano'] ?>" name="campoAnoIndex" id="campoAnoIndex" /></span>
+        <span style="color: white">Sem:<input type="text" maxlength="1" style="width: 50px" value="<?= $_SESSION['semestre'] ?>" name="campoSemestreIndex" id="campoSemestreIndex" /></span>
+        <div id='botao_ano_semestre'><a href="#" id="setTroca"><img src="<?= ICONS ?>/change.png" /></a></div>&nbsp;
 	</div>
     
     <?php 
     }
     ?>
-    <span style="color: white">Ol&aacute; <a id="senhaTip" title="Para sua segurança, altere sua senha periodicamente (clique no seu nome)." href="javascript:$('#index').load('<?php print VIEW; ?>/senha.php?opcao=alterar'); void(0);" style="color: white"><?php print $nome; ?></a></span>
-    <a href="javascript:$('#index').load('<?php print VIEW; ?>/logoff.php'); void(0);" style="color: white">(Sair)</a>
+    <span style="color: white">Ol&aacute; <a id="senhaTip" title="Para sua segurança, altere sua senha periodicamente (clique no seu nome)." href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);" style="color: white"><?= $nome ?></a></span>
+    <a href="javascript:$('#index').load('<?= VIEW ?>/logoff.php'); void(0);" style="color: white">(Sair)</a>
     </div>
     </div>
 <?php 
@@ -173,7 +173,7 @@ if (!isset($_SESSION["loginTipo"]) && !isset($_POST['campoLogin']) && (!isset($_
 ?>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#index').load('<?php print VIEW; ?>/login.php');
+            $('#index').load('<?= VIEW ?>/login.php');
         });
     </script>
 <?php
@@ -186,7 +186,7 @@ if (isset($_GET['est']) && isset($_GET['p'])){
     ?>
     <script>
         $(document).ready(function() {
-            $('#index').load('<?php print VIEW; ?>/senha.php?opcao=recuperar&est=<?php print $est; ?>&p=<?php print $p; ?>');
+            $('#index').load('<?= VIEW ?>/senha.php?opcao=recuperar&est=<?= $est ?>&p=<?= $p ?>');
         });
     </script>
 <?php
@@ -202,7 +202,7 @@ if (isset($_SESSION["loginTipo"])) {
         ?>
         <script type="text/javascript">
             $(document).ready(function() {
-                $('#index').load('<?php print VIEW; ?>/senha.php?opcao=alterar');
+                $('#index').load('<?= VIEW ?>/senha.php?opcao=alterar');
             });
         </script>
         <?php
@@ -231,37 +231,37 @@ if (isset($_SESSION["loginTipo"])) {
         }
         if ($menuDiferencial) {
             foreach ($disc as $ano => $reg) {
-                ?><li class='active has-sub'><a href='#'><span>Disciplinas <?php print $ano; ?></span></a>
+                ?><li class='active has-sub'><a href='#'><span>Disciplinas <?= $ano ?></span></a>
                 <ul>
                 <?php
                 if (isset($disc[$ano]['A']['A']))
                     foreach ($disc[$ano]['A']['A'] as $atribuicao => $reg) { // ANUAL
                         ?>
-                        <li><a title="<?php print $reg[0].'<br>'.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
+                        <li><a title="<?= $reg[0].'<br>'.$reg[3] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
                         <?php
                     }
                 foreach ($disc[$ano] as $semestre => $reg) {
                     if ($semestre != 'A') { // SEMESTRAL
                         ?>
-                        <li class='active has-sub'><a href='#'><span><?php print $semestre; ?>&ordm; SEMESTRE</span></a>
+                        <li class='active has-sub'><a href='#'><span><?= $semestre ?>&ordm; SEMESTRE</span></a>
                         <ul>
                         <?php
                         if (isset($disc[$ano][$semestre]['S'])) { // DISCIPLINA SEMESTRAL
                             foreach ($disc[$ano][$semestre]['S'] as $atribuicao => $reg) {
                                 ?>
-                                <li><a title="<?php print $reg[0].'<br>'.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
+                                <li><a title="<?= $reg[0].'<br>'.$reg[3] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
                                 <?php
                             }
                         }
                         if (isset($disc[$ano][$semestre]['B'])) { // BIMESTRE
                             foreach ($disc[$ano][$semestre]['B'] as $bimestre => $reg) {
                                 ?>
-                                <li class='active has-sub'><a href='#'><span><?php print $bimestre; ?>&ordm; BIMESTRE</span></a>
+                                <li class='active has-sub'><a href='#'><span><?= $bimestre ?>&ordm; BIMESTRE</span></a>
                                 <ul>
                                 <?php
                                 foreach ($disc[$ano][$semestre]['B'][$bimestre] as $atribuicao => $reg) {
                                     ?>
-                                    <li><a title="<?php print $reg[0].'<br>'.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
+                                    <li><a title="<?= $reg[0].'<br>'.$reg[3] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
                                     <?php
                                 }
                                 ?></ul></li><?php
@@ -283,12 +283,12 @@ if (isset($_SESSION["loginTipo"])) {
             foreach ($ar as $k => $v ) {
                 if (!is_array($v)) {
                     ?>
-                    <li><a href="javascript:$('#index').load('<?php print $v; ?>'); void(0);"><span><?php print $files[$v]; ?></span></a></li>
+                    <li><a href="javascript:$('#index').load('<?= $v ?>'); void(0);"><span><?= $files[$v] ?></span></a></li>
                     <?php
                 }
                 if (is_array($ar[$k])) {
                     ?>
-                    <li class='active has-sub'><a href='#'><span><?php print maiusculo($k); ?></span></a>
+                    <li class='active has-sub'><a href='#'><span><?= maiusculo($k) ?></span></a>
                     <ul>
                     <?php
                     makeMenu ($ar[$k]);
@@ -324,7 +324,7 @@ if (isset($_SESSION["loginTipo"])) {
 </div>
 
     <div class="footer" <?php if (!$_SESSION['loginCodigo']) print 'style="margin-right: 195px; "'; ?> >
-	<a class="link" href="javascript:$('#index').load('creditos.php');void(0);">Equipe de desenvolvimento do WebDi&aacute;rio IFSP</a>
+	<a class="link" href="javascript:$('#index').load('creditos.php');void(0);">Grupo de Trabalho WebDi&aacute;rio IFSP</a>
 
 </div>
     <a href="#" class="scrollup">Scroll</a>

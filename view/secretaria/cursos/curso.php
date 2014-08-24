@@ -6,160 +6,152 @@
 //1
 
 require '../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-if ($_POST["opcao"] == 'InsertOrUpdate') {
-    $codigo = $_POST["campoCodigo"];
-    $nomeAlternativo = $_POST["campoNomeAlternativo"];
+require CONTROLLER . "/curso.class.php";
+$cursos = new Cursos();
 
-    if (!empty($codigo)){
-        $resultado = mysql_query("update Cursos set nomeAlternativo='$nomeAlternativo' where codigo=$codigo");
-        if ($resultado==1)
-			mensagem('OK', 'TRUE_UPDATE');
-        else
-			mensagem('NOK', 'FALSE_UPDATE');
-		
-		$_GET["codigo"] = crip($_POST["campoCodigo"]); 
-    }
+// INSERT E UPDATE
+if ($_POST["opcao"] == 'InsertOrUpdate') {
+    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
+    unset($_POST['opcao']);
+
+    $ret = $cursos->insertOrUpdate($_POST);
+
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    if ($_POST['codigo'])
+        $_GET["codigo"] = $_POST['codigo'];
+    else
+        $_GET["codigo"] = crip($ret['RESULTADO']);
 }
 
+// DELETE
 if ($_GET["opcao"] == 'delete') {
-    $codigo = dcrip($_GET["codigo"]);
-    $resultado = mysql_query("delete from Cursos where codigo=$codigo");
-    if ($resultado==1)
-		mensagem('OK', 'TRUE_DELETE');
-    else
-		mensagem('NOK', 'FALSE_DELETE');
+    $ret = $cursos->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
-?> 
 
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-
-<?php
-    // inicializando as variï¿½veis do formulï¿½rio
-    $codigo="";
-    $nome="";
-    
-    if (!empty ($_GET["codigo"])){ // se o parï¿½metro nï¿½o estiver vazio
-        
-        // consulta no banco
-        $sql = "SELECT Cursos.codigo, Cursos.nome, Cursos.nomeAlternativo FROM Cursos 
-        							WHERE Cursos.codigo=".dcrip($_GET["codigo"]);
-		//print $sql;
-        $resultado = mysql_query($sql);
-        $linha = mysql_fetch_row($resultado);
-        
-        // armazena os valores nas variï¿½veis
-        $codigo = $linha[0];
-        $nome = $linha[1];
-        $nomeAlternativo = $linha[2];
-        $restricao = " AND Cursos.codigo=".dcrip($_GET["codigo"]);
-    }
- 
-    print "<script>\n";
-    print "    $('#form_padrao').html5form({ \n";
-    print "        method : 'POST', \n";
-    print "        action : '$SITE', \n";
-    print "        responseDiv : '#index', \n";
-    print "        colorOn: '#000', \n";
-    print "        colorOff: '#999', \n";
-    print "        messages: 'br' \n";
-    print "    }) \n";
-    print "</script>\n";
-
-    print "<div id=\"html5form\" class=\"main\">\n";
-    print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
+// LISTAGEM
+if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
+    // consulta no banco
+    $params = array('codigo' => dcrip($_GET["codigo"]));
+    $res = $cursos->listRegistros($params);
+    extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
+}
 ?>
-    <table align="center" width="100%" id="form">
-        <input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" />
-        <tr><td align="right" style="width: 120px">Nome: </td><td><input type="text" style="width: 400px" disabled maxlength="145" name="campoNome" id="campoNome" value="<?php echo $nome; ?>"/></td></tr>
-        <tr><td align="right" style="width: 100px">Nome Alternativo: </td><td><input type="text" style="width: 400px" maxlength="145" title="Nome alternativo utilizado no atestado de matr&iacutecula." name="campoNomeAlternativo" id="campoNomeAlternativo" value="<?php echo $nomeAlternativo; ?>"/></td></tr>
-        <tr><td></td><td>
-		<input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" />
-	    <input type="hidden" name="opcao" value="InsertOrUpdate" />    
-		<table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-			<td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td>
-		</tr></table>
-		</td></tr>
-    </table></center>
-</form>
-
-<?php
-    // inicializando as variï¿½veis
-    $item = 1;
-    $itensPorPagina = 50;
-    $primeiro = 1;
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-    $ultimo = 1;
-
-    // validando a pï¿½gina atual
-    if (!empty($_GET["item"])){
-        $item = $_GET["item"];
-        $anterior = $item - $itensPorPagina;
-        $proximo = $item + $itensPorPagina;
-    }
-
-    // validando a pï¿½gina anterior
-    if ($item - $itensPorPagina < 1)
-        $anterior = 1;
-
-    // descobrindo a quantidade total de registros
-    $resultado = mysql_query("SELECT COUNT(*) FROM Cursos, Modalidades WHERE Modalidades.codigo = Cursos.modalidade $restricao");
-    $linha = mysql_fetch_row($resultado);
-    $ultimo = $linha[0];
-    
-    // validando o prï¿½ximo item
-    if ($proximo > $ultimo){
-        $proximo = $item;
-        $ultimo = $item;
-    }
-    
-    // validando o ï¿½ltimo item
-    if ($ultimo % $itensPorPagina > 0)
-        $ultimo=$ultimo-($ultimo % $itensPorPagina)+1;    
- 
-$SITENAV = $SITE.'?';
-
-require(PATH.VIEW.'/navegacao.php'); ?>
-
-<table id="listagem" border="0" align="center">
-    <tr><th align="left" width="60">C&oacute;digo</th><th align="left">Curso</th><th align="left">Modalidade</th><th align="center" width="40">A&ccedil;&atilde;o</th></tr>
-    <?php
-    // efetuando a consulta para listagem
-    $resultado = mysql_query("SELECT Cursos.codigo, Cursos.nome, Modalidades.nome FROM Cursos, Modalidades WHERE Modalidades.codigo = Cursos.modalidade $restricao ORDER BY Cursos.nome limit ". ($item - 1) . ",$itensPorPagina");
-    $i = $item;
-    while ($linha = mysql_fetch_array($resultado)) {
-        $i%2==0 ? $cdif="class='cdif'" : $cdif="";
-		$codigo = crip($linha[0]);
-        echo "<tr $cdif><td>".$linha[0]."</td><td>".mostraTexto($linha[1])."</td><td>".mostraTexto($linha[2])."</td><td><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a><a href='#' title='Alterar' class='item-alterar' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/config.png' /></a></td></tr>";
-        $i++;
-    }
-    mysql_close($conexao);
-    ?>
-    
-<?php require(PATH.VIEW.'/navegacao.php'); ?>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <script>
-$(document).ready(function(){
-	$(".item-excluir").click(function(){
-		var codigo = $(this).attr('id');
-		jConfirm('Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {
-			if ( r )	
-				$('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
-		});
-	});
-	    
-	$(".item-alterar").click(function(){
-		var codigo = $(this).attr('id');
-		$('#index').load('<?php print $SITE; ?>?codigo=' + codigo);
-	});
-});    
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?php print $SITE; ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
+</script>
+
+<div id="html5form" class="main">
+    <form id="form_padrao">
+        <table align="center" width="100%" id="form">
+            <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
+            <tr><td align="right">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="145" disabled value="<?php echo $nome; ?>"/></td></tr>
+            <tr><td align="right">Nome Alternativo: </td><td><input type="text" maxlength="145" style="width: 400px" title="Nome alternativo utilizado no atestado de matrícula." name="nomeAlternativo" id="nomeAlternativo" value="<?php echo $nomeAlternativo; ?>"/></td></tr>            
+            <tr><td></td>
+                <td>
+                    <input type="hidden" name="opcao" value="InsertOrUpdate" />
+                    <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" class="submit" /></td>
+                            <td><input type="reset" value="Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?php print $SITE; ?>');
+                                            void(0);" /></td>
+                        </tr></table>
+                </td></tr>
+        </table>
+    </form>
+</div>
+
+<?php
+// PAGINACAO
+$itensPorPagina = 20;
+$item = 1;
+$ordem = '';
+
+if (isset($_GET['item']))
+    $item = $_GET["item"];
+
+$res = $cursos->listRegistros($params, $item, $itensPorPagina);
+
+$totalRegistros = $cursos->count();
+$SITENAV = $SITE . '?';
+require PATH . VIEW . '/paginacao.php';
+?>
+
+<table id="listagem" border="0" align="center">
+    <tr><th align="center" width="40">#</th><th align="left">Curso</th><th align="left">Modalidade</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+    <?php
+    // efetuando a consulta para listagem
+    $i = $item;
+    foreach ($res as $reg) {
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        $codigo = crip($reg['codigo']);
+        ?>
+        <tr <?php print $cdif; ?>><td align='center'><?php print $i; ?></td>
+            <td><?php print $reg['nome']; ?>
+            </td><td><?php print $reg['modalidade']; ?></td>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
+                <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'><img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
+            </td>
+        </tr>
+        <?php
+        $i++;
+    }
+    ?>
+</table>
+<br />
+
+<script>
+    $(document).ready(function() {
+        $(".item-excluir").click(function() {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+                'type': 'question',
+                'title': '<?php print $TITLE; ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+
+                        $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                    }
+                }
+            });
+        });
+
+        $(".item-alterar").click(function() {
+            var codigo = $(this).attr('id');
+            $('#index').load('<?php print $SITE; ?>?codigo=' + codigo);           
+        });
+
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+    });
 </script>
