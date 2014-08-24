@@ -84,6 +84,8 @@ function mensagem($TIPO, $MSG, $OPT=null) {
     	$ERRO_EMAIL_NAO_CADASTRADO = "E-mail n&atilde;o cadastrado ou prontu&aacute;rio n&atilde;o localizado.";
 	$INFO_PRONTUARIO_VAZIO = "Por favor, digite o prontu&aacute;rio!";
 
+        $INFO_LDAP_ATIVADO = "O autentica&ccedil;&atilde;o LDAP est&aacute; ativada, n&atilde;o &eacute; poss&iacute;vel trocar ou recuperar a senha no WebDi&aacute;rio. Troque a senha em seu sistema de origem ou procure o suporte do campus.";
+
         // CODIGOS DE ERROS - PDO/MYSQL
         if ($OPT) {
             if ($OPT == 23000 && ($MSG=='UPDATE' || $MSG=='INSERT')) {

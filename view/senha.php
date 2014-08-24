@@ -18,7 +18,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 }
 
 if ($LDAP_ATIVADO) {
-    print "O autentica&ccedil;&atilde;o LDAP est&aacute; ativada, n&atilde;o &eacute; poss&iacute;vel trocar a senha aqui.";
+    mensagem('INFO', 'LDAP_ATIVADO');    
     die;
 }
 // Instância a classe login

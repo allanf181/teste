@@ -211,7 +211,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                 <tr><td><b>Senha:</b> </td><td><input type="text" name="ldap_password" id="ldap_password" maxlength="50" value="<?php echo $ldap_password; ?>" /></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
                 <tr><td><b>BASE DN</b> <br>(Ex. DC=ifsp,DC=local): </td><td><input type="text" name="ldap_basedn" id="ldap_basedn" maxlength="200" value="<?php echo $ldap_basedn; ?>" /></td></tr>
-                <tr><td><b>FILTER DN</b> <br>(Ex. AD(MS): sAMAccountName)<br>(OpenLDAP: cn) </td><td><input type="text" name="ldap_filter" id="ldap_filter" maxlength="50" value="<?php echo $ldap_filter; ?>" /></td></tr>
+                <tr><td><b>FILTER DN</b> <br>(Ex. AD(MS): sAMAccountName)<br>(OpenLDAP: sn ou cn) </td><td><input type="text" name="ldap_filter" id="ldap_filter" maxlength="50" value="<?php echo $ldap_filter; ?>" /></td></tr>
                 <tr><td><b>Dom&iacute;nio</b> <br>(Ex. ldap://ifsp.local e ldaps://ifsp.local para SSL): </td><td><input type="text" name="ldap_dominio" id="ldap_dominio" maxlength="200" value="<?php echo $ldap_dominio; ?>" /></td></tr>
                 <tr><td><b>Porta</b> <br>(Ex. 389 -> NO SSL e 636 -> SSL): </td><td><input type="text" name="ldap_porta" id="ldap_porta" maxlength="5" value="<?php echo $ldap_porta; ?>" /></td></tr>
 		<tr><td colspan="2"><hr></td></tr>

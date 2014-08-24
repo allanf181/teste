@@ -8,6 +8,7 @@
 require '../inc/config.inc.php';
 require FUNCOES;
 require MENSAGENS;
+require VARIAVEIS;
 require CONTROLLER . '/login.class.php';
 
 // verifica se não está sendo chamado diretamente.
@@ -37,7 +38,7 @@ if ($prontuario && $senha) {
     }
 
     if (!isset($erro_cap)) {
-        if ($login->autentica($prontuario, $senha)) {
+        if ($login->autentica($prontuario, $senha, $LDAP_ATIVADO)) {
             print "Aguarde... redirecionando...";
             print "<script type=\"text/javascript\">\n";
             print "  location.reload(); \n";
@@ -106,14 +107,18 @@ if ($prontuario && $senha) { // MOSTRA OS ERROS DO LOGIN, APÓS O FORM.
 $opcao = (isset($_GET["opcao"])) ? $_GET["opcao"] : null;
 if ($opcao == 'recuperar') {
     $prontuario = $_GET["campoLogin"];
-    if ($prontuario) {
-        if ($login->recuperaSenha($prontuario)) {
-            mensagem('OK', 'EMAIL_ENVIADO');
+    if (!$LDAP_ATIVADO) {
+        if ($prontuario) {
+            if ($login->recuperaSenha($prontuario)) {
+                mensagem('OK', 'EMAIL_ENVIADO');
+            } else {
+                mensagem('ERRO', 'EMAIL_NAO_CADASTRADO');
+            }
         } else {
-            mensagem('ERRO', 'EMAIL_NAO_CADASTRADO');
+            mensagem('INFO', 'PRONTUARIO_VAZIO');
         }
     } else {
-        mensagem('INFO', 'PRONTUARIO_VAZIO');
+        mensagem('INFO', 'LDAP_ATIVADO');
     }
 }
 ?>

@@ -8,8 +8,7 @@ class login extends Generic {
     
     // MÉTODO PARA AUTENTICAÇÃO
     // USADO POR: VIEW/LOGIN.PHP
-    public function autentica($prontuario, $senha) {
-        require VARIAVEIS;
+    public function autentica($prontuario, $senha, $LDAP_ATIVADO) {
         $bd = new database();
 
         $rs = null;
