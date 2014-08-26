@@ -98,7 +98,12 @@ if ( $status || ($_SESSION['dataExpirou'] && ($linha[7] < 0 || $linha[7]=='')))
 <hr><br>
 
 <table id="listagem" border="0" align="center" style="border: 0px solid black">
-	<tr class="listagem_tr"><th align="center" style="width: 100px">Prontuário</th><th align="center">Aluno</th><th width="120" align='center'>Faltas</th><th width="50" align='center'>Total</th><th width="85" align='center'>Frequ&ecirc;ncia na Disciplina</th></tr>
+    <tr class="listagem_tr">
+        <th align="center" style="width: 100px">Prontuário</th>
+        <th align="center">Aluno</th>
+        <th width="120" align='center'>Faltas<br /><input type="checkbox" id="select-all" value=""></th>
+        <th width="50" align='center'>Total</th><th width="85" align='center'>Frequ&ecirc;ncia na Disciplina</th>
+    </tr>
 
 		<?php
 		$i = 1;
@@ -173,5 +178,17 @@ $(document).ready(function(){
  			$('.' + codigo).prop('checked', true);
  		}
 	});
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
+        });         
 });
 </script>

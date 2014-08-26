@@ -12,6 +12,7 @@ class Avisos extends Generic {
         $bd = new database();
         $sql = "SELECT date_format(a.data, '%d/%m/%Y %H:%i') as Data, 
                 a.conteudo as Conteudo,
+                (SELECT d1.nome FROM Disciplinas d1, Atribuicoes a1 WHERE a1.disciplina = d1.codigo AND a1.codigo = a.atribuicao) as disciplina,
                 (SELECT CONCAT(codigo, '#', nome) FROM Pessoas WHERE codigo = a.pessoa) as Pessoa
                 FROM Avisos a 
                     WHERE pessoa <> :cod
@@ -43,12 +44,23 @@ class Avisos extends Generic {
                                 AND t.codigo = a.turma
                                 AND p.codigo = :cod )
                             )
+                         OR (destinatario = 0
+                            AND curso = 0 
+                            AND turma = 0 
+                            AND atribuicao IN (SELECT a.codigo 
+                                FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
+                                WHERE t.codigo = a.turma 
+                                AND m.atribuicao = a.codigo 
+                                AND m.aluno = p.codigo 
+                                AND t.codigo = a.turma
+                                AND p.codigo = :cod )
+                        )
                     )
                 ORDER BY a.data DESC
-                LIMIT 20";
+                LIMIT 50";
         
         $params = array(':cod'=> $codigo);
-
+        
         $res = $bd->selectDB($sql, $params);
         if ( $res )
         {
@@ -129,6 +141,8 @@ class Avisos extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
         
+        if ($params['atribuicao']) $att = "AND a.atribuicao = :atribuicao";
+        
         $sql = "SELECT a.codigo as codigo, date_format(a.data, '%d/%m/%Y %H:%i') as data, 
     			a.conteudo as conteudo, a.atribuicao as atribuicao,
     			(SELECT p1.nome FROM Pessoas p1 WHERE p1.codigo = a.destinatario) as destinatario,
@@ -136,10 +150,11 @@ class Avisos extends Generic {
     			(SELECT t.numero FROM Turmas t WHERE t.codigo = a.turma) as turma
     			FROM Avisos a 
     			WHERE a.pessoa = :pessoa
+                        $att
                         ORDER BY data DESC ";
 
         $sql .= "$nav";
-        
+
         $res = $bd->selectDB($sql, $params);
 
         if ( $res )

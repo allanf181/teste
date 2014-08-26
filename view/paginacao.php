@@ -5,6 +5,7 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //0
 
+if (!$DIV_SITE) $DIV_SITE = '#index';
 
 if (!$itensPorPagina)
     $itensPorPagina = 50;
@@ -44,7 +45,7 @@ if ($ultimo % $itensPorPagina > 0)
             <?php
             if ($item != $primeiro) {
                 ?>
-                <a class="nav" href="javascript:$('#index').load('<?php print $SITENAV; ?>&item=<?php echo $primeiro; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="primeiro"><img class="botao" src="<?php print ICONS; ?>/rewind.png" /></a>
+                <a class="nav" href="javascript:$('<?= $DIV_SITE ?>').load('<?php print $SITENAV; ?>&item=<?php echo $primeiro; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="primeiro"><img class="botao" src="<?php print ICONS; ?>/rewind.png" /></a>
                 <?php
             } else {
                 ?>
@@ -53,7 +54,7 @@ if ($ultimo % $itensPorPagina > 0)
             } // fecha o if
             if ($item != $anterior) {
                 ?>
-                <a class="nav" href="javascript:$('#index').load('<?php print $SITENAV; ?>&item=<?php echo $anterior; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="anterior"><img class="botao" src="<?php print ICONS; ?>/wleft.png" /></a>
+                <a class="nav" href="javascript:$('<?= $DIV_SITE ?>').load('<?php print $SITENAV; ?>&item=<?php echo $anterior; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="anterior"><img class="botao" src="<?php print ICONS; ?>/wleft.png" /></a>
                 <?php
             } else {
                 ?>
@@ -71,14 +72,14 @@ if ($ultimo % $itensPorPagina > 0)
                     $size = ($pagina == $pagAtual) ? 4 : 2;
                     $pagina++;
                     //$pagina = str_pad($pagina, strlen(intval($ultimo/$itensPorPagina)), 0, STR_PAD_LEFT);
-                    print "<font size=\"$size\"><a href=\"javascript:$('#index').load('$SITENAV&item=" . ($i + 1) . "&ordem=$ordem'); void(0);\" title=\"Página $pagina\">$pagina</a></font>\n";
+                    print "<font size=\"$size\"><a href=\"javascript:$('$DIV_SITE').load('$SITENAV&item=" . ($i + 1) . "&ordem=$ordem'); void(0);\" title=\"Página $pagina\">$pagina</a></font>\n";
                 }
             }
             // FIM DOS NUMEROS DE PAGINAS
 
             if ($item != $proximo) {
                 ?>
-                <a class="nav" href="javascript:$('#index').load('<?php print $SITENAV; ?>&item=<?php echo $proximo; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="próximo"><img class="botao" src="<?php print ICONS; ?>/wright.png" /></a>
+                <a class="nav" href="javascript:$('<?= $DIV_SITE ?>').load('<?php print $SITENAV; ?>&item=<?php echo $proximo; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="próximo"><img class="botao" src="<?php print ICONS; ?>/wright.png" /></a>
                 <?php
             } else {
                 ?>
@@ -87,7 +88,7 @@ if ($ultimo % $itensPorPagina > 0)
             } // fecha o if
             if ($item != $ultimo) {
                 ?>
-                <a class="nav" href="javascript:$('#index').load('<?php print $SITENAV; ?>&item=<?php echo $ultimo; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="último"><img class="botao" src="<?php print ICONS; ?>/fastforward.png" /></a>
+                <a class="nav" href="javascript:$('<?= $DIV_SITE ?>').load('<?php print $SITENAV; ?>&item=<?php echo $ultimo; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="último"><img class="botao" src="<?php print ICONS; ?>/fastforward.png" /></a>
                 <?php
             } else {
                 ?>

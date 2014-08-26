@@ -37,6 +37,30 @@ class Alunos extends Generic {
         {
             return false;
         }
+    }
+    
+    // USADO POR: PROFESSOR/AVISO.PHP
+    public function getAlunosFromAtribuicao($codigo) {
+        $bd = new database();
+    	$sql = "SELECT p.codigo, p.nome 
+                    FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
+                    WHERE t.codigo = a.turma AND m.atribuicao = a.codigo 
+                    AND m.aluno = p.codigo 
+                    AND t.codigo = a.turma
+                    AND a.codigo = :cod
+        	GROUP BY p.codigo ORDER BY p.nome"; 
+        $params = array(':cod'=> $codigo);
+        $res = $bd->selectDB($sql, $params);
+        print_r($params);
+        print $sql;
+        if ( $res )
+        {
+            return $res;
+        }
+        else
+        {
+            return false;
+        }
     }    
 }
 

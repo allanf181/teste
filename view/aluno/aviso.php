@@ -23,7 +23,7 @@ require PERMISSAO;
     <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
     <div class='fundo_listagem'>
     <table width="100%" align="center" style="border: 0px solid black">
-    <tr class="listagem_tr"><th align="center" style="width: 150px">Data</th>
+    <tr class="listagem_tr"><th align="center" style="width: 170px">Data</th>
         <th align="center">Conte&uacute;do</th></tr>
     <?php
     $i=0;
@@ -31,7 +31,7 @@ require PERMISSAO;
         foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
             ?>
-            <tr <?php print $cdif; ?>><td align='left'><?php print $reg['Data']; ?></td>
+    <tr <?php print $cdif; ?>><td align='left'><?php print dataPTBR($reg['Data']); ?></td>
             <td align='left'><?php print nl2br($reg['Conteudo']); ?></td>
             <?php
             $i++;
