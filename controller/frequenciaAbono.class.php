@@ -95,7 +95,7 @@ class FrequenciasAbonos extends Generic {
                                 WHEN 'R' THEN 'Regime de Exerc&iacute;cios Domiciliares'
                                 WHEN 'M' THEN 'Matr&iacute;cula ap&oacute;s inicio letivo'
                                 WHEN 'D' THEN 'Dispensa' END as tipo,
-                    (SELECT d.nome FROM Atribuicoes a, Disciplinas d 
+                    (SELECT IF(a.bimestre>0, CONCAT(d.nome, ' [',a.bimestre,'ºBIM]'), d.nome) FROM Atribuicoes a, Disciplinas d 
                         WHERE a.disciplina = d.codigo AND a.codigo = f.atribuicao) as disciplina
                     FROM FrequenciasAbonos f, Pessoas p
                     WHERE f.aluno = p.codigo 
