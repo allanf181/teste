@@ -14,33 +14,29 @@ class Aulas extends Frequencias {
     public function listAulasAluno($codigo, $atribuicao) {
         $bd = new database();
 
-        $sql = "SELECT a.quantidade as quantidade,
+        $sql = "SELECT f.quantidade as quantidade,
                 a.data as data, 
                 date_format(a.data, '%d/%m/%Y') as dataFormatada,
                 a.conteudo as conteudo
-            FROM Aulas a
-            WHERE a.atribuicao = :atr
+            FROM Aulas a, Frequencias f, Matriculas m
+            WHERE f.aula = a.codigo
+            AND f.matricula = m.codigo
+            AND m.aluno = :cod
+            AND a.atribuicao = :atr
             ORDER BY a.data, a.codigo";
 
-        $params = array(':atr' => $atribuicao);
+        $params = array(':cod' => $codigo, ':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
         if ($res) {
             $i=0;
             foreach ($res as $reg) {
-                $regFreq = explode(',', $reg['freqMat']);
-                if (!$A = $this->getFrequenciaAbono($codigo, $atribuicao, $reg['data'])) {
-                    $falta = $regFreq[0];
-                    if ($falta) {
-                        $res[$i]['falta'] = $falta;
-                    } else {
-                        $res[$i]['falta'] = str_repeat('*', $reg['quantidade']);
-                    }
-                } else {
+                if ($A = $this->getFrequenciaAbono($codigo, $atribuicao, $reg['data'])) {
                     $res[$i]['falta'] = $A[0]['tipo'];
+                } else {
+                    $res[$i]['falta'] = $reg['quantidade'];
                 }
                 $i++;
             }
-            //print_r($new_res);
             return $res;
         } else {
             return false;
@@ -91,7 +87,6 @@ class Aulas extends Frequencias {
             return false;
         }
     }
-
 }
 
 ?>
