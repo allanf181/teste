@@ -61,15 +61,17 @@ if ($_GET['opcao'] == 'insert') {
             messages: 'br'
         })
     </script>
-
+<?php
+                            require CONTROLLER . "/planoAula.class.php";
+                            $planoAula = new PlanosAula();
+                            $res = $planoAula->getConteudosAulas($atribuicao);
+                            ?>
     <div id="html5form" class="main">
         <form id="form_padrao">
             <table align="center">
                 <tr><td align="right">Semana:</td><td><select name="plano" id="plano"><option></option>;
                             <?php
-                            require CONTROLLER . "/planoAula.class.php";
-                            $planoAula = new PlanosAula();
-                            $res = $planoAula->listPlanoAulas($atribuicao);
+
                             foreach ($res as $reg) {
                                 echo "<option $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
                             }
