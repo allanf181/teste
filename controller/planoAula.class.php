@@ -24,7 +24,8 @@ class PlanosAula extends Generic {
 				WHERE a1.disciplina = d1.codigo 
                                 AND t1.codigo = a1.turma
                                 AND t.numero = t1.numero
-				AND a1.codigo = :cod)";
+				AND a1.codigo = :cod)
+                ORDER BY pa.semana";
 
         $params = array(':cod'=> $codigo);
         $res = $bd->selectDB($sql, $params);

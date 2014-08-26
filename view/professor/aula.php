@@ -71,7 +71,7 @@ if ($_GET['opcao'] == 'insert') {
                 <tr><td align="right">Semana:</td><td><select name="plano" id="plano"><option></option>;
                             <?php
                             foreach ($res as $reg) {
-                                echo "<option $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
+                                echo "<option title='".$reg['conteudo']."' $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
                             }
                             if (!$quantidade)
                                 $quantidade = $res[0]['numeroAulaSemanal'];
