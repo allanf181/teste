@@ -293,6 +293,7 @@ function resultadoBimestral($aluno, $turma, $numeroDisciplina, $final = 0, $fech
     }
 
     $media = $medias / $c;
+
     $frequencia = $frequencias / $c;
 
     $dados['mediaAvaliacao'] = $media;
@@ -463,8 +464,6 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
         $media = array_sum($medias);
     if ($tipo == 'soma') {
         $media = array_sum($medias);
-        if ($media > 10)
-            $media = 10;
     }
 
     if ($tipo == 'formula') {
@@ -477,8 +476,6 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
                     $math->registerVariable($VAR, $VAL);
             }
             $media = $math->evaluate($formula);
-            if ($media > 10)
-                $media = 10;
         } catch(Exception $e) {
             print "<div class=\"flash error\" id=\"flash_error\">"
             . "Existe um erro na f&oacute;rmula: $formula"
@@ -488,7 +485,11 @@ function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
             die;
         }
     }
-
+    
+    // GARANTINDO A MEDIA MENOR QUE 10
+    if ($media > 10)
+        $media = 10;
+    
     if ($arredondar) {
         $media = arredondar($media);
 
