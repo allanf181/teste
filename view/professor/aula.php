@@ -11,10 +11,9 @@ require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
 require SESSAO;
-
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 $atribuicao = dcrip($_GET["atribuicao"]);
 
@@ -61,21 +60,21 @@ if ($_GET['opcao'] == 'insert') {
             messages: 'br'
         })
     </script>
-<?php
-                            require CONTROLLER . "/planoAula.class.php";
-                            $planoAula = new PlanosAula();
-                            $res = $planoAula->getConteudosAulas($atribuicao);
-                            ?>
+    <?php
+    require CONTROLLER . "/planoAula.class.php";
+    $planoAula = new PlanosAula();
+    $res = $planoAula->getConteudosAulas($atribuicao);
+    ?>
     <div id="html5form" class="main">
         <form id="form_padrao">
             <table align="center">
                 <tr><td align="right">Semana:</td><td><select name="plano" id="plano"><option></option>;
                             <?php
-
                             foreach ($res as $reg) {
                                 echo "<option $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
                             }
-                            if (!$quantidade) $quantidade = $res[0]['numeroAulaSemanal'];
+                            if (!$quantidade)
+                                $quantidade = $res[0]['numeroAulaSemanal'];
                             ?></select></td></tr>
 
                 <tr><td align="right">Data: </td><td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?php echo $data; ?>" /></td></tr>
@@ -196,7 +195,7 @@ if ($LIMITE_AULA_PROF != 0) {
         });
         $('#data, #conteudo, #quantidade, #plano').change(function() {
             valida();
-        });        
+        });
 
         $('#plano').change(function() {
             $('#conteudo').val($('#plano').val());
