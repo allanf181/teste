@@ -52,7 +52,7 @@ class PlanosAula extends Generic {
                 AND a.disciplina = d.codigo 
                 AND t.codigo = a.turma
                 AND a.codigo = :cod
-                ORDER BY pa.semana";
+                ORDER BY pa.semana, pa.conteudo";
 
         $params = array(':cod'=> $codigo);
         $res = $bd->selectDB($sql, $params);
