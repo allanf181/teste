@@ -35,7 +35,7 @@ class Arquivos extends Generic {
         }
 
         //VERIFICANDO SE HÁ NO BANCO, MAS NÃO NO DIR
-        $sql = "SELECT codigo, pessoa, arquivo FROM Arquivos WHERE atribuicao = :att";
+        $sql = "SELECT codigo, pessoa, arquivo FROM Arquivos WHERE atribuicao = :att AND (arquivo <> NULL OR arquivo <> '')";
         $params = array(':att' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
         if ($res) {

@@ -24,42 +24,53 @@ $res = $arq->listArquivos($params, $item, $itensPorPagina);
 <div class='fundo_listagem'>
     <table width="100%" align="center" style="border: 0px solid black">
         <tr class="listagem_tr">
-        <th align="center" width="30">#</th><th align="center" width="300">Descri&ccedil;&atilde;o</th><th align="left" width="255">Link</th><th align="left">Arquivo</th><th align="left" width="160">Data</th></tr>
+        <th align="center" width="30">#</th>
+        <th align="center" width="200">Descri&ccedil;&atilde;o</th>
+        <th align="left" width="255">Link</th>
+        <th align="left" width="255">Arquivo</th>
+        <th align="left" width="150">Data</th>
+        </tr>
     <?php
     // efetuando a consulta para listagem
     $i = 1;
     foreach ($res as $reg) {
-        $reg['data'] = dataPTBR($reg['data']);
-        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-        if ($reg['arquivo'])
-            $path_parts = pathinfo($reg['arquivo']);
-        ?>
-        <tr <?= $cdif ?>><td align='left'><?= $i++ ?></td>
-            <td><?= nl2br(mostraTexto($reg['descricao'])) ?></td>
-            <td>
-                <?php if ($reg['link']) {
-                    ?>
-                    <img class='botao' src='<?= ICONS . 'files/internet.png' ?>' />
+            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+            if ($reg['arquivo'])
+                $path_parts = pathinfo($reg['arquivo']);
+            ?>
+            <tr <?= $cdif ?>><td align='left'><?= $i++ ?></td>
+                <td><a href="#" title="<?=$reg['descricao']?>"><?= abreviar(nl2br(mostraTexto($reg['descricao'])),25) ?></a></td>
+                <td>
+                    <?php if ($reg['link']) {
+                        ?>
+                        <img class='botao' src='<?= ICONS . 'files/internet.png' ?>' />
+                        <?php
+                    }
+                    ?>                    
+                    <a title="<?=$reg['link']?>" href="<?= $reg['link'] ?>" target="_blank"><?= abreviar($reg['link'],25) ?></a>
+                </td>
+                <td>
                     <?php
-                }
-                ?>                    
-                <a href="<?= $reg['link'] ?>" target="_blank"><?= $reg['link'] ?></a>
-            </td>
-            <td>
-                <?php
-                if ($reg['arquivo']) {
-                    if (is_file(PATH . ICONS . 'files/' . $path_parts['extension'] . '.png')) {
-                        $fileIcon = 'files/' . $path_parts['extension'] . '.png';
-                    } else {
-                        $fileIcon = 'files/file.png';
+                    if ($reg['arquivo']) {
+                        if (strlen($reg['arquivo']) > 25)
+                            $fileName = abreviar($reg['arquivo'],25).$path_parts['extension'];
+                        else
+                            $fileName = $reg['arquivo'];
+                        ?>
+                        <a title="Clique aqui para abrir o arquivo." href="<?= INC ?>/file.inc.php?type=arquivo&id=<?= crip($reg['codigo']) ?>" target="_blank">
+                            <?php
+                            if (is_file(PATH . ICONS . 'files/' . $path_parts['extension'] . '.png')) {
+                                $fileIcon = 'files/' . $path_parts['extension'] . '.png';
+                            } else {
+                                $fileIcon = 'files/file.png';
+                            }
+                            ?>
+                            <img class='botao' src='<?= ICONS . $fileIcon ?>' /></a>
+                            <a href="<?=INC?>/file.inc.php?type=arquivo&id=<?=crip($reg['codigo'])?>&pessoa=<?=crip($_SESSION['loginCodigo'])?>" target="_blank"><?= $fileName ?></a>
+                        <?php
                     }
                     ?>
-                    <img class='botao' src='<?= ICONS . $fileIcon ?>' />
-                    <?php
-                }
-                ?>
-                <a href="<?=INC?>/file.inc.php?type=arquivo&id=<?=crip($reg['codigo'])?>&pessoa=<?=crip($_SESSION['loginCodigo'])?>" target="_blank"><?= $reg['arquivo'] ?></a>
-            </td>
+                </td>
             <td><?= $reg['data'] ?></td>
         </tr>
         <?php
@@ -67,3 +78,4 @@ $res = $arq->listArquivos($params, $item, $itensPorPagina);
     ?>
 </table>
 </div>
+<br /><br /><br />

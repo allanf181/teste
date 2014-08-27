@@ -107,6 +107,7 @@ if ($_GET['pagina'] == "inserir") {
         unset($_POST['opcao']);
         unset($_POST['pagina']);
         $tipo = $_GET['pagina'];
+       
         $ret = $arq->insertOrUpdateArquivo($_POST, $local);
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
         if ($_POST['codigo'])
@@ -253,8 +254,18 @@ if ($_GET['pagina'] == "inserir") {
     ?>
     <br />
 
+    <div align="center">
     <table id="listagem" border="0" align="center">
-        <tr><th align="center" width="30">#</th><th align="center" width="200">Descri&ccedil;&atilde;o</th><th align="left" width="255">Link</th><th align="left">Arquivo</th><th align="left" width="150">Data</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+        <tr>
+            <th align="center" width="30">#</th>
+            <th align="center" width="200">Descri&ccedil;&atilde;o</th>
+            <th align="left" width="255">Link</th>
+            <th align="left" width="255">Arquivo</th>
+            <th align="left" width="150">Data</th>
+            <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
+                <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a>
+            </th>
+        </tr>
         <?php
         // efetuando a consulta para listagem
         $i = 1;
@@ -264,7 +275,7 @@ if ($_GET['pagina'] == "inserir") {
                 $path_parts = pathinfo($reg['arquivo']);
             ?>
             <tr <?= $cdif ?>><td align='left'><?= $i++ ?></td>
-                <td><a href="#" title="<?=$reg['descricao']?>"><?= abreviar(nl2br(mostraTexto($reg['descricao'])),50) ?></a></td>
+                <td><a href="#" title="<?=$reg['descricao']?>"><?= abreviar(nl2br(mostraTexto($reg['descricao'])),25) ?></a></td>
                 <td>
                     <?php if ($reg['link']) {
                         ?>
@@ -272,11 +283,15 @@ if ($_GET['pagina'] == "inserir") {
                         <?php
                     }
                     ?>                    
-                    <a title="<?=$reg['link']?>" href="<?= $reg['link'] ?>" target="_blank"><?= abreviar($reg['link'],30) ?></a>
+                    <a title="<?=$reg['link']?>" href="<?= $reg['link'] ?>" target="_blank"><?= abreviar($reg['link'],25) ?></a>
                 </td>
                 <td>
                     <?php
                     if ($reg['arquivo']) {
+                        if (strlen($reg['arquivo']) > 25)
+                            $fileName = abreviar($reg['arquivo'],25).$path_parts['extension'];
+                        else
+                            $fileName = $reg['arquivo'];
                         ?>
                         <a title="Clique aqui para abrir o arquivo." href="<?= INC ?>/file.inc.php?type=arquivo&id=<?= crip($reg['codigo']) ?>" target="_blank">
                             <?php
@@ -287,10 +302,10 @@ if ($_GET['pagina'] == "inserir") {
                             }
                             ?>
                             <img class='botao' src='<?= ICONS . $fileIcon ?>' /></a>
+                            <a title='Clique aqui para visualizar quem fez download desse arquivo.' href="#" class='item-down' id='<?= crip($reg['codigo']) ?>'><?= $fileName ?></a>                            
                         <?php
                     }
                     ?>
-                    <a title='Clique aqui para visualizar quem fez download desse arquivo.' href="#" class='item-down' id='<?= crip($reg['codigo']) ?>'><?= abreviar($reg['arquivo'],30).$path_parts['extension'] ?></a>
                 </td>
                 <td><?= $reg['data'] ?></td>
                 <td align='center'><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
@@ -303,7 +318,7 @@ if ($_GET['pagina'] == "inserir") {
         ?>
     </table>
     </div>
-
+    <br /><br /><br />
     <?php
 }
 
