@@ -11,6 +11,7 @@ mysql_set_charset('latin1');
 
 $inicio = $ano."-01-01";
 $fim = $ano."-12-31";
+$dataInicioMat = ($ano-3). "-01-01";
 
 // NOVAS MODALIDADES 
 modalidadesCursoNovo();
@@ -28,7 +29,7 @@ $db2 = "SELECT DISTINCT ED_DISC, D_NOME, CM_CDCURSO, CN_TPCURSO, CN_NOME, D_CARG
 				AND (ED_DTFINAL <= '$fim')  
 				AND ( CM_CDCURSO > 0)
         AND CN_HISTORICO = 'N'
-        AND CM_CDCURSO IN (SELECT MC_CDCURSO FROM ESCOLA.MATCURSO WHERE MC_DTINGRES > '$dataInicio' )
+        AND CM_CDCURSO IN (SELECT MC_CDCURSO FROM ESCOLA.MATCURSO WHERE MC_DTINGRES > '$dataInicioMat' )
 			ORDER BY CM_CDCURSO";
 $res = db2_exec($conn, $db2);
 

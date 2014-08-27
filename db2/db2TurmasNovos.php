@@ -11,6 +11,7 @@ mysql_set_charset('latin1');
 
 $dataInicio = $ano . "-01-01"; // DATA INICIO DO PERIODO LETIVO
 $dataFim = $ano . "-12-31"; // DATA FINAL DO PERIODO LETIVO
+$dataInicioMat = ($ano-3). "-01-01";
 
 turnos(); // CRIA OS TURNOS
 
@@ -23,7 +24,7 @@ $db2 = "SELECT DISTINCT EM_MODULO, EM_EVENTOM, EM_DTINICIO, CM_MODUSEQ,
 			WHERE (cn_tpcurso in ('3', '5')) AND (em_modulo is not null ) 
 			AND (EM_DTINICIO >= '$dataInicio')
 			AND CN_HISTORICO = 'N'
-			AND CM_CDCURSO IN (SELECT MC_CDCURSO FROM ESCOLA.MATCURSO WHERE MC_DTINGRES > '$dataInicio' )			
+			AND CM_CDCURSO IN (SELECT MC_CDCURSO FROM ESCOLA.MATCURSO WHERE MC_DTINGRES > '$dataInicioMat' )			
 			ORDER BY EM_MODULO, EM_DTINICIO , em_periodo, em_eventom";
 
 $res = db2_exec($conn, $db2);
