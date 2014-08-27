@@ -42,6 +42,9 @@ if ($_GET['pagina']) {
 if ($_POST['atribuicao'])
     $_GET['atribuicao'] = $_POST['atribuicao'];
 $atribuicao = $_GET["atribuicao"];
+
+$caracteres = 3000; // total do textarea
+
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
@@ -212,43 +215,43 @@ if ($_GET['pagina'] == "planoEnsino") {
                 </tr>
                 <tr>
                     <td align="left">Ementa: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='ementa' name='ementa'><?= $ementa; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='ementa' name='ementa'><?= $ementa; ?></textarea>
                 </tr>
                 <tr>
                     <td align="left">Objetivo: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='objetivo' name='objetivo'><?= $objetivo; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='objetivo' name='objetivo'><?= $objetivo; ?></textarea>
                 </tr>
                 <tr>
                     <td align="left">Conte&uacute;do Program&aacute;tico: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='conteudoProgramatico' name='conteudoProgramatico'><?= $conteudoProgramatico; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='conteudoProgramatico' name='conteudoProgramatico'><?= $conteudoProgramatico; ?></textarea>
                 </tr>
                 <tr>
                     <td align="left">Metodologia: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='metodologia' name='metodologia'><?= $metodologia; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='metodologia' name='metodologia'><?= $metodologia; ?></textarea>
                 </tr>
                 <tr>
                     <td align="left">Recurso Did&aacute;tico: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='recursoDidatico' name='recursoDidatico'><?= $recursoDidatico; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recursoDidatico' name='recursoDidatico'><?= $recursoDidatico; ?></textarea>
                 </tr>
                 <tr>
                     <td align="left">Avalia&ccedil;&atilde;o: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='avaliacao' name='avaliacao'><?= $avaliacao; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='avaliacao' name='avaliacao'><?= $avaliacao; ?></textarea>
                 </tr>  
                 <tr>
                     <td align="left">Recupera&ccedil;&atilde;o Paralela: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='recuperacaoParalela' name='recuperacaoParalela'><?= $recuperacaoParalela; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recuperacaoParalela' name='recuperacaoParalela'><?= $recuperacaoParalela; ?></textarea>
                 </tr>  
                 <tr>
                     <td align="left"><?= $titleRecuperacao ?></td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='recuperacaoFinal' name='recuperacaoFinal'><?= $recuperacaoFinal; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recuperacaoFinal' name='recuperacaoFinal'><?= $recuperacaoFinal; ?></textarea>
                 </tr>
                 <tr>
                     <td align="left">Bibliografia B&aacute;sica: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='bibliografiaBasica' name='bibliografiaBasica'><?= $bibliografiaBasica; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='bibliografiaBasica' name='bibliografiaBasica'><?= $bibliografiaBasica; ?></textarea>
                 </tr>
                 <tr>
                     <td align="left">Bibliografia Complementar: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='2000' id='bibliografiaComplementar' name='bibliografiaComplementar'><?= $bibliografiaComplementar; ?></textarea>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='bibliografiaComplementar' name='bibliografiaComplementar'><?= $bibliografiaComplementar; ?></textarea>
                 </tr>
             </table>
             <table width="100%"><tr><td><input type="submit" <?= $disabled; ?> value="Salvar" /></td></tr></table>
@@ -365,7 +368,7 @@ $atribuicao = $_GET['atribuicao'];
     $(document).ready(function() {
         $('#ementa,#objetivo,#conteudoProgramatico,#metodologia,#recursoDidatico,#avaliacao,#recuperacaoParalela,#recuperacaoFinal,#bibliografiaBasica,#bibliografiaComplementar').maxlength({
             events: [], // Array of events to be triggerd    
-            maxCharacters: 2000, // Characters limit   
+            maxCharacters: <?= $caracteres ?>, // Characters limit   
             status: true, // True to show status indicator bewlow the element    
             statusClass: "status", // The class on the status div  
             statusText: "caracteres restando", // The status text  
