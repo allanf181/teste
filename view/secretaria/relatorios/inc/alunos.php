@@ -52,6 +52,7 @@ if (isset($_GET["curso"]) && isset($_GET["turma"])) {
     if (($_GET["cidade"])=='true'){
         $cidade = ", c.nome";
         $titulosColunas[]="Cidade";
+        $largura[]=25;
     }
     if (($_GET["telefone"])=='true'){
         $telefone = ", a.telefone";
@@ -62,18 +63,14 @@ if (isset($_GET["curso"]) && isset($_GET["turma"])) {
         $celular = ", a.celular";
         $titulosColunas[]="Celular";
         $largura[]=18;
-        $largura[]=18;
     }
     if (($_GET["email"])=='true'){
         $email = ", a.email";
         $titulosColunas[]="Email";
         $largura[]=40;
     }
-    if (($_GET["obs"])=='true'){
-        $obs = ", ''";
-        $titulosColunas[]="Observação";
-        $largura[]=40;
-    }
+    $largura[]='';
+    
     $restricao = ""; // padrão é sem restrição
     
     // restrições

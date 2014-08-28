@@ -84,7 +84,6 @@ require SESSAO;
             try { var telefone = document.getElementById("alunos_telefone").checked; } catch (e) {}
             try { var celular = document.getElementById("alunos_celular").checked; } catch (e) {}
             try { var email = document.getElementById("alunos_email").checked; } catch (e) {}
-            try { var obs = document.getElementById("alunos_obs").checked; } catch (e) {}
 
 						var det = 0;
 						if (tipo == 'ftdd')
@@ -96,7 +95,7 @@ require SESSAO;
             if (impressao=='pdf')
                 window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/'+tipo+'.php?curso='+curso+'&turma='+turma+'&bimestre='+bimestre+'&aluno='+aluno+'&atribuicao='+disciplina+'&data='+data1+'&situacao='+situacao
                 +'&rg='+rg+'&cpf='+cpf+'&nasc='+nasc+'&endereco='+endereco+'&bairro='+bairro+'&cidade='+cidade+'&telefone='+telefone+'&celular='+celular+'&professor='+professor+
-            '&email='+email+'&obs='+obs+'&detalhada='+det,'_blank');
+            '&email='+email+'&detalhada='+det,'_blank');
             else
                 window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/'+tipo+'Html.php?curso='+curso+'&turma='+turma,'_blank');
         }
@@ -175,6 +174,7 @@ require SESSAO;
                 <input type="checkbox" id="alunos_cidade" value="1" /><label for="alunos_cidade">Cidade</label>
                 <input type="checkbox" id="alunos_telefone" value="1" checked="checked" /><label for="alunos_telefone">Telefone</label>
                 <input type="checkbox" id="alunos_celular" value="1" checked="checked" /><label for="alunos_celular">Celular</label>
+                <input type="checkbox" id="alunos_email" value="1" checked="checked" /><label for="alunos_email">E-mail</label>
             </td></tr>
         <?php } ?>
         <tr><td colspan="3">&nbsp;</td></tr>
