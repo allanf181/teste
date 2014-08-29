@@ -35,7 +35,7 @@ Abstract class Generic {
         if (!$params['codigo']) {
             $sql = "INSERT INTO $table ($COL) VALUES ($INS)";
             unset($params['codigo']);
-            $res = $bd->insertDB($sql, $params);   
+            $res = $bd->insertDB($sql, $params); 
         } else {
             $sql = "UPDATE $table SET $UP "
                 . "WHERE codigo=:codigo";

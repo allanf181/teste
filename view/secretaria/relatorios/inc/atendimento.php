@@ -7,7 +7,7 @@ require FUNCOES;
 
 include PATH . LIB . '/fpdf17/pdfDiario.php';
 
-require CONTROLLER . "/ftdDados.class.php";
+require CONTROLLER . "/ftdDado.class.php";
 $ftd = new FTDDados();
 
 $curso = dcrip($_GET["curso"]);

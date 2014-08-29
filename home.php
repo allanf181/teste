@@ -172,7 +172,7 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
     }
 
     // Verificando se há correções para a FTD
-    require CONTROLLER . "/ftdDados.class.php";
+    require CONTROLLER . "/ftdDado.class.php";
     $ftd = new FTDDados();
     $res = $ftd->hasChangeFtd($user, $ANO, $SEMESTRE);
     if ($res['ftdSolicitacao']) {

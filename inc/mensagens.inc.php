@@ -70,6 +70,7 @@ function mensagem($TIPO, $MSG, $OPT=null) {
 	$NOT_SELECT = "Nenhum registro selecionado.";
 	
         $OK_VALID_FTD = $OPT.' validou sua FTD.';
+        $OK_FINISH_FTD = 'FTD finalizada, aguardando valiada&ccedil;&atilde;o do coordenador.';
         $INFO_INVALID_FTD = $OPT[0].', solicitou corre&ccedil;&atilde;o em seu FTD: <br>'.$OPT[1];
 	$OK_NOT_SAVE_FTD = "Ol&aacute; Professor, como ainda n&atilde;o salvou sua FTD, o sistema tentou buscar seus hor&aacute;rios para facilitar.";
 	

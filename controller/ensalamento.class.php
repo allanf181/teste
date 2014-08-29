@@ -14,7 +14,7 @@ class Ensalamentos extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
-            $sql = "SELECT e.codigo, p.nome as professor, d.numero as discNumero,
+        $sql = "SELECT e.codigo, p.nome as professor, d.numero as discNumero,
                         t.numero as turma, e.diaSemana, s.nome as sala, 
                         h.nome as horario, date_format(h.inicio, '%H:%i') as inicio,
                         date_format(h.fim, '%H:%i') as fim
@@ -42,7 +42,7 @@ class Ensalamentos extends Generic {
     }
 
     // MÉTODO PARA INSERÇÃO DE OBJETO
-    // USADO POR: VIEW/ALUNO/HORARIO.PHP
+    // USADO POR: VIEW/COMMON/ENSALAMENTO.PHP
     public function getEnsalamento($codigo, $tipo, $ano, $semestre, $subturma = null) {
         $bd = new database();
 
@@ -93,6 +93,35 @@ class Ensalamentos extends Generic {
             $params = array(':cod' => $codigo, ':sub' => $subturma,
                 ':ano' => $ano, ':sem' => $semestre);
 
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
+
+    public function getEnsalamentosFTD($pessoa, $ano, $semestre) {
+        $bd = new database();
+
+
+        $sql = "SELECT e.diaSemana, h.nome, date_format(h.inicio, '%H:%i') as ini, 
+                    date_format(h.fim, '%H:%i') as fim, p.telefone, p.celular, p.email
+                    FROM Ensalamentos e, Horarios h, Pessoas p, Atribuicoes a, Turmas t, Professores pr
+		    WHERE h.codigo = e.horario
+                    AND a.turma = t.codigo
+                    AND pr.atribuicao = a.codigo
+		    AND pr.professor = e.professor
+		    AND p.codigo = e.professor
+                    AND e.atribuicao = a.codigo
+		    AND t.ano = :ano 
+                    AND (t.semestre = :sem OR t.semestre = 0)
+                    AND e.professor = :pessoa 
+		    GROUP BY h.inicio, h.fim, e.diaSemana
+		    ORDER BY e.diaSemana, h.inicio ASC";
+
+        $params = array(':pessoa' => $pessoa, ':ano' => $ano, ':sem' => $semestre);
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
