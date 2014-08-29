@@ -201,6 +201,10 @@ if (!empty($_GET["turma"])) {
         $sqlBimestre = " IN (SELECT t1.codigo FROM Turmas t1 
 			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
 			WHERE t2.codigo = $turma)) AND a.bimestre=$bimestre ";
+    else if ($bimestre == 'final' && $fechamento == 'b') 
+        $sqlBimestre = " IN (SELECT t1.codigo FROM Turmas t1 
+			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
+			WHERE t2.codigo = $turma))";
     else
         $sqlBimestre = " = $turma";
 
@@ -215,7 +219,7 @@ if (!empty($_GET["turma"])) {
 			WHERE a.turma 
 			$sqlBimestre 
 			ORDER BY a.bimestre, d.nome, al.nome";
-    //echo $sql;
+    echo $sql;
     $resultado = mysql_query($sql);
     if ($resultado)
         while ($l = mysql_fetch_array($resultado)) {
