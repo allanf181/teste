@@ -63,6 +63,10 @@ if ($ano && $semestre) {
 		$pdf->Cell(230, 27, utf8_decode("R E L A T Ó R I O   D E   F R E Q U Ê N C I A"), 1, 0, 'C', false);
 
 		$i=0;
+                
+                require CONTROLLER . "/frequencia.class.php";
+                $frequencia = new Frequencias();
+                
 	    while ($l = mysql_fetch_array($resultado)) {
 			if (!$i) {
 				$pdf->Cell(85, 13.5, utf8_decode("TURMA: $l[7]"), 1, 2, 'C', false);
@@ -84,7 +88,7 @@ if ($ano && $semestre) {
 
 			$pdf->Ln();
 
-	   	$dados = getFrequencia($l[5], $l[6]);
+	   	$dados = $frequencia->getFrequencia($l[5], $l[6]);
 
 			$pdf->Cell(30, $alturaLinha, utf8_decode($l[0]), 1, 0, 'C', true);
 			$pdf->Cell(70, $alturaLinha, utf8_decode($l[1]), 1, 0, 'C', true);

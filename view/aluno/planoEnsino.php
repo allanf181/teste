@@ -15,6 +15,9 @@ require PERMISSAO;
 $atribuicao = dcrip($_GET["atribuicao"]);
 $aluno = $_SESSION["loginCodigo"];
 
+require CONTROLLER . "/professor.class.php";
+$professor = new Professores();
+    
 require CONTROLLER . "/planoEnsino.class.php";
 $plano = new PlanosEnsino();
 $res = $plano->listPlanoEnsino($atribuicao, 'validado');
@@ -50,11 +53,11 @@ if ($res) {
     $modalidade = $res["modalidade"];
     $finalizado = $res["finalizado"];
     $curso = $res["curso"];
-
+        
     $professores = '';
-    foreach (getProfessor(dcrip($_GET['atribuicao'])) as $key => $reg)
+    foreach ($professor->getProfessor(dcrip($_GET['atribuicao'])) as $key => $reg)
         $professores[] = "<a target=\"_blank\" href=" . $reg['lattes'] . ">" . $reg['nome'] . "</a>";
-    $professor = implode(" / ", $professores);
+    $professores = implode(" / ", $professores);
     ?>
     <div class='fundo_listagem'>
         <table border="1" width="100%" cellpadding="2" cellspacing="0">
@@ -72,7 +75,7 @@ if ($res) {
                             </tr>
                             <tr><td>TOTAL DE HORAS: <b><?php print $totalHoras; ?></b></td><td>TOTAL DE AULAS: <b><?php print $totalAulas; ?></b></td>
                                 <td>NÚMERO DE PROFESSORES: <b><?php print $numeroProfessores; ?></b></td></tr>
-                            <tr><td colspan="3">PROFESSOR(A) RESPONSÁVEL: <b><?php print $professor; ?></b></td></tr>
+                            <tr><td colspan="3">PROFESSOR(A) RESPONSÁVEL: <b><?php print $professores; ?></b></td></tr>
                             </table>
                             <br>
                             <?php

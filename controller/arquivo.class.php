@@ -223,7 +223,7 @@ class Arquivos extends Generic {
             }
             return '';
         } else {
-            $rs = "A pasta " . ARQUIVOS . " n&atilde;o exite ou n&atilde;o tem permiss&atilde;o de escrita por: " . get_current_user();
+            $rs = "A pasta " . ARQUIVOS . " n&atilde;o exite ou n&atilde;o tem permiss&atilde;o de escrita por: " . `whoami`;
             return $rs;
         }
     }

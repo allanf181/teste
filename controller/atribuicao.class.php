@@ -1,6 +1,7 @@
 <?php
-if(!class_exists('Generic'))
-    require_once CONTROLLER.'/generic.class.php';
+
+if (!class_exists('Generic'))
+    require_once CONTROLLER . '/generic.class.php';
 
 class Atribuicoes extends Generic {
 
@@ -22,16 +23,16 @@ class Atribuicoes extends Generic {
             return false;
         }
     }
-    
+
     // USADO POR: ALUNO/ALUNO.PHP, PROFESSOR/PROFESSOR.PHP, PROFESSOR/PLANO.PHP
     // BOLETIM.PHP
     // Retorna dados da atribuicao (Disciplina, Turma, etc..)
     // Pode ser colocado com função no MySQL futuramente
-    public function getAtribuicao($codigo, $LIMITE_AULA_PROF=0, $LIMITE_DIARIO_PROF=0) {
+    public function getAtribuicao($codigo, $LIMITE_AULA_PROF = 0, $LIMITE_DIARIO_PROF = 0) {
         $bd = new database();
-        
+
         $LIMITE_AULA_PROF1 = $LIMITE_AULA_PROF * 2;
-       
+
         $sql = "SELECT d.nome as disciplina, t.numero as turma, a.status, a.prazo,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
                 a.bimestre as bimestre, c.fechamento as fechamento,
@@ -68,10 +69,10 @@ class Atribuicoes extends Generic {
             return false;
         }
     }
-    
+
     // LISTA AS ATRIBUICOES DO PROFESSOR/ALUNO
     // USADO POR: INDEX.PHP (PARA MONTAR O MENU DO PROFESSOR)
-    public function listAtribuicoes($codigo, $papel, $menu=null) {
+    public function listAtribuicoes($codigo, $papel, $menu = null) {
         $bd = new database();
 
         $ANO = $_SESSION["ano"];
@@ -105,44 +106,75 @@ class Atribuicoes extends Generic {
 				AND p.codigo=:cod
                                 AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
                                 AND t.ano = $ANO
-				ORDER BY d.numero, at.bimestre";        
-        $params = array(':cod'=> $codigo);
+				ORDER BY d.numero, at.bimestre";
+        $params = array(':cod' => $codigo);
         $res = $bd->selectDB($$papel, $params);
-        if (!$menu) return $res;
-        
-        if ( $res )
-        {
+        if (!$menu)
+            return $res;
+
+        if ($res) {
             foreach ($res as $reg) {
                 $reg['disciplina'] = $reg['disciplina'];
                 $reg['curso'] = $reg['curso'];
-                if (isset($reg['evento']) && !$reg['subturma']) $reg['subturma'] = $reg['evento'];
-                if (isset($reg['subturma'])) $reg['numero']=$reg['numero'].' ['.$reg['turma'].'-'.$reg['subturma'].']';
-            					
-                $curso=($reg['cursoAlt']) ? $reg['cursoAlt'] : $reg['curso'];
+                if (isset($reg['evento']) && !$reg['subturma'])
+                    $reg['subturma'] = $reg['evento'];
+                if (isset($reg['subturma']))
+                    $reg['numero'] = $reg['numero'] . ' [' . $reg['turma'] . '-' . $reg['subturma'] . ']';
+
+                $curso = ($reg['cursoAlt']) ? $reg['cursoAlt'] : $reg['curso'];
                 if (isset($reg['codigoModalidade'])) {
-                    if ( ($reg['codigoModalidade'] < 1000 || $reg['codigoModalidade'] >= 2000) && !$reg['cursoAlt']) 
-                        $curso = $reg['curso'] .'-'. $reg['modalidade'];
+                    if (($reg['codigoModalidade'] < 1000 || $reg['codigoModalidade'] >= 2000) && !$reg['cursoAlt'])
+                        $curso = $reg['curso'] . '-' . $reg['modalidade'];
                 }
-            
+
                 // SE FOR ANUAL
                 if ($reg['semestre'] == 0)
-                    $disciplinas[$reg['ano']]['A']['A'][$reg['atribuicao']] = array($reg['disciplina'],$reg['atribuicao'],$reg['numero'],$reg['curso']);
-                
+                    $disciplinas[$reg['ano']]['A']['A'][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso']);
+
                 // SE FOR SEMESTRAL
                 if ($reg['bimestre'] == 0)
-                    $disciplinas[$reg['ano']][$reg['semestre']]['S'][$reg['atribuicao']] = array($reg['disciplina'],$reg['atribuicao'],$reg['numero'],$reg['curso']);
+                    $disciplinas[$reg['ano']][$reg['semestre']]['S'][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso']);
 
                 // SE FOR BIMESTRAL
-                if ($reg['bimestre'] != 0) 
-                    $disciplinas[$reg['ano']][$reg['semestre']]['B'][$reg['bimestre']][$reg['atribuicao']] = array($reg['disciplina'],$reg['atribuicao'],$reg['numero'],$reg['curso']);
+                if ($reg['bimestre'] != 0)
+                    $disciplinas[$reg['ano']][$reg['semestre']]['B'][$reg['bimestre']][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso']);
             }
             return $disciplinas;
         }
-        else
-        {
+        else {
             return false;
         }
     }
+
+    // USADO POR: PROFESSOR/NOTA.PHP
+    // Lista as atribuicoes dos bimestres do mesmo número da disciplina
+    public function listAtribuicoesOfBimestre($atribuicao) {
+        $bd = new database();
+
+        $sql = "SELECT a2.codigo, a2.bimestre 
+                    FROM Atribuicoes a2 
+                    WHERE a2.turma IN (
+				SELECT t1.codigo FROM Turmas t1 
+				WHERE t1.numero IN ( SELECT t.numero 
+                                                FROM Atribuicoes a, Turmas t 
+                                                WHERE a.turma = t.codigo 
+                                                AND a.codigo = :att)
+                                )
+                    AND a2.disciplina = (SELECT a3.disciplina 
+                                               FROM Atribuicoes a3 
+                                                WHERE a3.codigo = :att)
+                    AND a2.subturma = (SELECT a4.subturma 
+                                            FROM Atribuicoes a4 
+                                            WHERE a4.codigo = :att)";
+        $params = array(':att' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 ?>

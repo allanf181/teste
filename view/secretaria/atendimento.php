@@ -13,6 +13,9 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
+require CONTROLLER . "/ftdDados.class.php";
+$ftd = new FTDDados();
+
 if (isset($_GET["professor"])) {
 	$professor = dcrip($_GET["professor"]);
 	if ($professor != 'Todos') $restricao = " AND p.codigo = $professor";
@@ -118,7 +121,7 @@ if (mysql_num_rows($resultado) > 0) {
 		print "<tr><td width=\"100\"><img alt=\"foto\" style=\"width: 100px; height: 90px\" src=\"".INC."/file.inc.php?type=pic&id=".crip($l[0])."\" /></td>\n";
 		print "<td>$url</a></td>\n";
 		print "<td width=\"200\">\n";
-		foreach(getAtendimentoAluno($l[0]) as $dia => $h) {
+		foreach($ftd->getAtendimentoAluno($l[0], $ANO, $SEMESTRE) as $dia => $h) {
 			$diaSemana = $dias[$dia+1];
 			$ES = $h[1].' &agrave;s '.$h[2];
 			print "$diaSemana das $ES<br>";

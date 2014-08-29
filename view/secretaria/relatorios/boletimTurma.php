@@ -14,6 +14,12 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
+require CONTROLLER . "/professor.class.php";
+$professor = new Professores();
+
+require CONTROLLER . "/nota.class.php";
+$nota = new Notas();
+
 $data = date("d/m/Y", time()); // data atual
 $turma = "";
 
@@ -224,12 +230,12 @@ if (!empty($_GET["turma"])) {
             $situacaoSigla[$l[0]][$l[8]] = $l[12];
 
             $professores = '';
-            foreach (getProfessor($l[8]) as $key => $reg)
+            foreach ($professor->getProfessor($l[8]) as $key => $reg)
                 $professores[] = $reg['nome'];
-            $professor = implode(" / ", $professores);
+            $professores = implode(" / ", $professores);
 
-            $disciplinasNomes[$l[13]][$l[8]][$l[3]] = $l[4] . " - " . $professor;
-            $disciplnasStatusNomes[$l[2]][$l[6]] = $l[4] . " (" . $professor . ")";
+            $disciplinasNomes[$l[13]][$l[8]][$l[3]] = $l[4] . " - " . $professores;
+            $disciplnasStatusNomes[$l[2]][$l[6]] = $l[4] . " (" . $professores . ")";
             $disciplnasStatus[$l[2]] = $l[6];
         }
 
@@ -308,7 +314,7 @@ if (!empty($_GET["turma"])) {
             foreach ($disciplinas as $dCodigo => $dMatricula) {
                 if ($situacaoListar[$c][$dCodigo]) {
                     if ($situacaoHabilitar[$c][$dCodigo]) {
-                        $dados = resultado($dMatricula[$c], $dCodigo);
+                        $dados = $nota->resultado($dMatricula[$c], $dCodigo);
                         print "<td align='center'><a title='Situa&ccedil;&atilde;o: " . $dados['situacao'] . "<br>Faltas: " . $dados['faltas'] . "<br>Aulas Dadas: " . $dados['auladada'] . "<br>Frequ&ecirc;ncia: " . arredondar($dados['frequencia']) . "%'><font color='" . $dados['color'] . "'>" . $dados['media'] . "</font></a></td>";
                     } else {
                         print "<td align='center'><a title='" . $situacaoNome[$c][$dCodigo] . "'>" . $situacaoSigla[$c][$dCodigo] . "</a></td>";
@@ -320,12 +326,12 @@ if (!empty($_GET["turma"])) {
             if ($bimestre == 'final' && $fechamento == 'b') {
                 if ($disciplinasMediaNome)
                     foreach ($disciplinasMediaNome as $dCodigo => $dNumero) {
-                        $mediaAnual = resultadoBimestral($c, $turma, $dNumero);
+                        $mediaAnual = $nota->resultadoBimestral($c, $turma, $dNumero);
                         print "<td align='center'><font color='" . $mediaAnual['color'] . "'>" . arredondar($mediaAnual['media']) . "</font></td>";
                     }
             }
 
-            $dadosGlobal = resultadoModulo($c, $turma);
+            $dadosGlobal = $nota->resultadoModulo($c, $turma);
 
             if (!$media = $dadosGlobal['mediaGlobal'])
                 $media = '-';

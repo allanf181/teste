@@ -13,6 +13,12 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
+require CONTROLLER . "/professor.class.php";
+$prof = new Professores();
+
+require CONTROLLER . "/notaFinal.class.php";
+$nota = new NotasFinais();
+    
 if ($_GET["opcao"] == 'controleDiario') {
     $v = $_GET["valor1"];
     $prazos = explode(',', $_GET["prazo"]);
@@ -31,7 +37,7 @@ if ($_GET["opcao"] == 'controleDiario') {
         }
 
         if ($status <> 0) {
-            if ($r = fecharDiario($atribuicao)) {
+            if ($r = $nota->fecharDiario($atribuicao)) {
                 mensagem('NOK', 'FALSE_UPDATE');
                 $erro = 1;
             }
@@ -267,16 +273,16 @@ if (!empty($curso)) {
         if ($resultado) {
             while ($linha = mysql_fetch_array($resultado)) {
                 $professores = '';
-                foreach (getProfessor($linha[0]) as $key => $reg)
+                foreach ($prof->getProfessor($linha[0]) as $key => $reg)
                     $professores[] = $reg['nome'];
-                $prof = implode("<br>", $professores);
+                $professores = implode("<br>", $professores);
 
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 if ($linha[5] != 0)
                     $bimestre = "[" . $linha[5] . "º Bim]";
                 echo "<tr $cdif><td align='center'>$i</td>";
                 echo "<td><a target='_blank' href='relatorios/diarioProfessor.php?atribuicao=" . crip($linha[0]) . "'>$bimestre " . mostraTexto($linha[1]) . "</a></td>";
-                echo "<td align='left'>" . mostraTexto($prof) . "</td><td align=left>$linha[3]</td>";
+                echo "<td align='left'>" . mostraTexto($professores) . "</td><td align=left>$linha[3]</td>";
                 $bloqueado = "";
                 $origem = "";
 
@@ -383,11 +389,11 @@ if (!empty($curso)) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
 
             $professores = '';
-            foreach (getProfessor($linha[2]) as $key => $reg)
+            foreach ($prof->getProfessor($linha[2]) as $key => $reg)
                 $professores[] = $reg['nome'];
-            $prof = implode("<br>", $professores);
+            $professores = implode("<br>", $professores);
 
-            echo "<tr $cdif><td align='center'>$i</td><td>$linha[0]</td><td>$linha[1]</a></td><td>$prof</td><td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td></tr>";
+            echo "<tr $cdif><td align='center'>$i</td><td>$linha[0]</td><td>$linha[1]</a></td><td>$professores</td><td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td></tr>";
             $i++;
         }
         mysql_close($conexao);

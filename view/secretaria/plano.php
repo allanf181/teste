@@ -235,7 +235,7 @@ if (!empty($curso)) {
 				AND (a.bimestre = 0 OR a.bimestre = 1)
 				AND t.ano=$ano
 				AND (t.semestre=$semestre OR t.semestre=0)
-                                AND (pe.finalizado <> '' AND pe.finalizado <> '0000-00-00 00:00:00')
+                                AND (pe.finalizado IS NOT NULL AND pe.finalizado <> '' AND pe.finalizado <> '0000-00-00 00:00:00')
         and d.curso=c.codigo $restricao
         GROUP BY a.codigo
         order by d.nome";
@@ -259,6 +259,9 @@ if (!empty($curso)) {
 
                     $i = 1;
                     if ($resultado) {
+                        require CONTROLLER . "/professor.class.php";
+                        $professor = new Professores();
+                        
                         while ($linha = mysql_fetch_array($resultado)) {
                             $checked = '';
                             $correcao = 0;
@@ -269,14 +272,14 @@ if (!empty($curso)) {
                             $coordenador = $linha[8];
 
                             $professores = '';
-                            foreach (getProfessor($linha[0]) as $key => $reg)
+                            foreach ($professor->getProfessor($linha[0]) as $key => $reg)
                                 $professores[] = $reg['nome'];
-                            $professor = implode("<br>", $professores);
+                            $professores = implode("<br>", $professores);
 
                             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                             echo "<tr $cdif style='height: 40px'><td align='center'>$i</td>";
                             echo "<td><a target='_blank' href='" . VIEW . "/secretaria/relatorios/inc/planoEnsino.php?atribuicao=" . crip($linha[0]) . "' title=\"$linha[7]\">" . mostraTexto($linha[1]) . "</a></td>";
-                            echo "<td align='left'>" . mostraTexto($professor) . "</td><td align='left'>$linha[3]</td>";
+                            echo "<td align='left'>" . mostraTexto($professores) . "</td><td align='left'>$linha[3]</td>";
 
                             if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
                                 if ($valido != "00/00/0000 00:00" && $valido != "")

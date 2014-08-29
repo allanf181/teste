@@ -21,12 +21,17 @@ if (dcrip($_GET["bimestre"]))
 require CONTROLLER . "/matricula.class.php";
 $matricula = new Matriculas();
 
+require CONTROLLER . "/nota.class.php";
+$nota = new Notas();
+
 $res = $matricula->getDadosMatricula($aluno, $turma, $bimestre);
 
-$resultadoGlobal = resultadoModulo($aluno, $turma);
+$resultadoGlobal = $nota->resultadoModulo($aluno, $turma);
 
 require CONTROLLER . "/avaliacao.class.php";
 $avaliacao = new Avaliacoes();
+
+
 ?>
 <center>
     <div class='fundo_listagem'>
@@ -50,11 +55,15 @@ $avaliacao = new Avaliacoes();
         <br />
 
         <?php
+        require CONTROLLER . "/professor.class.php";
+        $professor = new Professores();
+        
         foreach ($res as $reg) {
             $professores = '';
-            foreach (getProfessor($reg['atribuicao']) as $key => $reg1)
+            foreach ($professor->getProfessor($reg['atribuicao']) as $key => $reg1)
                 $professores[] = "<a target=\"_blank\" href=" . $reg1['lattes'] . "><font color='white'>" . $reg1['nome'] . "</font></a>";
-            $professor = implode("<br>", $professores);
+            
+            $professores = implode("<br>", $professores);
 
             if ($reg['bimestre'])
                 $bimestre = " - ".$reg['bimestre']."&ordm; BIMESTRE";
@@ -65,10 +74,10 @@ $avaliacao = new Avaliacoes();
                 <tr class='cdif'>
                     <th colspan="2"><?= $reg['disciplina'] ?> <?= $bimestre ?></th>
                     <th style='width: 100px'><?= $reg['numero'] ?></th>
-                    <th colspan="3"><?= $professor ?></tr>
+                    <th colspan="3"><?= $professores ?></tr>
 
                 <?php
-                $dados = resultado($reg['matricula'], $reg['atribuicao']);
+                $dados = $nota->resultado($reg['matricula'], $reg['atribuicao']);
                 ?>
                 <tr class='cdif'>
                     <th>Situa&ccedil;&atilde;o</th>
@@ -96,12 +105,20 @@ $avaliacao = new Avaliacoes();
                 $i = 0;
                 $aval = $avaliacao->listAvaliacoesAluno($aluno, $reg['atribuicao']);
                 foreach ($aval as $a) {
+                    if ($a['calculo'] == 'FORMULA')
+                        $aval = str_replace ('$', '', $a['formula']);
+                    else
+                        $aval =  $$a['calculo'].' '.$a['peso'];
+                    
+                    if ($a['avaliacao'] == 'recuperacao')
+                        $aval = $$a['avalCalculo'];
+                    
                     $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                     ?>
                     <tr <?= $cdif ?>>
                         <td align='center' colspan='3'><?= $a['nome'] ?></td>
                         <td align='center'><?= $a['data'] ?></td>
-                        <td align='center'><?= $$a['calculo'] ?> <?= $a['peso'] ?></td>
+                        <td align='center'><?= $aval ?></td>
                         <td align='center'><?= $a['nota'] ?></td>
                     </tr>
                     <?php

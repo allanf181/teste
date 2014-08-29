@@ -207,7 +207,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 		<tr><td colspan="2"><h3><b>Autentica&ccedil;&atilde;o LDAP</b></h3></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
                 <tr><td width="400"><b>Ativar LDAP para autentica&ccedil;&atilde;o:</b> </td><td><input type='checkbox' <?php if ($ldap_ativado != '') print "checked"; ?> id='ldap_ativado' name='ldap_ativado' value='1' /></td></tr>
-                <tr><td><b>Usu&aacute;rio</b><br>(Ex. AD(MS): Administrador@dominio.com)<br>(OpenLDAP: cn=admin,dc=dominio,dc=com): </td><td><input type="text" name="ldap_user" id="ldap_user" maxlength="50" value="<?php echo $ldap_user; ?>" /></td></tr>
+                <tr><td><b>Usu&aacute;rio Administrador do Dom&iacute;nio</b><br>(Ex. AD(MS): Administrador@dominio.com)<br>(OpenLDAP: cn=admin,dc=dominio,dc=com): </td><td><input type="text" name="ldap_user" id="ldap_user" maxlength="50" value="<?php echo $ldap_user; ?>" /></td></tr>
                 <tr><td><b>Senha:</b> </td><td><input type="text" name="ldap_password" id="ldap_password" maxlength="50" value="<?php echo $ldap_password; ?>" /></td></tr>
 		<tr><td colspan="2"><hr></td></tr>
                 <tr><td><b>BASE DN</b> <br>(Ex. DC=ifsp,DC=local): </td><td><input type="text" name="ldap_basedn" id="ldap_basedn" maxlength="200" value="<?php echo $ldap_basedn; ?>" /></td></tr>

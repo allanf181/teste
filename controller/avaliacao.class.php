@@ -17,7 +17,8 @@ class Avaliacoes extends Generic {
         $sql = "SELECT av.nome, av.sigla, ti.nome as tipoAval,
                 ti.tipo, DATE_FORMAT(av.data, '%d/%m/%Y') as data, 
                 n.nota as nota, UPPER(a.calculo) as calculo,
-                IF(av.peso > 0, av.peso, '') as peso
+                IF(av.peso > 0, av.peso, '') as peso, a.formula,
+                ti.tipo as avaliacao, UPPER(ti.calculo) as avalCalculo
     		FROM Atribuicoes a 
     		left join Avaliacoes av on av.atribuicao=a.codigo 
     		left join Matriculas m on m.atribuicao=a.codigo 
@@ -101,6 +102,62 @@ class Avaliacoes extends Generic {
         $res = $bd->selectDB($sql, $params);
         if ($res[0]) {
             return $res[0];
+        } else {
+            return false;
+        }
+    }
+
+    // USADO POR: VIEW/PROFESSOR/NOTA.PHP
+    public function getAvaliacao($avaliacao) {
+        $bd = new database();
+
+        $sql = "SELECT IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
+                t.codigo as turmaCodigo, t.ano as ano, t.semestre as semestre,
+                av.codigo as avalCodigo, date_format(av.data, '%d/%m/%Y') data,
+                av.peso as peso, av.nome as nome, ti.tipo as tipo,
+		DATEDIFF(a.prazo, NOW()) as prazo, a.status as status,
+		d.numero as discNumero, a.bimestre as bimestre, ti.final,
+                t.numero as turma, a.calculo as calculo,
+                IF(STRCMP(a.calculo,'soma'),ti.notaMaxima,av.peso) as notaMaxima
+ 		FROM Atribuicoes a, Disciplinas d, Turmas t, Cursos c, Turnos tu,
+                    Avaliacoes av, TiposAvaliacoes ti
+ 		WHERE a.disciplina=d.codigo 
+ 		AND a.turma=t.codigo 
+ 		AND av.atribuicao=a.codigo 
+ 		AND t.curso=c.codigo 
+ 		AND ti.codigo = av.tipo
+ 		AND t.turno=tu.codigo 
+ 		AND av.codigo=:codigo";
+
+        $params = array(':codigo' => $avaliacao);
+        $res = $bd->selectDB($sql, $params);
+        if ($res[0]) {
+            return $res[0];
+        } else {
+            return false;
+        }
+    }
+
+    // USADO POR: VIEW/PROFESSOR/NOTA.PHP
+    public function getNotasAlunosOfAvaliacao($atribuicao, $avaliacao) {
+        $bd = new database();
+        $sql = "SELECT al.codigo as codAluno, m.codigo as matricula,
+                n.nota, al.nome as aluno, s.listar, s.habilitar, 
+                s.nome as situacao, a.turma, a.bimestre, al.prontuario, 
+                n.codigo as codNota
+		FROM Atribuicoes a 
+		left join Avaliacoes av on av.atribuicao=a.codigo 
+		left join Matriculas m on m.atribuicao=a.codigo 
+		left join Notas n on n.avaliacao=av.codigo and n.matricula=m.codigo 
+		left join Pessoas al on m.aluno=al.codigo 
+                left join Situacoes s on s.codigo = m.situacao 
+		WHERE a.codigo=:atribuicao AND av.codigo=:avaliacao 
+                ORDER BY al.nome";
+        $params = array(':atribuicao' => $atribuicao, ':avaliacao' => $avaliacao);
+
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            return $res;
         } else {
             return false;
         }

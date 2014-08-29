@@ -59,7 +59,10 @@ if ($_GET["atribuicao"]) {
     <hr>
     PROFESSOR(ES): <br />
     <?php
-    foreach(getProfessor($atribuicao) as $key => $reg) {
+    require CONTROLLER . "/professor.class.php";
+    $professor = new Professores();
+                
+    foreach($professor->getProfessor($atribuicao) as $key => $reg) {
         ?>
         <a href='#' rel='<?=INC?>/file.inc.php?type=pic&id=<?=crip($reg['codigo'])?>&timestamp=<?=time()?>' class='screenshot' title=''>
         <img style='width: 20px; height: 20px' alt='Embedded Image' src='<?=INC?>/file.inc.php?type=pic&id=<?=crip($reg['codigo'])?>&timestamp=<?=time()?>' /></a>

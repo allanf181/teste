@@ -31,7 +31,11 @@ if ($_POST["opcao"] == 'InsertOrUpdateObs') {
 if ($_GET["opcao"] == 'controleDiario') {
     $atribuicao = dcrip($_GET["atribuicao"]);
     $status = $_GET["status"];
-    if (!$erro = fecharDiario($atribuicao)) {
+    
+    require CONTROLLER . "/notaFinal.class.php";
+    $nota = new NotasFinais();
+
+    if (!$nota->fecharDiario($atribuicao)) {
         $params['codigo'] = $atribuicao;
         $params['status'] = $status;
         $ret = $att->insertOrUpdate($params);
@@ -177,8 +181,9 @@ $atribuicao = $_GET["atribuicao"];
                     <br><b>Aulas previstas:</b> <?php print $aulaPrevista; ?></font>
                 </td>
                 <?php
-                $professores = '';
-                foreach (getProfessor($atribuicao) as $key => $reg)
+                require CONTROLLER . "/professor.class.php";
+                $professor = new Professores();
+                foreach ($professor->getProfessor($atribuicao) as $reg)
                     $professores[] = "<a target=\"_blank\" href=" . $reg['lattes'] . ">" . $reg['nome'] . "</a>";
                 $professor_disc = implode(" / ", $professores);
                 ?>

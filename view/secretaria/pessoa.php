@@ -13,6 +13,9 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
+require CONTROLLER . "/pessoaTipo.class.php";
+$pessoaTipo = new PessoasTipos();
+
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $codigo = $_POST["campoCodigo"];
     $nome = $_POST["campoNome"];
@@ -318,7 +321,7 @@ if (!empty($_GET["codigo"])) { // se o parÃƒÂ¢metro nÃƒÂ£o estiver vazio
     $result = mysql_query($sql);
     $estadoNaturalidade = @mysql_fetch_object($result);
 
-    $tipo = getTipoPessoa($codigo);
+    $tipo = $pessoaTipo->getTipoPessoa($codigo);
     if (in_array($ALUNO, $tipo) || in_array($PROFESSOR, $tipo))
         $NOT_PERM = 1;
 }
@@ -959,7 +962,7 @@ require(PATH . VIEW . '/navegacao.php');
     while ($linha = mysql_fetch_array($resultado)) {
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         $tp = "|";
-        foreach (getTipoPessoa($linha[0]) as $tc => $tn)
+        foreach ($pessoaTipo->getTipoPessoa($linha[0]) as $tc => $tn)
             $tp .= $TP[$tn] . " | ";
 
         if (strlen($tp) > 20)

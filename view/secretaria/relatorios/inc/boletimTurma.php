@@ -11,6 +11,12 @@ $orientacao = "L"; // Landscape
                    // $orientacao = "P"; //Portrait
 $papel = "A3";
 
+require CONTROLLER . "/professor.class.php";
+$prof = new Professores();
+
+require CONTROLLER . "/nota.class.php";
+$nota = new Notas();
+
 include PATH.LIB.'/fpdf17/pdfDiario.php';
 
 if (dcrip($_GET["turma"]) && dcrip($_GET["bimestre"])) {
@@ -61,7 +67,7 @@ if (dcrip($_GET["turma"]) && dcrip($_GET["bimestre"])) {
 	    	$situacaoListar[$l[0]][$l[8]] = $l[9];
 
 				$professores='';			
-				foreach(getProfessor($l[8]) as $key => $reg)
+				foreach($prof->getProfessor($l[8]) as $key => $reg)
 					$professores[] = $reg['nome'];
 				$professor = implode(" / ", $professores);
 				
@@ -134,9 +140,9 @@ if (dcrip($_GET["turma"]) && dcrip($_GET["bimestre"])) {
         foreach ($disciplinas as $dCodigo => $dMatricula) {
         	if ($situacaoListar[$c][$dCodigo]) {
         		if ($bimestre == 'final' && $fechamento=='b') {
-        			$dados['media'] = resultadoBimestral($c, $turma, $disciplinasMedia[$dCodigo]);
+        			$dados['media'] = $nota->resultadoBimestral($c, $turma, $disciplinasMedia[$dCodigo]);
 				}
-   				$dados = resultado($dMatricula[$c], $dCodigo);
+   				$dados = $nota->resultado($dMatricula[$c], $dCodigo);
 				$pdf->Cell($T/2, $alturaLinha, utf8_decode($dados['media']), 1, 0, 'C', true);
 				$pdf->Cell($T/2, $alturaLinha, utf8_decode($dados['faltas']), 1, 0, 'C', true);
             } else {
@@ -144,7 +150,7 @@ if (dcrip($_GET["turma"]) && dcrip($_GET["bimestre"])) {
 			}
 		}
 
-		$dadosGlobal = resultadoModulo($c, $turma);
+		$dadosGlobal = $nota->resultadoModulo($c, $turma);
 		if (!$media = $dadosGlobal['mediaGlobal']) $media = '-';
 		$frequencia = round($dadosGlobal['frequenciaGlobal'], 1);
 		$frequencia = (!$frequencia) ? '-' : $frequencia.'%';

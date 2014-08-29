@@ -13,6 +13,9 @@ $papel = "A4";
 
 include PATH.LIB.'/fpdf17/pdfDiario.php';
 
+require CONTROLLER . "/nota.class.php";
+$nota = new Notas();
+
 $pdf = new PDF ();
 $pdf->rodape = $SITE_TITLE;
 
@@ -121,7 +124,7 @@ if (dcrip($_GET["turma"]) && dcrip($_GET["aluno"])) {
 					for($b=1; $b <= count($bimestres); $b++) {
 						if ($disciplinas[$b][$dSigla]) {
 							   	if ($situacaoListar[$disciplinas[$b][$dSigla]['atribuicao']]) {
-						   			$dados = resultado($disciplinas[$b][$dSigla]['matricula'], $disciplinas[$b][$dSigla]['atribuicao']);
+						   			$dados = $nota->resultado($disciplinas[$b][$dSigla]['matricula'], $disciplinas[$b][$dSigla]['atribuicao']);
 									$pdf->Cell((80/count($bimestres)/2), $alturaLinha, utf8_decode($dados['media']), 1, 0, 'C', true);
 									$pdf->Cell((80/count($bimestres)/2), $alturaLinha, utf8_decode($dados['faltas']), 1, 0, 'C', true);
 								} else {
@@ -134,7 +137,7 @@ if (dcrip($_GET["turma"]) && dcrip($_GET["aluno"])) {
 							$pdf->Cell((80/count($bimestres)/2), $alturaLinha, utf8_decode("-"), 1, 0, 'C', true);
 						}
 					}
-				   	$dadosBim = resultadoBimestral($alunoCodigo, $turmaCod, $dSigla);
+				   	$dadosBim = $nota->resultadoBimestral($alunoCodigo, $turmaCod, $dSigla);
 					$pdf->Cell(10, $alturaLinha, utf8_decode($dadosBim['media']), 1, 0, 'C', true);
 					$pdf->Cell(10, $alturaLinha, utf8_decode(intval($dadosBim['frequencia']).'%'), 1, 0, 'C', true);
 					$pdf->Cell(10, $alturaLinha, utf8_decode($situacaoSigla[$dSigla]) , 1, 0, 'C', true);

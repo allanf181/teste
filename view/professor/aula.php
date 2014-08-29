@@ -203,7 +203,7 @@ if ($LIMITE_AULA_PROF != 0) {
 
         $('#conteudo, #atividade').maxlength({
             events: [], // Array of events to be triggerd    
-            maxCharacters: 200, // Characters limit   
+            maxCharacters: 400, // Characters limit   
             status: true, // True to show status indicator bewlow the element    
             statusClass: "status", // The class on the status div  
             statusText: "caracteres restando", // The status text  

@@ -302,6 +302,9 @@ if (dcrip($_GET["bimestre"]) != '') {
     $resultado = mysql_query($sql);
     $i = $item;
     if ($resultado) {
+        require CONTROLLER . "/professor.class.php";
+        $professor = new Professores();
+            
         while ($linha = mysql_fetch_array($resultado)) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
             ($linha[6] > 0) ? $bimestre = "$linha[6]ºBIM" : $bimestre = "";
@@ -309,11 +312,11 @@ if (dcrip($_GET["bimestre"]) != '') {
 			$codigo = crip($linha[0]);
 			if (!$linha[13]) $linha[13] = $linha[15];
 			$professores='';			
-			foreach(getProfessor($linha[7]) as $key => $reg)
+			foreach($professor->getProfessor($linha[7]) as $key => $reg)
 				$professores[] = $reg['nome'];
-			$professor = implode(" / ", $professores);
+			$professores = implode(" / ", $professores);
 
-            print "<tr $cdif ><td align='left'>$linha[0]</td><td>".mostraTexto($linha[1])."</td><td align='left'><a target='_blank' href='".VIEW."/secretaria/relatorios/inc/diario.php?atribuicao=".crip($linha[7])."' title='$bimestre $linha[5] $grupo | $professor'>$linha[2] [$linha[13]] $linha[8] $grupo</a></td>\n";
+            print "<tr $cdif ><td align='left'>$linha[0]</td><td>".mostraTexto($linha[1])."</td><td align='left'><a target='_blank' href='".VIEW."/secretaria/relatorios/inc/diario.php?atribuicao=".crip($linha[7])."' title='$bimestre $linha[5] $grupo | $professores'>$linha[2] [$linha[13]] $linha[8] $grupo</a></td>\n";
             print "<td align='left'>".mostraTexto($linha[3])."</td><td align='left'>$linha[4]</td>\n";
             print "<td align='center'><a href='#Excluir' title='Excluir' class='item-excluir' id='" . crip($linha[12]) . "'><img class='botao' src='".ICONS."/remove.png' /></a>\n";
             print "<a href='#' class='item-atestado' id='" . crip($linha[12]) . "' title='Atestado'><img class='botao' src='".ICONS."/icon-printer.gif' /></a></td></tr>";

@@ -5,6 +5,12 @@ require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
+require CONTROLLER . "/professor.class.php";
+$prof = new Professores();
+
+require CONTROLLER . "/nota.class.php";
+$nota = new Notas();
+
 // diÃ¡rio
 if (date("m") < 8)
     $semestre = 1;
@@ -68,7 +74,7 @@ if (mysql_num_rows($result) != '') {
             $curso = mysql_result($result, $i, "m.nome") . ' - ' . mysql_result($result, $i, "c.nome");
 
         $professores = '';
-        foreach (getProfessor($atribuicao) as $key => $reg)
+        foreach ($prof->getProfessor($atribuicao) as $key => $reg)
             $professores[] = $reg['nome'];
         $professor = implode(" / ", $professores);
 
@@ -255,7 +261,7 @@ function cabecalho() {
     }
     $pdf->Ln();
 }
-
+            
 // Pular linha
 $linha = 0;
 // Mostrando os alunos
@@ -308,7 +314,7 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
                 if ($quantidade <= 2)
                     $quantidade = 3;
                 $quantidadeTotal += $quantidade;
-                if (!$A = getFrequenciaAbono($aluno, $atribuicao, mysql_result($faltas, $j, "a.data"))) {
+                if (!$A = $nota->getFrequenciaAbono($aluno, $atribuicao, mysql_result($faltas, $j, "a.data"))) {
                     $falta = mysql_result($faltas, $j, "freq");
                     if ($falta) {
                         $F = $falta;
@@ -359,10 +365,10 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
             //print "$sql<br><br>";
             $notas = mysql_query($sql);
             for ($j = 0; $j < mysql_num_rows($notas); $j++) {
-                $nota = mysql_result($notas, $j, "n.nota");
+                $nt = mysql_result($notas, $j, "n.nota");
                 $peso = mysql_result($notas, $j, "a.peso");
                 $qdeAval = mysql_result($notas, $j, "total");
-                $pdf->Cell($larguraDia, $alturaLinha, $nota, 1, 0, 'C', true);
+                $pdf->Cell($larguraDia, $alturaLinha, $nt, 1, 0, 'C', true);
             }
 
             for ($t = $j; $t < $qdeAval; $t++)
@@ -370,7 +376,7 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
 
             $linha ++;
 
-            $MEDIAS = resultado($matricula, $atribuicao);
+            $MEDIAS = $nota->resultado($matricula, $atribuicao);
 
             // FECHAMENTO DE NOTAS E FALTAS
             $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['mediaAvaliacao'], 1, 0, 'C', true);

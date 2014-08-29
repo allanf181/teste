@@ -214,6 +214,9 @@ $SITENAV = $SITE."?turma=".crip($turma);
 	$resultado = mysql_query($sql);
 	$i = $item;
 	if ($resultado){
+            require CONTROLLER . "/professor.class.php";
+            $professor = new Professores();
+            
 		while ($linha = mysql_fetch_array($resultado)) {
 			$i%2==0 ? $cdif="class='cdif'" : $cdif="class='cdif2'";
 			($linha[7]>0) ? $bimestre="$linha[7]ºBIM:":$bimestre="";
@@ -222,11 +225,11 @@ $SITENAV = $SITE."?turma=".crip($turma);
 			if (!$linha[9]) $linha[9] = $linha[10];
 			
 			$professores='';			
-			foreach(getProfessor($linha[0]) as $key => $reg)
+			foreach($professor->getProfessor($linha[0]) as $key => $reg)
 					$professores[] = $reg['nome'];
-			$professor = implode("<br>", $professores);
+			$professores = implode("<br>", $professores);
 
-			echo "<tr $cdif><td align='left'>$linha[6]</td><td><a target=\"_blank\" href='".VIEW."/secretaria/relatorios/inc/diario.php?atribuicao=".crip($linha[0])."'>$bimestre ".mostraTexto($linha[1])."</a></td><td align='left'>".mostraTexto($professor)."</td><td align=left>$linha[3] $grupo [$linha[9]]</td><td align='left'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
+			echo "<tr $cdif><td align='left'>$linha[6]</td><td><a target=\"_blank\" href='".VIEW."/secretaria/relatorios/inc/diario.php?atribuicao=".crip($linha[0])."'>$bimestre ".mostraTexto($linha[1])."</a></td><td align='left'>".mostraTexto($professores)."</td><td align=left>$linha[3] $grupo [$linha[9]]</td><td align='left'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
 			$i++;
 		}
 	}

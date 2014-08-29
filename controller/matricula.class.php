@@ -49,7 +49,29 @@ class Matriculas extends Generic {
             return $res;
         else
             return false;
-    }    
+    }
+    
+    // USADO POR: PROFESSOR/NOTA.PHP
+    // Retorna a matricula
+    public function getMatricula($aluno, $atribuicao, $bimestre) {
+        $bd = new database();
+        
+        $sql = "SELECT m.codigo "
+                . "FROM Atribuicoes a, Matriculas m "
+                . "WHERE m.atribuicao=a.codigo "
+                . "AND a.codigo=:att "
+                . "AND m.aluno=:aluno "
+                . "AND a.bimestre=:bim";
+        
+        $params = array(':att' => $atribuicao, ':aluno' => $aluno, ':bim' => $bimestre);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res)
+            return $res[0]['codigo'];
+        else
+            return false;
+    }  
+    
 }
 
 ?>

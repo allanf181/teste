@@ -59,6 +59,12 @@ if ($semestre == 2) {
                 // ASSIM A FUNCAO RESULTADO BUSCA A NOTA NA TABELA NOTASFINAIS
                 $sql = "UPDATE Atribuicoes SET status = 4 WHERE codigo = $row2->atribuicao";
                 mysql_query($sql);                
+            } else {
+                $sql = "UPDATE NotasFinais SET mcc = '$row->NTA_BIM', "
+                        . "ncc = '$row->NTA_NOTA', "
+                        . "falta = $row->NTA_FALTA "
+                        . "WHERE codigo = $row2->notas";
+                mysql_query($sql);
             }
         }
     }

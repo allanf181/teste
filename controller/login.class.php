@@ -2,6 +2,9 @@
 if(!class_exists('Generic'))
     require_once CONTROLLER.'/generic.class.php';
 
+if(!class_exists('PessoasTipos'))
+    require_once CONTROLLER.'/pessoaTipo.class.php';
+
 class login extends Generic {
     public function __construct(){
     }
@@ -56,9 +59,11 @@ class login extends Generic {
 
         if ( $res )
         {
+            $pessoa = new PessoasTipos();
+           
             $_SESSION["loginCodigo"] = $res[0]['codigo'];
 	    $_SESSION["loginNome"] = $res[0]['nome'];
-	    $_SESSION["loginTipo"] = getTipoPessoa($res[0]['codigo']);
+	    $_SESSION["loginTipo"] = $pessoa->getTipoPessoa($res[0]['codigo']);
 	    $_SESSION["loginProntuario"] = $res[0]['prontuario'];
 	    $_SESSION["loginPassword"] = crip($res[0]['senha']);
 	    $_SESSION["loginEmail"] = $res[0]['email'];

@@ -1,17 +1,21 @@
 <?php
+
 require '../../../../inc/config.inc.php';
 require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
-include PATH.LIB.'/fpdf17/pdfDiario.php';
+include PATH . LIB . '/fpdf17/pdfDiario.php';
+
+require CONTROLLER . "/ftdDados.class.php";
+$ftd = new FTDDados();
 
 $curso = dcrip($_GET["curso"]);
 
 // restrições
 if (!empty($curso))
-	$restricao.= " and c.codigo=$curso";
-	    
+    $restricao.= " and c.codigo=$curso";
+
 $sql = "SELECT p.codigo, p.nome
 							FROM Pessoas p, PessoasTipos pt
  							WHERE p.codigo = pt.pessoa
@@ -20,7 +24,7 @@ $sql = "SELECT p.codigo, p.nome
 $resultado = mysql_query($sql);
 
 if (mysql_num_rows($resultado) == '')
-	die ('Nenhum registro foi encontrado.');	
+    die('Nenhum registro foi encontrado.');
 
 $fonte = 'Times';
 $orientacao = "P"; //Portrait 
@@ -29,44 +33,45 @@ $tamanho = 5;
 
 // gera o relatório em PDF
 $pdf = new PDF ();
-$pdf->AliasNbPages ();
-$pdf->AddPage ( $orientacao, $papel );
-$pdf->SetFont ( $fonte, '', $tamanho );
+$pdf->AliasNbPages();
+$pdf->AddPage($orientacao, $papel);
+$pdf->SetFont($fonte, '', $tamanho);
 $pdf->rodape = $SITE_TITLE;
-$pdf->SetFillColor ( 255, 255, 255 );
-$pdf->SetLineWidth ( .1 );
+$pdf->SetFillColor(255, 255, 255);
+$pdf->SetLineWidth(.1);
 
 // Cabeçalho
-$pdf->SetFont($fonte, 'B', $tamanho+5);
-$pdf->Image ( PATH.IMAGES.'/logo.png', 12, 12, 80 );
+$pdf->SetFont($fonte, 'B', $tamanho + 5);
+$pdf->Image(PATH . IMAGES . '/logo.png', 12, 12, 80);
 $pdf->Cell(90, 27, "", 1, 0, 'C', false);
 $pdf->Cell(100, 27, utf8_decode("A T E N D I M E N T O   DO   P R O F E S S O R"), 1, 0, 'C', false);
 $pdf->Ln();
-	    
+
 $dias = diasDaSemana();
 
 $i = 1;
 while ($l = mysql_fetch_array($resultado)) {
-	if ($i % 2 == 0)
-  	$pdf->SetFillColor(240, 240, 240);
-  else
-  	$pdf->SetFillColor(255, 255, 255);
-        	
-	$pdf->Cell(90, 5, utf8_decode($l[1]), 1, 0, 'L', true);
-	
-	$j=0;
-	foreach(getAtendimentoAluno($l[0]) as $dia => $h) {
-		if ($j==1) $pdf->Cell(90, 5, utf8_decode(""), 1, 0, 'L', true);
+    if ($i % 2 == 0)
+        $pdf->SetFillColor(240, 240, 240);
+    else
+        $pdf->SetFillColor(255, 255, 255);
 
-		$diaSemana = $dias[$dia+1];
-                $diaSemana = html_entity_decode($diaSemana,ENT_QUOTES,"UTF-8");                
-		$ES = $h[1].' às '.$h[2];
-		$pdf->Cell(100, 5, utf8_decode("$diaSemana das $ES"), 1, 0, 'L', true);
-		$j=1;
-		$pdf->Ln();
-	}
-	$pdf->Ln();
-  $i++;
+    $pdf->Cell(90, 5, utf8_decode($l[1]), 1, 0, 'L', true);
+
+    $j = 0;
+    foreach ($ftd->getAtendimentoAluno($l[0], $ANO, $SEMESTRE) as $dia => $h) {
+        if ($j == 1)
+            $pdf->Cell(90, 5, utf8_decode(""), 1, 0, 'L', true);
+
+        $diaSemana = $dias[$dia + 1];
+        $diaSemana = html_entity_decode($diaSemana, ENT_QUOTES, "UTF-8");
+        $ES = $h[1] . ' às ' . $h[2];
+        $pdf->Cell(100, 5, utf8_decode("$diaSemana das $ES"), 1, 0, 'L', true);
+        $j = 1;
+        $pdf->Ln();
+    }
+    $pdf->Ln();
+    $i++;
 }
 $pdf->Output();
 ?>

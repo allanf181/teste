@@ -9,6 +9,34 @@ class Frequencias extends FrequenciasAbonos {
         //
     }
 
+    //Funcao para Inserir Notas
+    public function putFrequencias($params) {
+        $c = 0;
+        foreach ($_POST['matricula'] as $matricula => $qtd) {
+            $new_qtd = '';
+            for ($i = 0; $i < $params['quantidade']; $i++) {
+                if (array_key_exists($i, $qtd))
+                    $new_qtd .= 'F';
+                else
+                    $new_qtd .= '*';
+            }
+
+            $new_params['codigo'] = $params['codigo'][$matricula];
+            $new_params['aula'] = $params['aula'];
+            $new_params['matricula'] = $matricula;
+            $new_params['quantidade'] = $new_qtd;
+
+            $res = $this->insertOrUpdate($new_params);
+           
+            if ($res)
+                $c++;
+        }
+        $rs['TIPO'] = 'UPDATE';
+        $rs['RESULTADO'] = $c;
+        $rs['STATUS'] = 'OK';
+        return $rs;
+    }
+
     // LISTA OS ALUNOS COM AUSENCIA ELEVADA
     // USADO POR: VIEW/RELATORIOS/AUSENCIA.PHP
     public function listAusencias($mes, $ano) {
@@ -106,5 +134,7 @@ class Frequencias extends FrequenciasAbonos {
             return false;
         }
     }
+
 }
+
 ?>

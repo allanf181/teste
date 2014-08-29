@@ -76,7 +76,7 @@ class FrequenciasAbonos extends Generic {
         $res = $bd->selectDB($sql, $params);
 
         if ($res)
-            return $res;
+            return $res[0];
         else
             return false;
     }

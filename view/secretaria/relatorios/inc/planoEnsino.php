@@ -5,6 +5,9 @@ require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
+require CONTROLLER . "/professor.class.php";
+$prof = new Professores();
+
 if (!empty($_GET ["atribuicao"])) {
     $atribuicao = dcrip($_GET["atribuicao"]);
 }
@@ -68,7 +71,7 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
     $modalidade = mysql_result($result, $i, "m.nome");
 
     $professores = '';
-    foreach (getProfessor($atribuicao) as $key => $reg)
+    foreach ($prof->getProfessor($atribuicao) as $key => $reg)
         $professores[] = $reg['nome'];
     $professor = implode(" / ", $professores);
 }

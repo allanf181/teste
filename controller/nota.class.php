@@ -1,0 +1,432 @@
+<?php
+
+if (!class_exists('Frequencias'))
+    require_once CONTROLLER . '/frequencia.class.php';
+
+class Notas extends Frequencias {
+
+    //Funcao para Inserir Notas
+    public function putNotas($params) {
+    	$c=0;
+
+	foreach ($params['matricula'] as $matricula => $nota) {
+            $new_params['codigo'] = $params['codigo'][$matricula];
+            $new_params['avaliacao'] = $params['avaliacao'];
+            $new_params['matricula'] = $matricula;
+            $new_params['nota'] = $nota;
+
+            $res = $this->insertOrUpdate($new_params);
+            if ($res)
+                $c++;
+	}
+        $rs['TIPO'] = 'UPDATE';
+        $rs['RESULTADO'] = $c;
+        $rs['STATUS'] = 'OK';
+        return $rs;
+    }
+    
+    // Funcao utilizada para gerar resultado dos 4 Bimestres
+    public function resultadoBimestral($aluno, $turma, $numeroDisciplina, $final = 0, $fechamento = 0) {
+        $bd = new database();
+
+        if (!$fechamento) {
+            // VERIFICANDO SE O DIÁRIO FOI FINALIZADO, 
+            // SE SIM, BUSCA NA TABELA DE NOTAS FINALIZADAS
+            $sql = "SELECT ma.codigo as matricula, a.codigo as atribuicao,
+            	(SELECT habilitar FROM Situacoes WHERE codigo = ma.situacao) as habilitado,
+                ma.situacao, d.numero, a.bimestre
+                FROM Turmas t, Cursos c, Modalidades m, Matriculas ma, Atribuicoes a, 
+                    Pessoas p, Disciplinas d, NotasFinais n
+		WHERE c.modalidade = m.codigo 
+		AND ma.atribuicao = a.codigo
+		AND a.turma = t.codigo
+		AND p.codigo = ma.aluno
+		AND c.codigo = d.curso
+		AND a.disciplina = d.codigo
+		AND n.atribuicao = a.codigo
+		AND ma.aluno = :aluno
+		AND t.codigo IN (SELECT t1.codigo FROM Turmas t1 
+			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
+			WHERE t2.codigo = :turma))
+		AND d.numero = :numDisc
+		AND a.bimestre = 4";
+
+            $params = array(':aluno' => $aluno,
+                ':turma' => $turma,
+                ':numDisc' => $numeroDisciplina);
+            $res = $bd->selectDB($sql, $params);
+
+            foreach ($res as $reg) {
+                if ($reg['habilitado']) {
+                    return $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], 1);
+                }
+            }
+        }
+
+        // PEGANDO AS MATRICULAS E ATRIBUICOES DOS 4 BIMESTRES
+        $sql = "SELECT ma.codigo as matricula, a.codigo as atribuicao,
+		(SELECT habilitar FROM Situacoes WHERE codigo = ma.situacao) as habilitado,
+			ma.situacao as situacao, d.numero as numero,
+			a.bimestre as bimestre
+		FROM Turmas t, Cursos c, Modalidades m, Matriculas ma, 
+                    Atribuicoes a, Pessoas p, Disciplinas d
+		WHERE c.modalidade = m.codigo 
+		AND ma.atribuicao = a.codigo
+		AND a.turma = t.codigo
+		AND p.codigo = ma.aluno
+		AND c.codigo = d.curso
+		AND a.disciplina = d.codigo
+		AND ma.aluno = :aluno
+		AND t.codigo IN (SELECT t1.codigo FROM Turmas t1 
+			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
+			WHERE t2.codigo = :turma))
+		AND d.numero = :numDisc";
+        $res = $bd->selectDB($sql, $params);
+
+        $c = 0;
+        foreach ($res as $reg) {
+            $c++;
+            $atribuicao = $reg['atribuicao'];
+            if ($reg['habilitado']) {
+                //BUSCANDO AS MEDIAS DOS BIMESTRES DE CADA ALUNO
+                $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], $final);
+                $medias += $dados['media'];
+                $faltas += $dados['faltas'];
+                $frequencias += $dados['frequencia'];
+                $calculo .= $dados['calculo'];
+                $rec += $dados['recuperacao'];
+                $final += $dados['final'];
+            }
+        }
+
+        // MEDIA DAS MEDIAS DOS BIMESTRES
+        $media = $medias / $c;
+
+        // MEDIA DAS FREQUENCIAS DO BIMESTRE
+        $frequencia = $frequencias / $c;
+
+        // ARMAZENANDO A MEDIA DAS AVALIACOES SEM A RECUPERACAO
+        $dados['mediaAvaliacao'] = $media;
+
+        if ($calculo) { // SE TEM RECUPERACAO
+            $media = $this->calcMedia($calculo, $media, $medias, $rec);
+        } else {  // ALUNO PRECISA DE REAVALIACAO FINAL
+            $dados = array_merge($dados,$this->checkIfRec($atribuicao, $media, $final));
+        }
+
+        // SITUACAO DAS NOTAS
+        $dados['media'] = round($media, 2);
+        $dados['frequencia'] = $frequencia;
+        $dados['faltas'] = $faltas;
+
+        // RETORNANDO OS DADOS
+        return $dados;
+    }
+
+    function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
+        $bd = new database();
+
+        if (!$fechamento) {
+            // VERIFICANDO SE O DIÁRIO FOI FINALIZADO, SE SIM, BUSCA NA TABELA DE NOTAS FINALIZADAS
+            if ($final == 0)
+                $sqlFinal1 = "AND n.bimestre <> 'M' ";
+            if ($final == 1)
+                $sqlFinal1 = "AND n.bimestre = 'M' ";
+
+            $sql = "SELECT  n.mcc,n.rec,n.ncc,n.falta,
+                        (SELECT t.final FROM Avaliacoes a, TiposAvaliacoes t
+                            WHERE a.atribuicao = at.codigo
+                            AND a.tipo = t.codigo) as final,
+        		(SELECT SUM(au1.quantidade) FROM Aulas au1 
+                            WHERE au1.atribuicao = at.codigo) as aulas,
+			(SELECT ch FROM Atribuicoes at1, Disciplinas d 
+                            WHERE at1.disciplina = d.codigo 
+                            AND at1.codigo = at.codigo) as CH
+                    FROM NotasFinais n, Atribuicoes at
+                    WHERE n.atribuicao = at.codigo
+                    AND at.codigo = :att
+                    AND n.matricula = :matricula
+                    AND at.status <> 0
+                    $sqlFinal1
+                    GROUP BY n.bimestre";
+            $params = array(':att' => $atribuicao,
+                ':matricula' => $matricula);
+            $res = $bd->selectDB($sql, $params);
+
+            foreach ($res as $reg) {
+                // CALCULANDO A FREQUENCIA
+                $dados = $this->getFrequencia($matricula, $atribuicao);
+
+                $dados['mediaAvaliacao'] = round($reg['mcc'], 2);
+                $dados['notaRecuperacao'] = round($reg['rec'], 2);
+                $dados['recuperacao'] = round($reg['rec'], 2);
+                $dados['media'] = round($reg['ncc'], 2);
+                $dados['final'] = $reg['final'];
+                return $dados;
+            }
+        }
+
+        if ($final == 0)
+            $sqlFinal = " AND t.final=0 ";
+        // CALCULANDO AS NOTAS
+        $sql = "SELECT n.nota as nota,a.peso as peso,t.tipo as tipo,
+                        t.calculo as calculo, at.calculo as calculoAtt,
+			t.arredondar as arredondar, at.bimestre as bimestre,
+                        t.final as final, a.sigla as sigla, at.formula as formula,
+                        (SELECT a1.sigla FROM Avaliacoes a1 WHERE a1.codigo = a.substitutiva) as sub
+			FROM Notas n, Avaliacoes a, Atribuicoes at, TiposAvaliacoes t
+			WHERE n.avaliacao = a.codigo
+			AND a.atribuicao = at.codigo
+			AND t.codigo = a.tipo
+			AND at.codigo = :att
+			AND n.matricula = :matricula
+			$sqlFinal
+                        ORDER BY substitutiva ASC ";
+
+        $res = $bd->selectDB($sql, $params);
+
+        if (!$res)
+            return null;
+        $media = 0;
+        $total = 0;
+        $final = 0;
+        foreach ($res as $reg) {
+            $bimestre = $reg['bimestre'];
+            $tipo = $reg['calculoAtt'];
+            $arredondar = $reg['arredondar'];
+            $formula = $reg['formula'];
+            if ($reg['tipo'] == 'avaliacao') {
+                $total++;
+                if ($tipo == 'peso')
+                    $medias[$reg['sigla']] = $reg['nota'] * $reg['peso'];
+
+                if ($tipo == 'media' || $tipo == 'soma')
+                    $medias[$reg['sigla']] = $reg['nota'];
+
+                if ($tipo == 'formula')
+                    $medias[$reg['sigla']] = $reg['nota'];
+            }
+
+            if ($reg['tipo'] == 'pontoExtra') {
+                $medias[$reg['sigla']] = $reg['nota'];
+            }
+
+            if ($reg['tipo'] == 'substitutiva') {
+                if ($medias[$reg['sub']] < $reg['nota'])
+                    $medias[$reg['sub']] = $reg['nota'];
+            }
+
+            if ($reg['tipo'] == 'recuperacao' && !$reg['final']) {
+                $rec = $reg['nota'];
+                $calculo = $reg['calculo'];
+            }
+            if ($reg['tipo'] == 'recuperacao' && $reg['final']) {
+                $recFinal = $reg['nota'];
+                $calculoFinal = $reg['calculo'];
+                $final = 1;
+            }
+        }
+
+        if ($tipo == 'media' && $medias)
+            $media = array_sum($medias) / $total;
+        if ($tipo == 'peso')
+            $media = array_sum($medias);
+        if ($tipo == 'soma') {
+            $media = array_sum($medias);
+        }
+
+        if ($tipo == 'formula') {
+            $media = $this->doFormula($formula, $medias);
+        }
+
+        // CALCULANDO A FREQUENCIA
+        $dados = $this->getFrequencia($matricula, $atribuicao);
+
+        // GARANTINDO A MEDIA MENOR QUE 10
+        if ($media > 10)
+            $media = 10;
+
+        if ($arredondar) {
+            $media = arredondar($media);
+
+            // PARA O DIARIO DO PROFESSOR
+            $dados['mediaAvaliacao'] = arredondar($media);
+            $dados['notaRecuperacao'] = arredondar($rec);
+        } else {
+            // PARA O DIARIO DO PROFESSOR
+            $dados['mediaAvaliacao'] = $media;
+            $dados['notaRecuperacao'] = $rec;
+        }
+        
+        if ($calculo) { // SE TEM RECUPERACAO
+            $media = $this->calcMedia($calculo, $media, $medias, $rec, $tipo, $formula);
+
+            // PARA FECHAMENTO DO BIMESTRE SO INTERESSA ATE AQUI
+            if ($bimestre == 4 && $final) {
+                $dados['media'] = round($media, 2);
+                $dados['recuperacao'] = $recFinal;
+                $dados['calculo'] = $calculoFinal;
+                $dados['final'] = $final;
+                return $dados;
+            }
+        } else {  // ALUNO PRECISA DE RECUPERACAO
+            $dados = array_merge($this->checkIfRec($atribuicao, $media), $dados);
+        }
+
+        // ARREDONDANDO A MEDIA PARA DUAS CASAS
+        $dados['media'] = round($media, 2);
+
+        // RETORNANDO OS DADOS
+        return $dados;
+    }
+
+    function resultadoModulo($aluno, $turma) {
+        $bd = new database();
+
+        $sql = "SELECT ma.codigo as matricula, a.codigo as atribuicao,
+			ma.situacao as situacao, c.fechamento as fechamento,
+                        d.numero as numero
+			FROM Turmas t, Cursos c, Modalidades m, Matriculas ma, 
+                            Atribuicoes a, Pessoas p, Disciplinas d
+			WHERE c.modalidade = m.codigo 
+			AND ma.atribuicao = a.codigo
+			AND a.turma = t.codigo
+			AND p.codigo = ma.aluno
+			AND c.codigo = d.curso
+			AND a.disciplina = d.codigo
+			AND ma.aluno = :aluno
+			AND t.codigo = :turma";
+        $params = array(':aluno' => $aluno,
+            ':turma' => $turma);
+        $res = $bd->selectDB($sql, $params);
+
+        foreach ($res as $reg) {
+            if ($reg['situacao']) {
+                if ($reg['fechamento'] == 's')
+                    $dados = $this->resultado($l[0], $l[1]);
+                if ($reg['fechamento'] == 'b')
+                    $dados = $this->resultadoBimestral($aluno, $turma, $reg['numero']);
+
+                $medias[] = $dados['media'];
+                $frequencias[] = $dados['frequencia'];
+            }
+        }
+
+        $frequencia = array_sum($frequencias) / count($frequencias);
+        $dadosGlobais['frequenciaGlobal'] = $frequencia;
+
+        $media = array_sum($medias) / count($medias);
+        $dadosGlobais['mediaGlobal'] = round($media, 2);
+        return $dadosGlobais;
+    }
+
+    private function checkIfRec($atribuicao, $media, $final = null) {
+        $bd = new database();
+        if ($final)
+            $final = 'AND final = 1';
+        else
+            $final = null;
+
+        $sql = "SELECT t.nome, t.notaMaior,t.notaMenor,t.sigla,t.notaUltimBimestre
+			FROM TiposAvaliacoes t, Modalidades m, Cursos c, Atribuicoes a, Turmas tu 
+			WHERE t.modalidade = m.codigo 
+			AND m.codigo = c.modalidade 
+			AND a.turma = tu.codigo 
+			AND tu.curso = c.codigo 
+			AND a.codigo = :att
+			AND t.tipo = 'recuperacao' 
+                        $final";
+
+        $params = array(':att' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+
+        $notaMaior = $res[0]['notaMaior'];
+        $notaMenor = $res[0]['notaMenor'];
+        $dados['situacao'] = $res[0]['nome'];
+        $dados['siglaSituacao'] = $res[0]['sigla'];
+
+        if (($media >= $notaMaior && $media < $notaMenor) || ($final && $media < $res[0]['t.notaUltimBimestre'])
+        ) {
+            $dados['color'] = 'OliveDrab1';
+        }
+        return $dados;
+    }
+
+    private function calcMedia($calculo, $media, $medias, $rec, $tipo = null, $formula = null) {
+        $bd = new database();
+
+        if ($calculo == 'sub_media') {
+            if ($media < $rec)
+                $media = $rec;
+        }
+
+        if ($calculo == 'add_media') {
+            $media = ( ($media + $rec) > 10 ) ? 10 : $media = $media + $rec;
+        }
+
+        if ($calculo == 'sub_menor_nota') {
+            $key = array_search($this->minValue($medias), $medias);
+            $medias[$key] = $rec;
+        }
+
+        if ($calculo == 'add_menor_nota') {
+            $key = array_search($this->minValue($medias), $medias);
+            $medias[$key] = $medias[$key] + $rec;
+        }
+
+        if ($calculo == 'sub_menor_nota' || $calculo == 'add_menor_nota') {
+            if ($tipo == 'media')
+                $media = array_sum($medias) / count($medias);
+            if ($tipo == 'peso' || $tipo == 'soma')
+                $media = array_sum($medias);
+            if ($tipo == 'formula')
+                $media = $this->doFormula($formula, $medias);
+
+            if ($media > 10)
+                $media = 10;
+        }
+
+        return $media;
+    }
+
+    private function minValue($array) {
+        if (!count($array))
+            return false;
+        else {
+            $min = false;
+            foreach ($array AS $value) {
+                if (is_numeric($value)) {
+                    $curval = floatval($value);
+                    if ($curval < $min || $min === false)
+                        $min = $curval;
+                }
+            }
+        }
+
+        return $min;
+    }
+
+    private function doFormula($formula, $medias) {
+        try {
+            require_once PATH . LIB . '/PHPMathParser/Math.php';
+            $math = new Math();
+
+            foreach ($medias as $VAR => $VAL) {
+                if ($VAL)
+                    $math->registerVariable($VAR, $VAL);
+            }
+            $media = $math->evaluate($formula);
+        } catch (Exception $e) {
+            print "<div class=\"flash error\" id=\"flash_error\">"
+                    . "Existe um erro na f&oacute;rmula: $formula"
+                    . "<br>Erro encontrado: " . $e->getMessage() . ""
+                    . "<br />Verifique se faltou algum $ em alguma vari&aacute;vel ou algum sinal ou ponto estranho."
+                    . "<br />Verifique ainda se todos os par&ecirc;nteses foram devidamente fechados.</div><br />";
+            die;
+        }
+        return $media;
+    }
+
+}
+
+?>
