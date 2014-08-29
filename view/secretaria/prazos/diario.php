@@ -348,7 +348,7 @@ if (!empty($curso)) {
       and p.atribuicao = a.codigo	    
 	    and t.ano=$ano
 	    and (t.semestre=$semestre OR t.semestre=0)
-	    $restricao order by l.data desc";
+	    $restricao GROUP BY l.codigo order by l.data desc";
 //    echo $sql;
     $resultado = mysql_query($sql);
     $linha = mysql_fetch_row($resultado);
@@ -373,7 +373,7 @@ if (!empty($curso)) {
       and p.atribuicao = a.codigo	    
 	    and t.ano=$ano
 	    and (t.semestre=$semestre OR t.semestre=0)
-	    $restricao order by l.data desc limit " . ($item - 1) . ",$itensPorPagina";
+	    $restricao GROUP BY l.codigo order by l.data desc limit " . ($item - 1) . ",$itensPorPagina";
 //print $sql;
     $SITENAV = $SITE . "?$lk";
     include PATH . VIEW . '/navegacao.php';

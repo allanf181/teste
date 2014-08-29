@@ -296,7 +296,7 @@ if (!empty($curso)) {
       and p.atribuicao = a.codigo	    
 	    and t.ano=$ano
 	    and (t.semestre=$semestre OR t.semestre=0)
-	    $restricao order by l.data";
+	    $restricao GROUP BY l.codigo order by l.data";
     //    echo $sql;
     $resultado = mysql_query($sql);
     $linha = mysql_fetch_row($resultado);
@@ -318,10 +318,12 @@ if (!empty($curso)) {
 	    and t.curso=c.codigo
 	    and a.turma=t.codigo
 	    and a.disciplina=d.codigo
-      and p.atribuicao = a.codigo	    
+            and p.atribuicao = a.codigo	    
 	    and t.ano=$ano
 	    and (t.semestre=$semestre OR t.semestre=0)
-	    $restricao order by l.data limit " . ($item - 1) . ",$itensPorPagina";
+	    $restricao
+            GROUP BY l.codigo
+            order by l.data limit " . ($item - 1) . ",$itensPorPagina";
     //print $sql;
     $SITENAV = $SITE . "?$lk";
     require(PATH . VIEW . '/navegacao.php');
