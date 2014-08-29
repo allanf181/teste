@@ -107,7 +107,7 @@ if (isset($_GET["tipo"]))
                         $perms = $permissao->listaPermissoes(array(dcrip($codigo)), 'permissao');
 
                         // Listando os diretórios dentro da VIEW.
-                        $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html';
+                        $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html|\/common\/';
                         $cdir = dirToArray(PATH . LOCATION . '/view/', $regex);
                         krsort($cdir);
                         $i = 0;
@@ -149,11 +149,11 @@ if (isset($_GET["tipo"]))
                     print "<tr>\n";
                 ?>
                 <td>
-                    <input type='checkbox' <?= $checkedPermissao ?> name='permissao[]' value='<?= $arquivo ?>' onclick="return libera('<?= $descricao['nome'] ?>', this.checked);" />
+                    <input type='checkbox' <?= $checkedPermissao ?> name='permissao[]' value='<?= $arquivo ?>' onclick="return libera('<?= $descricao['nome'].$i ?>', this.checked);" />
                     <b><font size="1"><a href="#" title='<?= $descricao['descricaoArquivo'] ?><br><?= $descricao['descricaoLink'] ?>'><?= $descricao['nome'] ?></a></font></b>
-                    <br><input type='checkbox' <?= $disabled ?> <?= $checkedLink ?> name='menu[<?= $arquivo ?>]' id="M_<?= $descricao['nome'] ?>" value='<?= $arquivo ?>' />
+                    <br><input type='checkbox' <?= $disabled ?> <?= $checkedLink ?> name='menu[<?= $arquivo ?>]' id="M_<?= $descricao['nome'].$i ?>" value='<?= $arquivo ?>' />
                     <font size="1"> - link vis&iacute;vel</font>
-                    <br><input type="text" <?= $disabled ?> name="nome[<?= $arquivo ?>]" id="<?= $descricao['nome'] ?>" value="<?= $arquivoNomeMenu ?>" />
+                    <br><input type="text" <?= $disabled ?> name="nome[<?= $arquivo ?>]" id="<?= $descricao['nome'].$i ?>" value="<?= $arquivoNomeMenu ?>" />
                 </td>
                 <?php
                 $i++;
