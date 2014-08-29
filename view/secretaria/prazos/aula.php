@@ -213,7 +213,7 @@ print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 if (!empty($curso)) {
     ?>
 
-    <table id="form" border="0" align="center" width="100%">
+    <br /><table id="listagem" border="0" align="center">
         <tr><th align="center" width="40">#</th><th align="left">Disciplina</th><th align="left">Professor</th><th align="left">Turma</th>
             <th width="40" align="center"><input type='checkbox' id='select-all' name='select-all' class='campoTodos' value='' /></th></tr>
         <?php
