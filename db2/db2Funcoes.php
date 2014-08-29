@@ -286,7 +286,7 @@ function modalidadesCursoAntigo() {
         $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Substitui a média', 'recuperacao', $r->MD_MODAL, 'sub_media', 1, 0, 6, 'REB', 0, 0, 0, 10)";
         $res = mysql_query($sql);
 
-        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Substitui o valor na menor nota', 'recuperacao', $r->MD_MODAL, 'sub_menor_nota', 1, 0, 6, 'REB', 0, 0, 0, 10)";
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Recuperação - Substitui valor na menor nota', 'recuperacao', $r->MD_MODAL, 'sub_menor_nota', 1, 0, 6, 'REB', 0, 0, 0, 10)";
         $res = mysql_query($sql);
         
         //REAVALIAÇÃO FINAL
