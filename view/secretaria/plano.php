@@ -13,6 +13,9 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
+require CONTROLLER . "/professor.class.php";
+$prof = new Professores();
+
 if ($_GET["opcao"] == 'controlePlano') {
     $atribuicao = $_GET["atribuicao"];
     $v = $_GET["valor1"];
@@ -31,7 +34,7 @@ if ($_GET["opcao"] == 'controlePlano') {
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <script>
     function valida() {
@@ -155,7 +158,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 ?>
             </select>
         </td></tr>
-<?php if ($S) { ?>
+    <?php if ($S) { ?>
         <tr><td>Fechamento: </td><td><select name="campoBimestre" id="campoBimestre" style="width: 350px">
                     <option value=""></option>
                     <?php
@@ -186,7 +189,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                     ?>
                 </select>
             </td></tr>
-                <?php } //print $bimestre; ?>
+    <?php } //print $bimestre; ?>
     <tr><td align="right">Professor: </td><td><select name="campoProfessor" id="campoProfessor" style="width: 350px">
                 <?php
                 if ($turma)
@@ -259,9 +262,6 @@ if (!empty($curso)) {
 
                     $i = 1;
                     if ($resultado) {
-                        require CONTROLLER . "/professor.class.php";
-                        $professor = new Professores();
-                        
                         while ($linha = mysql_fetch_array($resultado)) {
                             $checked = '';
                             $correcao = 0;
@@ -271,15 +271,10 @@ if (!empty($curso)) {
                             $solicitante = $linha[6];
                             $coordenador = $linha[8];
 
-                            $professores = '';
-                            foreach ($professor->getProfessor($linha[0]) as $key => $reg)
-                                $professores[] = $reg['nome'];
-                            $professores = implode("<br>", $professores);
-
                             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                             echo "<tr $cdif style='height: 40px'><td align='center'>$i</td>";
                             echo "<td><a target='_blank' href='" . VIEW . "/secretaria/relatorios/inc/planoEnsino.php?atribuicao=" . crip($linha[0]) . "' title=\"$linha[7]\">" . mostraTexto($linha[1]) . "</a></td>";
-                            echo "<td align='left'>" . mostraTexto($professores) . "</td><td align='left'>$linha[3]</td>";
+                            echo "<td align='left'>" . $prof->getProfessor($linha[0], '<br>', 1, 1) . "</td><td align='left'>$linha[3]</td>";
 
                             if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
                                 if ($valido != "00/00/0000 00:00" && $valido != "")

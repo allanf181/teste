@@ -272,17 +272,12 @@ if (!empty($curso)) {
         $i = 1;
         if ($resultado) {
             while ($linha = mysql_fetch_array($resultado)) {
-                $professores = '';
-                foreach ($prof->getProfessor($linha[0]) as $key => $reg)
-                    $professores[] = $reg['nome'];
-                $professores = implode("<br>", $professores);
-
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 if ($linha[5] != 0)
                     $bimestre = "[" . $linha[5] . "º Bim]";
                 echo "<tr $cdif><td align='center'>$i</td>";
                 echo "<td><a target='_blank' href='relatorios/diarioProfessor.php?atribuicao=" . crip($linha[0]) . "'>$bimestre " . mostraTexto($linha[1]) . "</a></td>";
-                echo "<td align='left'>" . mostraTexto($professores) . "</td><td align=left>$linha[3]</td>";
+                echo "<td align='left'>" . $prof->getProfessor($linha[0], '<br>', 1, 1) . "</td><td align=left>$linha[3]</td>";
                 $bloqueado = "";
                 $origem = "";
 
@@ -387,13 +382,7 @@ if (!empty($curso)) {
         $i = $item;
         while ($linha = mysql_fetch_array($resultado)) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-
-            $professores = '';
-            foreach ($prof->getProfessor($linha[2]) as $key => $reg)
-                $professores[] = $reg['nome'];
-            $professores = implode("<br>", $professores);
-
-            echo "<tr $cdif><td align='center'>$i</td><td>$linha[0]</td><td>$linha[1]</a></td><td>$professores</td><td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td></tr>";
+            echo "<tr $cdif><td align='center'>$i</td><td>$linha[0]</td><td>$linha[1]</a></td><td>".$prof->getProfessor($linha[2], '<br>', 1, 1)."</td><td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td></tr>";
             $i++;
         }
         mysql_close($conexao);

@@ -62,14 +62,7 @@ if ($_GET["atribuicao"]) {
     require CONTROLLER . "/professor.class.php";
     $professor = new Professores();
                 
-    foreach($professor->getProfessor($atribuicao) as $key => $reg) {
-        ?>
-        <a href='#' rel='<?=INC?>/file.inc.php?type=pic&id=<?=crip($reg['codigo'])?>&timestamp=<?=time()?>' class='screenshot' title=''>
-        <img style='width: 20px; height: 20px' alt='Embedded Image' src='<?=INC?>/file.inc.php?type=pic&id=<?=crip($reg['codigo'])?>&timestamp=<?=time()?>' /></a>
-        <a title='Curr&iacute;culo Lattes' target="_blank" href="<?=$reg['lattes']?>"><?=$reg['nome']?></a>
-        <br>
-        <?php
-    }
+    print $professor->getProfessor($atribuicao,'<br>', 1, 1);
        
     ?>
     <hr>

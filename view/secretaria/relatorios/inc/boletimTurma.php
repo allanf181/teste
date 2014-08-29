@@ -65,13 +65,8 @@ if (dcrip($_GET["turma"]) && dcrip($_GET["bimestre"])) {
 	    	$disciplinasMedia[$l[8]] = $l[3];
 	    	$disciplinas[$l[8]][$l[0]] = $l[7];
 	    	$situacaoListar[$l[0]][$l[8]] = $l[9];
-
-				$professores='';			
-				foreach($prof->getProfessor($l[8]) as $key => $reg)
-					$professores[] = $reg['nome'];
-				$professor = implode(" / ", $professores);
-				
-	    	$disciplinasNomes[$l[8]][$l[3]] = $l[4]." - ".$professor;
+			
+	    	$disciplinasNomes[$l[8]][$l[3]] = $l[4]." - ".$prof->getProfessor($l[8], '', 0, 0);
 
 	    	$situacaoSigla[$l[0]][$l[8]] = $l[12];
 	    	$situacaoNome[$l[12]] = $l[11];

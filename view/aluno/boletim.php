@@ -59,12 +59,6 @@ $avaliacao = new Avaliacoes();
         $professor = new Professores();
         
         foreach ($res as $reg) {
-            $professores = '';
-            foreach ($professor->getProfessor($reg['atribuicao']) as $key => $reg1)
-                $professores[] = "<a target=\"_blank\" href=" . $reg1['lattes'] . "><font color='white'>" . $reg1['nome'] . "</font></a>";
-            
-            $professores = implode("<br>", $professores);
-
             if ($reg['bimestre'])
                 $bimestre = " - ".$reg['bimestre']."&ordm; BIMESTRE";
             else
@@ -74,7 +68,7 @@ $avaliacao = new Avaliacoes();
                 <tr class='cdif'>
                     <th colspan="2"><?= $reg['disciplina'] ?> <?= $bimestre ?></th>
                     <th style='width: 100px'><?= $reg['numero'] ?></th>
-                    <th colspan="3"><?= $professores ?></tr>
+                    <th colspan="3" style="color: white"><?= $professor->getProfessor($reg['atribuicao'],'<br>', 0, 1) ?></tr>
 
                 <?php
                 $dados = $nota->resultado($reg['matricula'], $reg['atribuicao']);

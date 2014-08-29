@@ -73,11 +73,6 @@ if (mysql_num_rows($result) != '') {
         if ((mysql_result($result, $i, "m.codigo") < 1000 || mysql_result($result, $i, "m.codigo") >= 2000) && !mysql_result($result, $i, "c.nomeAlternativo"))
             $curso = mysql_result($result, $i, "m.nome") . ' - ' . mysql_result($result, $i, "c.nome");
 
-        $professores = '';
-        foreach ($prof->getProfessor($atribuicao) as $key => $reg)
-            $professores[] = $reg['nome'];
-        $professor = implode(" / ", $professores);
-
         if ($fechamento == 'a')
             $bimestreEsemestre = 'ANUAL';
         if ($fechamento == 'b')
@@ -88,6 +83,8 @@ if (mysql_num_rows($result) != '') {
 } else {
     die('Nenhuma aula foi registrada.');
 }
+
+$professor = $prof->getProfessor($atribuicao, '', 0, 0);
 
 $CAMPO_ESTATICO = 7;
 

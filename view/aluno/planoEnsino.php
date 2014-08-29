@@ -53,11 +53,7 @@ if ($res) {
     $modalidade = $res["modalidade"];
     $finalizado = $res["finalizado"];
     $curso = $res["curso"];
-        
-    $professores = '';
-    foreach ($professor->getProfessor(dcrip($_GET['atribuicao'])) as $key => $reg)
-        $professores[] = "<a target=\"_blank\" href=" . $reg['lattes'] . ">" . $reg['nome'] . "</a>";
-    $professores = implode(" / ", $professores);
+
     ?>
     <div class='fundo_listagem'>
         <table border="1" width="100%" cellpadding="2" cellspacing="0">
@@ -75,7 +71,7 @@ if ($res) {
                             </tr>
                             <tr><td>TOTAL DE HORAS: <b><?php print $totalHoras; ?></b></td><td>TOTAL DE AULAS: <b><?php print $totalAulas; ?></b></td>
                                 <td>NÚMERO DE PROFESSORES: <b><?php print $numeroProfessores; ?></b></td></tr>
-                            <tr><td colspan="3">PROFESSOR(A) RESPONSÁVEL: <b><?php print $professores; ?></b></td></tr>
+                            <tr><td colspan="3">PROFESSOR(A) RESPONSÁVEL: <b><?= $professor->getProfessor(dcrip($_GET['atribuicao']),'', 0, 1) ?></b></td></tr>
                             </table>
                             <br>
                             <?php

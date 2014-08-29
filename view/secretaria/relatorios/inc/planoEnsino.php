@@ -6,7 +6,7 @@ require VARIAVEIS;
 require FUNCOES;
 
 require CONTROLLER . "/professor.class.php";
-$prof = new Professores();
+$professor = new Professores();
 
 if (!empty($_GET ["atribuicao"])) {
     $atribuicao = dcrip($_GET["atribuicao"]);
@@ -69,16 +69,13 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
     $CH = mysql_result($result, $i, "d.ch");
     $curso = (mysql_result($result, $i, "c.nomeAlternativo")) ? mysql_result($result, $i, "c.nomeAlternativo") : mysql_result($result, $i, "c.nome");
     $modalidade = mysql_result($result, $i, "m.nome");
-
-    $professores = '';
-    foreach ($prof->getProfessor($atribuicao) as $key => $reg)
-        $professores[] = $reg['nome'];
-    $professor = implode(" / ", $professores);
 }
 
 if (!$ITEM)
     die('Sem dados para gerar a lista.');
 
+$professores = $professor->getProfessor($atribuicao,'', 0, 0);
+        
 $pdf = new PDF ();
 $pdf->AliasNbPages();
 $pdf->AddPage($orientacao, $papel);
@@ -109,7 +106,7 @@ $pdf->Cell(78, $alturaLinha, utf8_decode("TOTAL DE HORAS: $totalHoras"), 1, 0, '
 $pdf->Cell(100, $alturaLinha, utf8_decode("TOTAL DE AULAS: $totalAulas"), 1, 0, 'L', true);
 $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE PROFESSORES: $numeroProfessores"), 1, 0, 'L', true);
 $pdf->Ln();
-$pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(A) RESPONSÁVEL: $professor"), 1, 0, 'L', true);
+$pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(A) RESPONSÁVEL: $professores"), 1, 0, 'L', true);
 $pdf->Ln();
 $pdf->Ln();
 
@@ -182,7 +179,7 @@ $pdf->Cell(78, $alturaLinha, utf8_decode("TOTAL DE HORAS: $totalHoras"), 1, 0, '
 $pdf->Cell(100, $alturaLinha, utf8_decode("TOTAL DE AULAS: $totalAulas"), 1, 0, 'L', true);
 $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE PROFESSORES: $numeroProfessores"), 1, 0, 'L', true);
 $pdf->Ln();
-$pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(A) RESPONSÁVEL: $professor"), 1, 0, 'L', true);
+$pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(A) RESPONSÁVEL: $professores"), 1, 0, 'L', true);
 $pdf->Ln();
 $pdf->Ln();
 $pdf->Cell(278, $alturaLinha, utf8_decode("2 - CONTEÚDO PROGRAMÁTICO"), 1, 0, 'L', true);

@@ -154,10 +154,7 @@ if (!empty($_GET["turma"])) { // se o parâmetro não estiver vazio
         //$frequencias[$linha[0]][$linha[5]] .= $linha[3];
         $nomes[$linha[0]] = $linha[4];
 
-        $prof = '';
-        foreach ($professor->getProfessor($linha[7]) as $key => $reg)
-            $prof[] = $reg['nome'];
-        $professores[$linha[5]] = implode("<br>", $prof);
+        $professores[$linha[5]] = $professor->getProfessor($linha[7], '', 0, 0);
     }
 }
 
@@ -186,7 +183,7 @@ if (!empty($turma)) {
                         foreach ($codAulas as $codAula => $n) {
                             if ($frequencias[$c][$codAula] > 0 && $frequencias[$c][$codAula] <= $codAulas)
                                 $cor = '#FFCCCC';
-                            $conteudo.= "<a href='#' title='" . mostraTexto($disciplinas[$codAula]) . "(" . mostraTexto($professores[$codAula]) . ")\n$n aulas' > (" . $frequencias[$c][$codAula] . ")</a>";
+                            $conteudo.= "<a href='#' title='" . mostraTexto($disciplinas[$codAula]) . "<br>" . mostraTexto($professores[$codAula]) . "<br>$n aulas' > (" . $frequencias[$c][$codAula] . ")</a>";
                         }
                         echo "<td align='center' bgcolor='$cor'>$conteudo</td>";
                     }

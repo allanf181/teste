@@ -219,7 +219,7 @@ if (!empty($_GET["turma"])) {
 			WHERE a.turma 
 			$sqlBimestre 
 			ORDER BY a.bimestre, d.nome, al.nome";
-    echo $sql;
+    //echo $sql;
     $resultado = mysql_query($sql);
     if ($resultado)
         while ($l = mysql_fetch_array($resultado)) {
@@ -233,11 +233,8 @@ if (!empty($_GET["turma"])) {
             $situacaoNome[$l[0]][$l[8]] = $l[11];
             $situacaoSigla[$l[0]][$l[8]] = $l[12];
 
-            $professores = '';
-            foreach ($professor->getProfessor($l[8]) as $key => $reg)
-                $professores[] = $reg['nome'];
-            $professores = implode(" / ", $professores);
-
+            $professores = $professor->getProfessor($l[8], '', 0, 0);
+            
             $disciplinasNomes[$l[13]][$l[8]][$l[3]] = $l[4] . " - " . $professores;
             $disciplnasStatusNomes[$l[2]][$l[6]] = $l[4] . " (" . $professores . ")";
             $disciplnasStatus[$l[2]] = $l[6];

@@ -183,12 +183,9 @@ $atribuicao = $_GET["atribuicao"];
                 <?php
                 require CONTROLLER . "/professor.class.php";
                 $professor = new Professores();
-                foreach ($professor->getProfessor($atribuicao) as $reg)
-                    $professores[] = "<a target=\"_blank\" href=" . $reg['lattes'] . ">" . $reg['nome'] . "</a>";
-                $professor_disc = implode(" / ", $professores);
                 ?>
                 <td><b><font size="1">N&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es:</b> <?php print $qdeAvaliacoes['qdeMinima']; ?><br><b>Avalia&ccedil;&otilde;es aplicadas:</b> <?php print $qdeAvaliacoes['avalCadastradas']; ?></font></td></tr>
-            <tr><td colspan="2"><font size="1"><b>Professores da disciplina:</b> <?php print $professor_disc; ?></font></td></tr>
+            <tr><td colspan="2"><font size="1"><b>Professores da disciplina:</b> <?= $professor->getProfessor($atribuicao,'', 1, 1) ?></font></td></tr>
             <tr><td colspan="8"><hr></td></tr>
 
             <tr><td colspan="8"><font size="1">Para esse di&aacute;rio ser finalizado, &eacute; necess&aacute;rio que a quantidade de aulas dadas seja maior ou igual a carga hor&aacute;ria e atingido o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es.
