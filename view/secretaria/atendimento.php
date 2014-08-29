@@ -16,127 +16,98 @@ require SESSAO;
 require CONTROLLER . "/ftdDados.class.php";
 $ftd = new FTDDados();
 
-if (isset($_GET["professor"])) {
-	$professor = dcrip($_GET["professor"]);
-	if ($professor != 'Todos') $restricao = " AND p.codigo = $professor";
+require CONTROLLER . "/professor.class.php";
+$prof = new Professores();
+
+if (dcrip($_GET["professor"])) {
+    $params['professor'] = dcrip($_GET["professor"]);
+    $sqlAdicional = " AND p.codigo = :professor";
 }
+
+$params['tipo'] = $PROFESSOR;
+$paramsList['tipo'] = $PROFESSOR;
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 
 <table border="0" width="100%" id="form" width="100%">
-	<tr><td>Professor: </td><td><select name="campoProfessor" id="campoProfessor" style="width: 350px">
-    <?php
-    $sql = "SELECT p.codigo, p.nome FROM Pessoas p, PessoasTipos pt
-    							WHERE p.codigo = pt.pessoa
-    							AND pt.tipo = $PROFESSOR
-    							ORDER BY p.nome";
-    $resultado = mysql_query($sql);
-    $selected = "";
-    if (mysql_num_rows($resultado) > 0) {
-    	echo "<option value='".crip("Todos")."'>Todos</option>";
-      while ($linha = mysql_fetch_array($resultado)) {
-      	if ($linha[0] == $professor)
-        	$selected = "selected";
-        echo "<option $selected value='".crip($linha[0])."'>$linha[1]</option>";
-        $selected = "";
-    	}
-    }
-    else {
-    	echo "<option>Não há professores cadastrados.</option>";
-    }
-    ?>
-		</select>
-	</td></tr>
+    <tr>
+        <td>Professor: </td>
+        <td>
+            <select name="campoProfessor" id="campoProfessor" style="width: 350px">
+                <option value=''>Todos</option>
+                <?php
+                foreach ($prof->listProfessores($paramsList) as $reg) {
+                    $selected = "";
+                    if ($reg['codigo'] == dcrip($_GET["professor"]))
+                        $selected = "selected";
+                    ?>
+                    <option <?= $selected ?> value='<?= crip($reg['codigo']) ?>'><?= $reg['nome'] ?></option>
+                    <?php
+                }
+                ?>
+            </select>
+        </td></tr>
 </table>
 
 <?php
-    // inicializando as variï¿½veis
-    $item = 1;
-    $itensPorPagina = 20;
-    $primeiro = 1;
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-    $ultimo = 1;
+// PAGINACAO
+$item = 1;
+$itensPorPagina = 20;
 
-    // validando a pï¿½gina atual
-    if (!empty($_GET["item"])){
-        $item = $_GET["item"];
-        $anterior = $item - $itensPorPagina;
-        $proximo = $item + $itensPorPagina;
-    }
+if (isset($_GET['item']))
+    $item = $_GET["item"];
 
-    // validando a pï¿½gina anterior
-    if ($item - $itensPorPagina < 1)
-        $anterior = 1;
+$res = $prof->listProfessores($params, $sqlAdicional, $item, $itensPorPagina);
+$totalRegistros = count($prof->listProfessores($params, $sqlAdicional));
 
-    // descobrindo a quantidade total de registros
-    $resultado = mysql_query("SELECT COUNT(*)
-    												FROM Pessoas p, PessoasTipos pt
-						    						WHERE p.codigo = pt.pessoa
-							 							AND pt.tipo = $PROFESSOR
-							 							$restricao
-							 							ORDER BY p.nome $restricao");
-    $linha = mysql_fetch_row($resultado);
-    $ultimo = $linha[0];
-    
-    // validando o prï¿½ximo item
-    if ($proximo > $ultimo){
-        $proximo = $item;
-        $ultimo = $item;
-    }
-    
-    // validando o ï¿½ltimo item
-    if ($ultimo % $itensPorPagina > 0)
-        $ultimo=$ultimo-($ultimo % $itensPorPagina)+1;    
+$SITENAV = $SITE.'?';
 
-	if (!isset($_GET["codigo"])){
-		$SITENAV = $SITE."?curso=".crip($curso)."&numeroDisciplina=".crip($numero)."&nomeDisciplina=".crip($nome);
-	} else $SITENAV = $SITE."?";
+require(PATH . VIEW . '/paginacao.php');
 
-$dias = diasDaSemana();
-$sql = "SELECT p.codigo, p.nome, p.lattes 
-							FROM Pessoas p, PessoasTipos pt
- 							WHERE p.codigo = pt.pessoa
- 							AND pt.tipo = $PROFESSOR
- 							$restricao
- 							ORDER BY p.nome limit ". ($item - 1) . ",$itensPorPagina";
-$resultado = mysql_query($sql);
-if (mysql_num_rows($resultado) > 0) {
-	print "<table border=\"0\" id=\"form\" width=\"100%\">\n";
-	print "<tr><td colspan=\"3\">\n";
-		require PATH . VIEW . '/paginacao.php';
+print "<table border=\"0\" id=\"form\" width=\"100%\">\n";
+print "<tr><td colspan=\"3\">\n";
 
-	print "</td></tr>\n";
-	while ($l = mysql_fetch_array($resultado)) {
-		$url='';
-		if ($l[2] != '') {
-			if (strpos($l[2],'http://') === FALSE) 
-				$url = "<b>Lattes</b><br><a target=\"_blank\" href=\"".'http://'.$l[2]."\">".$l[2]."</a>";
-			else
-				$url = "<b>Lattes</b><br><a target=\"_blank\" href=\"".$l[2]."\">".$l[2]."</a>";
-		}
-		print "<tr><td colspan=\"3\"><h2>$l[1]</h2></td></tr>\n";
-		print "<tr><td width=\"100\"><img alt=\"foto\" style=\"width: 100px; height: 90px\" src=\"".INC."/file.inc.php?type=pic&id=".crip($l[0])."\" /></td>\n";
-		print "<td>$url</a></td>\n";
-		print "<td width=\"200\">\n";
-		foreach($ftd->getAtendimentoAluno($l[0], $ANO, $SEMESTRE) as $dia => $h) {
-			$diaSemana = $dias[$dia+1];
-			$ES = $h[1].' &agrave;s '.$h[2];
-			print "$diaSemana das $ES<br>";
-		}
-		print "</td>\n";
-		print "</tr>\n";
-	}
-	print "</table>\n";
+print "</td></tr>\n";
+
+$i = $item;
+foreach ($res as $reg) {
+    ?>
+    <tr>
+        <td colspan="3"><h2><?= $reg['nome'] ?></h2></td>
+    </tr>
+    <tr>
+        <td width="100">
+            <img alt="foto" style="width: 100px; height: 90px" src="<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>" />
+        </td>
+        <td>
+            <?php
+            if ($reg['lattes'] != '') {
+                ?>
+                <b>Lattes</b><br><a target="_blank" href="<?= $reg['lattes'] ?>"><?= $reg['lattes'] ?></a>
+                <?php
+            }
+            ?>
+        </td>
+        <td width="200">
+            <?php
+            foreach ($ftd->getAtendimentoAluno($reg['codigo'], $ANO, $SEMESTRE) as $dia => $h) {
+                $diaSemana = $dias[$dia + 1];
+                $ES = $h[1] . ' &agrave;s ' . $h[2];
+                print "$diaSemana das $ES<br>";
+            }
+            ?>
+        </td>
+    </tr>
+    <?php
 }
-mysql_close($conexao);
 ?>
-    
+</table>
+
 <script>
-$(document).ready(function(){
-	$('#campoProfessor').change(function(){
-			$('#index').load('<?php print $SITE; ?>?professor='+ $('#campoProfessor').val());
-  });
-});
+    $(document).ready(function() {
+        $('#campoProfessor').change(function() {
+            $('#index').load('<?php print $SITE; ?>?professor=' + $('#campoProfessor').val());
+        });
+    });

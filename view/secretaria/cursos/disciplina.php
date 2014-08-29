@@ -84,7 +84,7 @@ if ($_GET["nomeDisciplina"]) {
         </table>
     </form>
     <?php
-// PAGINACAO
+    // PAGINACAO
     $item = 1;
     $itensPorPagina = 50;
 
@@ -114,7 +114,7 @@ if ($_GET["nomeDisciplina"]) {
                 <input type='checkbox' id="select-all" value="" />
                 <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
         <?php
-// efetuando a consulta para listagem
+        // efetuando a consulta para listagem
         $i = $item;
         foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";

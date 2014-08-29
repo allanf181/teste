@@ -40,6 +40,36 @@ class Professores extends Generic {
             return false;
         }
     }
+    
+    // USADO POR: ATENDIMENTO.PHP
+    // LISTA OS PROFESSORES DA BASE
+    public function listProfessores($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
+        $bd = new database();
+
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
+
+        $sql = "SELECT p.codigo, p.nome, p.lattes 
+                    FROM Pessoas p, PessoasTipos pt
+                    WHERE p.codigo = pt.pessoa
+                    AND pt.tipo = :tipo
+    		";
+
+        if ($params["professor"]) {
+            $sql .= " $sqlAdicional ";
+        }
+
+        $sql .= ' ORDER BY p.nome ';
+
+        $sql .= "$nav";
+        
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res)
+            return $res;
+        else
+            return false;
+    }    
 
 }
 ?>
