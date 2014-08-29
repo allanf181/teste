@@ -52,7 +52,7 @@ while ($row = db2_fetch_object($res)) {
     $curso = @mysql_fetch_object($result);
 
     if (!$curso) {
-        if (!is_int($row->T_MODAL))
+        if (!is_numeric($row->T_MODAL))
             $row->T_MODAL += (ord($row->T_MODAL) + 2000); // PARA BASE DE SP...
         $sql = "insert into Cursos 
 			(codigo, nome, modalidade, fechamento)
