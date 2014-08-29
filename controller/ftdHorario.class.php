@@ -30,14 +30,14 @@ class FTDHorarios extends Generic {
                     
             $paramsHor['ftd'] = $params['codigo'];
             foreach ($params["dte"] as $reg) {
-                list ($r, $horario) = split('-', $reg);
+                list ($r, $horario) = explode('-', $reg);
                 $paramsHor['registro'] = $r;
                 $paramsHor['horario'] = $horario;
                 if (!$bd->insertDB($sql, $paramsHor))
                     $erro=1;
             }
             foreach ($params["dts"] as $reg) {
-                list ($r, $horario) = split('-', $reg);
+                list ($r, $horario) = explode('-', $reg);
                 $paramsHor['registro'] = $r;
                 $paramsHor['horario'] = $horario;
                 if (!$bd->insertDB($sql, $paramsHor))

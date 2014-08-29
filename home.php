@@ -213,7 +213,7 @@ if ($res) {
     <tr><td colspan="2">Avisos Gerais</td></tr>
     <?php
     foreach($res as $reg) {
-        list($codigo, $nome) = @split('#', $reg['Pessoa']);
+        list($codigo, $nome) = @explode('#', $reg['Pessoa']);
         $disc = ($reg['disciplina']) ? " - ".$reg['disciplina'] : "";
         ?>
         <tr><td colspan="2"><h2><?= $nome ?></h2></td></tr>

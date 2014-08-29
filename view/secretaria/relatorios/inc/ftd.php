@@ -8,7 +8,7 @@ require FUNCOES;
 // Preparando os dados
 function createArray($Arr) {
     foreach ($Arr as $r) {
-        list($k, $v) = split('-', $r);
+        list($k, $v) = explode('-', $r);
         $T[$k] = $v;
     }
     return $T;
