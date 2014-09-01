@@ -1,24 +1,33 @@
-<?php
-require '../../inc/config.inc.php';
-require VARIAVEIS;
-require MENSAGENS;
-require FUNCOES;
-require SESSAO;
-require PERMISSAO;
-?>
 
 <link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/calendario.css" media="screen" />
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
-require CONTROLLER . "/calendario.class.php";
+if (!class_exists('Calendarios'))
+    require CONTROLLER . "/calendario.class.php";
+
 $calendario = new Calendarios();
-$res = $calendario->listCalendario($ANO);
-foreach ($res as $reg) {
-    $ocorrencia[$reg['mes']][$reg['dia']][$reg['codigo']] = $reg['ocorrencia'];
-    $diaOcor[$reg['mes']][$reg['dia']][$reg['codigo']] = $reg['diaLetivo'];
-    $diaEq[$reg['mes']][$reg['dia']] = $reg['ocorrencia'];
+$paramsCal = array('ano' => $ANO);
+$resCal = $calendario->listCalendario($paramsCal);
+foreach ($resCal as $reg) {
+    if ($reg['dataFim'] && $reg['dataFim'] != '00/00/0000') {
+        $end = dataMysql($reg['dataFim']);
+        $start = dataMysql($reg['dataInicio']);
+        $datediff = strtotime($end) - strtotime($start);
+        $datediff = floor($datediff / (60 * 60 * 24));
+        for ($i = 0; $i < $datediff + 1; $i++) {
+            $mes = date("m", strtotime($start . ' + ' . $i . 'day'));
+            $dia = date("d", strtotime($start . ' + ' . $i . 'day'));
+            $evento[$mes][$dia][$reg['codigo']] = $reg['ocorrencia'];
+            $diaOcor[$mes][$dia][$reg['codigo']] = $reg['diaLetivo'];
+            $diaEq[$mes][$dia] = $reg['ocorrencia'];
+        }
+    } else {
+        $evento[$reg['mes']][$reg['dia']][$reg['codigo']] = $reg['ocorrencia'];
+        $diaOcor[$reg['mes']][$reg['dia']][$reg['codigo']] = $reg['diaLetivo'];
+        $diaEq[$reg['mes']][$reg['dia']] = $reg['ocorrencia'];
+    }
 }
 
 $domingo = "style=color:#C30;";
@@ -26,7 +35,7 @@ $domingo = "style=color:#C30;";
 for ($j = 1; $j <= 12; $j++) {
     $mes = $j;
     $dia = date("d");
-    $ano_ = substr($ano, -2);
+    $ano_ = substr($ANO, -2);
     ?>
     <div class='fundo_listagem'>
         <table><tr><td valign="top">
@@ -66,8 +75,8 @@ for ($j = 1; $j <= 12; $j++) {
                                             }
                                             $d = str_pad($d, 2, "0", STR_PAD_LEFT);
                                             $j = str_pad($j, 2, "0", STR_PAD_LEFT);
-                                            if ($ocorrencia[$j][$d]) {
-                                                foreach ($ocorrencia[$j][$d] as $oCodigo => $oNome) {
+                                            if ($evento[$j][$d]) {
+                                                foreach ($evento[$j][$d] as $oCodigo => $oNome) {
                                                     if ($diaOcor[$j][$d][$oCodigo] == 0)
                                                         $color = 'red';
                                                     else
@@ -110,8 +119,8 @@ for ($j = 1; $j <= 12; $j++) {
                     for ($o = 1; $o <= 31; $o++) {
                         $o = str_pad($o, 2, "0", STR_PAD_LEFT);
                         $j = str_pad($j, 2, "0", STR_PAD_LEFT);
-                        if ($ocorrencia[$j][$o]) {
-                            foreach ($ocorrencia[$j][$o] as $oCodigo => $oNome) {
+                        if ($evento[$j][$o]) {
+                            foreach ($evento[$j][$o] as $oCodigo => $oNome) {
                                 $no = str_pad($o + 1, 2, "0", STR_PAD_LEFT);
                                 if ($diaEq[$j][$o] != $diaEq[$j][$no]) {
                                     if ($diaOcor[$j][$o][$oCodigo] == 0)
@@ -119,7 +128,7 @@ for ($j = 1; $j <= 12; $j++) {
                                     else
                                         $color = 'blue';
                                     ?>
-                                    <p><font size="1px" color="<?= $color ?>"><?= "$diaEqInicio $o - " . mostraTexto($ocorrencia[$j][$o][$oCodigo]) ?></font></p>
+                                    <p><font size="1px" color="<?= $color ?>"><?= "$diaEqInicio $o - " . mostraTexto($evento[$j][$o][$oCodigo]) ?></font></p>
                                     <?php
                                     $diaEqInicio = "";
                                 } else {

@@ -17,13 +17,12 @@ $estado = new Estados();
 
 // INSERT E UPDATE
 if ($_POST["opcao"] == 'InsertOrUpdate') {
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
     $ret = $estado->insertOrUpdate($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    if ($_POST['codigo'])
+    if (dcrip($_POST['codigo']))
         $_GET["codigo"] = $_POST['codigo'];
     else
         $_GET["codigo"] = crip($ret['RESULTADO']);
@@ -37,6 +36,7 @@ if ($_GET["opcao"] == 'delete') {
 }
 
 // LISTAGEM
+print dcrip($_GET["codigo"]);
 if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     // consulta no banco
     $params = array('codigo' => dcrip($_GET["codigo"]));
@@ -46,8 +46,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
-
 <script>
+
     $('#form_padrao').html5form({
         method: 'POST',
         action: '<?php print $SITE; ?>',
@@ -92,7 +92,17 @@ require PATH . VIEW . '/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
-    <tr><th align="center" width="40">#</th><th align="left">Estado</th><th align="left">Sigla</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+    <tr>
+        <th align="center" width="40">#</th>
+        <th align="left">Estado</th>
+        <th align="left">Sigla</th>
+        <th align="center" width="50">&nbsp;&nbsp;
+            <input type="checkbox" id="select-all" value="">
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+            </a>
+        </th>
+    </tr>
     <?php
     // efetuando a consulta para listagem
     $i = $item;
@@ -105,7 +115,9 @@ require PATH . VIEW . '/paginacao.php';
             </td><td><?php print $reg['sigla']; ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
-                <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'><img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
+                <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>
+                    <img class='botao' src='<?php print ICONS; ?>/config.png' />
+                </a>
             </td>
         </tr>
         <?php

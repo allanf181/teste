@@ -18,7 +18,6 @@ $abono = new FrequenciasAbonos();
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_POST['dataInicio'] = dataMysql($_POST['dataInicio']);
     $_POST['dataFim'] = dataMysql($_POST['dataFim']);
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
     $ret = $abono->insertOrUpdate($_POST);
@@ -39,10 +38,9 @@ if ($_GET["opcao"] == 'delete') {
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
-
 <?php
 // inicializando as variáveis do formulário
-$params['ano'] = $ano;
+$params['ano'] = $ANO;
 $sqlAdicional .= " AND date_format(f.dataInicio, '%Y') = :ano ";
 
 if (dcrip($_GET["aluno"]) != "") {
@@ -65,10 +63,6 @@ if ($dataFim && $dataInicio) {
     if (!empty($dataInicio)) {
         $params['dataInicio'] = dataMysql($dataInicio);
         $sqlAdicional .= " AND f.dataInicio = :dataInicio ";
-    }
-    if (!empty($dataFim)) {
-        $params['dataFim'] = dataMysql($dataFim);
-        $sqlAdicional .= " AND f.dataFim = :dataFim ";
     }
 }
 
@@ -184,7 +178,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
         </table>
     </form>
     <?php
-// PAGINACAO
+    // PAGINACAO
     $itensPorPagina = 20;
     $item = 1;
     $ordem = '';
@@ -195,19 +189,30 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     $res = $abono->listAbonos($params, $sqlAdicional, $item, $itensPorPagina);
     $totalRegistros = count($abono->listAbonos($params, $sqlAdicional));
 
+    if ($params['dataFim']) $params['dataFim'] = dataPTBR($params['dataFim']);
+    if ($params['dataInicio']) $params['dataInicio'] = dataPTBR($params['dataInicio']);
     $params['aluno'] = crip($params['aluno']);
-    $params['atribuicao'] = crip($params['atribuicao']);
+    $params['atribuicao'] = $_GET['atribuicao'];
     $SITENAV = $SITE . "?" . mapURL($params);
 
     require PATH . VIEW . '/paginacao.php';
     ?>
     <table id="listagem" border="0" align="center">
-        <tr><th width="180">Data</th><th width="80">Prontu&aacute;rio</th><th width="220">Aluno</th><th th width="200">Tipo</th><th>Aula/Disciplina</th><th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+        <tr>
+            <th width="180">Data</th>
+            <th width="80">Prontu&aacute;rio</th>
+            <th width="220">Aluno</th>
+            <th th width="200">Tipo</th>
+            <th>Aula/Disciplina</th>
+            <th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
+                <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a>
+            </th>
+        </tr>
         <?php
         $i = $item;
         foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            if ($reg['dataFim']) $reg['dataInicio'] = $reg['dataInicio'].' a '.$reg['dataFim'];
+            if ($reg['dataFim'] && $reg['dataFim']!='00/00/0000') $reg['dataInicio'] = $reg['dataInicio'].' a '.$reg['dataFim'];
             ?>
             <tr <?php print $cdif; ?>><td><?php print $reg['dataInicio']; ?></td>
                 <td><?php print $reg['prontuario']; ?></td>

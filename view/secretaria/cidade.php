@@ -12,212 +12,159 @@ require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
 
+require CONTROLLER . "/cidade.class.php";
+$cidade = new Cidades();
+
 // PARA QUALQUER APLICAÇÃO UTILIZANDO AJAX PESQUISANDO CIDADES
 if ($_GET["ajaxCidade"]) {
+    $arr = array();
     header('Cache-Control: no-cache');
     header('Content-type: application/xml; charset="utf-8"', true);
-    $cod_estados = mysql_real_escape_string($_GET['codigo']);
-    $cidades = array();
-    $sql = "SELECT codigo, nome
-		FROM Cidades
-		WHERE estado=$cod_estados
-		ORDER BY nome";
-    $res = mysql_query($sql);
 
-    while ($row = mysql_fetch_assoc($res)) {
-        $cidades[] = array(
-            'codigo' => $row['codigo'],
-            'nome' => $row['nome'],
-        );
-    }
+    $cidades = $cidade->listCidadesToJSON(dcrip($_GET["codigo"]));
+
     echo( json_encode($cidades) );
     die;
 }
 
 require SESSAO;
 
+// INSERT E UPDATE
 if ($_POST["opcao"] == 'InsertOrUpdate') {
-    $codigo = $_POST["campoCodigo"];
-    $nome = $_POST["campoNome"];
-    $estado = dcrip($_POST["campoEstado"]);
+    unset($_POST['opcao']);
 
-    if (empty($codigo)) {
-        $resultado = mysql_query("insert into Cidades values(0,'$nome','$estado')");
-        if ($resultado == 1)
-            mensagem('OK', 'TRUE_INSERT');
-        else
-            mensagem('NOK', 'FALSE_INSERT');
+    $ret = $cidade->insertOrUpdate($_POST);
 
-        $_GET["codigo"] = crip(mysql_insert_id());
-    }
-    else {
-        $resultado = mysql_query("update Cidades set nome='$nome', estado='$estado' where codigo=$codigo");
-        if ($resultado == 1)
-            mensagem('OK', 'TRUE_UPDATE');
-        else
-            mensagem('NOK', 'FALSE_UPDATE');
-
-        $_GET["codigo"] = crip($_POST["campoCodigo"]);
-    }
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    if (dcrip($_POST['codigo']))
+        $_GET["codigo"] = crip($_POST['codigo']);
+    else
+        $_GET["codigo"] = crip($ret['RESULTADO']);
 }
 
+// DELETE
 if ($_GET["opcao"] == 'delete') {
-    $codigo = dcrip($_GET["codigo"]);
-    $resultado = mysql_query("delete from Cidades where codigo=$codigo");
-    if ($resultado == 1)
-        mensagem('OK', 'TRUE_DELETE');
-    else
-        mensagem('NOK', 'TRUE_DELETE');
-    $codigo = null;
+    $ret = $cidade->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
-    $_GET["estado"] = null;
+}
+
+if ($_GET['estado']) {
+    $estado = dcrip($_GET['estado']);
+    $params['estado'] = $estado;
+    $sqlAdicional = ' AND e.codigo = :estado ';
+}
+
+// LISTAGEM
+if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
+    // consulta no banco
+    $params = array('codigo' => dcrip($_GET["codigo"]));
+    $res = $cidade->listRegistros($params);
+    extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 }
 ?>
-
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
+<script>
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?php print $SITE; ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
+</script>
 
-
-<?php
-// inicializando as vari�veis do formul�rio
-$codigo = "";
-$nome = "";
-$estado = "";
-$restricao = "";
-
-if (isset($_GET["estado"])) {
-    $estado = dcrip($_GET["estado"]);
-    $restricao .= " AND Cidades.estado=$estado";
-}
-
-if (!empty($_GET["codigo"])) {
-
-    // consulta no banco
-    $sql = "select * from Cidades where codigo=" . dcrip($_GET["codigo"]);
-    //echo $sql;
-    $resultado = mysql_query($sql);
-    $linha = mysql_fetch_row($resultado);
-
-    // armazena os valores nas vari�veis
-    $codigo = $linha[0];
-    $nome = $linha[1];
-    $estado = $linha[2];
-    $restricao = " AND Cidades.codigo=" . dcrip($_GET["codigo"]);
-}
-
-print "<script>\n";
-print "    $('#form_padrao').html5form({ \n";
-print "        method : 'POST', \n";
-print "        action : '$SITE', \n";
-print "        responseDiv : '#index', \n";
-print "        colorOn: '#000', \n";
-print "        colorOff: '#999', \n";
-print "        messages: 'br' \n";
-print "    }) \n";
-print "</script>\n";
-
-print "<div id=\"html5form\" class=\"main\">\n";
-print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
-?>        
-<table align="center" width="100%" id="form">
-    <tr><td align="right">Estado: </td><td>
-            <select name="campoEstado" id="campoEstado" value="<?php echo $estado; ?>">
-                <option></option>
-                <?php
-                $resultado = mysql_query("select * from Estados order by nome");
-                $selected = ""; // controla a alteração no campo select
-                while ($linha = mysql_fetch_array($resultado)) {
-                    if ($linha[0] == $estado)
-                        $selected = "selected";
-                    echo "<option $selected value='" . crip($linha[0]) . "'>$linha[1]</option>";
-                    $selected = "";
-                }
-                ?>
-            </select>
-        </td></tr>
-    <tr><td align="right">Nome: </td><td><input type="text" maxlength="145" name="campoNome" id="campoNome" value="<?php echo $nome; ?>"/></td></tr>
-    <tr><td></td><td>
-            <input type="hidden" value="<?php echo $codigo; ?>" name="campoCodigo" />
-            <input type="hidden" name="opcao" value="InsertOrUpdate" />
-            <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                    <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
-                </tr></table>
-        </td></tr>
-</table>
-</form>
+<div id="html5form" class="main">
+    <form id="form_padrao">     
+        <table align="center" width="100%" id="form">
+            <tr><td align="right">Estado: </td><td>
+                    <select name="estado" id="estado" value="<?php echo $estado; ?>">
+                        <option></option>
+                        <?php
+                        require CONTROLLER . '/estado.class.php';
+                        $e = new Estados();
+                        $res = $e->listRegistros(null, null, null, ' ORDER BY nome ');
+                        foreach ($res as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $estado)
+                                $selected = "selected";
+                            echo "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </td></tr>
+            <tr><td align="right">Nome: </td><td><input type="text" maxlength="145" name="nome" id="nome" value="<?php echo $nome; ?>"/></td></tr>
+            <tr><td></td><td>
+                    <input type="hidden" value="<?php echo $codigo; ?>" name="codigo" />
+                    <input type="hidden" name="opcao" value="InsertOrUpdate" />
+                    <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
+                            <td><input type="reset" value="Novo/Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?php print $SITE; ?>');
+                                            void(0);" /></td>
+                        </tr></table>
+                </td></tr>
+        </table>
+    </form>
 </div>
 
 <?php
-// inicializando as vari�veis
+// PAGINACAO
+$itensPorPagina = 20;
 $item = 1;
-$itensPorPagina = 50;
-$primeiro = 1;
-$anterior = $item - $itensPorPagina;
-$proximo = $item + $itensPorPagina;
-$ultimo = 1;
+$ordem = '';
 
-// validando a p�gina atual
-if (!empty($_GET["item"])) {
+if (isset($_GET['item']))
     $item = $_GET["item"];
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-}
 
-// validando a p�gina anterior
-if ($item - $itensPorPagina < 1)
-    $anterior = 1;
+if ($params['codigo'])
+    $sqlAdicional = ' AND c.codigo = :codigo ';
 
-// descobrindo a quantidade total de registros
-$resultado = mysql_query("SELECT count(*) FROM Cidades, Estados 
-        						WHERE Cidades.estado = Estados.codigo $restricao");
-$linha = mysql_fetch_row($resultado);
-$ultimo = $linha[0];
+$res = $cidade->listCidades($params, $item, $itensPorPagina, $sqlAdicional);
+$totalRegistros = count($cidade->listCidades($params, null, null, $sqlAdicional));
 
-// validando o pr�ximo item
-if ($proximo > $ultimo) {
-    $proximo = $item;
-    $ultimo = $item;
-}
-
-// validando o �ltimo item
-if ($ultimo % $itensPorPagina > 0)
-    $ultimo = $ultimo - ($ultimo % $itensPorPagina) + 1;
-
-$SITENAV = "$SITE?";
-if ($restricao)
-    $SITENAV = $SITE . "?estado=" . crip($estado);
-
-require(PATH . VIEW . '/navegacao.php');
+$params['estado'] = crip($params['estado']);
+$SITENAV = $SITE . '?' . mapURL($params);
+require PATH . VIEW . '/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
-    <tr><th align="center" width="40">#</th><th align="left">Cidade</th><th>Estado</th><th align="center" width="40">Ação</th></tr>
+    <tr>
+        <th align="center" width="40">#</th>
+        <th align="left">Cidade</th>
+        <th>Estado</th>
+        <th align="center" width="50">&nbsp;&nbsp;
+            <input type="checkbox" id="select-all" value="">
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+            </a>
+        </th>
+    </tr>
     <?php
     // efetuando a consulta para listagem
-    $sql = "SELECT * FROM Cidades, Estados 
-        WHERE Cidades.estado = Estados.codigo 
-        $restricao
-        ORDER BY Cidades.nome limit " . ($item - 1) . ",$itensPorPagina";
-    //echo $sql;
-    $resultado = mysql_query($sql);
     $i = $item;
-    while ($linha = mysql_fetch_array($resultado)) {
+    foreach ($res as $reg) {
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-        $codigo = crip($linha[0]);
-        echo "<tr $cdif><td align='center'>$i</td><td>$linha[1]</td><td align='left'>$linha[5]</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/remove.png' /></a><a href='#' title='Alterar' class='item-alterar' id='" . crip($linha[0]) . "'><img class='botao' src='" . ICONS . "/config.png' /></a></td></tr>";
-        $i++;
-    }
-    ?>
+        ?>
+        <tr <?= $cdif ?>>
+            <td align='center'><?= $i ?></td>
+            <td><?= $reg['cidade'] ?></td>
+            <td align='left'><?= $reg['estado'] ?></td>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
+                <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>
+                    <img class='botao' src='<?php print ICONS; ?>/config.png' />
+                </a>
+            </td>
+            <?php
+            $i++;
+        }
+        ?>
 </table>
 
-<?php
-require(PATH . VIEW . '/navegacao.php');
-
-mysql_close($conexao);
-?>   
 <script>
     function atualizar(getLink) {
-        var estado = $('#campoEstado').val();
+        var estado = $('#estado').val();
         var URLS = '<?php print $SITE; ?>?estado=' + estado;
         if (!getLink)
             $('#index').load(URLS + '&item=<?php print $item; ?>');
@@ -226,7 +173,7 @@ mysql_close($conexao);
     }
 
     function valida() {
-        if ($('#campoEstado').val() == "" || $('#campoNome').val() == "") {
+        if ($('#estado').val() == "" || $('#nome').val() == "") {
             $('#salvar').attr('disabled', 'disabled');
         } else {
             $('#salvar').enable();
@@ -235,16 +182,39 @@ mysql_close($conexao);
 
     $(document).ready(function() {
         valida();
-        $('#campoEstado, #campoNome').keyup(function() {
+        $('#estado, #nome').keyup(function() {
             valida();
         });
 
         $(".item-excluir").click(function() {
-            var codigo = $(this).attr('id');
-            jConfirm('Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {
-                if (r)
-                    $('#index').load(atualizar(1) + '&opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+                'type': 'question',
+                'title': '<?php print $TITLE; ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+
+                        $('#index').load(atualizar(1) + '&opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                    }
+                }
             });
+        });
+
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
         });
 
         $(".item-alterar").click(function() {
@@ -252,7 +222,7 @@ mysql_close($conexao);
             $('#index').load(atualizar(1) + '&codigo=' + codigo);
         });
 
-        $('#campoEstado').change(function() {
+        $('#estado').change(function() {
             atualizar();
         });
     });

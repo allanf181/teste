@@ -1,101 +1,97 @@
 <?php
-if(!class_exists('database'))
+
+if (!class_exists('database'))
     require_once MYSQL;
 
 Abstract class Generic {
-    
-    public function __construct(){
+
+    public function __construct() {
         //
     }
-    
+
     // MÉTODO PARA INSERÇÃO DE OBJETO
     public function insertOrUpdate($params) {
         $bd = new database();
-        
+
         // decriptografa elementos que possam
         // estar criptografados dentro do Array
         $params = dcripArray($params);
 
-        foreach(array_keys($params) as $key) {
-            if ($key == 'codigo') { 
+        foreach (array_keys($params) as $key) {
+            if ($key == 'codigo') {
                 $INS[] = 'NULL';
                 $COL[] = $key;
             } else {
-                $INS[] = ':'.$key;
                 $COL[] = $key;
-                $UP[]  = $key.'=:'.$key;
+
+                if ($key == 'senha') {
+                    $INS[] = 'PASSWORD(:' . $key.')';
+                    $UP[] = $key . '=PASSWORD(:' . $key.')';
+                } else {
+                    $INS[] = ':' . $key;
+                    $UP[] = $key . '=:' . $key;
+                }
             }
         }
-        
+
         $INS = implode(',', $INS);
         $COL = implode(',', $COL);
         $UP = implode(',', $UP);
-        
+
         $table = get_called_class();
         if (!$params['codigo']) {
             $sql = "INSERT INTO $table ($COL) VALUES ($INS)";
             unset($params['codigo']);
-            $res = $bd->insertDB($sql, $params); 
+            $res = $bd->insertDB($sql, $params);
         } else {
             $sql = "UPDATE $table SET $UP "
-                . "WHERE codigo=:codigo";
+                    . "WHERE codigo=:codigo";
             $res = $bd->updateDB($sql, $params);
         }
 
-        if ( $res )
-        {
+        if ($res) {
             return $res;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
- 
+
     public function count() {
         $bd = new database();
         $table = get_called_class();
 
         $sql = "SELECT COUNT(*) as total FROM $table";
-        
+
         $res = $bd->selectDB($sql);
-        if ( $res[0] )
-        {
+        if ($res[0]) {
             return $res[0]['total'];
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    public function listRegistros($params=null, $item=null, $itensPorPagina=null, $sqlAdicional=null) {
+    public function listRegistros($params = null, $item = null, $itensPorPagina = null, $sqlAdicional = null) {
         $bd = new database();
         $table = get_called_class();
 
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina ";
-        
+
         if (!$params['codigo']) {
-            $sql = "SELECT * FROM $table $nav ";
+            $sql = "SELECT * FROM $table $sqlAdicional $nav ";
         } else {
             $sql = "SELECT * FROM $table "
-                . "WHERE codigo=:codigo $nav ";
+                    . "WHERE codigo=:codigo $sqlAdicional $nav ";
         }
-
-        $sql .= $sqlAdicional;
 
         $res = $bd->selectDB($sql, $params);
-        if ( $res )
-        {
+        if ($res) {
             return $res;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    
+
     public function delete($codigo) {
         $bd = new database();
         $table = get_called_class();
@@ -104,15 +100,16 @@ Abstract class Generic {
         // É NECESSÁRIO PREPARAR A QUERY
         // OBS: NÃO FOI FEITO DIRETO PARA NÃO COMPROMETER
         // A SEGURANÇA FORNECIDA PELO PDO CONTRA SQLInjection
-        $codigo = explode(',',$codigo);
-                        
-        if ($codigo[0] == '0') unset($codigo[0]);
-        
-        $i=0;
+        $codigo = explode(',', $codigo);
+
+        if ($codigo[0] == '0')
+            unset($codigo[0]);
+
+        $i = 0;
         foreach ($codigo as $value) {
-            $indice = 'A'.$i;
+            $indice = 'A' . $i;
             $new_array[$indice] = dcrip($value);
-            $new_params[] = ':'.$indice;
+            $new_params[] = ':' . $indice;
             $i++;
         }
         $param = implode($new_params, ',');
@@ -122,15 +119,13 @@ Abstract class Generic {
         $params = $new_array;
         $res = $bd->deleteDB($sql, $params);
 
-        if ( $res )
-        {
+        if ($res) {
             return $res;
-        }
-        else
-        {
+        } else {
             return false;
         }
-    }    
+    }
+
 }
 
 ?>

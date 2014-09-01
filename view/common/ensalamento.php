@@ -1,9 +1,4 @@
-<?php
-require '../../inc/config.inc.php';
-require VARIAVEIS;
-require MENSAGENS;
-require PERMISSAO;
-?>
+
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <?php
 

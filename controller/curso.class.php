@@ -8,7 +8,7 @@ class Cursos extends Generic {
         //
     }
 
-        // UTILIZADO POR: SECRETARIA/AVISO.PHP
+    // UTILIZADO POR: SECRETARIA/AVISO.PHP
     public function listCursosToJSON($string, $ano, $semestre) {
         $bd = new database();
 

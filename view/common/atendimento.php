@@ -1,11 +1,4 @@
 <?php
-require '../../inc/config.inc.php';
-require MYSQL;
-require VARIAVEIS;
-require MENSAGENS;
-require FUNCOES;
-require PERMISSAO;
-require SESSAO;
 
 require CONTROLLER . "/ftdDado.class.php";
 $ftd = new FTDDados();

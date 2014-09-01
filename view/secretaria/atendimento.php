@@ -6,6 +6,11 @@
 //1
 
 require '../../inc/config.inc.php';
+require VARIAVEIS;
+require MENSAGENS;
+require FUNCOES;
+require SESSAO;
+require PERMISSAO;
 
 // COPIA DE:
 require PATH.VIEW.'/common/atendimento.php';

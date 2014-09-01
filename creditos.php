@@ -41,14 +41,16 @@ require SESSAO;
 <tr>
 <td valign="top" align="center">Anne Domenici (Sert&atilde;ozinho)
 	<br>Lourenço Alves (Araraquara)
+        <br>Kerolláine Lauro Oliveira (Araraquara)
 </td>
 <td valign="top" align="center">Naylor Garcia Bachiega (Birigui)
     	<br>Marcelo Fernandes (Campos do Jord&atilde;o)
 	<br>Carlos Eduardo Alves da Silva (Votuporanga)
         <br>Fernando Parreira (Votuporanga)
+        <br>Ricardo Crivelli (Avar&eacute;)
 </td>
 <td valign="top" align="center">
-	Mauro de Lucca (Araraquara)
+	Lucas de Araujo Oliveira (Barretos)
         <br>Ricardo Takazu (S&atilde;o Paulo)
 </td>
 </tr>
@@ -56,29 +58,23 @@ require SESSAO;
 
 </center>
 
-<p style="margin: 15px">
-Este sistema foi inicialmente desenvolvido pelos alunos do 2º módulo/2011 do curso de 
-Manutenção e Suporte em Informática como critério parcial para aprovação na disciplina de 
-Linguagem de Programação para Web II sob responsabilidade do Prof. João Paulo Lemos Escola:
-
-</p>
-<center>
-    <ul>
-        <li class="creditos">Antonio Flavio de Oliveira</li>
-        <li class="creditos">Debora Correia Campos</li>
-        <li class="creditos">Eduardo Lopes Pereira</li>
-        <li class="creditos">Estefani Luana Alves Moreira</li>
-        <li class="creditos">Felipe do Nascimento Jorge</li>
-        <li class="creditos">Lais Miyuki Iwano Oda</li>
-        <li class="creditos">Lucas Aires dos Santos</li>
-        <li class="creditos">Lucas de Oliveira Alves</li>
-        <li class="creditos">Lucas Exposto Soares</li>
-        <li class="creditos">Vitor Ricardo Lima Rodrigues</li>
-    </ul>
-</center>
-
-<p style="margin: 15px; text-align: center" >
-Logotipo desenvolvido pelo aluno Halexandre Lord<br /><br /><br />
+<br>
+<b>Vers&atilde;o 1.405</b>
+<br>
+<br>Reestrutura&ccedil;&atilde;o de c&oacute;digo:
+<br> - Avalia&ccedil;&atilde;o
+<br> - Notas
+<br> - Aulas
+<br> - Frequ&ecirc;ncias
+<br> - FTD Professor
+<br> - Cadastro de Cidades
+<br> - Cadastro de Pessoas
+<br> - C&aacute;lculos do Sistema de Notas
+<br> - Cria&ccedil;&atilde;o de visualiza&ccedil;&atilde;o comum.
+<br> - Padroniza&ccedil;&atilde;o do Calend&aacute;rio.
+<br>
+<br>Inserido:
+<br> - Hor&aacute;rio de atendimento do professor na tela do aluno.</li>
+<br>
+<br>
 <a href="">Voltar</a>
-
-</p>

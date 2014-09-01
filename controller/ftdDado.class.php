@@ -134,7 +134,38 @@ class FTDDados extends FTDHorarios {
         } else {
             return false;
         }
-    }    
+    }
+    
+    // UTILIZADO POR: SECRETARIA/FTD.PHP
+    public function listFTDs($params=null, $item=null, $itensPorPagina=null, $sqlAdicional=null) {
+        $bd = new database();
+        
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina ";
+        
+        $sql = "SELECT fd.codigo as codigo, p.nome as professor,
+    		date_format(fd.finalizado, '%d/%m/%Y %H:%i') as finalizado,
+    		date_format(fd.valido, '%d/%m/%Y %H:%i') as valido,
+                fd.solicitacao as solicitacao,
+    		(SELECT nome FROM Pessoas WHERE codigo = fd.solicitante) as solicitante,
+    		p.codigo as pessoaCodigo
+		FROM Pessoas p, PessoasTipos pt, FTDDados fd
+		WHERE p.codigo = pt.pessoa
+		AND p.codigo = fd.professor
+		AND fd.ano = :ano
+		AND (fd.semestre = :sem OR fd.semestre = 0)
+		AND pt.tipo = :professor
+                $sqlAdicional
+		ORDER BY p.nome $nav";
+
+        $res = $bd->selectDB($sql, $params);
+        
+        if ($res)
+            return $res;
+        
+        return false;
+    }
+    
 }
 
 ?>

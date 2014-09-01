@@ -7,8 +7,11 @@
 
 require '../../inc/config.inc.php';
 
+require VARIAVEIS;
+require MENSAGENS;
 require FUNCOES;
 require SESSAO;
+require PERMISSAO;
 
 $codigo = dcrip($_GET['turma']);
 $subturma = dcrip($_GET['subturma']);

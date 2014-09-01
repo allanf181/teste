@@ -5,40 +5,6 @@ if (!class_exists('Generic'))
 
 class FrequenciasAbonos extends Generic {
 
-    // MÉTODO PARA INSERÇÃO DE OBJETO
-    public function insertOrUpdateAbono($params) {
-        $bd = new database();
-
-        if ($params["dataInicio"]) {
-            $dataInicio = dataMysql($params["dataInicio"]);
-            $dataInicio = new DateTime($dataInicio);
-        }
-
-        if ($params["dataFim"]) {
-            $dataFim = dataMysql($params["dataFim"]);
-            $dataFim = new DateTime($dataFim);
-        }
-
-        if ($params["dataInicio"] && $params["dataFim"]) {
-            $i = 0;
-            while ($dataInicio <= $dataFim) {
-                $data = $dataInicio->format('Y-m-d');
-                unset($params['dataInicio']);
-                unset($params['dataFim']);
-                $params['data'] = $data;
-                $res = $this->insertOrUpdate($params);
-                $dataInicio->add(new DateInterval('P1D'));
-            }
-            return $res;
-        } else {
-            $data = dataMysql($params["dataInicio"]);
-            unset($params['dataInicio']);
-            unset($params['dataFim']);
-            $params['data'] = $data;
-            return $this->insertOrUpdate($params);
-        }
-    }
-
     // VERIFICANDO OS ABONOS DO ALUNO
     public function getFrequenciaAbono($aluno, $atribuicao, $data) {
         $bd = new database();
