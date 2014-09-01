@@ -8,7 +8,25 @@ class Pessoas extends Generic {
     public function __construct() {
         //
     }
-   
+
+    // UTILIZADO POR: SECRETARIA/AVISO.PHP
+    public function listPessoasToJSON($string) {
+        $bd = new database();
+
+        $sql = "SELECT CONCAT('P:', codigo) as id, nome as name "
+                . "FROM Pessoas "
+                . "WHERE nome LIKE :s "
+                . "ORDER BY nome DESC LIMIT 10";
+
+        $params = array(':s' => '%'.$string.'%');
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res)
+            return $res;
+        
+        return false;
+    }
+    
     public function listPessoasTipos($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 

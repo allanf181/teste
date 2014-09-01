@@ -10,33 +10,25 @@ require MYSQL;
 require VARIAVEIS;
 
 if ($_GET['dados']) {
-    $query = sprintf("SELECT CONCAT('P:', codigo) as id, nome as name from Pessoas "
-            . "WHERE nome LIKE '%%%s%%' ORDER BY nome DESC LIMIT 10", mysql_real_escape_string($_GET["q"]));
+    require CONTROLLER . "/turma.class.php";
+    $turma = new Turmas();
+
+    require CONTROLLER . "/curso.class.php";
+    $curso = new Cursos();
+    
+    require CONTROLLER . "/pessoa.class.php";
+    $pessoa = new Pessoas();
+
     $arr = array();
-    $rs = mysql_query($query);
-    while ($obj = mysql_fetch_object($rs))
-        $arr[] = $obj;
 
-    $query = sprintf("select CONCAT('C:', c.codigo) as id,
-                        CONCAT(IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome), '[', m.nome, ']') as name 
-               		from Cursos c, Modalidades m 
-               		where c.modalidade = m.codigo 
-                        AND c.nome LIKE '%%%s%%' 
-                        ORDER BY c.nome DESC LIMIT 10", mysql_real_escape_string($_GET["q"]));
-    $rs = mysql_query($query);
-    while ($obj = mysql_fetch_object($rs))
-        $arr[] = $obj;
+    foreach($pessoa->listPessoasToJSON($_GET["q"]) as $reg)
+        $arr[] = $reg;
 
-    $query = sprintf("select CONCAT('T:', t.codigo) as id, t.numero as name
-          		from Turmas t, Cursos c
-           		where t.curso=c.codigo
-           		and t.ano=2013 
-           		and (t.semestre=1 OR t.semestre=0)
-                        and t.numero LIKE '%%%s%%' 
-                        ORDER BY t.numero DESC LIMIT 10", mysql_real_escape_string($_GET["q"]));
-    $rs = mysql_query($query);
-    while ($obj = mysql_fetch_object($rs))
-        $arr[] = $obj;
+    foreach($curso->listCursosToJSON($_GET["q"], $ANO, $SEMESTRE) as $reg)
+        $arr[] = $reg;    
+
+    foreach($turma->listTurmasToJSON($_GET["q"], $ANO, $SEMESTRE) as $reg)
+        $arr[] = $reg;
 
     $json_response = json_encode($arr);
 

@@ -7,6 +7,29 @@ class Cursos extends Generic {
     public function __construct(){
         //
     }
+
+        // UTILIZADO POR: SECRETARIA/AVISO.PHP
+    public function listCursosToJSON($string, $ano, $semestre) {
+        $bd = new database();
+
+        $sql = "SELECT CONCAT('C:', c.codigo) as id,
+                        CONCAT(IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome), '[', m.nome, ']') as name 
+               		FROM Cursos c, Modalidades m, Turmas t 
+               		WHERE c.modalidade = m.codigo 
+                        AND c.codigo = t.curso
+                        AND t.ano=:ano 
+           		AND (t.semestre=:sem OR t.semestre=0)
+                        AND c.nome LIKE :s 
+                        ORDER BY c.nome DESC LIMIT 10";
+
+        $params = array(':s' => '%'.$string.'%',':ano' => $ano,':sem' => $semestre);
+        $res = $bd->selectDB($sql, $params);
+        
+        if ($res)
+            return $res;
+        
+        return false;
+    }
     
     public function listCursos($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
