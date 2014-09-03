@@ -40,19 +40,19 @@ class Alunos extends Generic {
     }
     
     // USADO POR: PROFESSOR/AVISO.PHP
-    public function getAlunosFromAtribuicao($codigo) {
+    public function listAlunosToJSON($atribuicao, $string) {
         $bd = new database();
-    	$sql = "SELECT p.codigo, p.nome 
+    	$sql = "SELECT CONCAT('P:', p.codigo) as id, p.nome as name
                     FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
                     WHERE t.codigo = a.turma AND m.atribuicao = a.codigo 
                     AND m.aluno = p.codigo 
                     AND t.codigo = a.turma
+                    AND p.nome LIKE :s
                     AND a.codigo = :cod
-        	GROUP BY p.codigo ORDER BY p.nome"; 
-        $params = array(':cod'=> $codigo);
+                    GROUP BY p.codigo ORDER BY p.nome LIMIT 20"; 
+        $params = array(':cod'=> $atribuicao, ':s' => '%' . $string . '%');
         $res = $bd->selectDB($sql, $params);
-        print_r($params);
-        print $sql;
+
         if ( $res )
         {
             return $res;

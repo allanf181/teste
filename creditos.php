@@ -58,7 +58,12 @@ require SESSAO;
 
 </center>
 
+<!--<br>
+<b>Vers&atilde;o 1.406</b>
 <br>
+<br> - Corre&ccedil;&atilde;o da Tela de Avisos do Professor
+<hr>
+<br>-->
 <b>Vers&atilde;o 1.405</b>
 <br>
 <br>Reestrutura&ccedil;&atilde;o de c&oacute;digo:
