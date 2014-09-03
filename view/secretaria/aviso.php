@@ -44,7 +44,7 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-$para = 'Digite a pessoa, curso ou turma para enviar a mensagem';
+$para = 'Digite a pessoa, curso ou turma para enviar a mensagem.';
 $DIV = '#index';
 $SITE .= '?';
 

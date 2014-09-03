@@ -30,7 +30,7 @@ require MENSAGENS;
 require PERMISSAO;
 require SESSAO;
 
-$para = 'Digite o nome do aluno para enviar a mensagem';
+$para = 'Digite o nome do aluno para enviar a mensagem.';
 $DIV = '#professor';
 $SITE .= '?atribuicao='.$_GET['atribuicao'];
 $_POST['atribuicao'] = $_GET['atribuicao'];
