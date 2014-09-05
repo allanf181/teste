@@ -97,7 +97,10 @@ if ($_GET["atribuicao"]) {
             $prazoDiff = -1;
             $dataExpirou = false;
 
-
+            if ($diarioAberto < 0) { // diário ainda não começou
+                $dataExpirou = true;
+                $status = 100;
+            }
         }
         
         if ($status != 0)
