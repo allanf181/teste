@@ -16,22 +16,21 @@ require SESSAO;
 require CONTROLLER . "/atribuicao.class.php";
 $att = new Atribuicoes();
 
-if ($_POST["opcao"] == 'InsertOrUpdateObs') {
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
-    $_GET['atribuicao'] = $_POST['atribuicao'];
+require CONTROLLER . "/prazoDiario.class.php";
+$prazoDiario = new PrazosDiarios();
 
-    $_POST['codigo'] = $_POST['atribuicao'];
-    unset($_POST['atribuicao']);
-    unset($_POST['opcao']);
-
-    $ret = $att->insertOrUpdate($_POST);
-    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+// PEDIDO DE LIBERAÇÃO DO DIÁRIO
+if ($_GET["motivo"]) {
+    $_GET['data'] = date('Y-m-d h:i:s');
+    unset($_GET['_']);
+    $ret = $prazoDiario->insertOrUpdate($_GET);
+    mensagem($ret['STATUS'], 'PRAZO_DIARIO');
 }
 
 if ($_GET["opcao"] == 'controleDiario') {
     $atribuicao = dcrip($_GET["atribuicao"]);
     $status = $_GET["status"];
-    
+
     require CONTROLLER . "/notaFinal.class.php";
     $nota = new NotasFinais();
 
@@ -50,10 +49,13 @@ if ($_GET["opcao"] == 'controleDiario') {
 
 $atribuicao = $_GET["atribuicao"];
 ?>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
-<table width="100%" align="center" border="0">
-    <?php
-    if ($_GET["atribuicao"]) {
+<?php
+if ($_GET["atribuicao"]) {
+    ?>
+    <table width="100%" align="center" border="0">
+        <?php
         $atribuicao = dcrip($_GET["atribuicao"]);
 
         $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF, $LIMITE_DIARIO_PROF);
@@ -71,7 +73,6 @@ $atribuicao = $_GET["atribuicao"];
             // Anulando o prazo se a dataFim está maior
             $dataExpirou = false;
             if ($prazoDiff && $prazoDiff <= 0 && $dataFimDiff >= 0) {
-                print "ok";
                 $params['codigo'] = crip($atribuicao);
                 $params['prazo'] = crip('NULL');
                 $params['status'] = crip(0);
@@ -104,7 +105,7 @@ $atribuicao = $_GET["atribuicao"];
                 $status = 100;
             }
         }
-        
+
         $_SESSION['dataExpirou'] = $dataExpirou;
 
         // Informa se o diário foi aberto
@@ -121,8 +122,6 @@ $atribuicao = $_GET["atribuicao"];
 
         // desabilita edição se o status for igual a 1 e informa se o prazo foi estendido.
         if ($status > 0 || ($prazoFormat != '00:00 de 00/00/0000' && $prazoFormat != NULL)) {
-            if ($status > 0)
-                $disabled = "disabled='disabled'";
             if ($status == 1)
                 $info = "Este diário foi fechado pelo Coordenador!";
             if ($status == 2)
@@ -153,11 +152,19 @@ $atribuicao = $_GET["atribuicao"];
         }
         ?>
         <h2><?php print abreviar("$disciplina [$subturma]: $turma/$curso", 150); ?></h2>
-        <h2 id='titulo_disciplina_modalidade'><?php print $bimestre; ?></h2><br />
+        <div style="float: left">
+            <a title='IN&Iacute;CIO' href="javascript:$('#index').load('<?= VIEW; ?>/professor/professor.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);">
+                <img src='<?= ICONS ?>/home.png'>
+            </a>
+        </div>
+        <div>
+            <h2 id='titulo_disciplina_modalidade'><?= $bimestre ?></h2>
+        </div>
+        <br />
         <tr valign="top" align='center'>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aula.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/aulas.png' /><br />Aulas</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/avaliacao.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' id='diario' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?php print crip($atribuicao); ?>'><img style='width: 80px' src='<?php print IMAGES; ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/diario.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
             <td valign="top" width="90"><a class='nav professores_item' id='listaChamada' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/chamada.php?atribuicao=<?php print crip($atribuicao); ?>'><img style='width: 80px' src='<?php print IMAGES; ?>/chamada.png' /><br />Lista de Chamada</a></td>
             <?php
             if ($bimestre == "SEMESTRAL" || $bimestre == "1º BIMESTRE" || $bimestre == "ANUAL") {
@@ -176,7 +183,8 @@ $atribuicao = $_GET["atribuicao"];
     <div id="professor">
 
         <table border="0">
-            <tr><td><b><font size="1">Aulas dadas:</b> <?php print $qdeAulas; ?><br>
+            <tr>
+                <td><b><font size="1">Aulas dadas:</b> <?php print $qdeAulas; ?><br>
                     <b>Carga Hor&aacute;ria:</b> <?php print $CH; ?>
                     <br><b>Aulas previstas:</b> <?php print $aulaPrevista; ?></font>
                 </td>
@@ -184,117 +192,143 @@ $atribuicao = $_GET["atribuicao"];
                 require CONTROLLER . "/professor.class.php";
                 $professor = new Professores();
                 ?>
-                <td><b><font size="1">N&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es:</b> <?php print $qdeAvaliacoes['qdeMinima']; ?><br><b>Avalia&ccedil;&otilde;es aplicadas:</b> <?php print $qdeAvaliacoes['avalCadastradas']; ?></font></td></tr>
-            <tr><td colspan="2"><font size="1"><b>Professores da disciplina:</b> <?= $professor->getProfessor($atribuicao,'', 1, 1) ?></font></td></tr>
-            <tr><td colspan="8"><hr></td></tr>
-
-            <tr><td colspan="8"><font size="1">Para esse di&aacute;rio ser finalizado, &eacute; necess&aacute;rio que a quantidade de aulas dadas seja maior ou igual a carga hor&aacute;ria e atingido o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es.
-                    Caso deseje finalizar o di&aacute;rio manualmente, <a href='#' title='Excluir' class='finalizar' id='2'>clique aqui</a></td></tr>
-
-            <tr><td colspan="2"><hr></td></tr>
-            <tr><td colspan="2"><font size="1">Aten&ccedil;&atilde;o: esse di&aacute;rio ser&aacute; bloqueado automaticamente pelo sistema em <?php print $dataFimFormat; ?>.</font></td></tr>
-        </table>
-
-        <tr><td colspan=\"8\"><hr></td></tr>
-        <?php
-        if ($bimestre == "SEMESTRAL" || $bimestre == "1º BIMESTRE") {
-            // Verificando se há correções para o Plano de Ensino.
-            require CONTROLLER . "/planoEnsino.class.php";
-            $plano = new PlanosEnsino();
-            $hasPlano = $plano->listPlanoEnsino($atribuicao);
-            ?>
-            <tr><td colspan=10 align='center'><br />
-                    <div id="resposta_erro"></div>
-                    <div id="resposta">
-                        <?php
-                        if (!$hasPlano) {
-                            ?>
-                            <p style='color: red; font-weight: bold'>Aten&ccedil;&atilde;o: o plano de ensino desta disciplina n&atilde;o foi digitado!</p>
-                            <?php
-                        } else {
-                            $res = $plano->hasChangePlano($_SESSION['loginCodigo'], $atribuicao);
-                            if ($res[0]['PlanoSolicitacao']) {
-                                ?>
-                                <p style='color: red; font-weight: bold'>Aten&ccedil;&atilde;o: <?php print mostraTexto($res[0]['PlanoSolicitante']); ?> solicitou a seguinte correção em seu plano de ensino:</p>
-                                <p><?php print stripslashes($res[0]['PlanoSolicitacao']); ?></p><br>
-                                <?php
-                            }
-                        }
-                    }
-                    ?>
-                    <tr><td colspan=10 align='center'>
-
-                            <script>
-                                $('#form_padrao').html5form({
-                                    method: 'POST',
-                                    action: '<?php print $SITE; ?>',
-                                    responseDiv: '#index',
-                                    colorOn: '#000',
-                                    colorOff: '#999',
-                                    messages: 'br'
-                                })
-                            </script>
-
-                            <div id="html5form" class="main">
-                                <form id="form_padrao">
-                                    <h2>Competências Desenvolvidas:</h2>
-                                    <div class='fundo_listagem'>
-                                        <textarea <?php print $disabled; ?> maxlength='1500' id='competencias' name='competencias'><?php print $competencias; ?></textarea>
-                                    </div>
-                                    <h2>Observações a serem incluídas no diário da disciplina:</h2>
-                                    <div class='fundo_listagem'>
-                                        <textarea <?php print $disabled; ?> maxlength='1500' id='observacoes' name='observacoes'><?php print $observacoes; ?></textarea>
-                                    </div>
-                                    <input type='hidden' value='<?php print crip($atribuicao); ?>' name='atribuicao' id='atribuicao' />
-                                    <input type='hidden' name='opcao' value='InsertOrUpdateObs' />
-                                    <input id='professores_botao' <?php print $disabled; ?> type='submit' value='Salvar' />
-                                </form>
-                            </div>
-                        </td></tr>
-                    </table>
-                </div>
+                <td>
+                    <b><font size="1">N&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es:</b> <?php print $qdeAvaliacoes['qdeMinima']; ?>
+                    <br>
+                    <b>Avalia&ccedil;&otilde;es aplicadas:</b> <?php print $qdeAvaliacoes['avalCadastradas']; ?></font>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <font size="1"><b>Professores da disciplina:</b> <?= $professor->getProfessor($atribuicao, '', 1, 1) ?></font>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <hr>
+                </td>
+            </tr>
+            <?php
+            if (!$dataExpirou) {
+                ?>
+                <tr>
+                    <td colspan="2"><font size="1">Para esse di&aacute;rio ser finalizado, &eacute; necess&aacute;rio que a quantidade de aulas dadas seja maior ou igual a carga hor&aacute;ria e atingido o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es.
+                        Caso deseje finalizar o di&aacute;rio manualmente, <a href='#' title='Finalizar Di&aacute;rio' class='finalizar' id='2'>clique aqui</a>
+                    </td>
+                </tr>
                 <?php
-            } else {
-                print "<p>Escolha uma disciplina</p>\n";
             }
             ?>
+            <tr>
+                <td colspan="2">
+                    <hr>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><font size="1">Aten&ccedil;&atilde;o: esse di&aacute;rio ser&aacute; bloqueado automaticamente pelo sistema em <?php print $dataFimFormat; ?>.</font>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <hr>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h2>Prazos do Di&aacute;rio</h2>
+                    <div>
+                        <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'>
+                            <img src="<?= ICONS ?>/unlock.png">
+                        </a>
+                    </div>
+                    <div>
+                        <font size="1">Professor, se o diário foi finalizado pelo sistema e ainda tem pendências ou perdeu o prazo para digitação de aulas, clique no cadeado e informe o motivo para seu coordenador analisar sua solicitação. Ap&oacute;s liberado, voc&ecirc; ter&aacute; 24 horas para regularizar o di&aacute;rio.</font>
+                    </div>
+                </td>
+            </tr>            
+            <?php
+            $res = $prazoDiario->listPrazos($atribuicao);
+            if ($res) {
+                ?>
+                <tr>
+                    <td colspan="2"><br />
+                        <table id="listagem" border="0" align="center">
+                            <tr>
+                                <th align="center" width="40">#</th>
+                                <th width="100">Data</th>
+                                <th width="250">Motivo</th>
+                                <th width="150">Concessão</th>
+                            </tr>
+                            <?php
+                            $i = count($res);
+                            foreach ($res as $reg) {
+                                $reg['data'] = dataPTBR($reg['data']);
+                                $title = $reg['motivo'];
+                                if (strlen($reg['motivo']) > 70)
+                                    $reg['motivo'] = abreviar($reg['motivo'], 70);
+                                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                                ?>
+                                <tr <?= $cdif ?>>
+                                    <td align='center'><?= $i ?></td>
+                                    <td><?= $reg['data'] ?></td>
+                                    <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
+                                    <td><?= $reg['dataConcessao'] ?></td>
+                                    <?php
+                                    $i--;
+                                }
+                                ?>
+                        </table>
+                    </td>
+                </tr>            
+                <?php
+            }
+            ?>                
+        </table>
+    </div>
+    <?php
+} else {
+    print "<p>Escolha uma disciplina</p>\n";
+}
+?>
 
-            <script>
+<script>
 <?php if ($info) print "info();" ?>
 <?php if ($pergunta) print "pergunta();" ?>
-                $(document).ready(function() {
-                    $('#competencias, #observacoes').maxlength({
-                        events: [], // Array of events to be triggerd    
-                        maxCharacters: 1500, // Characters limit   
-                        status: true, // True to show status indicator bewlow the element    
-                        statusClass: "status", // The class on the status div  
-                        statusText: "caracteres restando", // The status text  
-                        notificationClass: "notification", // Will be added when maxlength is reached  
-                        showAlert: false, // True to show a regular alert message    
-                        alertText: "Limite de caracteres excedido!", // Text in alert message   
-                        slider: true // True Use counter slider    
-                    });
-                    $(".finalizar").click(function() {
-                        pergunta();
-                    });
-                });
 
-                function info() {
-                    $.Zebra_Dialog('<strong><?php print $info; ?></strong>', {
-                        'type': 'information',
-                        'title': '<?php print $SITE_TITLE; ?>'
-                    });
-                }
-                function pergunta() {
-                    $.Zebra_Dialog('<strong><b>Deseja finalizar a digitação do diário e efetuar a entrega à secretaria?</b> <br /> <br />Atenção: O seu diário será bloqueado e somente o coordenador poderá desfazer esta operação.', {
-                        'type': 'question',
-                        'title': '<?php print $TITLE; ?>',
-                        'buttons': ['Sim', 'Não'],
-                        'onClose': function(caption) {
-                            if (caption == 'Sim') {
-                                $('#index').load('<?php print $SITE; ?>?opcao=controleDiario&status=2&atribuicao=<?php print crip($atribuicao); ?>');
-                                                }
-                                            }
-                                        });
+    $(document).ready(function() {
+        $(".finalizar").click(function() {
+            pergunta();
+        });
+    });
+
+    function info() {
+        $.Zebra_Dialog('<strong><?php print $info; ?></strong>', {
+            'type': 'information',
+            'title': '<?php print $SITE_TITLE; ?>'
+        });
+    }
+
+    $("#unlock").click(function() {
+        jPrompt('Professor, informe o motivo da solicitação:', '', '<?php print $TITLE; ?>', function(r)
+        {
+            if (r) {
+                r = encodeURI(r);
+                $('#index').load('<?= $SITE ?>?motivo=' + r + '&atribuicao=' + '<?= crip($atribuicao) ?>');
+            }
+        }
+        );
+    });
+
+    function pergunta() {
+        $.Zebra_Dialog('<strong><b>Deseja finalizar a digitação do diário e efetuar a entrega à secretaria?</b> <br /> <br />Atenção: O seu diário será bloqueado e somente o coordenador poderá desfazer esta operação.</strong>', {
+            'type': 'question',
+            'title': '<?= $TITLE ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function(caption) {
+                if (caption == 'Sim') {
+                    $('#index').load('<?php print $SITE; ?>?opcao=controleDiario&status=2&atribuicao=<?= crip($atribuicao) ?>');
                                     }
-            </script>
+                                }
+                            });
+                        }
+</script>

@@ -91,7 +91,11 @@ $caracteres = 3000; // total do textarea
 
         $pd = ($res) ? 'SIM' : 'N&Atilde;O';
         print "<br>Plano de Ensino digitado: $pd<br>";
-        $count = count($planoAula->listPlanoAulas(dcrip($atribuicao)));
+        
+        $count = 0;
+        if ($ret = $planoAula->listPlanoAulas(dcrip($atribuicao)))
+           $count = count($ret);
+                
         if ($count <= 0)
             $disabled = 'disabled';
         print "Quantidade de aulas cadastradas no Plano de Aula: $count<br>";

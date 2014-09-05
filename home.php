@@ -23,12 +23,13 @@ require SESSAO;
         <td>
             <?php
             $user = $_SESSION["loginCodigo"];
-
-
-// Mostra a foto do usuário e informações de senha
+            // Mostra a foto do usuário e informações de senha
             if ($user) {
                 require CONTROLLER . "/pessoa.class.php";
                 $pessoa = new Pessoas();
+
+                require CONTROLLER . "/planoEnsino.class.php";
+                $plano = new PlanosEnsino();
 
                 // REMOVER FOTO
                 if (isset($_GET['removerFoto']))
@@ -69,14 +70,14 @@ require SESSAO;
                     ?>
                     <br><br>Email: <input type="text" size="60" maxlength="100" name="email" id="email" value="" />
                     <img src="<?php print ICONS; ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
-        <?php
-    } else {
-        ?>
+                    <?php
+                } else {
+                    ?>
                     <br><br>Email: <?php print $userDados[0]['email']; ?></a>
                     &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="send-email" title='Remover Email' style="width: 15px; height: 15px">
-        <?php
-    }
-    ?>
+                    <?php
+                }
+                ?>
                 <br><font size="1">Mantenha seu email sempre atualizado para avisos e recupera&ccedil;&atilde;o de senha.</font>
                 <?php
                 // INFOS DE SENHA
@@ -91,24 +92,24 @@ require SESSAO;
                     if (($res['data'] >= $res['dias'])) {
                         ?>
                         <br><br><p>Aten&ccedil;&atilde;o, sua sua est&aacute; expirada. <a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);">Clique aqui</a> e efetue a troca.
-                        <?php
-                    } else {
-                        $diaAlteracao = $res['dias'] - $res['data'];
-                        if ($diaAlteracao <= 5)
-                            $diaAlteracao = "<span class='texto_alerta'>$diaAlteracao</span>";
-                        ?>
-                        <br><br><p>Voc&ecirc; ter&aacute; que mudar a senha em: <?php print $diaAlteracao; ?> dia(s).</p><br />
                             <?php
-                        }
+                        } else {
+                            $diaAlteracao = $res['dias'] - $res['data'];
+                            if ($diaAlteracao <= 5)
+                                $diaAlteracao = "<span class='texto_alerta'>$diaAlteracao</span>";
+                            ?>
+                        <br><br><p>Voc&ecirc; ter&aacute; que mudar a senha em: <?php print $diaAlteracao; ?> dia(s).</p><br />
+                        <?php
                     }
                 }
+            }
 
 // Verifica se o aluno preencheu o sócioEconômico
-                if (in_array($ALUNO, $_SESSION["loginTipo"])) {
-                    require CONTROLLER . "/aluno.class.php";
-                    $aluno = new Alunos();
-                    if ($nome = $aluno->hasSocioEconomico($user)) {
-                        ?>
+            if (in_array($ALUNO, $_SESSION["loginTipo"])) {
+                require CONTROLLER . "/aluno.class.php";
+                $aluno = new Alunos();
+                if ($nome = $aluno->hasSocioEconomico($user)) {
+                    ?>
                     <br><br><font size="2" color="red">Ol&aacute; <?php print $nome; ?>, seu question&aacute;rio Socioecon&ocirc;mico est&aacute; incompleto.</font>
                     <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/aluno/socioEconomico.php'); void(0);" title='Socioencon&ocirc;mico'>Clique aqui para responder</a>
                     <?php
@@ -123,9 +124,9 @@ require SESSAO;
                         <br><br><font size="4" color="green">Sua vers&atilde;o foi atualizada: 1.<?php print $VERSAOAT; ?></font>
                         <br>O sistema atualizou automaticamente o banco de dados.
                         <br>Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
-            <?php
-        } else {
-            ?>
+                        <?php
+                    } else {
+                        ?>
                         <br><br><font size="3" color="red">Problema para atualizar a vers&atilde;o: 1.<?php print $VERSAOAT; ?></font>
                         <br>- Verifique as permiss&otilde;es em <?php print dirname(__FILE__); ?>
                         <?php
@@ -188,8 +189,6 @@ require SESSAO;
                 }
 
                 // Verificando se há correções para o Plano de Ensino.
-                require CONTROLLER . "/planoEnsino.class.php";
-                $plano = new PlanosEnsino();
                 $res = $plano->hasChangePlano($user);
 
                 if ($res) {
@@ -205,22 +204,22 @@ require SESSAO;
             <br><br>Escolha uma das opções do menu para começar.
         </td>
 
-<?php
+        <?php
 // SISTEMA DE AVISOS
-require CONTROLLER . "/aviso.class.php";
-$aviso = new Avisos();
-$res = $aviso->getAvisoGeral($user);
-if ($res) {
-    ?>
+        require CONTROLLER . "/aviso.class.php";
+        $aviso = new Avisos();
+        $res = $aviso->getAvisoGeral($user);
+        if ($res) {
+            ?>
             <td width="300" valign="top">
                 <div style="width: 400px; height: 400px; overflow-y: scroll;">
                     <table border="0" id="form" width="100%">
                         <tr><td colspan="2">Avisos Gerais</td></tr>
-    <?php
-    foreach ($res as $reg) {
-        list($codigo, $nome) = @explode('#', $reg['Pessoa']);
-        $disc = ($reg['disciplina']) ? " - " . $reg['disciplina'] : "";
-        ?>
+                        <?php
+                        foreach ($res as $reg) {
+                            list($codigo, $nome) = @explode('#', $reg['Pessoa']);
+                            $disc = ($reg['disciplina']) ? " - " . $reg['disciplina'] : "";
+                            ?>
                             <tr><td colspan="2"><h2><?= $nome ?></h2></td></tr>
                             <tr><td valign="top" width="50">
                                     <img alt="foto" style="width: 50px; height: 50px" src="<?php print INC; ?>/file.inc.php?type=pic&id=<?php print crip($codigo); ?>" />
@@ -228,42 +227,84 @@ if ($res) {
                                 <td valign="top"><font size='1'><?= $reg['Data'] . $disc ?></font><br><?php print $reg['Conteudo']; ?></a>
                                 </td>
                             </tr>
-        <?php
-    }
-    ?>
+                            <?php
+                        }
+                        ?>
                     </table>
                 </div>
             </td>
-    <?php
-}
-?>
+            <?php
+        }
+        ?>
     </tr>
 </table>
 
 <?php
-// INFOMRAR AO COORDENADOR PROFESSORES QUE NÃO CADASTRAM 
-// DISCIPLINAS DE ACORDO COM O LIMITE IMPOSTO EM INSTITUIÇÕES
+// INFORMES PARA COORDENADORES
 if (in_array($COORD, $_SESSION["loginTipo"])) {
+    require CONTROLLER . "/prazoDiario.class.php";
+    $prazoDiario = new PrazosDiarios();
+    $res = $prazoDiario->listPrazosToCoord($user, $ANO, $SEMESTRE);
+    if ($res) {
+        ?>
+        <br><br><table id="listagem">
+            <caption>Lista de Professores que aguardam libera&ccedil;&atilde;o do di&aacute;rio.</caption>
+            <tr>
+                <th width='150'>Nome</th>
+                <th align='center' width='80'>Disciplina</th>
+                <th align='center' width='80'>Motivo</th>
+                <th align='center' width='80'>Data</th>
+            </tr>
+            <?php
+            $i = $item;
+            foreach ($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                $title = $reg['motivo'];
+                if (strlen($reg['motivo']) > 70)
+                    $reg['motivo'] = abreviar($reg['motivo'], 70);
+                ?>
+                <tr <?= $cdif ?>>
+                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['turma']) ?>'); void(0);" title='Clique aqui para liberar'>
+                            <?= $reg['professor'] ?></a>
+                    </td>
+                    <td><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
+                    <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
+                    <td><?= dataPTBR($reg['data']) ?></td>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+        </table>
+        <?php
+    }
 
-    $res = $plano->listChangePlano($user);
+    $res = $plano->listChangePlano($user, $ANO, $SEMESTRE);
     if ($res) {
         ?>
         <br><br><table id="listagem">
             <caption>Lista de Professores que aguardam por valida&ccedil;&atilde;o do Plano de Ensino.</caption>
             <tr><th width='220'>Nome</th><th align='center' width='80'>Disciplina</th></tr>
-        <?php
-        $i = $item;
-        foreach ($res as $reg) {
-            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            print "<tr $cdif><td><a href=\"javascript:$('#index').load('" . VIEW . "/secretaria/plano.php?curso=" . crip($reg['codCurso']) . "'); void(0);\" class='plano-ensino' title='Clique aqui para validar'>" . $reg['Professor'] . "</a></td><td>" . $reg['Disciplina'] . "</td></tr>";
-            $i++;
-        }
-        ?>
-        </table>
             <?php
-        }
+            $i = $item;
+            foreach ($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                ?>
+                <tr <?=$cdif?>>
+                    <td><a href="javascript:$('#index').load('<?=VIEW?>/secretaria/plano.php?curso=<?=crip($reg['codCurso'])?>&turma=<?= crip($reg['turma']) ?>'); void(0);" title='Clique aqui para validar'>
+                            <?=$reg['Professor'] ?></a>
+                    </td>
+                    <td><?=$reg['Disciplina']?></td>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+        </table>
+        <?php
     }
-    ?>
+}
+?>
 
 <script>
     $(document).ready(function() {

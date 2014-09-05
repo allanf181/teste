@@ -61,12 +61,12 @@ if ($_GET["opcao"] == 'controlePrazo') {
 
     $erro = 0;
     foreach ($prazos as $atribuicao) {
-        $sql = "update Atribuicoes set prazo=DATE_ADD(NOW(), INTERVAL $LIMITE_DIARIO_PROF DAY), status='0' where codigo=$atribuicao";
+        $sql = "update Atribuicoes set prazo=DATE_ADD(NOW(), INTERVAL 1 DAY), status='0' where codigo=$atribuicao";
         if (!$resultado = mysql_query($sql))
             $erro = 1;
 
         if ($atribuicao) {
-            $sql = "INSERT INTO PrazosDiarios VALUES (NULL, $atribuicao, now(), 'DIÁRIO LIBERADO: $v')";
+            $sql = "UPDATE PrazosDiarios SET dataConcessao=NOW(), motivo = CONCAT('DIÁRIO LIBERADO: $v - MOTIVO PROFESSOR: ', motivo) WHERE atribuicao = $atribuicao AND dataConcessao IS NULL";
             if (!$resultado = mysql_query($sql))
                 $erro = 1;
         }
@@ -293,6 +293,7 @@ if (!empty($curso)) {
                     if ($linha[8] == 4)
                         $origem = "SYS";
                 }
+                if (!$origem) $origem = 'Aberto';
                 echo "<td align='left'>$origem</td>";
 
 
@@ -343,6 +344,7 @@ if (!empty($curso)) {
       and p.atribuicao = a.codigo	    
 	    and t.ano=$ano
 	    and (t.semestre=$semestre OR t.semestre=0)
+            and dataConcessao IS NOT NULL
 	    $restricao GROUP BY l.codigo order by l.data desc";
 //    echo $sql;
     $resultado = mysql_query($sql);
@@ -368,6 +370,7 @@ if (!empty($curso)) {
       and p.atribuicao = a.codigo	    
 	    and t.ano=$ano
 	    and (t.semestre=$semestre OR t.semestre=0)
+            and dataConcessao IS NOT NULL
 	    $restricao GROUP BY l.codigo order by l.data desc limit " . ($item - 1) . ",$itensPorPagina";
 //print $sql;
     $SITENAV = $SITE . "?$lk";
@@ -375,14 +378,25 @@ if (!empty($curso)) {
     ?>
 
     <table id="listagem" border="0" align="center">
-        <tr><th align="center" width="40">#</th><th align="left">Data</th><th align="left">Disciplina</th><th>Professor</th><th width="150">Motivo</th></tr>
+        <tr>
+            <th align="center" width="40">#</th>
+            <th align="left">Data</th>
+            <th align="left">Disciplina</th>
+            <th>Professor</th>
+            <th width="150">Motivo</th>
+        </tr>
         <?php
         // efetuando a consulta para listagem
         $resultado = mysql_query($sql);
         $i = $item;
         while ($linha = mysql_fetch_array($resultado)) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            echo "<tr $cdif><td align='center'>$i</td><td>$linha[0]</td><td>$linha[1]</a></td><td>".$prof->getProfessor($linha[2], '<br>', 1, 1)."</td><td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td></tr>";
+            echo "<tr $cdif><td align='center'>$i</td>"
+                    . "<td>$linha[0]</td>"
+                    . "<td>$linha[1]</td>"
+                    . "<td>".$prof->getProfessor($linha[2], '<br>', 1, 1)."</td>"
+                    . "<td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td>"
+                    . "</tr>";
             $i++;
         }
         mysql_close($conexao);
@@ -392,6 +406,7 @@ if (!empty($curso)) {
     <?php
 }
 ?>
+<br /><br />
 <script>
     $('#select-all').click(function(event) {
         if (this.checked) {

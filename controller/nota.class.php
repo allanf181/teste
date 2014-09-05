@@ -13,6 +13,7 @@ class Notas extends Frequencias {
             $new_params['codigo'] = $params['codigo'][$matricula];
             $new_params['avaliacao'] = $params['avaliacao'];
             $new_params['matricula'] = $matricula;
+            if ($nota == '0') $nota = '0.0'; //PDO NAO ACEITA ZERO PARA STRING
             $new_params['nota'] = $nota;
 
             $res = $this->insertOrUpdate($new_params);
@@ -182,9 +183,10 @@ class Notas extends Frequencias {
 			AND n.matricula = :matricula
 			$sqlFinal
                         ORDER BY substitutiva ASC ";
-
+        $params = array(':att' => $atribuicao,
+                ':matricula' => $matricula);
         $res = $bd->selectDB($sql, $params);
-
+        
         if (!$res)
             return null;
         $media = 0;
@@ -196,12 +198,13 @@ class Notas extends Frequencias {
             $arredondar = $reg['arredondar'];
             $formula = $reg['formula'];
             if ($reg['tipo'] == 'avaliacao') {
-                $total++;
                 if ($tipo == 'peso')
                     $medias[$reg['sigla']] = $reg['nota'] * $reg['peso'];
 
-                if ($tipo == 'media' || $tipo == 'soma')
+                if ($tipo == 'media' || $tipo == 'soma') {
                     $medias[$reg['sigla']] = $reg['nota'];
+                    if ($reg['nota']) $total++;
+                }
 
                 if ($tipo == 'formula')
                     $medias[$reg['sigla']] = $reg['nota'];
@@ -226,7 +229,7 @@ class Notas extends Frequencias {
                 $final = 1;
             }
         }
-
+        
         if ($tipo == 'media' && $medias)
             $media = array_sum($medias) / $total;
         if ($tipo == 'peso')

@@ -90,11 +90,11 @@ class PlanosEnsino extends Generic {
     // USADO POR: HOME.PHP
     // Mostra para o coordenador os professores com Planos para Alterar.
     // Pode ser colocado com função no MySQL futuramente
-    public function listChangePlano($codigo) {
+    public function listChangePlano($codigo, $ano, $semestre) {
         $bd = new database();
 
         $sql = "SELECT p.nome as Professor, d.nome as Disciplina, "
-                . "c.codigo as codCurso "
+                . "c.codigo as codCurso, t.codigo as turma "
                 . "FROM PlanosEnsino pe, Atribuicoes a, Pessoas p, "
                 . "Professores pr, Cursos c, Turmas t, Disciplinas d "
                 . "WHERE pe.atribuicao = a.codigo "
@@ -103,11 +103,13 @@ class PlanosEnsino extends Generic {
                 . "AND d.codigo = a.disciplina "
                 . "AND a.turma = t.codigo "
                 . "AND t.curso = c.codigo "
+                . "AND t.ano = :ano "
+                . "AND (t.semestre=:sem OR t.semestre=0)"                
                 . "AND pe.finalizado <> '0000-00-00 00:00:00' "
                 . "AND pe.valido = '0000-00-00 00:00:00' "
                 . "AND c.codigo IN (SELECT curso FROM Coordenadores WHERE coordenador = :cod) ";
 
-        $params = array(':cod' => $codigo);
+        $params = array(':cod' => $codigo, ':ano' => $ano, ':sem' => $semestre);
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {

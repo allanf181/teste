@@ -34,7 +34,6 @@ if ($_GET["opcao"] == 'controleFTD') {
     }
     unset($_GET['conferido']);
 
-    print_r($_GET);
     $ret = $ftd->insertOrUpdate($_GET);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
@@ -58,17 +57,17 @@ $totalRegistros = count($ftd->listFTDs($params, null, null, $sqlAdicional));
 $SITENAV = $SITE . '?';
 require PATH . VIEW . '/paginacao.php';
 ?>
-<table id="form" border="0" align="center" width="100%">
+<table id="listagem" border="0" align="center" width="100%">
     <tr><th align="center" width="40">#</th><th>Professor</th><th>Entregue</th>
         <?php
         if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
             ?>
-            <th align="center" style="width: 200px">Coordenador</th>
+            <th align="center" style="width: 300px">Coordenador</th>
             <?php
         }
         if (in_array($COORD, $_SESSION["loginTipo"]) || in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
             ?>
-            <th width="80" title='Solicitar Corre&ccedil;&atilde;o?'>Corre&ccedil;&atilde;o</th>
+            <th width="100" title='Solicitar Corre&ccedil;&atilde;o?'>Corre&ccedil;&atilde;o</th>
             <th width="30" title='Marcar como conferido?'>Conf?</th>
             <?php
         }

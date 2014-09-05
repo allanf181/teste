@@ -18,6 +18,17 @@ $avaliacao = new Avaliacoes();
 require CONTROLLER . "/atribuicao.class.php";
 $att = new Atribuicoes();
 
+require CONTROLLER . "/prazoDiario.class.php";
+$prazoDiario = new PrazosDiarios();
+
+// PEDIDO DE LIBERAÇÃO DO DIÁRIO
+if ($_GET["motivo"]) {
+    $_GET['data'] = date('Y-m-d h:i:s');
+    unset($_GET['_']);
+    $ret = $prazoDiario->insertOrUpdate($_GET);
+    mensagem($ret['STATUS'], 'PRAZO_DIARIO');
+}
+
 // INSERT E UPDATE DE AVALIACOES
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
@@ -173,7 +184,9 @@ if ($_GET['opcao'] == 'insert') {
             <center>
                 <h2>Cadastro de Avalia&ccedil;&atilde;o</h2>
                 <table>
-                    <tr><td align="right">Data: </td><td><input type="text" readonly size="10" id="data" name="data" value="<?php echo $data; ?>" /></td></tr>
+                    <tr><td align="right">Data: </td><td><input type="text" readonly size="10" id="data" name="data" value="<?php echo $data; ?>" />
+                         <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a>
+                        </td></tr></td></tr>
                     <tr><td align="right">Nome: </td><td><input style="width: 350px" type="text" id="nome" maxlength="145" name="nome" value="<?php echo $nome; ?>"/></td></tr>
                     <tr><td align="right">Sigla: </td><td><input type="text" id="sigla" size="2" maxlength="2" name="sigla" value="<?php echo $sigla; ?>"/> <spam id="Siglas"></spam></td></tr>
                     <tr><td align="right">Tipo: </td><td>
@@ -358,6 +371,7 @@ if ($_GET['opcao'] == '') {
             } else {
                 ?>
                 <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
+                <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a>
                 <?php
             }
         } else if ($status == 0) {
@@ -420,4 +434,14 @@ if ($LIMITE_AULA_PROF != 0) {
             }
         });
     });
+    $("#unlock").click(function() {
+        jPrompt('Professor, informe o motivo da solicitação:', '', '<?php print $TITLE; ?>', function(r)
+        {
+            if (r) {
+                r = encodeURI(r);
+                $('#professor').load('<?= $SITE ?>?motivo=' + r + '&atribuicao=' + '<?= crip($atribuicao) ?>');
+            }
+        }
+        );
+    });    
 </script>

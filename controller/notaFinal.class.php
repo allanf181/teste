@@ -1,9 +1,9 @@
 <?php
 
-if (!class_exists('Generic'))
-    require_once CONTROLLER . '/generic.class.php';
+if (!class_exists('Notas'))
+    require_once CONTROLLER . '/nota.class.php';
 
-class NotasFinais extends Generic {
+class NotasFinais extends Notas {
 
     public function fecharDiario($atribuicao) {
         $bd = new database();
@@ -23,7 +23,7 @@ class NotasFinais extends Generic {
 
         if ($res) {
             foreach ($res as $reg) {
-                $dados = resultado($reg['matricula'], $atribuicao, 0, 1);
+                $dados = $this->resultado($reg['matricula'], $atribuicao, 0, 1);
 
                 $params2['atribuicao'] = $atribuicao;
                 $params2['matricula'] = $reg['matricula'];
@@ -45,11 +45,15 @@ class NotasFinais extends Generic {
                     $params1 = array(':cod' => $atribuicao,
                         ':mat' => $reg['matricula'],
                         ':bim' => $reg['bimestre']);
+
                     $res1 = $bd->selectDB($sql1, $params1);
 
                     if ($res1)
                         $params2['codigo'] = $res1[0]['codigo'];
-
+                    else {
+                        $params2['atribuicao'] = $atribuicao;
+                        $params2['matricula'] = $reg['matricula'];
+                    }
                     if (!$this->insertOrUpdate($params2))
                         $erro = 1;
                 } else
@@ -57,7 +61,7 @@ class NotasFinais extends Generic {
 
                 // FECHAMENTO ANUAL BIMESTRAL
                 if ($reg['bimestre'] == 4) {
-                    $dados = resultadoBimestral($reg['aluno'], $reg['turma'], $reg['numero'], 1, 1);
+                    $dados = $this->resultadoBimestral($reg['aluno'], $reg['turma'], $reg['numero'], 1, 1);
                     if (!$dados['situacao']) {
                         $sql = "SELECT * FROM NotasFinais WHERE atribuicao = :cod 
     			AND matricula = :mat

@@ -58,16 +58,24 @@ require SESSAO;
 
 </center>
 
-<!--<br>
+<br>
 <b>Vers&atilde;o 1.406</b>
 <br>
+<br> - Unifica&ccedil;&atilde;o dos Prazos de Aulas e Di&aacute;rios - chamado #117
+<br> - Altera&ccedil;&atilde;o dos Prazos conforme chamado #117
+<br> - Corre&ccedil;&atilde;o do chamado #153
+<br> - Aviso referente ao chamado #152
+<br> - Adi&ccedil;&atilde;o do período referente ao chamado #150
+<br> - Adicionado bot&atilde;o de Home na Atribui&ccedil;&atilde;o no Professor
+<br> - Altera&ccedil;&atilde;o do Link Di&aacute;rio do Professor
 <br> - Corre&ccedil;&atilde;o da Tela de Avisos do Professor
 <hr>
-<br>-->
+<br>
 <b>Vers&atilde;o 1.405</b>
 <br>
 <br>Reestrutura&ccedil;&atilde;o de c&oacute;digo:
 <br> - Avalia&ccedil;&atilde;o
+<br> - Permitido alterar o campo sigla - chamado #149
 <br> - Notas
 <br> - Aulas
 <br> - Frequ&ecirc;ncias

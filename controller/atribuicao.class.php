@@ -31,7 +31,7 @@ class Atribuicoes extends Generic {
     public function getAtribuicao($codigo, $LIMITE_AULA_PROF = 0, $LIMITE_DIARIO_PROF = 0) {
         $bd = new database();
 
-        $LIMITE_AULA_PROF1 = $LIMITE_AULA_PROF * 2;
+        $LIMITE_AULA_PROF1 = 365;
 
         $sql = "SELECT d.nome as disciplina, t.numero as turma, a.status, a.prazo,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
@@ -77,10 +77,18 @@ class Atribuicoes extends Generic {
 
         $ANO = $_SESSION["ano"];
 
-        $professor = "SELECT t.ano as ano, t.semestre as semestre, a.bimestre as bimestre, a.codigo as atribuicao, d.nome as disciplina,
-			d.numero as numero, c.nome as curso, t.numero as turma, a.subturma as subturma,
-			a.eventod as evento, c.nomeAlternativo as cursoAlt, m.codigo as codigoModalidade, m.nome as modalidade
-			FROM Turnos tt, Disciplinas d, Turmas t, Atribuicoes a, Professores pr, Cursos c, Modalidades m
+        $professor = "SELECT t.ano as ano, t.semestre as semestre, 
+                        a.bimestre as bimestre, a.codigo as atribuicao, 
+                        d.nome as disciplina, d.numero as numero, 
+                        c.nome as curso, t.numero as turma, 
+                        a.subturma as subturma,	a.eventod as evento, 
+                        c.nomeAlternativo as cursoAlt, 
+                        m.codigo as codigoModalidade, m.nome as modalidade,
+                        (SELECT nome FROM Ensalamentos e, Horarios h
+                            WHERE e.horario = h.codigo 
+                            AND e.atribuicao = a.codigo LIMIT 1) as hora                        
+			FROM Turnos tt, Disciplinas d, Turmas t, Atribuicoes a, 
+                            Professores pr, Cursos c, Modalidades m
 			WHERE tt.codigo = t.turno 
 			AND d.codigo = a.disciplina 
 			AND t.codigo = a.turma
@@ -92,21 +100,23 @@ class Atribuicoes extends Generic {
                         AND t.ano = $ANO
 			ORDER BY t.ano,t.semestre,a.bimestre,d.numero,a.grupo";
 
-        $aluno = "SELECT t.ano as ano, t.semestre as semestre, at.bimestre as bimestre,
-                                at.codigo as atribuicao, d.nome as disciplina,
-                                d.numero as numero, tu.nome as turma, c.nome as curso,
-                                c.nomeAlternativo as cursoAlt
-				FROM Matriculas m, Turmas t, Pessoas p, Cursos c, Turnos tu, Atribuicoes at, Disciplinas d 
-				WHERE m.aluno=p.codigo 
-				AND at.turma=t.codigo 
-				AND m.atribuicao=at.codigo
-				AND t.curso=c.codigo
-				AND t.turno=tu.codigo
-				AND at.disciplina = d.codigo
-				AND p.codigo=:cod
-                                AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
-                                AND t.ano = $ANO
-				ORDER BY d.numero, at.bimestre";
+        $aluno = "SELECT t.ano as ano, t.semestre as semestre, 
+                        at.bimestre as bimestre,
+                        at.codigo as atribuicao, d.nome as disciplina,
+                        d.numero as numero, tu.nome as turma, c.nome as curso,
+                        c.nomeAlternativo as cursoAlt
+			FROM Matriculas m, Turmas t, Pessoas p, Cursos c, 
+                            Turnos tu, Atribuicoes at, Disciplinas d 
+			WHERE m.aluno=p.codigo 
+			AND at.turma=t.codigo 
+			AND m.atribuicao=at.codigo
+			AND t.curso=c.codigo
+			AND t.turno=tu.codigo
+			AND at.disciplina = d.codigo
+			AND p.codigo=:cod
+                        AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
+                        AND t.ano = $ANO
+			ORDER BY d.numero, at.bimestre";
         $params = array(':cod' => $codigo);
         $res = $bd->selectDB($$papel, $params);
         if (!$menu)
@@ -120,6 +130,11 @@ class Atribuicoes extends Generic {
                     $reg['subturma'] = $reg['evento'];
                 if (isset($reg['subturma']))
                     $reg['numero'] = $reg['numero'] . ' [' . $reg['turma'] . '-' . $reg['subturma'] . ']';
+
+                if ($reg['hora']) {
+                    preg_match('#\[(.*?)\]#', $reg['hora'], $match);
+                    $reg['numero'] .= ' ['.$match[1].']';
+                }
 
                 $curso = ($reg['cursoAlt']) ? $reg['cursoAlt'] : $reg['curso'];
                 if (isset($reg['codigoModalidade'])) {

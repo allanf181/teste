@@ -1,6 +1,7 @@
 <?php
-if(!class_exists('Generic'))
-    require_once CONTROLLER.'/generic.class.php';
+
+if (!class_exists('Generic'))
+    require_once CONTROLLER . '/generic.class.php';
 
 class Permissoes extends Generic {
 
@@ -13,11 +14,11 @@ class Permissoes extends Generic {
     public function listaPermissoes($codigo, $tipo = null) {
         $bd = new database();
 
-        $i=0;
+        $i = 0;
         foreach ($codigo as $value) {
-            $indice = 'A'.$i;
+            $indice = 'A' . $i;
             $new_array[$indice] = $value;
-            $new_params[] = ':'.$indice;
+            $new_params[] = ':' . $indice;
             $i++;
         }
         $param = implode($new_params, ',');
@@ -25,14 +26,14 @@ class Permissoes extends Generic {
 
         $sql = "SELECT codigo,nome,menu,permissao FROM Permissoes WHERE tipo IN ($param)";
         $res = $bd->selectDB($sql, $params);
-        
+
         // Concatenando todas as permissões do usuário
-        $P['nome']=null;
-        $P['menu']=null;
-        $P['permissao']=null;
-        $vir=null;
-        $j=0;
-        
+        $P['nome'] = null;
+        $P['menu'] = null;
+        $P['permissao'] = null;
+        $vir = null;
+        $j = 0;
+
         $P['nome'] = null;
         $P['menu'] = null;
         $P['permissao'] = null;
@@ -45,33 +46,40 @@ class Permissoes extends Generic {
             $P['permissao'] .= $vir . $reg['permissao'];
             $j++;
         }
-        
+
         // Tranformando em Array
         $P['nome'] = explode(",", $P['nome']);
         $P['menu'] = explode(",", $P['menu']);
         $P['permissao'] = explode(",", $P['permissao']);
 
         // Pegando o codigo em caso de alteracao de alguma permissao
-        if ($res) $P['codigo'] = $res[0]['codigo'];
-        
-        if ($tipo == 'permissao') return $P;
+        if ($res)
+            $P['codigo'] = $res[0]['codigo'];
+
+        if ($tipo == 'permissao')
+            return $P;
 
         // BUSCANDO A BASE DOS ARQUIVOS;
         $i = 0;
         $tree = array();
+        $menus = array();
         foreach ($P['menu'] as $menu) {
-            $menus[$menu] = $P['nome'][$i];
-            $pathParts = explode('/', $menu);
-            $pathParts[count($pathParts)-1] = $menu;
-            $subTree = array(array_pop($pathParts));
-            foreach (array_reverse($pathParts) as $dir) {
-                $subTree = array($dir => $subTree);
+            if (!array_key_exists($menu, $menus)) {
+                $menus[$menu] = $P['nome'][$i];
+
+                $pathParts = explode('/', $menu);
+                $pathParts[count($pathParts) - 1] = $menu;
+                $subTree = array(array_pop($pathParts));
+                foreach (array_reverse($pathParts) as $dir) {
+                    $subTree = array($dir => $subTree);
+                }
+                $tree = array_merge_recursive($tree, $subTree);
             }
-            $tree = array_merge_recursive($tree, $subTree);
-            $i++;
+            $i++;            
         }
-        
-        if ($tipo == 'menu') return $menus;
+
+        if ($tipo == 'menu')
+            return $menus;
         return $tree;
     }
 
@@ -99,7 +107,7 @@ class Permissoes extends Generic {
         try {
             $descricao['nome'] = pathinfo($arquivo, PATHINFO_FILENAME);
             $descricao['extensao'] = pathinfo($arquivo, PATHINFO_EXTENSION);
-            $getDescription = file(PATH.LOCATION. "/$arquivo");
+            $getDescription = file(PATH . LOCATION . "/$arquivo");
             $descricao['descricaoArquivo'] = htmlentities(substr($getDescription[2], 2), ENT_COMPAT, 'UTF-8');
             $descricao['descricaoLink'] = htmlentities(substr($getDescription[3], 2), ENT_COMPAT, 'UTF-8');
             $descricao['lista'] = trim(substr($getDescription[5], 2));
@@ -108,7 +116,7 @@ class Permissoes extends Generic {
             return $erro;
         }
     }
-    
+
     // REPLICA AS PERMISSOES DE UM TIPO PARA OUTRO
     public function copyTipo($params) {
         $bd = new database();
@@ -117,7 +125,7 @@ class Permissoes extends Generic {
 
         $sql = "SELECT nome,menu,permissao,(SELECT codigo FROM Permissoes WHERE tipo = :codigo) as codigo"
                 . " FROM Permissoes WHERE tipo = :tipo";
-        
+
         $res = $bd->selectDB($sql, $params);
 
         $params1['codigo'] = $res[0]['codigo'];
@@ -125,10 +133,11 @@ class Permissoes extends Generic {
         $params1['nome'] = $res[0]['nome'];
         $params1['menu'] = $res[0]['menu'];
         $params1['tipo'] = $params['codigo'];
-        
+
         if ($res[0])
             $res = $this->insertOrUpdate($params1);
-    }    
+    }
+
 }
 
 ?>

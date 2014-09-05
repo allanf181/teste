@@ -20,6 +20,17 @@ $atribuicao = dcrip($_GET["atribuicao"]);
 require CONTROLLER . "/aula.class.php";
 $aula = new Aulas();
 
+require CONTROLLER . "/prazoDiario.class.php";
+$prazoDiario = new PrazosDiarios();
+
+// PEDIDO DE LIBERAÇÃO DO DIÁRIO
+if ($_GET["motivo"]) {
+    $_GET['data'] = date('Y-m-d h:i:s');
+    unset($_GET['_']);
+    $ret = $prazoDiario->insertOrUpdate($_GET);
+    mensagem($ret['STATUS'], 'PRAZO_DIARIO');
+}
+
 // INSERT E UPDATE DE AVALIACOES
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
@@ -77,7 +88,8 @@ if ($_GET['opcao'] == 'insert') {
                                 $quantidade = $res[0]['numeroAulaSemanal'];
                             ?></select></td></tr>
 
-                <tr><td align="right">Data: </td><td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?php echo $data; ?>" /></td></tr>
+                <tr><td align="right">Data: </td><td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?php echo $data; ?>" />
+                        <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a></td></tr>
                 <tr><td align="right">Quantidade: </td><td><input style="width: 50px" <?php if ($codigo) print 'readonly'; ?> type="text" maxlength="4" id="quantidade" name="quantidade" value="<?php echo $quantidade; ?>" /></td></tr>
                 <tr><td align="right">Bases/Conhecimentos Desenvolvidos: </td><td><textarea maxlength="200" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 150p"><?php echo $conteudo; ?></textarea></td></tr>
                 <tr><td align="right">Atividades: </td><td><textarea maxlength="200" rows="5" cols="80" id="atividade" name="atividade" style="width: 600px; height: 150p"><?php echo $atividade; ?></textarea></td></tr>
@@ -147,6 +159,7 @@ if ($_GET['opcao'] == '') {
         } else {
             ?>
             <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
+            <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a>
             <?php
         }
         ?>
@@ -251,4 +264,15 @@ if ($LIMITE_AULA_PROF != 0) {
             }
         });
     });
+    
+    $("#unlock").click(function() {
+        jPrompt('Professor, informe o motivo da solicitação:', '', '<?php print $TITLE; ?>', function(r)
+        {
+            if (r) {
+                r = encodeURI(r);
+                $('#professor').load('<?= $SITE ?>?motivo=' + r + '&atribuicao=' + '<?= crip($atribuicao) ?>');
+            }
+        }
+        );
+    });    
 </script>

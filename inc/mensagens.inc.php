@@ -38,7 +38,7 @@ function mensagem($TIPO, $MSG, $OPT=null) {
         
       	$INFO_UPDATE 	= 'Esse registro já está cadastrado no banco de dados.';
      
-        $INFO_PRAZO_DIARIO = 'O seu di&aacute;rio foi reaberto at&eacute: '.$OPT;
+        $INFO_PRAZO_DIARIO = 'O seu di&aacute;rio foi liberado at&eacute: '.$OPT;
         
 	$INFO_DELETE = 'Problema ao excluir registro! Esse registro possui depend&ecirc;ncias.';
         
@@ -87,6 +87,7 @@ function mensagem($TIPO, $MSG, $OPT=null) {
 
         $INFO_LDAP_ATIVADO = "O autentica&ccedil;&atilde;o LDAP est&aacute; ativada, n&atilde;o &eacute; poss&iacute;vel trocar ou recuperar a senha no WebDi&aacute;rio. Troque a senha em seu sistema de origem ou procure o suporte do campus.";
 
+        $OK_PRAZO_DIARIO = 'Registro inserido com sucesso. Aguarde a libera&ccedil;&atilde;o do coordenador.';
         // CODIGOS DE ERROS - PDO/MYSQL
         if ($OPT) {
             if ($OPT == 23000 && ($MSG=='UPDATE' || $MSG=='INSERT')) {
