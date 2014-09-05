@@ -55,7 +55,14 @@ $resAval = $aval->getAvaliacao($avaliacao);
     <?php if ($resAval['calculo'] == 'peso') { ?>
         (peso: <?= $resAval['peso'] ?>)
     <?php } ?>
-    <br> Nota m&aacute;xima permitida: <?= $resAval['notaMaxima'] ?><br />
+    <br> Nota m&aacute;xima permitida:
+    <?php
+    if ($resAval['calculo'] == 'soma' && !$resAval['tipo'] == 'recuperacao')
+        print $resAval['peso'];
+    else
+        print $resAval['notaMaxima'];
+    ?>
+    <br />
 </div>
 <br><hr>
 
@@ -132,36 +139,41 @@ if ($_SESSION['dataExpirou'])
                                 <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
                                 <input <?= $disabled ?> tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
                                 <?php
+                                $situacao = array();
                                 if ($reg['bimestre'] > 0) { // Busca as Notas dos Bimestres
                                     foreach ($AT_BIM as $nBim => $at) {
                                         $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0);
-                                        if ($reg['bimestre'] == $nBim && $final == 0) {
+                                        if ($reg['bimestre'] == $nBim && $res['final'] == 0) {
                                             $color = 'blue';
-                                            $situacao = abreviar($dados['situacao'], 14);
-                                        } else
-                                            $color = '';
+                                            $situacao[$reg['codAluno']] = abreviar($dados['situacao'], 14);
+                                        } else{
+                                            $color = null;
+                                        }
                                         ?>
                                     <td align='center'><font color='<?= $color ?>'><?= $dados['media'] ?></font></td>
                                     <?php
                                 }
-                                $dados1 = $nota->resultadoBimestral($reg['codAluno'], $resAval['turmaCodigo'], $resAval['discNumero'], $res['final']);
-                                if ($final)
+
+                                if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']] )
+                                    $resAval['final'] = 1;
+                                $dados1 = $nota->resultadoBimestral($reg['codAluno'], $resAval['turmaCodigo'], $resAval['discNumero'], $resAval['final']);
+                                if ($resAval['final'])
                                     $color = 'blue';
                                 else
                                     $color = '';
                                 ?>
                                 <td align='center'><font color="<?= $color ?>"><?= $dados1['media'] ?></font></td>
                                 <?php
-                                if ($reg['bimestre'] == 4 && $nBim == 4 && ( ($res['tipo'] == 'recuperacao' && $res['final']) || (!$situacao ) )) {
+                                if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']] )  {
                                     ?>
-                                    <td align='center'><?= abreviar($dados1['situacao'], 14) ?></td>
+                                    <td align='center'><?= abreviar($dados1['situacao'], 24) ?></td>
                                     <?php
                                 }
                                 ?>
-                                <td align='center'><?=$situacao?></td>
+                                <td align='center'><?=$situacao[$reg['codAluno']]?></td>
                                 <?php
                             } else {
-                                $dados = $nota->resultado($reg['matricula'], $atribuicao, $res['final']);
+                                $dados = $nota->resultado($reg['matricula'], $atribuicao, $resAval['final']);
                                 ?>
                                 <td align='center'><?= $dados['media'] ?></td>
                                 <td align='center'><?= $dados['situacao'] ?></td>

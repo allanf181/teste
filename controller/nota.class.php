@@ -82,6 +82,10 @@ class Notas extends Frequencias {
 			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
 			WHERE t2.codigo = :turma))
 		AND d.numero = :numDisc";
+        
+        $params = array(':aluno' => $aluno,
+                ':turma' => $turma,
+                ':numDisc' => $numeroDisciplina);        
         $res = $bd->selectDB($sql, $params);
 
         $c = 0;
@@ -97,6 +101,9 @@ class Notas extends Frequencias {
                 $calculo .= $dados['calculo'];
                 $rec += $dados['recuperacao'];
                 $final += $dados['final'];
+                
+                if ($reg['bimestre'] == 4)
+                    $notaUltimoBimestre = $dados['media'];
             }
         }
 
@@ -112,7 +119,7 @@ class Notas extends Frequencias {
         if ($calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec);
         } else {  // ALUNO PRECISA DE REAVALIACAO FINAL
-            $dados = array_merge($dados,$this->checkIfRec($atribuicao, $media, $final));
+            $dados = array_merge($dados,$this->checkIfRec($atribuicao, $media, $final, $notaUltimoBimestre));
         }
 
         // SITUACAO DAS NOTAS
@@ -137,7 +144,7 @@ class Notas extends Frequencias {
             $sql = "SELECT  n.mcc,n.rec,n.ncc,n.falta,
                         (SELECT t.final FROM Avaliacoes a, TiposAvaliacoes t
                             WHERE a.atribuicao = at.codigo
-                            AND a.tipo = t.codigo) as final,
+                            AND a.tipo = t.codigo AND t.final = 1) as final,
         		(SELECT SUM(au1.quantidade) FROM Aulas au1 
                             WHERE au1.atribuicao = at.codigo) as aulas,
 			(SELECT ch FROM Atribuicoes at1, Disciplinas d 
@@ -323,15 +330,17 @@ class Notas extends Frequencias {
         return $dadosGlobais;
     }
 
-    private function checkIfRec($atribuicao, $media, $final = null) {
+    private function checkIfRec($atribuicao, $media, $final = null, $notaUltimoBimestre = null) {
         $bd = new database();
         if ($final)
             $final = 'AND final = 1';
         else
             $final = null;
 
-        $sql = "SELECT t.nome, t.notaMaior,t.notaMenor,t.sigla,t.notaUltimBimestre
-			FROM TiposAvaliacoes t, Modalidades m, Cursos c, Atribuicoes a, Turmas tu 
+        $sql = "SELECT t.nome, t.notaMaior,t.notaMenor,t.sigla,
+                        t.notaUltimBimestre
+			FROM TiposAvaliacoes t, Modalidades m, 
+                            Cursos c, Atribuicoes a, Turmas tu 
 			WHERE t.modalidade = m.codigo 
 			AND m.codigo = c.modalidade 
 			AND a.turma = tu.codigo 
@@ -339,17 +348,17 @@ class Notas extends Frequencias {
 			AND a.codigo = :att
 			AND t.tipo = 'recuperacao' 
                         $final";
-
         $params = array(':att' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
 
         $notaMaior = $res[0]['notaMaior'];
         $notaMenor = $res[0]['notaMenor'];
-        $dados['situacao'] = $res[0]['nome'];
-        $dados['siglaSituacao'] = $res[0]['sigla'];
-
-        if (($media >= $notaMaior && $media < $notaMenor) || ($final && $media < $res[0]['t.notaUltimBimestre'])
+        
+        if (($media >= $notaMaior && $media < $notaMenor) ||
+            ($final && $notaUltimoBimestre < $res[0]['notaUltimBimestre'])
         ) {
+            $dados['situacao'] = $res[0]['nome'];
+            $dados['siglaSituacao'] = $res[0]['sigla'];
             $dados['color'] = 'OliveDrab1';
         }
         return $dados;

@@ -20,7 +20,6 @@ class NotasFinais extends Notas {
 
         $params = array(':cod' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
-
         if ($res) {
             foreach ($res as $reg) {
                 $dados = $this->resultado($reg['matricula'], $atribuicao, 0, 1);
@@ -54,6 +53,7 @@ class NotasFinais extends Notas {
                         $params2['atribuicao'] = $atribuicao;
                         $params2['matricula'] = $reg['matricula'];
                     }
+                    
                     if (!$this->insertOrUpdate($params2))
                         $erro = 1;
                 } else
@@ -63,12 +63,13 @@ class NotasFinais extends Notas {
                 if ($reg['bimestre'] == 4) {
                     $dados = $this->resultadoBimestral($reg['aluno'], $reg['turma'], $reg['numero'], 1, 1);
                     if (!$dados['situacao']) {
-                        $sql = "SELECT * FROM NotasFinais WHERE atribuicao = :cod 
-    			AND matricula = :mat
-    			AND bimestre = 'M'";
+                        $sql = "SELECT * FROM NotasFinais 
+                                    WHERE atribuicao = :cod 
+                                    AND matricula = :mat
+                                    AND bimestre = 'M'";
 
                         $params = array(':cod' => $atribuicao,
-                            ':mat' => $reg['matricula']);
+                                        ':mat' => $reg['matricula']);
                         $res2 = $bd->selectDB($sql, $params);
 
                         if ($res2)

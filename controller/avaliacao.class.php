@@ -117,8 +117,7 @@ class Avaliacoes extends Generic {
                 av.peso as peso, av.nome as nome, ti.tipo as tipo,
 		DATEDIFF(a.prazo, NOW()) as prazo, a.status as status,
 		d.numero as discNumero, a.bimestre as bimestre, ti.final,
-                t.numero as turma, a.calculo as calculo,
-                IF(STRCMP(a.calculo,'soma'),ti.notaMaxima,av.peso) as notaMaxima
+                t.numero as turma, a.calculo as calculo, ti.notaMaxima as notaMaxima
  		FROM Atribuicoes a, Disciplinas d, Turmas t, Cursos c, Turnos tu,
                     Avaliacoes av, TiposAvaliacoes ti
  		WHERE a.disciplina=d.codigo 
@@ -131,6 +130,7 @@ class Avaliacoes extends Generic {
 
         $params = array(':codigo' => $avaliacao);
         $res = $bd->selectDB($sql, $params);
+
         if ($res[0]) {
             return $res[0];
         } else {

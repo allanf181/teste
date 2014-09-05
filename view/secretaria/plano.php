@@ -16,6 +16,9 @@ require SESSAO;
 require CONTROLLER . "/professor.class.php";
 $prof = new Professores();
 
+require CONTROLLER . "/planoEnsino.class.php";
+$plano = new PlanosEnsino();
+
 if ($_GET["opcao"] == 'controlePlano') {
     $atribuicao = $_GET["atribuicao"];
     $v = $_GET["valor1"];
@@ -36,102 +39,57 @@ if ($_GET["opcao"] == 'controlePlano') {
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
-<script>
-    function valida() {
-        turma = $('#campoTurma').val();
-        curso = $('#campoCurso').val();
-        bimestre = $('#campoBimestre').val();
-        professor = $('#campoProfessor').val();
-        $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre + '&professor=' + professor);
-    }
-
-    $('#campoTurma, #campoCurso, #campoBimestre, #campoProfessor').change(function() {
-        valida();
-    });
-
-    function plano(atribuicao, nome, curso, professor) {
-        modo = 'Confirma a solicitação de correção do plano de ensino de ' + nome + '? \n\n Motivo:';
-        jPrompt(modo, '', '<?php print $TITLE; ?>', function(r)
-        {
-            if (r) {
-                r = encodeURI(r);
-                $('#index').load('<?php print $SITE; ?>?opcao=controlePlano&atribuicao=' + atribuicao + '&curso=' + curso + '&valor1=' + r + "&professor=" + professor);
-            }
-        });
-    }
-    function confPlano(value, checked, nome, atribuicao, curso, professor) {
-        if (!checked)
-            modo = 'Confirma abrir o diario de ' + nome + '?';
-        else
-            modo = 'Confirma a conferência do plano de ' + nome + '?\n\nAtenção: somente o GED poderá abrir novamente!';
-        jConfirm(modo, 'Fechamento', function(r) {
-            if (r)
-                $('#index').load('<?php print $SITE; ?>?opcao=controlePlano&curso=' + curso + '&atribuicao=' + atribuicao + '&conferido=' + checked + "&professor=" + professor);
-            else
-                document.getElementById(atribuicao).checked = !checked;
-        });
-    }
-</script>
 <?php
-$professor = "";
-$curso = "";
-$turma = "";
-$restricao = "";
-$bimestre = "";
-
 if (isset($_GET["turma"]) && $_GET["turma"] != "") {
     $turma = dcrip($_GET["turma"]);
-    $restricao = " AND t.codigo = $turma";
+    $params['turma'] = $turma;
+    $sqlAdicional = ' AND t.codigo = :turma ';
 }
 
 if (isset($_GET["curso"])) {
     $curso = dcrip($_GET["curso"]);
-    $restricao .= " AND c.codigo = $curso";
+    $params['curso'] = $turma;
+    $sqlAdicional .= ' AND c.codigo = :curso ';
 }
 
 if (isset($_GET["bimestre"]) && $_GET["bimestre"] != "") {
     if ($_GET["bimestre"] != "undefined") {
         $bimestre = dcrip($_GET["bimestre"]);
-        $restricao .= " AND a.bimestre = $bimestre";
+        $params['bimestre'] = $turma;
+        $sqlAdicional .= ' AND a.bimestre = :bimestre ';
     }
 }
 
 if (isset($_GET["professor"]) && dcrip($_GET["professor"]) != 'Todos') {
     $professor = dcrip($_GET["professor"]);
-    $restricao .= " AND p.professor = $professor";
+    $params['professor'] = $turma;
+    $sqlAdicional .= ' AND p.professor = :professor ';
 }
 
 if (in_array($COORD, $_SESSION["loginTipo"])) {
-    $restricaoCoord = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador=" . $_SESSION['loginCodigo'] . ")";
+    $paramsCurso['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicionalCurso = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord)";
 }
 ?>
 <table align="center" id="form" width="100%">
     <tr><td align="right" style="width: 100px">Curso: </td><td>
-            <select name="campoCurso" id="campoCurso" value="<?php echo $curso; ?>" style="width: 350px">
+            <select name="curso" id="curso" value="<?php echo $curso; ?>" style="width: 350px">
                 <option></option>
                 <?php
-                $resultado = mysql_query("select distinct c.codigo, c.nome, m.nome, m.codigo
-                        						from Cursos c, Turmas t, Modalidades m
-                        						where t.curso=c.codigo 
-                        						and m.codigo = c.modalidade
-                        						and (t.semestre=$semestre OR t.semestre=0) 
-                        						and t.ano=$ano 
-                        						$restricaoCoord 
-                        						order by c.nome");
-                $selected = ""; // controla a alteração no campo select
-                while ($linha = mysql_fetch_array($resultado)) {
-                    if ($linha[0] == $curso)
-                        $selected = "selected";
-                    if ($linha[3] < 1000 || $linha[3] >= 2000)
-                        $linha[1] = "$linha[1] [$linha[2]]";
-                    echo "<option $selected value='" . crip($linha[0]) . "'>[$linha[0]] $linha[1]</option>";
+                require CONTROLLER . '/curso.class.php';
+                $cursos = new Cursos();
+                $res = $cursos->listCursos($paramsCurso, $sqlAdicionalCurso, null, null);
+                foreach ($res as $reg) {
                     $selected = "";
+                    if ($reg['codigo'] == $curso)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['curso'] ."</option>";
                 }
                 ?>
             </select>
         </td></tr>
     <tr><td align="right">Turma: </td>
-        <td><select name="campoTurma" id="campoTurma" style="width: 350px">
+        <td><select name="turma" id="turma" style="width: 350px">
                 <option></option>
                 <?php
                 $resultado = mysql_query("select t.codigo, t.numero, c.nome, tu.nome, t.semestre, t.ano, c.fechamento
@@ -321,3 +279,39 @@ if (!empty($curso)) {
                 ?>
     </table>
 <?php } ?>
+<script>
+    function valida() {
+        turma = $('#campoTurma').val();
+        curso = $('#campoCurso').val();
+        bimestre = $('#campoBimestre').val();
+        professor = $('#campoProfessor').val();
+        $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre + '&professor=' + professor);
+    }
+
+    $('#campoTurma, #campoCurso, #campoBimestre, #campoProfessor').change(function() {
+        valida();
+    });
+
+    function plano(atribuicao, nome, curso, professor) {
+        modo = 'Confirma a solicitação de correção do plano de ensino de ' + nome + '? \n\n Motivo:';
+        jPrompt(modo, '', '<?php print $TITLE; ?>', function(r)
+        {
+            if (r) {
+                r = encodeURI(r);
+                $('#index').load('<?php print $SITE; ?>?opcao=controlePlano&atribuicao=' + atribuicao + '&curso=' + curso + '&valor1=' + r + "&professor=" + professor);
+            }
+        });
+    }
+    function confPlano(value, checked, nome, atribuicao, curso, professor) {
+        if (!checked)
+            modo = 'Confirma abrir o diario de ' + nome + '?';
+        else
+            modo = 'Confirma a conferência do plano de ' + nome + '?\n\nAtenção: somente o GED poderá abrir novamente!';
+        jConfirm(modo, 'Fechamento', function(r) {
+            if (r)
+                $('#index').load('<?php print $SITE; ?>?opcao=controlePlano&curso=' + curso + '&atribuicao=' + atribuicao + '&conferido=' + checked + "&professor=" + professor);
+            else
+                document.getElementById(atribuicao).checked = !checked;
+        });
+    }
+</script>

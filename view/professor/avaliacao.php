@@ -85,7 +85,7 @@ $calculo = $atrib[0]['calculo'];
 $formula = $atrib[0]['formula'];
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 if ($calculo == 'peso')
     $PONTO = 1;
@@ -97,10 +97,10 @@ if ($_GET['opcao'] == 'insert') {
     $tipoAval = strtolower(dcrip($_GET['tipo']));
     if ($tipoAval == 'pontoextra')
         $PONTO = 10;
-    
+
     $pontos = dcrip($_GET["pontos"]); // pontos ja atribuidos
     $maxPontos = $PONTO - $pontos;
-    
+
     $avalSiglas = $avaliacao->listAvaliacoes($atribuicao);
     ?>
     <script>
@@ -185,15 +185,13 @@ if ($_GET['opcao'] == 'insert') {
                 <h2>Cadastro de Avalia&ccedil;&atilde;o</h2>
                 <table>
                     <tr><td align="right">Data: </td><td><input type="text" readonly size="10" id="data" name="data" value="<?php echo $data; ?>" />
-                         <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a>
+                            <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a>
                         </td></tr></td></tr>
                     <tr><td align="right">Nome: </td><td><input style="width: 350px" type="text" id="nome" maxlength="145" name="nome" value="<?php echo $nome; ?>"/></td></tr>
                     <tr><td align="right">Sigla: </td><td><input type="text" id="sigla" size="2" maxlength="2" name="sigla" value="<?php echo $sigla; ?>"/> <spam id="Siglas"></spam></td></tr>
                     <tr><td align="right">Tipo: </td><td>
-                            <select name="tipo" id="tipo" value="<?php echo $tipo; ?>">
-                                <?php
-                                $selected = "";
-                                require CONTROLLER . "/tipoAvaliacao.class.php";
+                            <?php
+                                                            require CONTROLLER . "/tipoAvaliacao.class.php";
                                 $tipoAvaliacao = new TiposAvaliacoes();
 
                                 if ($tipoAval == 'substitutiva') {
@@ -202,21 +200,23 @@ if ($_GET['opcao'] == 'insert') {
                                 } else {
                                     $res1 = $tipoAvaliacao->listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipoAval);
                                 }
+                                ?>
+                            <select name="tipo" id="tipo" value="<?php echo $tipo; ?>">
+                                <?php
+
                                 foreach ($res1 as $reg) {
                                     $selected = "";
                                     if ($reg['codigo'] == $tipo)
                                         $selected = "selected";
                                     print "<option $selected value='" . $reg['codigo'] . "'>" . $reg['nome'] . "</option>";
-                                    if ($reg['tipo'] == 'substitutiva')
-                                        $sub .= $reg['codigo'];
-                                    if ($reg['tipo'] == 'pontoExtra')
-                                        $pe .= $reg['codigo'];
+                                    if ($reg['tipo'] == 'recuperacao')
+                                        $tipoAvalRec = $reg['tipo'];
                                 }
                                 ?>
                             </select>
                         </td></tr>
                     <?php
-                    if (($calculo == 'peso' || $calculo == 'soma') && ($tipoAval != 'substitutiva')) {
+                    if (($calculo == 'peso' || $calculo == 'soma') && ($tipoAval != 'substitutiva' && $tipoAvalRec != 'recuperacao')) {
                         if ($maxPontos <= 0)
                             $enabled = 'disabled';
 
@@ -328,7 +328,7 @@ if ($_GET['opcao'] == '') {
                 $sub = null;
                 if ($reg['tipo'] == 'substitutiva')
                     $sub = ' de ' . $reg['substitutiva'];
-                
+
                 if ($reg['tipo'] == 'pontoExtra')
                     $totalPesoOrPonto = $reg['totalPonto'];
 
@@ -361,12 +361,11 @@ if ($_GET['opcao'] == '') {
     <center>
         <br />
         <?php if ((($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4))) { ?>
-            <input type="hidden" id="campoAtribuicao" name="campoAtribuicao" value="<?php echo crip($atribuicao); ?>" />
             <?php if ($_SESSION['dataExpirou'] == 0) {
                 ?>
-                <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>'); void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
-                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra')?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>'); void(0);" title="Cadastrar Ponto Extra"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
-                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva')?>'); void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
+                <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&tipo=<?= crip($reg['tipo']) ?>'); void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
+                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>'); void(0);" title="Cadastrar Ponto Extra"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
+                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva') ?>'); void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
                 <?php
             } else {
                 ?>
@@ -388,8 +387,6 @@ if ($LIMITE_AULA_PROF != 0) {
     // DATA DE INICIO E FIM DA ATRIBUICAO PARA RESTRINGIR O CALENDARIO
     $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF, $LIMITE_DIARIO_PROF);
 }
-
-
 ?>
 <script>
     $(document).ready(function() {
@@ -418,8 +415,8 @@ if ($LIMITE_AULA_PROF != 0) {
             monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
             nextText: 'Próximo',
             prevText: 'Anterior',
-            minDate: '<?=$res['inicioCalendar']?>',
-            maxDate: '<?=$res['fimCalendar']?>'
+            minDate: '<?= $res['inicioCalendar'] ?>',
+            maxDate: '<?= $res['fimCalendar'] ?>'
         });
         $('#select-all').click(function(event) {
             if (this.checked) {
@@ -450,5 +447,5 @@ if ($LIMITE_AULA_PROF != 0) {
                 }
             }
         });
-    });  
+    });
 </script>

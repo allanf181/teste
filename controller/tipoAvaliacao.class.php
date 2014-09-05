@@ -13,12 +13,12 @@ class TiposAvaliacoes extends Generic {
     public function listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipo) {
         $bd = new database();
 
-        if (!$tipo)
+        if ($tipo == 'recuperacao' || $tipo == 'avaliacao' || !$tipo)
             $sqlAdicional = " AND ( t.tipo = 'avaliacao' OR t.tipo = 'recuperacao' ) ";
         else
             $sqlAdicional = " AND t.tipo = '$tipo'";
 
-        $sql = "SELECT t.codigo as codigo, t.nome as nome, t.tipo as tipo
+        $sql = "SELECT t.codigo as codigo, t.nome as nome, t.tipo as tipo, t.final, a.bimestre
 		FROM TiposAvaliacoes t, Modalidades m, Cursos c, Atribuicoes a, Turmas tu 
 		WHERE t.modalidade = m.codigo 
 		AND m.codigo = c.modalidade 
@@ -36,34 +36,45 @@ class TiposAvaliacoes extends Generic {
 		ORDER BY t.nome";
         $params = array(':cod' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
-
+        
         if ($res) {
             foreach ($res as $reg) {
-                if ($calculo == 'peso' && $pontos < $PONTO && $reg['tipo'] != 'recuperacao') {
+                if ($reg['bimestre'] == 4 && $tipo == 'avaliacao' && $reg['final'])
+                    continue;
+                
+                if ($reg['bimestre'] == 4 && $tipo == 'recuperacao' && !$reg['final'])
+                    continue;
+
+                // MOSTRA AS AVALIACOES CASO AINDA NAO ATINGIU OS PONTOS NO CASO
+                // DE PESO E MEDIA
+                if ( ($calculo == 'peso' || $calculo == 'soma') 
+                        && $pontos < $PONTO && $reg['tipo'] != 'recuperacao') {
+                    $new[$reg['codigo']]['codigo'] = $reg['codigo'];
+                    $new[$reg['codigo']]['nome'] = $reg['nome'];
+                    $new[$reg['codigo']]['tipo'] = $reg['tipo'];
+                } 
+                // MOSTRAS AS RECUPERACOES SE OS PONTOS FORAM ATINGIDOS
+                if (($calculo == 'peso' || $calculo == 'soma')
+                        && $pontos >= $PONTO && $reg['tipo'] == 'recuperacao') {
                     $new[$reg['codigo']]['codigo'] = $reg['codigo'];
                     $new[$reg['codigo']]['nome'] = $reg['nome'];
                     $new[$reg['codigo']]['tipo'] = $reg['tipo'];
                 }
-                if ($calculo == 'peso' && $pontos >= $PONTO && $reg['tipo'] == 'recuperacao') {
+
+                // CASO NAO TENHA NENHUMA AVALIACAO, OBRIGA A CADASTRAR
+                // A PRIMEIRA ANTES DA RECUPERACAO
+                if (($calculo == 'media' || $calculo == 'formula')
+                        && !$tipo && $reg['tipo'] != 'recuperacao') {
                     $new[$reg['codigo']]['codigo'] = $reg['codigo'];
                     $new[$reg['codigo']]['nome'] = $reg['nome'];
                     $new[$reg['codigo']]['tipo'] = $reg['tipo'];
                 }
-                if ($calculo == 'soma' && $pontos < $PONTO && $reg['tipo'] != 'recuperacao') {
+                if (($calculo == 'media' || $calculo == 'formula')
+                        && $tipo) {
                     $new[$reg['codigo']]['codigo'] = $reg['codigo'];
                     $new[$reg['codigo']]['nome'] = $reg['nome'];
                     $new[$reg['codigo']]['tipo'] = $reg['tipo'];
-                }
-                if ($calculo == 'soma' && $pontos >= $PONTO && $reg['tipo'] == 'recuperacao') {
-                    $new[$reg['codigo']]['codigo'] = $reg['codigo'];
-                    $new[$reg['codigo']]['nome'] = $reg['nome'];
-                    $new[$reg['codigo']]['tipo'] = $reg['tipo'];
-                }
-                if ($calculo == 'media' || $calculo == 'formula') {
-                    $new[$reg['codigo']]['codigo'] = $reg['codigo'];
-                    $new[$reg['codigo']]['nome'] = $reg['nome'];
-                    $new[$reg['codigo']]['tipo'] = $reg['tipo'];
-                }
+                }                
             }
 
             return $new;

@@ -37,16 +37,16 @@ class Cursos extends Generic {
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
         $sql = "SELECT c.codigo, m.nome as modalidade,
-                IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso
+                IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
+                    IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)   ) 
+                as curso
     		FROM Cursos c, Modalidades m
-    		WHERE m.codigo = c.modalidade 
-    		";
+    		WHERE m.codigo = c.modalidade";
 
-        if ($params["curso"] || $params["numeroDisciplina"] || $params["nomeDisciplina"] || $params["codigo"]) {
-            $sql .= " $sqlAdicional ";
-        }
-
-        $sql .= "$nav";
+        $sql .= " $sqlAdicional ";
+        $sql .= " $nav ";
+        $sql .= " ORDER BY c.nome ";
+        
         $res = $bd->selectDB($sql, $params);
 
         if ($res)

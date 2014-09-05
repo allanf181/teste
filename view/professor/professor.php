@@ -34,7 +34,7 @@ if ($_GET["opcao"] == 'controleDiario') {
     require CONTROLLER . "/notaFinal.class.php";
     $nota = new NotasFinais();
 
-    if (!$nota->fecharDiario($atribuicao)) {
+    if (!$erro = $nota->fecharDiario($atribuicao)) {
         $params['codigo'] = $atribuicao;
         $params['status'] = $status;
         $ret = $att->insertOrUpdate($params);
@@ -90,22 +90,18 @@ if ($_GET["atribuicao"]) {
                     $dataExpirou = true;
                 }
             }
-
-            if ($status != 0)
-                $dataExpirou = true;
-        } else {
-            $status = 0; // SEM LIMITE
+        } else {// SEM LIMITE CASO O FECHAMENTO NÂO FOR MANUAL
+            if ($status > 3)
+                $status = 0; 
             $prazo = null;
             $prazoDiff = -1;
             $dataExpirou = false;
 
 
-            if ($diarioAberto < 0) { // diário ainda não começou
-                $dataExpirou = true;
-                $status = 100;
-            }
         }
-
+        
+        if ($status != 0)
+            $dataExpirou = true;
         $_SESSION['dataExpirou'] = $dataExpirou;
 
         // Informa se o diário foi aberto

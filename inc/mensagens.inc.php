@@ -65,7 +65,7 @@ function mensagem($TIPO, $MSG, $OPT=null) {
         $OK_TRUE_COPY_PERMISSAO = 'Permiss&atilde;o copiada com sucesso.';
 	$NOK_FALSE_COPY_PERMISSAO = 'Problema ao copiar a Permiss&atilde;o.';
         
-	$FALSE_CLOSE_CLASS_REGISTRY = 'O di&aacute;rio n&atilde;o pode ser finalizado. Verifique se h&aacute; algum aluno sem nota ou se algum instrumento de avalia&ccedil;&atilde;o deixou de ser aplicado.';
+	$NOK_FALSE_CLOSE_CLASS_REGISTRY = 'O di&aacute;rio n&atilde;o pode ser finalizado. Verifique se h&aacute; algum aluno sem nota ou se algum instrumento de avalia&ccedil;&atilde;o deixou de ser aplicado.';
 	
 	$NOT_SELECT = "Nenhum registro selecionado.";
 	
@@ -101,7 +101,7 @@ function mensagem($TIPO, $MSG, $OPT=null) {
         }
        
         $MSG = $TIPO.'_'.$MSG;
-
+        
         if ($TIPO == 'ERRO')
             return print "<div class=\"flash error\" id=\"flash_error\">".$$MSG."</div>\n";
 
@@ -110,6 +110,9 @@ function mensagem($TIPO, $MSG, $OPT=null) {
                 
 	if ($TIPO == 'OK')
             return print "<div class=\"flash notice\" id=\"flash_notice\">".$$MSG."</div>\n";
+
+      	if ($TIPO == 'NOK')
+            return print "<div class=\"flash error\" id=\"flash_error\">".$$MSG."</div>\n";
 
 	if ($TIPO == 'C_NOK')
             return print "<div class=\"flash error\" id=\"flash_error\">".$MSG."</div>\n";
