@@ -26,9 +26,13 @@ class Academico23 extends Ruckusing_Migration_Base {
 
         // AJUSTE PARA NOVA TABELA
         $this->execute("UPDATE `PrazosDiarios` SET dataConcessao = NOW();");
-        
+
+        // ADICIONANDO DIARIO PROFESSORES
+        $result = $this->select_all("SELECT prof FROM Instituicoes");
+        $prof = $result[0]['prof'];
+
         // ATUALIZACAO DE MENU
-        $result = $this->select_all("SELECT codigo,nome,menu,permissao FROM Permissoes");
+        $result = $this->select_all("SELECT codigo,tipo,nome,menu,permissao FROM Permissoes");
         if ($result) {
             $remove_menu = 'view/secretaria/prazos/aula.php';
             $novo_menu = 'view/professor/diario.php';
@@ -45,10 +49,12 @@ class Academico23 extends Ruckusing_Migration_Base {
                 $P['menu'] = explode(",", $P['menu']);
                 $P['nome'] = explode(",", $P['nome']);
 
-                if (!in_array($novo_menu, $P['permissao'])) {
-                    $P['permissao'][] = $novo_menu;
-                    $P['menu'][] = '';
-                    $P['nome'][] = 'Di&aacute;rios';
+                if ($prof == $P['tipo']) {
+                    if (!in_array($novo_menu, $P['permissao'])) {
+                        $P['permissao'][] = $novo_menu;
+                        $P['menu'][] = '';
+                        $P['nome'][] = 'Di&aacute;rios';
+                    }
                 }
 
                 $i = 0;
@@ -57,35 +63,34 @@ class Academico23 extends Ruckusing_Migration_Base {
                     if ($menu == 'view/secretaria/prazos/diario.php')
                         $P['nome'][$i] = 'Di&aacute;rios';
 
-                        // REMOVENDO MENU
-                        if ($menu != $remove_menu) {
-                            $P1['permissao'][] = $menu;
-                            $P1['menu'][] = $P['menu'][$i];
-                            $P1['nome'][] = $P['nome'][$i];
-                        }
-
-                        $i++;
+                    // REMOVENDO MENU
+                    if ($menu != $remove_menu) {
+                        $P1['permissao'][] = $menu;
+                        $P1['menu'][] = $P['menu'][$i];
+                        $P1['nome'][] = $P['nome'][$i];
                     }
 
-                    $P2 = implode(",", $P1['permissao']);
-                    $M1 = implode(",", $P1['menu']);
-                    $N1 = implode(",", $P1['nome']);
-
-                    $this->execute("UPDATE Permissoes SET menu='$M1',permissao='$P2',nome='$N1' WHERE codigo = " . $P['codigo']);
+                    $i++;
                 }
-            }
 
-            // ATUALIZAR VERSAO ATUAL
-            $this->execute("UPDATE Instituicoes SET versao='406', versaoAtual='406'");
-            printf("<br>Patch Academico23: OK");
+                $P2 = implode(",", $P1['permissao']);
+                $M1 = implode(",", $P1['menu']);
+                $N1 = implode(",", $P1['nome']);
+
+                $this->execute("UPDATE Permissoes SET menu='$M1',permissao='$P2',nome='$N1' WHERE codigo = " . $P['codigo']);
+            }
         }
+
+        // ATUALIZAR VERSAO ATUAL
+        $this->execute("UPDATE Instituicoes SET versao='406', versaoAtual='406'");
+        printf("<br>Patch Academico23: OK");
+    }
 
 //up()
 
-        public function down() {
-            
-        }
+    public function down() {
+        
+    }
 
 //down()
-    }
-    
+}
