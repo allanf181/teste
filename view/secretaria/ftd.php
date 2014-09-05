@@ -162,10 +162,6 @@ require PATH . VIEW . '/paginacao.php';
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption, valor) {
                 if (caption == 'Sim') {
-                    var selected = [];
-                    $('input:checkbox:checked').each(function() {
-                        selected.push($(this).val());
-                    });
                     $('#index').load('<?php print $SITE; ?>?opcao=controleFTD&codigo=' + codigo + '&solicitacao=' + encodeURIComponent(valor));
                 }
             }
@@ -183,11 +179,6 @@ require PATH . VIEW . '/paginacao.php';
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption) {
                 if (caption == 'Sim') {
-                    var selected = [];
-                    $('input:checkbox:checked').each(function() {
-                        selected.push($(this).val());
-                    });
-
                     $('#index').load('<?php print $SITE; ?>?opcao=controleFTD&codigo=' + codigo + '&conferido=' + checked);
                 } else {
                     document.getElementById(codigo).checked = !checked;

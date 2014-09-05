@@ -24,6 +24,15 @@ $planoEnsino = new PlanosEnsino();
 require CONTROLLER . "/planoAula.class.php";
 $planoAula = new PlanosAula();
 
+$caracteres = 3000; // total do textarea
+
+if ($_POST['atribuicao'])
+    $_GET['atribuicao'] = $_POST['atribuicao'];
+$atribuicao = $_GET["atribuicao"];
+
+$sqlAdicional = ' AND a.codigo = :atribuicao ';
+$params = array('atribuicao' => dcrip($atribuicao));
+
 if ($_GET['pagina']) {
     // INSERT E UPDATE
     if ($_POST["opcao"] == 'InsertOrUpdate') {
@@ -38,13 +47,6 @@ if ($_GET['pagina']) {
         else $_GET["codigo"] = crip($ret['RESULTADO']);        
     }
 }
-
-if ($_POST['atribuicao'])
-    $_GET['atribuicao'] = $_POST['atribuicao'];
-$atribuicao = $_GET["atribuicao"];
-
-$caracteres = 3000; // total do textarea
-
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
@@ -68,24 +70,24 @@ $caracteres = 3000; // total do textarea
             mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
         }
 
-        $res = $planoEnsino->listPlanoEnsino(dcrip($atribuicao));
+        $res = $planoEnsino->listPlanoEnsino($params, $sqlAdicional);
         $BLOQ = 0;
         $VALIDO = 0;
 
-        if ($res['finalizado'] && $res['finalizado'] != '0000-00-00 00:00:00')
+        if ($res[0]['finalizado'] && $res[0]['finalizado'] != '0000-00-00 00:00:00')
             $BLOQ = 1;
 
-        if ($res['valido'] && $res['valido'] != '00/00/0000 00:00')
+        if ($res[0]['valido'] && $res[0]['valido'] != '00/00/0000 00:00')
             $VALIDO = 1;
 
-        if ($res['solicitacao']) {
-            $OPT[0] = $res['solicitante'];
-            $OPT[1] = $res['solicitacao'];
+        if ($res[0]['solicitacao']) {
+            $OPT[0] = $res[0]['solicitante'];
+            $OPT[1] = $res[0]['solicitacao'];
             mensagem('ERRO', 'SOLICITACAO_PLANO', $OPT);
             $BLOQ = 0;
         }
         if ($VALIDO) {
-            $OPT = $res['solicitante'];
+            $OPT = $res[0]['solicitante'];
             mensagem('OK', 'PLANO_VALIDO', $OPT);
         }
 
@@ -117,9 +119,9 @@ $caracteres = 3000; // total do textarea
         }
 
         // VERIFICANDO SE O PLANO FOI FINALIZADO
-        $pe = $planoEnsino->listPlanoEnsino(dcrip($_GET["atribuicao"]));
+        $pe = $planoEnsino->listPlanoEnsino($params, $sqlAdicional);
         $disabled = '';
-        if ($pe['finalizado'] && $pe['finalizado'] != '0000-00-00 00:00:00')
+        if ($pe[0]['finalizado'] && $pe[0]['finalizado'] != '0000-00-00 00:00:00')
             $disabled = 'disabled';
         ?>
 
@@ -165,20 +167,11 @@ $caracteres = 3000; // total do textarea
 
 if ($_GET['pagina'] == "planoEnsino") {
 
-    // VERIFICA A NOMENCLATURA
-    require CONTROLLER . "/atribuicao.class.php";
-    $att = new Atribuicoes();
-    $mod = $att->getAtribuicao(dcrip($_GET["atribuicao"]));
-    if ($mod['codModalidade'] == 1001 || $mod['codModalidade'] == 1003 || $mod['codModalidade'] < 1000)
-        $titleRecuperacao = 'Reavalia&ccedil;&atilde;o Final:';
-    else
-        $titleRecuperacao = 'Instrumento Final de Avalia&ccedil;&atilde;o:';
-
     // LISTAGEM
     if (!empty($_GET["atribuicao"])) { // se o parâmetro não estiver vazio
         // consulta no banco
-        $res = $planoEnsino->listPlanoEnsino(dcrip($atribuicao));
-        extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
+        $res = $planoEnsino->listPlanoEnsino($params, $sqlAdicional);
+        extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
     }
 
     $disabled = '';
@@ -246,7 +239,7 @@ if ($_GET['pagina'] == "planoEnsino") {
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recuperacaoParalela' name='recuperacaoParalela'><?= $recuperacaoParalela; ?></textarea>
                 </tr>  
                 <tr>
-                    <td align="left"><?= $titleRecuperacao ?></td>
+                    <td align="left"><?= $rfTitle ?></td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recuperacaoFinal' name='recuperacaoFinal'><?= $recuperacaoFinal; ?></textarea>
                 </tr>
                 <tr>
@@ -274,12 +267,12 @@ if ($_GET['pagina'] == "planoAula") {
     }
 
     // VERIFICANDO SE O PLANO FOI FINALIZADO
-    $pe = $planoEnsino->listPlanoEnsino(dcrip($_GET["atribuicao"]));
+    $pe = $planoEnsino->listPlanoEnsino($params, $sqlAdicional);
     $disabled = '';
-    if ($pe['finalizado'] && $pe['finalizado'] != '0000-00-00 00:00:00')
+    if ($pe[0]['finalizado'] && $pe[0]['finalizado'] != '0000-00-00 00:00:00')
         $disabled = 'disabled';
 
-    if (!$pe) {
+    if (!$pe[0]) {
         mensagem('INFO', 'EMPTY_PLANO_ENSINO');
         $disabled = 'disabled';
     }

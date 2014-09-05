@@ -72,74 +72,62 @@ class Atribuicoes extends Generic {
 
     // LISTA AS ATRIBUICOES DO PROFESSOR/ALUNO
     // USADO POR: INDEX.PHP (PARA MONTAR O MENU DO PROFESSOR)
-    public function listAtribuicoes($codigo, $papel, $menu = null) {
+    public function listAtribuicoes($codigo, $papel, $ano, $menu = null) {
         $bd = new database();
-
-        $ANO = $_SESSION["ano"];
 
         $professor = "SELECT t.ano as ano, t.semestre as semestre, 
                         a.bimestre as bimestre, a.codigo as atribuicao, 
                         d.nome as disciplina, d.numero as numero, 
-                        c.nome as curso, t.numero as turma, 
-                        a.subturma as subturma,	a.eventod as evento, 
-                        c.nomeAlternativo as cursoAlt, 
+                        t.numero as turma, 
+                        IF(LENGTH(a.subturma) > 0,a.subturma,a.eventod) as subturma, 
+                        IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
+                            IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)) 
+                        as curso,
                         m.codigo as codigoModalidade, m.nome as modalidade,
                         (SELECT nome FROM Ensalamentos e, Horarios h
                             WHERE e.horario = h.codigo 
                             AND e.atribuicao = a.codigo LIMIT 1) as hora                        
-			FROM Turnos tt, Disciplinas d, Turmas t, Atribuicoes a, 
+			FROM Disciplinas d, Turmas t, Atribuicoes a, 
                             Professores pr, Cursos c, Modalidades m
-			WHERE tt.codigo = t.turno 
-			AND d.codigo = a.disciplina 
+			WHERE d.codigo = a.disciplina 
 			AND t.codigo = a.turma
 			AND c.codigo = t.curso 
 			AND m.codigo = c.modalidade
 			AND pr.atribuicao = a.codigo
 			AND pr.professor=:cod 
                         AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
-                        AND t.ano = $ANO
+                        AND t.ano = :ano
 			ORDER BY t.ano,t.semestre,a.bimestre,d.numero,a.grupo";
 
         $aluno = "SELECT t.ano as ano, t.semestre as semestre, 
                         at.bimestre as bimestre,
                         at.codigo as atribuicao, d.nome as disciplina,
-                        d.numero as numero, tu.nome as turma, c.nome as curso,
-                        c.nomeAlternativo as cursoAlt
+                        d.numero as numero,
+                        IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo,c.nome) as curso
 			FROM Matriculas m, Turmas t, Pessoas p, Cursos c, 
-                            Turnos tu, Atribuicoes at, Disciplinas d 
+                            Atribuicoes at, Disciplinas d 
 			WHERE m.aluno=p.codigo 
 			AND at.turma=t.codigo 
 			AND m.atribuicao=at.codigo
 			AND t.curso=c.codigo
-			AND t.turno=tu.codigo
 			AND at.disciplina = d.codigo
 			AND p.codigo=:cod
                         AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
-                        AND t.ano = $ANO
+                        AND t.ano = :ano
 			ORDER BY d.numero, at.bimestre";
-        $params = array(':cod' => $codigo);
+        $params = array(':cod' => $codigo, ':ano' => $ano);
         $res = $bd->selectDB($$papel, $params);
         if (!$menu)
             return $res;
 
         if ($res) {
             foreach ($res as $reg) {
-                $reg['disciplina'] = $reg['disciplina'];
-                $reg['curso'] = $reg['curso'];
-                if (isset($reg['evento']) && !$reg['subturma'])
-                    $reg['subturma'] = $reg['evento'];
                 if (isset($reg['subturma']))
                     $reg['numero'] = $reg['numero'] . ' [' . $reg['turma'] . '-' . $reg['subturma'] . ']';
 
                 if ($reg['hora']) {
                     preg_match('#\[(.*?)\]#', $reg['hora'], $match);
                     $reg['numero'] .= ' ['.$match[1].']';
-                }
-
-                $curso = ($reg['cursoAlt']) ? $reg['cursoAlt'] : $reg['curso'];
-                if (isset($reg['codigoModalidade'])) {
-                    if (($reg['codigoModalidade'] < 1000 || $reg['codigoModalidade'] >= 2000) && !$reg['cursoAlt'])
-                        $curso = $reg['curso'] . '-' . $reg['modalidade'];
                 }
 
                 // SE FOR ANUAL
@@ -190,6 +178,27 @@ class Atribuicoes extends Generic {
         }
     }
 
+    // USADO POR: SECRETARIA/PLANO.PHP
+    // Retorna os bimestres de uma atribuicao
+    public function getFechamento($turma) {
+        $bd = new database();
+
+        $sql = "SELECT a.bimestre as bimestre,
+                IF(t.semestre = 0,'ANUAL', IF(a.bimestre = 0, 'SEMESTRAL',CONCAT(a.bimestre,'º BIM'))) as nome
+                FROM Atribuicoes a, Turmas t 
+                WHERE t.codigo=a.turma 
+                AND t.codigo=:turma
+                GROUP BY a.bimestre";
+        
+        $params = array(':turma' => $turma);
+
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }    
 }
 
 ?>

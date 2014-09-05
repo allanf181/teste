@@ -72,7 +72,7 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
 }
 
 if (!$ITEM)
-    die('Sem dados para gerar a lista.');
+    die('Sem dados para gerar a lista. Verifique se o plano de ensino e o plano de aula foram preenchidos.');
 
 $professores = $professor->getProfessor($atribuicao,'', 0, 0);
         

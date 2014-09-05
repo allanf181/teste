@@ -272,11 +272,6 @@ if ($LIMITE_AULA_PROF != 0) {
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption, valor) {
                 if (caption == 'Sim') {
-                    var selected = [];
-                    $('input:checkbox:checked').each(function() {
-                        selected.push($(this).val());
-                    });
-
                     $('#professor').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
                 }
             }

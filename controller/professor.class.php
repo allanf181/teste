@@ -49,15 +49,13 @@ class Professores extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
-        $sql = "SELECT p.codigo, p.nome, p.lattes 
-                    FROM Pessoas p, PessoasTipos pt
+        $sql = "SELECT DISTINCT p.codigo, p.nome, p.lattes
+                    FROM Pessoas p, PessoasTipos pt, Professores pr
                     WHERE p.codigo = pt.pessoa
                     AND pt.tipo = :tipo
-    		";
+                    AND pr.professor = p.codigo";
 
-        if ($params["professor"]) {
-            $sql .= " $sqlAdicional ";
-        }
+        $sql .= " $sqlAdicional ";
 
         $sql .= ' ORDER BY p.nome ';
 

@@ -45,43 +45,50 @@ class PlanosEnsino extends Generic {
         }
     }
 
-    // USADO POR: ALUNO/PLANOENSINO.PHP, PROFESSOR/PLANO.PHP
+    // USADO POR: ALUNO/PLANOENSINO.PHP, PROFESSOR/PLANO.PHP, SECRETARIA/PLANO.PHP
     // LISTA O PLANO DE ENSINO E PLANO DE AULA
-    public function listPlanoEnsino($codigo, $validado = null) {
+    public function listPlanoEnsino($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 
-        if ($validado)
-            $validado = "AND (pe.valido <> '' AND pe.valido <> '0000-00-00 00:00:00')";
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
+
         $sql = "SELECT pe.codigo, pe.numeroAulaSemanal as numeroAulaSemanal,
                 pe.totalHoras as totalHoras, pe.totalAulas as totalAulas,
                 pe.numeroProfessores as numeroProfessores,
 		pe.ementa as ementa, pe.objetivo as objetivo, 
                 pe.conteudoProgramatico as conteudoProgramatico,
-                pe.metodologia as metodologia, d.numero as numero,
+                pe.metodologia as metodologia,pe.solicitacao,pe.finalizado,
                 pe.recursoDidatico as recursoDidatico, pe.avaliacao as avaliacao,
-                pe.recuperacaoParalela as recuperacaoParalela,
-                pe.recuperacaoFinal as recuperacaoFinal,
+                pe.recuperacaoParalela as recuperacaoParalela, pe.recuperacaoFinal as recuperacaoFinal,
+                IF(m.codigo=1001 OR
+                   m.codigo=1003 OR 
+                   m.codigo < 1001, 'Reavaliação Final', 'Instrumento Final de Avaliação' )
+                as rfTitle,
 		pe.bibliografiaBasica as bibliografiaBasica,
                 pe.bibliografiaComplementar as bibliografiaComplementar,
-		d.nome as disciplina, d.ch as ch, d.numero as numero,
+                date_format(pe.valido, '%d/%m/%Y %H:%i') as valido,
+                (SELECT ps.nome FROM Pessoas ps WHERE ps.codigo = pe.solicitante) as solicitante,
+		d.nome as disciplina, d.ch as ch, d.numero as numero, a.codigo as atribuicao,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
-                m.nome as modalidade, m.codigo as codModalidade, pe.solicitacao,
-                date_format(pe.valido, '%d/%m/%Y %H:%i') as valido, pe.finalizado,
-                (SELECT p.nome FROM Pessoas p WHERE p.codigo = pe.solicitante) as solicitante
+                m.nome as modalidade, m.codigo as codModalidade, t.numero as turma
 		FROM PlanosEnsino pe, Atribuicoes a, Disciplinas d,
-		Cursos c, Modalidades m, Turmas t
+		Cursos c, Modalidades m, Turmas t, Professores p
 		WHERE pe.atribuicao = a.codigo 
 		AND d.codigo = a.disciplina
 		AND a.turma = t.codigo
 		AND t.curso = c.codigo
 		AND c.modalidade = m.codigo
-		$validado
-		AND a.codigo = :cod";
-        $params = array(':cod' => $codigo);
+                AND p.atribuicao = a.codigo";
+        
+        $sql .= " $sqlAdicional ";
+        $sql .= ' ORDER BY d.nome ';
+        $sql .= "$nav";
+        
         $res = $bd->selectDB($sql, $params);
 
-        if ($res[0]) {
-            return $res[0];
+        if ($res) {
+            return $res;
         } else {
             return false;
         }

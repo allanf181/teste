@@ -271,7 +271,7 @@ if ($_GET["atribuicao"]) {
                                     <td align='center'><?= $i ?></td>
                                     <td><?= $reg['data'] ?></td>
                                     <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
-                                    <td><?= $reg['dataConcessao'] ?></td>
+                                    <td><?= dataPTBR($reg['dataConcessao']) ?></td>
                                     <?php
                                     $i--;
                                 }
@@ -314,11 +314,6 @@ if ($_GET["atribuicao"]) {
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption, valor) {
                 if (caption == 'Sim') {
-                    var selected = [];
-                    $('input:checkbox:checked').each(function() {
-                        selected.push($(this).val());
-                    });
-
                     $('#index').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
                 }
             }

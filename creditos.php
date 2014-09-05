@@ -59,6 +59,14 @@ require SESSAO;
 </center>
 
 <br>
+<br>
+<!--<b>Vers&atilde;o 1.407</b>
+<br>
+<br> - Problemas com notas/avaliações - chamado #155
+<br> - Problema de sincronização com o Nambei - #151
+<br> - Reestruturação de código dos Planos de Ensino
+<hr>
+-->
 <b>Vers&atilde;o 1.406</b>
 <br>
 <br> - Unifica&ccedil;&atilde;o dos Prazos de Aulas e Di&aacute;rios - chamado #117

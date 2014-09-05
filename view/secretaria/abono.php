@@ -119,7 +119,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <?php
                         require CONTROLLER . '/atribuicao.class.php';
                         $att = new Atribuicoes();
-                        $res = $att->listAtribuicoes($aluno, 'aluno');
+                        $res = $att->listAtribuicoes($aluno, 'aluno', $ANO);
                         foreach ($res as $reg) {
                             $selected = "";
                             if ($reg['atribuicao'] == $atribuicao)

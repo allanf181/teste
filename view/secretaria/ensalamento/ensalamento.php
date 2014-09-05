@@ -53,12 +53,13 @@ if (dcrip($_GET["turma"])) {
                     <?php
                     require CONTROLLER . '/turma.class.php';
                     $turmas = new Turmas();
-                    $res = $turmas->listTurmas($ANO, $SEMESTRE);
+                    $paramsTurma = array(':ano' => $ANO,':semestre' => $SEMESTRE);
+                    $res = $turmas->listTurmas($paramsTurma);
                     foreach ($res as $reg) {
                         $selected = "";
-                        if ($reg['codigo'] == $turma)
+                        if ($reg['codTurma'] == $turma)
                             $selected = "selected";
-                        print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] . " [".$reg['curso']."]</option>";
                     }
                     ?>
                 </select>

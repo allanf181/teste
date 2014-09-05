@@ -30,30 +30,27 @@ class Turmas extends Generic {
         return false;
     }
 
-    public function listTurmas($ANO, $SEMESTRE) {
+    public function listTurmas($params, $sqlAdicional = null) {
         $bd = new database();
 
-        $sql = "SELECT t.codigo as codTurma, t.numero as numero, c.nome as curso,
+        $sql = "SELECT t.codigo as codTurma, t.numero as numero,
+                    IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
+                        IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)) 
+                    as curso,
                     m.nome as modalidade, m.codigo as codModalidade, c.codigo as codCurso
                     FROM Turmas t, Cursos c, Modalidades m
 	            WHERE t.curso = c.codigo 
 	            AND m.codigo = c.modalidade
 	            AND ano = :ano
-	            AND (semestre= :semestre OR semestre=0) 
-	            ORDER BY c.nome, t.numero";
+	            AND (semestre= :semestre OR semestre=0)";
 
-        $params = array(':ano' => $ANO, ':semestre' => $SEMESTRE);
+        $sql .= " $sqlAdicional ";
+        $sql .= " ORDER BY c.nome, t.numero ";
+                
         $res = $bd->selectDB($sql, $params);
 
-        foreach ($res as $reg) {
-            if ($reg['codModalidade'] < 1000 || $reg['codModalidade'] >= 2000)
-                $reg['curso'] = $reg['curso'] . ' [' . $reg['modalidade'] . ']';
-            $new[$reg['codTurma']]['codigo'] = $reg['codTurma'];
-            $new[$reg['codTurma']]['nome'] = '[' . $reg['numero'] . '] ' . $reg['curso'] . ' (' . $reg['codCurso'] . ')';
-        }
-
-        if ($new)
-            return $new;
+        if ($res)
+            return $res;
         else
             return false;
     }
