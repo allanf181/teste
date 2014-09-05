@@ -156,15 +156,21 @@ require PATH . VIEW . '/paginacao.php';
 </table>
 <script>
     function FTD(codigo, nome) {
-        modo = 'Confirma a solicitação de correção na FTD de ' + nome + '? \n\n Motivo:';
-        jPrompt(modo, '', '<?php print $TITLE; ?>', function(r)
-        {
-            if (r) {
-                r = encodeURI(r);
-                $('#index').load('<?php print $SITE; ?>?opcao=controleFTD&codigo=' + codigo + '&solicitacao=' + r);
+        $.Zebra_Dialog('<strong>Confirma a solicitação de correção na FTD de ' + nome + '? \n\n Motivo:</strong>', {
+            'type': 'prompt',
+            'title': '<?php print $TITLE; ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function(caption, valor) {
+                if (caption == 'Sim') {
+                    var selected = [];
+                    $('input:checkbox:checked').each(function() {
+                        selected.push($(this).val());
+                    });
+                    $('#index').load('<?php print $SITE; ?>?opcao=controleFTD&codigo=' + codigo + '&solicitacao=' + encodeURIComponent(valor));
+                }
             }
         });
-    }
+    };        
     function confFTD(value, checked, nome, codigo) {
         if (!checked)
             modo = '<strong>Confirma abrir a FTD de ' + nome + '?</strong>';

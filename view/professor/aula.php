@@ -266,13 +266,20 @@ if ($LIMITE_AULA_PROF != 0) {
     });
     
     $("#unlock").click(function() {
-        jPrompt('Professor, informe o motivo da solicitação:', '', '<?php print $TITLE; ?>', function(r)
-        {
-            if (r) {
-                r = encodeURI(r);
-                $('#professor').load('<?= $SITE ?>?motivo=' + r + '&atribuicao=' + '<?= crip($atribuicao) ?>');
+        $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
+            'type': 'prompt',
+            'title': '<?php print $TITLE; ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function(caption, valor) {
+                if (caption == 'Sim') {
+                    var selected = [];
+                    $('input:checkbox:checked').each(function() {
+                        selected.push($(this).val());
+                    });
+
+                    $('#professor').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
+                }
             }
-        }
-        );
-    });    
+        });
+    });   
 </script>
