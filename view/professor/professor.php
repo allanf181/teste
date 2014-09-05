@@ -309,14 +309,21 @@ if ($_GET["atribuicao"]) {
     }
 
     $("#unlock").click(function() {
-        jPrompt('Professor, informe o motivo da solicitação:', '', '<?php print $TITLE; ?>', function(r)
-        {
-            if (r) {
-                r = encodeURI(r);
-                $('#index').load('<?= $SITE ?>?motivo=' + r + '&atribuicao=' + '<?= crip($atribuicao) ?>');
+        $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
+            'type': 'prompt',
+            'title': '<?php print $TITLE; ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function(caption, valor) {
+                if (caption == 'Sim') {
+                    var selected = [];
+                    $('input:checkbox:checked').each(function() {
+                        selected.push($(this).val());
+                    });
+
+                    $('#index').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
+                }
             }
-        }
-        );
+        });
     });
 
     function pergunta() {

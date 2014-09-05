@@ -112,6 +112,7 @@
 .ZebraDialog .ZebraDialog_Information   { background-image: url('information.png') }
 .ZebraDialog .ZebraDialog_Question      { background-image: url('question.png') }
 .ZebraDialog .ZebraDialog_Warning       { background-image: url('warning.png') }
+.ZebraDialog .ZebraDialog_Prompt       { background-image: url('prompt.png') }
 
 .ZebraDialog .ZebraDialog_Buttons a {
     white-space: nowrap;
