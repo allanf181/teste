@@ -8,7 +8,7 @@ class Sexos extends Generic {
     
     public function __construct(){
         //
-    }   
+    }
 }
 
 ?>

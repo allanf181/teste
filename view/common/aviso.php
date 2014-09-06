@@ -1,4 +1,10 @@
 <?php
+// verifica se não está sendo chamado diretamente.
+if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
+    print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
+    die;
+}
+
 
 require CONTROLLER . "/aviso.class.php";
 $aviso = new Avisos();

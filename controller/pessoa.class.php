@@ -123,6 +123,65 @@ class Pessoas extends Generic {
         }
     }
 
+    // USADO POR: SECRETARIA/SOCIOECONOMICO.PHP
+    // RETORNA DADOS PARA O SOCIOECONOMICO
+    public function dadosSocioEconomico($tabela, $campo, $params, $sqlAdicional = null, $group = null) {
+        $bd = new database();
+
+        $tabela = mysql_real_escape_string($tabela);
+        $campo = mysql_real_escape_string($campo);
+
+        $sql = "SELECT COUNT(*) as total, 
+                (SELECT nome 
+                    FROM $tabela 
+                    WHERE codigo = p.$campo) as nome,
+                        $campo as campo
+                FROM Pessoas p 
+                WHERE p.codigo IN (SELECT p.codigo FROM
+                    Matriculas m, Atribuicoes a, Turmas t, Cursos c, PessoasTipos pt
+                    WHERE m.atribuicao = a.codigo
+                    AND m.aluno = p.codigo
+                    AND a.turma = t.codigo
+                    AND t.curso = c.codigo
+                    AND pt.pessoa = p.codigo
+                    AND pt.tipo = :aluno
+                    AND (t.semestre=:semestre OR t.semestre=0)
+                    AND t.ano=:ano
+                    $sqlAdicional )
+                GROUP BY p.$campo";
+        
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            foreach ($res as $reg) {
+                if (!$reg['nome'])
+                    $reg['nome'] = 'Não preenchido';
+
+                if ($group) {
+                    if (!$reg['campo'])
+                        $reg['campo'] = 0;
+
+                    foreach ($group as $g) {
+                        list($i, $f, $nome) = explode('|', $g);
+                        if (
+                                (preg_match('/^[\D]*$/', $i) && strcasecmp($i, $reg['campo']) == 0) || (preg_match('/^[\d]*$/', $i) && $reg['campo'] >= $i && $reg['campo'] <= $f )
+                        ) {
+                            $new_res[$nome]['nome'] = $nome;
+                            $new_res[$nome]['total'] += $reg['total'];
+                        }
+                    }
+                } else {
+                    $new_res[$reg['nome']]['nome'] = $reg['nome'];
+                    $new_res[$reg['nome']]['total'] += $reg['total'];
+                }
+                $totalGeral += $reg['total'];
+            }
+            $new_res[array_shift(array_keys($new_res))]['totalGeral'] = $totalGeral;
+            return $new_res;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 ?>

@@ -13,224 +13,120 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-// PARA VISUALIZAÇÃO POR PARTE DA SECRETARIA
-// FUNCOES
-function dadosTabela($titulo, $tabela, $campo, $ano, $semestre, $restricaoCurso, $restricaoTurma) {
-    global $ALUNO;
+require CONTROLLER . "/pessoa.class.php";
+$pessoa = new Pessoas();
 
-    echo "<table class=\"socioeconomico\" align=\"center\">";
-    echo "<tr><th align=\"'center\" style='width: 50%' colspan='4'>$titulo</th></tr>";
-
-    $i = 0;
-    // busca os campos disponíveis
-    $sql = "select * from $tabela";
-    $res = mysql_query($sql);
-    $campos[0] = 'Não preenchido';
-    while ($linha = mysql_fetch_array($res))
-        $campos[$linha[0]] = $linha[1];
-
-    // busca os dados
-    $sql = "select $campo from Pessoas p, PessoasTipos pt, Matriculas m, Atribuicoes a, Turmas t, Cursos c
-	        WHERE pt.pessoa = p.codigo AND pt.tipo = $ALUNO
-	        and t.curso=c.codigo
-	        and m.aluno=p.codigo
-	        and m.atribuicao=a.codigo
-	        and a.turma=t.codigo
-	        and (t.semestre=$semestre OR t.semestre=0)
-	        and t.ano=$ano
-	            $restricaoCurso $restricaoTurma
-	        group by p.codigo
-	            ";
-    //    echo $sql;
-    $res = mysql_query($sql);
-    while ($linha = mysql_fetch_array($res)) {
-        foreach ($campos as $cod => $nome)
-            if ($linha[0] == $cod) {
-                $item[$cod] ++;
-                $total++;
-            }
-    }
-    foreach ($campos as $cod => $nome) {
-        echo "<tr class='" . (( ++$i % 2 == 0) ? "cdif" : "") . "'><td align='center' style='width: 300px'>" . mostraTexto($nome) . "</td><td align='center' >" . $item[$cod] . "</td><td align='center' >" . percentual($item[$cod], $total) . "</td>";
-        if ($cod == 0)
-            echo "<td rowspan='10' style='width: 20px;background: white'  id='total'>Total:\n" . $total . "</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-}
-
-function dadosPessoa($titulo, $campo, $limites, $ano, $semestre, $restricaoCurso, $restricaoTurma) {
-    global $ALUNO;
-
-    echo "<table class=\"socioeconomico\" align=\"center\">";
-    echo "<tr><th colspan=4>$titulo</th></tr>";
-
-    $sql = "select $campo from Pessoas  p, PessoasTipos pt, Matriculas m, Atribuicoes a, Turmas t, Cursos c
-	        where pt.pessoa = p.codigo AND pt.tipo = $ALUNO
-	        and t.curso=c.codigo
-	        and m.aluno=p.codigo
-	        and m.atribuicao=a.codigo
-	        and a.turma=t.codigo
-	        and (t.semestre=$semestre OR t.semestre=0)
-	        and t.ano=$ano
-	            $restricaoCurso $restricaoTurma
-	        group by p.codigo";
-    //echo $sql;
-    $res = mysql_query($sql);
-    $i = 0;
-
-    while ($linha = mysql_fetch_array($res)) {
-        $n = 0;
-        if ($linha[0] == '0' || $linha[0] == "") {
-            $item[6] ++;
-            $total++;
-        }
-        for ($j = 0; $j < count($limites); $j++) {
-            if ($linha[0] >= ($limites[$n] + 1) && $linha[0] <= $limites[++$n]) {
-                $item[$j] ++;
-                $total++;
-            }
-        }
-        $i++;
-    }
-
-    $n = 0;
-    echo "<tr class='" . (( ++$i % 2 == 1) ? "cdif" : "") . "'><td align='center' style='width: 300px' >Não preenchido</td>" .
-    "<td align='center'>" . $item[6] . "</td><td align='center' >" . percentual($item[6], $total) . "</td>";
-    echo "<td rowspan='10' style='background: white' id='total'>Total:\n" . $total . "</td>";
-    echo "</tr>";
-
-    for ($j = 0; $j < count($limites); $j++) {
-        if (!empty($limites[$j]))
-            echo "<tr class='" . (( ++$i % 2 == 1) ? "cdif" : "") . "'><td align='center'   style='width: 500px; background: none'>de " . ($limites[$n] + 1) . " a " . $limites[++$n] . "</td>" .
-            "<td align='center'>" . $item[$j] . "</td><td align='center' >" . percentual($item[$j], $total) . "</td>";
-        echo "</tr>";
-        //        $n++;
-    }
-    echo "</table>";
-}
-
-function dadosPessoaEspecificos($titulo, $campo, $dados, $etiquetas, $ano, $semestre, $restricaoCurso, $restricaoTurma) {
-    global $ALUNO;
-
-    echo "<table class=\"socioeconomico\" align=\"center\">";
-    echo "<tr><th style='width: 50%' colspan=4>$titulo</th></tr>";
-
-    $sql = "select $campo from Pessoas p, PessoasTipos pt, Matriculas m, Atribuicoes a, Turmas t , Cursos c
-	        where pt.pessoa = p.codigo AND pt.tipo = $ALUNO
-	        and t.curso=c.codigo
-	        and m.aluno=p.codigo
-	        and m.atribuicao=a.codigo
-	        and a.turma=t.codigo
-	        and (t.semestre=$semestre OR t.semestre=0)
-	        and t.ano=$ano
-	            $restricaoCurso $restricaoTurma
-	        group by p.codigo";
-    //echo $sql;
-    $res = mysql_query($sql);
-    $i = 0;
-    while ($linha = mysql_fetch_array($res)) {
-        foreach ($dados as $cod => $valor) {
-            if ($linha[0] == $valor) {
-                $item[$cod] ++;
-                $total++;
-            }
-        }
-        $i++;
-    }
-
-    foreach ($dados as $cod => $valor) {
-
-        //        if (!empty($dados[$cod+1]))
-        echo "<tr class='" . (( ++$i % 2 == 1) ? "cdif" : "") . "'><td align='center'   style='width: 300px; background: none'>" . mostraTexto($etiquetas[$cod]) . "</td>" .
-        "<td align='center'>" . $item[$cod] . "</td><td align='center' >" . percentual($item[$cod], $total) . "</td>";
-        if ($cod == 0)
-            echo "<td rowspan='10' style='background: white; width: 20px' id='total'>Total:\n" . $total . "</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-}
-
-// FIM FUNCOES
-
-$curso = "";
-$restricao = "";
-
-if (isset($_GET['curso'])) {
-    $curso = $_GET['curso'];
-    if (!empty($curso))
-        $restricaoCurso = " and t.curso=$curso";
-}
-if (isset($_GET["turma"])) {
+if (dcrip($_GET["turma"])) {
     $turma = dcrip($_GET["turma"]);
-    if (!empty($turma))
-        $restricaoTurma = " and t.codigo=$turma";
+    $params['turma'] = $turma;
+    $sqlAdicional = ' AND t.codigo = :turma ';
+}
+
+if (dcrip($_GET["curso"])) {
+    $curso = dcrip($_GET["curso"]);
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c.codigo = :curso ';
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <table align="center" id="form" width="100%">
-
-
-    <tr><td align="right" style="width: 100px">Curso: </td><td>
-            <select name="campoCurso" id="campoCurso" value="<?php echo $curso; ?>" onChange="$('#index').load('<?php print $SITE; ?>?turma=<?php print crip($turma); ?>&curso=' + this.value);">
-                <option value=''>Todos</option>
+    <tr>
+        <td align="right" style="width: 100px">Curso: </td>
+        <td>
+            <select name="curso" id="curso" value="<?php echo $curso; ?>" style="width: 350px">
+                <option></option>
                 <?php
-                $resultado = mysql_query("select distinct c.codigo, c.nome from Cursos c, Turmas t where t.curso=c.codigo and (t.semestre=$semestre OR t.semestre=0) and t.ano=$ano order by nome");
-                $selected = ""; // controla a alteração no campo select
-                while ($linha = mysql_fetch_array($resultado)) {
-                    if ($linha[0] == $curso)
-                        $selected = "selected";
-                    echo "<option $selected value='$linha[0]'>" . mostraTexto($linha[1]) . "</option>";
+                require CONTROLLER . '/curso.class.php';
+                $cursos = new Cursos();
+                foreach ($cursos->listCursos() as $reg) {
                     $selected = "";
+                    if ($reg['codigo'] == $curso)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['curso'] . " [" . $reg['codigo'] . "]</option>";
                 }
                 ?>
             </select>
-
-        </td></tr>
-    <tr><td align="right">Turma: </td><td>
-            <select name="campoTurma" id="campoTurma" value="<?php echo $turma; ?>" style="width: 650px" onChange="$('#index').load('<?php print $SITE; ?>?curso=<?php print $curso; ?>&turma=' + this.value);">
-                <option value=''>Todas</option>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">Turma: </td>
+        <td>
+            <select name="turma" id="turma" style="width: 350px">
+                <option></option>
+                <?php
+                require CONTROLLER . '/turma.class.php';
+                $turmas = new Turmas();
+                $sqlAdicionaTurma = ' AND c.codigo = :curso ';
+                $paramsTurma = array(':curso' => $curso, ':ano' => $ANO, ':semestre' => $SEMESTRE);
+                foreach ($turmas->listTurmas($paramsTurma, $sqlAdicionaTurma) as $reg) {
+                    $selected = "";
+                    if ($reg['codTurma'] == $turma)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] . " [" . $reg['curso'] . "]</option>";
+                }
+                ?>
+            </select>
+        </td>
+    </tr>
+</table>
+<br />
 <?php
-$resultado = mysql_query("select t.codigo, t.numero, c.nome, tt.nome from Turmas t,Cursos c,Turnos tt where t.curso = c.codigo and t.turno = tt.codigo and t.ano=$ano and (t.semestre=$semestre OR t.semestre=0) $restricaoCurso order by t.numero");
-$selected = ""; // controla a alteração no campo select
-while ($linha = mysql_fetch_array($resultado)) {
-    if ($linha[0] == $turma)
-        $selected = "selected";
-    echo "<option $selected value='" . crip($linha[0]) . "'>$linha[1]</option>";
-    $selected = "";
+$dados[] = array('titulo' => 'Sexo', 'campo' => 'sexo', 'tabela' => 'Sexos');
+$dados[] = array('titulo' => 'Cor/Raça', 'campo' => 'raca', 'tabela' => 'Racas');
+$dados[] = array('titulo' => 'Estado Civil', 'campo' => 'estadoCivil', 'tabela' => 'EstadosCivis');
+$dados[] = array('titulo' => 'Renda Familiar', 'campo' => 'renda', 'tabela' => 'Rendas');
+$dados[] = array('titulo' => 'Situacão de Trabalho', 'campo' => 'situacaoTrabalho', 'tabela' => 'SituacoesTrabalho');
+$dados[] = array('titulo' => 'Tipos de Trabalho', 'campo' => 'tipoTrabalho', 'tabela' => 'TiposTrabalho');
+$dados[] = array('titulo' => 'Tempo de Trabalho', 'campo' => 'tempo', 'tabela' => 'TemposPesquisa');
+$dados[] = array('titulo' => 'Meio de Transporte', 'campo' => 'meioTransporte', 'tabela' => 'MeiosTransporte');
+$dados[] = array('titulo' => 'Nº Residentes na Casa', 'campo' => 'numeroPessoasNaResidencia', 'tabela' => 'Pessoas', 'group' => array('0|0|Não declarado', '1|2|de 1 a 2', '3|4|de 3 a 4', '5|8|de 5 a 8', '9|12|de 9 a 12', '13|20|de 13 a 20'));
+$dados[] = array('titulo' => 'Utiliza Transporte Público', 'campo' => 'transporteGratuito', 'tabela' => 'Pessoas', 'group' => array('0|0|Não declarado', 's|s|Sim', 'n|s|Não'));
+$dados[] = array('titulo' => 'Necessidades Especiais', 'campo' => 'necessidadesEspeciais', 'tabela' => 'Pessoas', 'group' => array('0|0|Não declarado', 's|s|Sim', 'n|s|Não'));
+$dados[] = array('titulo' => 'Estudou em Escola Pública', 'campo' => 'escolaPublica', 'tabela' => 'Pessoas', 'group' => array('0|0|Não declarado', 's|s|Sim', 'n|s|Não'));
+
+$params['ano'] = $ANO;
+$params['semestre'] = $SEMESTRE;
+$params['aluno'] = $ALUNO;
+    
+foreach ($dados as $reg) {
+    ?>
+    <table class="socioeconomico" align="center">
+        <tr>
+            <th align="center" style='width: 50%' colspan='4'><?= $reg['titulo'] ?></th>
+        </tr>
+        <?php
+        $total = 0;
+        foreach ($pessoa->dadosSocioEconomico($reg['tabela'], $reg['campo'], $params, $sqlAdicional, $reg['group']) 
+                as $reg) {
+            $total += $reg['totalGeral'];
+            ?>
+            <tr class='<?= (( ++$i % 2 == 0) ? "cdif" : "") ?>'>
+                <td align='center' style='width: 300px'><?= mostraTexto($reg['nome']) ?></td>
+                <td align='center' ><?= $reg['total'] ?></td>
+                <td align='center' ><?= percentual($reg['total'], $total) ?></td>
+            </tr>
+            <?php
+        }
+        ?>
+        <tr style="background: #E0E0E0; font-weight: bold;  ">
+            <td align='center'>TOTAL</td>
+            <td align='center'><?= $total ?></td>
+            <td align='center'><?= percentual($total, $total) ?></td>
+        </tr>
+    </table>
+    <?php
 }
 ?>
-            </select>
+<script>
+    function valida() {
+        turma = $('#turma').val();
+        curso = $('#curso').val();
+        $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso);
+    }
 
-        </td></tr>   
-
-</table><br />
-<?php
-dadosTabela("Sexo", "Sexos", "sexo", $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosTabela("Cor/Raça", "Racas", "raca", $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosTabela("Estado Civil", "EstadosCivis", "estadoCivil", $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosPessoa("Nº Residentes na Casa", "numeroPessoasNaResidencia", array(0, 2, 4, 8, 10, 20), $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosTabela("Renda Familiar", "Rendas", "renda", $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosTabela("Situacão de Trabalho", "SituacoesTrabalho", "situacaoTrabalho", $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosTabela("Tipos de Trabalho", "TiposTrabalho", "tipoTrabalho", $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosTabela("Tempo de Trabalho", "TemposPesquisa", "tempo", $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosTabela("Meio de Transporte", "MeiosTransporte", "meioTransporte", $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosPessoaEspecificos("Utiliza Transporte Público", "transporteGratuito", array('', 's', 'n'), array('Não declarado', 'Sim', 'Não'), $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosPessoaEspecificos("Necessidades Especiais", "necessidadesEspeciais", array('', 's', 'n'), array('Não declarado', 'Sim', 'Não'), $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-dadosPessoaEspecificos("Estudou em Escola Pública", "escolaPublica", array('', 's', 'n'), array('Não declarado', 'Sim', 'Não'), $ano, $semestre, $restricaoCurso, $restricaoTurma);
-
-mysql_close($conexao);
-?>
+    $('#turma, #curso').change(function() {
+        valida();
+    });
+</script>    

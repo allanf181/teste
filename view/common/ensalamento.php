@@ -1,4 +1,10 @@
-
+<?php
+// verifica se não está sendo chamado diretamente.
+if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
+    print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
+    die;
+}
+?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <?php
 
