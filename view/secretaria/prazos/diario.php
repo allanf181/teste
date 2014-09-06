@@ -16,365 +16,186 @@ require SESSAO;
 require CONTROLLER . "/professor.class.php";
 $prof = new Professores();
 
-require CONTROLLER . "/notaFinal.class.php";
-$nota = new NotasFinais();
-    
+require CONTROLLER . "/atribuicao.class.php";
+$att = new Atribuicoes();
+
+require CONTROLLER . "/prazoDiario.class.php";
+$prazo = new PrazosDiarios();
+
 if ($_GET["opcao"] == 'controleDiario') {
-    $v = $_GET["valor1"];
-    $prazos = explode(',', $_GET["prazo"]);
+    $_GET['pessoa'] = $_SESSION['loginNome'];
 
-    $erro = 0;
-    foreach ($prazos as $atribuicao) {
-        $status = 1;
-        $sql = "update Atribuicoes set status=$status, prazo=NULL where codigo=$atribuicao";
-        if (!$resultado = mysql_query($sql))
-            $erro = 1;
+    $GET = $_GET;
 
-        if ($atribuicao) {
-            $sql = "INSERT INTO PrazosDiarios VALUES (NULL, $atribuicao, now(), 'DIÁRIO FECHADO: $v')";
-            if (!$resultado = mysql_query($sql))
-                $erro = 1;
-        }
+    unset($_GET['opcao']);
+    unset($_GET['turma']);
+    unset($_GET['curso']);
+    unset($_GET['professor']);
+    unset($_GET['_']);
 
-        if ($status <> 0) {
-            if ($r = $nota->fecharDiario($atribuicao)) {
-                mensagem('NOK', 'FALSE_UPDATE');
-                $erro = 1;
-            }
-        }
+    $ret = $att->changePrazo($_GET);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 
-        //ALTERAR NOTASFINAIS PARA SINCRONIZAR NOVAMENTE
-        $sql = "update NotasFinais set sincronizado='' where atribuicao=$atribuicao AND flag <> 5";
-        $resultado = mysql_query($sql);
-
-        if (!$erro)
-            mensagem('OK', 'TRUE_UPDATE');
-        else
-            mensagem('NOK', 'FALSE_UPDATE');
-    }
-    $_GET["curso"] = crip($_GET["curso"]);
-}
-
-if ($_GET["opcao"] == 'controlePrazo') {
-    $v = $_GET["valor1"];
-    $prazos = explode(',', $_GET["prazo"]);
-
-    $erro = 0;
-    foreach ($prazos as $atribuicao) {
-        $sql = "update Atribuicoes set prazo=DATE_ADD(NOW(), INTERVAL 1 DAY), status='0' where codigo=$atribuicao";
-        if (!$resultado = mysql_query($sql))
-            $erro = 1;
-
-        if ($atribuicao) {
-            $sql = "UPDATE PrazosDiarios SET dataConcessao=NOW(), motivo = CONCAT('DIÁRIO LIBERADO: $v - MOTIVO PROFESSOR: ', motivo) WHERE atribuicao = $atribuicao AND dataConcessao IS NULL";
-            if (!$resultado = mysql_query($sql))
-                $erro = 1;
-        }
-    }
-    if (!$erro)
-        mensagem('OK', 'TRUE_UPDATE');
-    else
-        mensagem('NOK', 'FALSE_UPDATE');
-        
-    $_GET["curso"] = crip($_GET["curso"]);
+    $_GET = $GET;
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
-$curso = "";
-$turma = "";
-$restricao = "";
-$bimestre = "";
-$professor = "";
-
-if (isset($_GET["curso"])) {
+if (dcrip($_GET["curso"])) {
     $curso = dcrip($_GET["curso"]);
-    $restricao .= " AND c.codigo = $curso";
-    $lk .= "&curso=" . crip($curso);
-}
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c.codigo = :curso ';
 
-if (isset($_GET["turma"]) && $_GET["turma"] != "") {
-    $turma = dcrip($_GET["turma"]);
-    $restricao = " AND t.codigo = $turma";
-    $lk .= "&turma=" . crip($turma);
-}
-
-if (isset($_GET["bimestre"]) && $_GET["bimestre"] != "") {
-    if ($_GET["bimestre"] != "undefined" && dcrip($_GET["bimestre"]) != "") {
-        $bimestre = dcrip($_GET["bimestre"]);
-        $restricao .= " AND a.bimestre = $bimestre";
-        $lk .= "&bimestre=" . crip($bimestre);
+    if ($_SESSION['regAnterior'] && $curso != $_SESSION['regAnterior']) {
+        unset($_GET["turma"]);
+        unset($_GET["professor"]);
     }
+    $_SESSION['regAnterior'] = $curso;
 }
 
-if (isset($_GET["professor"]) && dcrip($_GET["professor"]) != 'Todos') {
+if (dcrip($_GET["turma"])) {
+    $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= ' AND t.codigo = :turma ';
+}
+
+if (dcrip($_GET["professor"])) {
     $professor = dcrip($_GET["professor"]);
-    $restricao .= " AND p.professor = $professor";
-    $lk .= "&professor=" . crip($professor);
+    $params['professor'] = $professor;
+    $sqlAdicional .= ' AND p.professor = :professor ';
 }
 
-print "<script>\n";
-print "    $('#form_padrao').html5form({ \n";
-print "        method : 'POST', \n";
-print "	   async : false, \n";
-print "        action : '$SITE', \n";
-print "        responseDiv : '#index', \n";
-print "        colorOn: '#000', \n";
-print "        colorOff: '#000', \n";
-print "        messages: 'br' \n";
-print "    }) \n";
-print "</script>\n";
-print "<div id=\"html5form\" class=\"main\">\n";
-print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $paramsCurso['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicionalCurso = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord)";
+}
 ?>
-<table align="center" id="form" width="100%" border="0">
-    <tr><td align="right" style="width: 100px">Curso: </td><td>
-            <select name="campoCurso" id="campoCurso" style="width: 350px">
+<table align="center" id="form" width="100%">
+    <tr>
+        <td align="right" style="width: 100px">Curso: </td>
+        <td>
+            <select name="curso" id="curso" value="<?php echo $curso; ?>" style="width: 350px">
                 <option></option>
                 <?php
-                if (in_array($COORD, $_SESSION["loginTipo"]))
-                    $restricaoCoord = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador=" . $_SESSION['loginCodigo'] . ")";
-                $resultado = mysql_query("select distinct c.codigo, c.nome, m.nome, m.codigo
-										    from Cursos c, Turmas t, Modalidades m
-										    where t.curso=c.codigo
-										    and m.codigo = c.modalidade
-										    and (t.semestre=$semestre OR t.semestre=0)
-										    and t.ano=$ano $restricaoCoord order by c.nome");
-                $selected = ""; // controla a alteração no campo select
-                while ($linha = mysql_fetch_array($resultado)) {
-                    if ($linha[0] == $curso)
-                        $selected = "selected";
-                    if ($linha[3] < 1000 || $linha[3] >= 2000)
-                        $linha[1] = "$linha[1] [$linha[2]]";
-                    echo "<option $selected value='" . crip($linha[0]) . "'>[$linha[0]] $linha[1]</option>";
+                require CONTROLLER . '/curso.class.php';
+                $cursos = new Cursos();
+                foreach ($cursos->listCursos($paramsCurso, $sqlAdicionalCurso, null, null) as $reg) {
                     $selected = "";
+                    if ($reg['codigo'] == $curso)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['curso'] . " [" . $reg['codigo'] . "]</option>";
                 }
                 ?>
             </select>
         </td>
         <td rowspan="4"><input type="submit" name="liberar" id="liberar" value="Liberar"><br /><br />
             <input type="submit" name="fechar" id="fechar" value="Fechar">
-            <input type="hidden" name="botao" id="botao" value="">
+        </td>
     </tr>
-</td></tr>
-<tr><td align="right">Turma: </td>
-    <td><select name="campoTurma" id="campoTurma" style="width: 350px">
-            <option></option>
-            <?php
-            $resultado = mysql_query("select t.codigo, t.numero, c.nome, tu.nome, t.semestre, t.ano, c.fechamento
-                    							from Turmas t, Cursos c, Turnos tu 
-                    							where t.curso=c.codigo 
-                    							and t.ano=$ano 
-                    							and t.turno=tu.codigo
-                    							and c.codigo = $curso
-                    							and (t.semestre=$semestre OR t.semestre=0) $restricaoCoord");
-            $selected = "";
-            if (mysql_num_rows($resultado) > 0) {
-                while ($linha = mysql_fetch_array($resultado)) {
-                    if ($linha[6] == 'b')
-                        $S = 1;
-                    if ($linha[0] == $turma)
-                        $selected = "selected";
-                    echo "<option $selected value='" . crip($linha[0]) . "'>$linha[1]</option>";
-                    $selected = "";
-                }
-            }
-            else {
-                echo "<option value=''>Não há turmas cadastrados neste semestre/ano letivo</option>";
-            }
-            ?>
-        </select>
-    </td></tr>
-<?php if ($S) { ?>
-    <tr><td>Fechamento: </td><td><select name="campoBimestre" id="campoBimestre" style="width: 350px">
-                <option value=""></option>
+    <tr>
+        <td align="right">Turma: </td>
+        <td>
+            <select name="turma" id="turma" style="width: 350px">
+                <option></option>
                 <?php
-                if (isset($turma) && !empty($turma)) {
-                    $sql = "select a.bimestre
-                        			from Atribuicoes a, Turmas t 
-                        			where t.codigo=a.turma 
-                        			and t.codigo=$turma
-                        			GROUP BY a.bimestre";
-                    $resultado = mysql_query($sql);
-                    while ($linha = mysql_fetch_array($resultado)) {
-                        $selected = "";
-                        if ($linha[0] == $bimestre)
-                            $selected = "selected";
-                        if ($linha[0] == 0) {
-                            $linha[0] = 'semestre';
-                            $bim = 'Semestral';
-                        }
-                        if ($linha[0] != 0)
-                            $bim = $linha[0] . 'º Bimestre';
-                        echo "<option $selected value='" . crip($linha[0]) . "'>$bim</option>";
-                    }
-                    if ($bimestre == 'final')
-                        $selected1 = "selected";
-                    if ($bim != 'Semestral' && $relatorio != 'diarioProfessor' && $relatorio != 'chamada' && $relatorio != 'presenca' && $relatorio != 'planoEnsino')
-                        print "<option $selected1 value=\"" . crip('final') . "\">Anual</option>\n";
+                require CONTROLLER . '/turma.class.php';
+                $turmas = new Turmas();
+                $sqlAdicionaTurma = ' AND c.codigo = :curso ';
+                $paramsTurma = array(':curso' => $curso, ':ano' => $ANO, ':semestre' => $SEMESTRE);
+                foreach ($turmas->listTurmas($paramsTurma, $sqlAdicionaTurma) as $reg) {
+                    $selected = "";
+                    if ($reg['codTurma'] == $turma)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] . " [" . $reg['curso'] . "]</option>";
                 }
                 ?>
             </select>
-        </td></tr>
-<?php } //print $bimestre; ?>	
-<tr><td align="right">Professor: </td><td><select name="campoProfessor" id="campoProfessor" style="width: 350px">
-            <?php
-            if ($turma)
-                $profSQL = "AND pr.atribuicao IN (SELECT a1.codigo FROM Atribuicoes a1 WHERE a1.turma = $turma)";
-            $sql = "SELECT DISTINCT p.codigo, p.nome 
-                    				FROM Pessoas p, PessoasTipos pt, Professores pr
-                    				WHERE p.codigo = pt.pessoa
-                    				AND pt.tipo = $PROFESSOR
-                    				AND pr.professor = p.codigo
-                    				$profSQL
-                     				ORDER BY p.nome";
-            $resultado = mysql_query($sql);
-            $selected = "";
-            if (mysql_num_rows($resultado) > 0) {
-                echo "<option value='" . crip("Todos") . "'>Todos</option>";
-                while ($linha = mysql_fetch_array($resultado)) {
+        </td>
+    </tr>
+    <tr>
+        <td align="right">Professor: </td>
+        <td>
+            <select name="professor" id="professor" style="width: 350px">
+                <option></option>
+                <?php
+                $sqlAdicionalProf = "AND pr.atribuicao "
+                        . "IN (SELECT a1.codigo "
+                        . "FROM Atribuicoes a1 "
+                        . "WHERE a1.turma = :turmaP)";
+                $paramsProf['tipo'] = $PROFESSOR;
+                $paramsProf['turmaP'] = $turma;
+
+                foreach ($prof->listProfessores($paramsProf, $sqlAdicionalProf) as $reg) {
                     $selected = "";
-                    if ($linha[0] == $professor)
+                    if ($reg['codigo'] == $professor)
                         $selected = "selected";
-                    echo "<option $selected value='" . crip($linha[0]) . "'>$linha[1]</option>";
-                    $selected = "";
+                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
                 }
-            }
-            else {
-                echo "<option value=''>Não há professores cadastrados.</option>";
-            }
-            ?>
-        </select>
-    </td></tr>		        	
+                ?>
+            </select>
+        </td>
+    </tr>		        	            
 </table>
 <?php
 if (!empty($curso)) {
     ?>
-
     <br /><table id="listagem" border="0" align="center">
-        <tr><th align="center" width="40">#</th><th align="left">Disciplina</th><th align="left">Professor</th><th align="left">Turma</th><th align="left">Fechado</th>
-            <th width="40" align="center"><input type='checkbox' id='select-all' name='select-all' class='campoTodos' value='' /></th></tr>
+        <tr>
+            <th align="center" width="40">#</th>
+            <th align="left">Disciplina</th>
+            <th align="left">Professor</th>
+            <th align="left">Turma</th>
+            <th align="left">Fechado</th>
+            <th width="40" align="center">
+                <input type='checkbox' id='select-all' name='select-all' class='campoTodos' value='' />
+            </th>
+        </tr>
         <?php
-        // efetuando a consulta para listagem
-        $sql = "select a.codigo, d.nome, d.codigo, t.numero, DATEDIFF(a.prazo,NOW()), a.bimestre, a.prazo, p.professor, a.status
-		    from Atribuicoes a, Disciplinas d, Cursos c, Turmas t, Professores p
-		    where a.turma=t.codigo
-		    and t.curso=c.codigo
-		    and a.disciplina=d.codigo
-        and p.atribuicao = a.codigo
-		    and t.ano=$ano
-		    and (t.semestre=$semestre OR t.semestre=0)
-		    and d.curso=c.codigo $restricao GROUP BY a.codigo order by d.nome";
-        //echo $sql;
-        $resultado = mysql_query($sql);
+        $params['ano'] = $ANO;
+        $params['semestre'] = $SEMESTRE;
+        $res = $att->getAllAtribuicoes($params, $sqlAdicional);
         $i = 1;
-        if ($resultado) {
-            while ($linha = mysql_fetch_array($resultado)) {
+        if ($res) {
+            foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-                if ($linha[5] != 0)
-                    $bimestre = "[" . $linha[5] . "º Bim]";
-                echo "<tr $cdif><td align='center'>$i</td>";
-                echo "<td><a target='_blank' href='".VIEW."/secretaria/relatorios/inc/diario.php?atribuicao=" . crip($linha[0]) . "'>$bimestre " . mostraTexto($linha[1]) . "</a></td>";
-                echo "<td align='left'>" . $prof->getProfessor($linha[0], '<br>', 1, 1) . "</td><td align=left>$linha[3]</td>";
-                $bloqueado = "";
-                $origem = "";
+                ?>
+                <tr <?= $cdif ?>>
+                    <td align='center'><?= $i ?></td>
+                    <td>
+                        <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= mostraTexto($reg['disciplina']).$reg['bimestre'].$reg['subturma'] ?></a>
+                    </td>
+                    <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
+                    <td align=left><?= $reg['turma'] ?></td>
+                    <td align='left'><?= $reg['origem'] ?></td>
 
-                if ($linha[6] != '0000-00-00 00:00:00' && $linha[4] > 0) {
-                    $origem = ($linha[4] * 24) . "h";
-                } else {
-                    if ($linha[8] == 1)
-                        $origem = "Coord";
-                    if ($linha[8] == 2)
-                        $origem = "Prof";
-                    if ($linha[8] == 3)
-                        $origem = "Secre";
-                    if ($linha[8] == 4)
-                        $origem = "SYS";
-                }
-                if (!$origem) $origem = 'Aberto';
-                echo "<td align='left'>$origem</td>";
-
-
-                if ($linha[6] != '0000-00-00 00:00:00' && $linha[4] < 0) {
-                    mysql_query("UPDATE Atribuicoes SET status=4,prazo='' WHERE codigo = " . $linha[0]);
-                    $linha[6] = '0000-00-00 00:00:00';
-                }
-
-                echo "<td align='center'>";
-                print "<input $bloqueado type='checkbox' id='campoPrazo' name='campoPrazo[]' value='" . $linha[0] . "' />";
-                echo "</td></tr>";
-
+                    <td align='center'>
+                        <input type='checkbox' id='campoPrazo' name='campoPrazo[]' value='<?= $reg['atribuicao'] ?>' />
+                    </td>
+                </tr>
+                <?php
                 $i++;
             }
-            print "</form>";
         }
         ?>
     </table>
-    </div>
     <?php
-// LISTAGEM DE PRAZOS PRORROGADOS NO SEMESTRE
-// inicializando as variáveis
+    // LISTAGEM DE PRAZOS PRORROGADOS NO SEMESTRE
+    $itensPorPagina = 4;
     $item = 1;
-    $itensPorPagina = 50;
-    $primeiro = 1;
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-    $ultimo = 1;
 
-// validando a página atual
-    if (!empty($_GET["item"])) {
+    if (isset($_GET['item']))
         $item = $_GET["item"];
-        $anterior = $item - $itensPorPagina;
-        $proximo = $item + $itensPorPagina;
-    }
 
-// validando a página anterior
-    if ($item - $itensPorPagina < 1)
-        $anterior = 1;
+    $res = $prazo->listPrazos($params, $sqlAdicional, $item, $itensPorPagina);
+    $totalRegistros = count($prazo->listPrazos($params, $sqlAdicional, null, null));
 
-// descobrindo a quantidade total de registros
-    $sql = "select COUNT(*)
-	    from PrazosDiarios l, Atribuicoes a, Turmas t, Disciplinas d, Cursos c, Professores p
-	    where l.atribuicao=a.codigo
-	    and t.curso=c.codigo
-	    and a.turma=t.codigo
-	    and a.disciplina=d.codigo
-      and p.atribuicao = a.codigo	    
-	    and t.ano=$ano
-	    and (t.semestre=$semestre OR t.semestre=0)
-            and dataConcessao IS NOT NULL
-	    $restricao GROUP BY l.codigo order by l.data desc";
-//    echo $sql;
-    $resultado = mysql_query($sql);
-    $linha = mysql_fetch_row($resultado);
-    $ultimo = $linha[0];
-
-// validando o próximo item
-    if ($proximo > $ultimo) {
-        $proximo = $item;
-        $ultimo = $item;
-    }
-
-// validando o último item
-    if ($ultimo % $itensPorPagina > 0)
-        $ultimo = $ultimo - ($ultimo % $itensPorPagina) + 1;
-
-    $sql = "select date_format(l.data, '%d/%m/%Y %H:%i'), d.nome, a.codigo, l.motivo
-	    from PrazosDiarios l, Atribuicoes a, Turmas t, Disciplinas d, Cursos c, Professores p
-	    where l.atribuicao=a.codigo
-	    and t.curso=c.codigo
-	    and a.turma=t.codigo
-	    and a.disciplina=d.codigo
-      and p.atribuicao = a.codigo	    
-	    and t.ano=$ano
-	    and (t.semestre=$semestre OR t.semestre=0)
-            and dataConcessao IS NOT NULL
-	    $restricao GROUP BY l.codigo order by l.data desc limit " . ($item - 1) . ",$itensPorPagina";
-//print $sql;
-    $SITENAV = $SITE . "?$lk";
-    include PATH . VIEW . '/navegacao.php';
+    $params['curso'] = crip($params['curso']);
+    $params['turma'] = crip($params['turma']);
+    $params['professor'] = crip($params['professor']);
+    $SITENAV = $SITE . '?' . mapURL($params);
+    require PATH . VIEW . '/paginacao.php';
     ?>
 
     <table id="listagem" border="0" align="center">
@@ -386,23 +207,24 @@ if (!empty($curso)) {
             <th width="150">Motivo</th>
         </tr>
         <?php
-        // efetuando a consulta para listagem
-        $resultado = mysql_query($sql);
         $i = $item;
-        while ($linha = mysql_fetch_array($resultado)) {
+        foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            echo "<tr $cdif><td align='center'>$i</td>"
-                    . "<td>$linha[0]</td>"
-                    . "<td>$linha[1]</td>"
-                    . "<td>".$prof->getProfessor($linha[2], '<br>', 1, 1)."</td>"
-                    . "<td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td>"
-                    . "</tr>";
+            ?>
+            <tr <?= $cdif ?>>
+                <td align='center'><?= $i ?></td>
+                <td><?= dataPTBR($reg['data']) ?></td>
+                <td><?= $reg['disciplina'] ?></td>
+                <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
+                <td>
+                    <a href='#' title='<?= $reg['motivo'] ?>'><?= abreviar($reg['motivo'], 25) ?></a>
+                </td>
+            </tr>
+            <?php
             $i++;
         }
-        mysql_close($conexao);
         ?>
     </table>
-
     <?php
 }
 ?>
@@ -422,53 +244,49 @@ if (!empty($curso)) {
     });
 
     $(document).ready(function() {
-        $('#fechar').focusin(function() {
-            $('#botao').val('fechar');
-        });
-        $('#liberar').focusin(function() {
-            $('#botao').val('liberar');
-        });
-
         function valida() {
-            turma = $('#campoTurma').val();
-            curso = $('#campoCurso').val();
-            bimestre = $('#campoBimestre').val();
-            professor = $('#campoProfessor').val();
-            $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre + '&professor=' + professor);
+            turma = $('#turma').val();
+            curso = $('#curso').val();
+            professor = $('#professor').val();
+            $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso + '&professor=' + professor);
         }
 
-        $('#campoTurma, #campoCurso, #campoBimestre, #campoProfessor').change(function() {
+        $('#turma, #curso, #professor').change(function() {
             valida();
         });
 
-        $('#form_padrao').on('submit', function(e) {
-            turma = $('#campoTurma').val();
-            bimestre = $('#campoBimestre').val();
-            professor = $('#campoProfessor').val();
+        $('#liberar').click(function() {
+            controle('liberou');
+        });
 
-            e.preventDefault();
-            if ($('#botao').val() == 'liberar') {
-                modo = 'Confirma a liberação temporária do prazo de gerenciamento do diário? \n\n Motivo:';
-                opcao = 'controlePrazo';
-            }
-            if ($('#botao').val() == 'fechar') {
-                modo = 'Confirma a fechar o diário? \n\n Motivo:';
-                opcao = 'controleDiario';
-            }
+        $('#fechar').click(function() {
+            controle('fechou');
+        });
 
-            jPrompt(modo, '', '<?php print $TITLE; ?>', function(r)
-            {
-                if (r) {
-                    r = encodeURI(r);
-                    var prazo = $.map($('input:checkbox:checked'), function(e, i) {
-                        return +e.value;
-                    });
-                    var curso = '<?php print $curso; ?>';
-                    $('#index').load('<?php print $SITE; ?>?opcao=' + opcao + '&prazo=' + prazo + '&curso=' + curso + '&turma=' + turma + '&bimestre=' + bimestre + '&valor1=' + r + '&professor=' + professor);
+        function controle(botao) {
+            turma = $('#turma').val();
+            professor = $('#professor').val();
+
+            if (botao == 'liberar')
+                var modo = 'Confirma a liberação temporária do prazo de gerenciamento do diário? \n\n Motivo:';
+
+            if (botao == 'fechar')
+                var modo = 'Confirma a fechar o diário? \n\n Motivo:';
+
+            $.Zebra_Dialog('<strong>' + modo + '</strong>', {
+                'type': 'prompt',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption, valor) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+                        $('#index').load('<?php print $SITE; ?>?opcao=controleDiario&curso=' + curso + '&turma=' + turma + '&motivo=' + valor + '&professor=' + professor + '&botao=' + botao + '&codigo=' + selected);
+                    }
                 }
-            }
-            );
+            });
         }
-        );
     });
 </script>

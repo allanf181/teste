@@ -29,7 +29,6 @@ $ADM = @mysql_result($resultado, 0, "adm");
 $SEC = @mysql_result($resultado, 0, "sec");
 $COORD = @mysql_result($resultado, 0, "coord");
 $LIMITE_DIARIO_PROF = @mysql_result($resultado, 0, "limiteAltDiarioProf");
-$LIMITE_AULA_PROF = @mysql_result($resultado, 0, "limiteInsAulaProf");
 $ALUNO = @mysql_result($resultado, 0, "aluno");
 $PROFESSOR = @mysql_result($resultado, 0, "prof");
 $VERSAO = @mysql_result($resultado, 0, "versao");

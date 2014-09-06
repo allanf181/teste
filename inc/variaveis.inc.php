@@ -35,7 +35,6 @@ if ($res = $instituicao->dadosInstituicao()) {
     $SEC = $res[0]['sec'];
     $COORD = $res[0]['coord'];
     $LIMITE_DIARIO_PROF = $res[0]['limiteAltDiarioProf'];
-    $LIMITE_AULA_PROF = $res[0]['limiteInsAulaProf'];
     $ALUNO = $res[0]['aluno'];
     $PROFESSOR = $res[0]['prof'];
     $ENVIOFOTO = $res[0]['envioFoto'];

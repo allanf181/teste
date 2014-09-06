@@ -161,17 +161,12 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
 <div class="cont_tab fundo_listagem" id="Dados3">
     <table align="left" width="100%">
-	<tr><td colspan="2"><b>Papel Professor</b></td></tr>
+	<tr><td colspan="2"><b>Prazo para Altera&ccedil;&atilde;o do Di&aacute;rio</b></td></tr>
    	<tr><td colspan="2"><hr></td></tr>
-     <tr><td valign="top">Altera&ccedil;&atilde;o do Di&aacute;rio: </td><td><input style="width: 50px" type="text" name="limiteAltDiarioProf" id="limiteAltDiarioProf" value="<?php echo $limiteAltDiarioProf; ?>" maxlength="3" />
-     	<br>Limite de dias para altera&ccedil;&atilde;o do di&aacute;rio (Ap&oacute;s data fim da atribui&ccedil;&atilde;o). <br>(Deixar 0 para desabilitar)</td></tr>
+     <tr><td valign="top">Quantidade de dias: </td><td><input style="width: 50px" type="text" name="limiteAltDiarioProf" id="limiteAltDiarioProf" value="<?php echo $limiteAltDiarioProf; ?>" maxlength="3" />
+     	<br>(Deixar 0 para desabilitar)</td></tr>
    	<tr><td colspan="2"><hr></td></tr>
-   	<tr><td colspan="2">Obs.: Definir a quantidade de dias n&atilde;o implica na liberac&atilde;o autom&aacute;tica ap&oacute;s vencimento do prazo. &Eacute; necess&aacute;rio liberar o di&aacute;rio para altera&ccedil;&atilde;o no menu "Prazos" e informar o motivo da libera&ccedil;&atilde;o.</td></tr>
-   	<tr><td colspan="2"><hr></td></tr>
-   	<tr><td colspan="2">&nbsp;</td></tr>
-     <tr><td valign="top">Inser&ccedil;&atilde;o de Aula: </td><td><input style="width: 50px" type="text" name="limiteInsAulaProf" id="limiteInsAulaProf" value="<?php echo $limiteInsAulaProf; ?>" maxlength="3" />
-     	<br>Limite de dias para inser&ccedil;&atilde;o de aula ap&oacute;s a data real da aula. <br>(Deixar 0 para desabilitar)</td></tr>
-   	<tr><td colspan="2"><hr></td></tr>
+   	<tr><td colspan="2">Limite de dias para altera&ccedil;&atilde;o do di&aacute;rio ap&oacute;s data fim da atribui&ccedil;&atilde;o ou inser&ccedil;&atilde;o de aula ap&oacute;s a data real da aula. <br><br>Definir a quantidade de dias n&atilde;o implica na liberac&atilde;o autom&aacute;tica ap&oacute;s vencimento do prazo. &Eacute; necess&aacute;rio liberar o di&aacute;rio para altera&ccedil;&atilde;o no menu "Prazos" e informar o motivo da libera&ccedil;&atilde;o.</td></tr>
     </table>
     <br><input type="submit" value="Salvar" id="salvar" />
 

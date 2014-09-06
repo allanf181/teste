@@ -58,58 +58,12 @@ if ($_GET["atribuicao"]) {
         <?php
         $atribuicao = dcrip($_GET["atribuicao"]);
 
-        $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF, $LIMITE_DIARIO_PROF);
+        $res = $att->getAtribuicao($atribuicao, $LIMITE_DIARIO_PROF);
         extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
 
-        if (!$bimestre && !$semestre)
-            $bimestre = 'ANUAL';
-        elseif ($bimestre && $semestre)
-            $bimestre .= 'º BIMESTRE';
-        elseif (!$bimestre && $semestre)
-            $bimestre = 'SEMESTRAL';
-
-        // CASO O LIMITE NÃO ESTEJA DESATIVADO
-        if ($LIMITE_DIARIO_PROF != 0) {
-            // Anulando o prazo se a dataFim está maior
-            $dataExpirou = false;
-            if ($prazoDiff && $prazoDiff <= 0 && $dataFimDiff >= 0) {
-                $params['codigo'] = crip($atribuicao);
-                $params['prazo'] = crip('NULL');
-                $params['status'] = crip(0);
-                $status = 0;
-                $prazo = null;
-                $att->insertOrUpdate($params);
-            } else {
-                // verificando se o prazo foi atingido.
-                $dataExpirou = false;
-                if ($status == 0 && (!$prazoDiff && $dataFimDiff < 0) || ($prazoDiff && $prazoDiff < 0)) {
-                    $params['codigo'] = crip($atribuicao);
-                    $params['status'] = crip(4);
-                    $att->insertOrUpdate($params);
-                    $status = 4;
-                    $dataExpirou = true;
-                }
-            }
-        } else {// SEM LIMITE CASO O FECHAMENTO NÂO FOR MANUAL
-            if ($status > 3)
-                $status = 0; 
-            $prazo = null;
-            $prazoDiff = -1;
-            $dataExpirou = false;
-
-            if ($diarioAberto < 0) { // diário ainda não começou
-                $dataExpirou = true;
-                $status = 100;
-            }
-        }
-        
-        if ($status != 0)
-            $dataExpirou = true;
-        $_SESSION['dataExpirou'] = $dataExpirou;
-
-        // Informa se o diário foi aberto
-        if ($prazoDiff > 0 && !$dataExpirou)
-            mensagem('INFO', 'PRAZO_DIARIO', $prazoFormat);
+        //INFORMA AS CONDICOES DO DIARIO
+        if ($info1)
+            mensagem('INFO', $info1, $info2);
 
         require CONTROLLER . "/aula.class.php";
         $aula = new Aulas();
@@ -119,35 +73,12 @@ if ($_GET["atribuicao"]) {
         $avaliacao = new Avaliacoes();
         $qdeAvaliacoes = $avaliacao->getQdeAvaliacoes($atribuicao);
 
-        // desabilita edição se o status for igual a 1 e informa se o prazo foi estendido.
-        if ($status > 0 || ($prazoFormat != '00:00 de 00/00/0000' && $prazoFormat != NULL)) {
-            if ($status == 1)
-                $info = "Este diário foi fechado pelo Coordenador!";
-            if ($status == 2)
-                $info = "Você já finalizou este diário!";
-            if ($status == 3)
-                $info = "Este diário foi fechado pela Secretaria!";
-            if ($status == 4)
-                $info = "Este diário foi fechado pelo Sistema pois o prazo para finalização do diário foi atingido!";
-            if ($status == 100)
-                $info = "Esse di&aacute;rio ainda n&atilde;o come&ccedil;ou!";
-            if ($prazo && !$status)
-                $info = "Seu prazo para altera&ccedil;&atilde;o do di&aacute;rio foi estentido at&eacute; &agrave;s $prazoFormat";
+        if ($status == 4) {
+            $pergunta = $QUESTION_DIARIO1;
         }
-        else {
-            if ($dataExpirou || ($CH && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima'] && $status == 0 )) { // está desbloqueado e já tem a quantidade de aulas previstas e pelo menos uma avaliação ou a data final do período foi atingida
-                $pergunta = "Sr. Professor:<br />";
 
-                if ($dataExpirou) {
-                    $pergunta.= "A data final do período letivo ($dataFimFormat) foi atingida. <br /> <br />";
-                    $pergunta.="Atenção: O seu diário foi bloqueado e somente o coordenador poderá desfazer esta operação.";
-                    $pergunta.="<br>Deseja tentar finalizar seu di&aacute;rio, caso j&aacute; tenha conclu&iacute;do a digita&ccedil;&atilde;o de aulas a notas?";
-                } else {
-                    $pergunta.= "O número de aulas do diário está completo e avaliações foram aplicadas. <br /> <br />";
-                    $pergunta.="<b>Deseja finalizar a digitação do diário e efetuar a entrega à secretaria?</b> <br /> <br />";
-                    $pergunte.="Atenção: O seu diário será bloqueado e somente o coordenador poderá desfazer esta operação.";
-                }
-            }
+        if (!$status && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima']) {
+            $pergunta = $QUESTION_DIARIO2;
         }
         ?>
         <h2><?php print abreviar("$disciplina [$subturma]: $turma/$curso", 150); ?></h2>
@@ -157,7 +88,7 @@ if ($_GET["atribuicao"]) {
             </a>
         </div>
         <div>
-            <h2 id='titulo_disciplina_modalidade'><?= $bimestre ?></h2>
+            <h2 id='titulo_disciplina_modalidade'><?= $bimestreNome ?></h2>
         </div>
         <br />
         <tr valign="top" align='center'>
@@ -166,7 +97,7 @@ if ($_GET["atribuicao"]) {
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/diario.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
             <td valign="top" width="90"><a class='nav professores_item' id='listaChamada' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/chamada.php?atribuicao=<?php print crip($atribuicao); ?>'><img style='width: 80px' src='<?php print IMAGES; ?>/chamada.png' /><br />Lista de Chamada</a></td>
             <?php
-            if ($bimestre == "SEMESTRAL" || $bimestre == "1º BIMESTRE" || $bimestre == "ANUAL") {
+            if ($bimestreNome == "SEMESTRAL" || $bimestreNome == "1º BIMESTRE" || $bimestreNome == "ANUAL") {
                 ?>
                 <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/plano.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
                 <?php
@@ -202,14 +133,14 @@ if ($_GET["atribuicao"]) {
                     <font size="1"><b>Professores da disciplina:</b> <?= $professor->getProfessor($atribuicao, '', 1, 1) ?></font>
                 </td>
             </tr>
-            <tr>
-                <td colspan="2">
-                    <hr>
-                </td>
-            </tr>
             <?php
-            if (!$dataExpirou) {
+            if (!$status || $status == 4) {
                 ?>
+                <tr>
+                    <td colspan="2">
+                        <hr>
+                    </td>
+                </tr>            
                 <tr>
                     <td colspan="2"><font size="1">Para esse di&aacute;rio ser finalizado, &eacute; necess&aacute;rio que a quantidade de aulas dadas seja maior ou igual a carga hor&aacute;ria e atingido o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es.
                         Caso deseje finalizar o di&aacute;rio manualmente, <a href='#' title='Finalizar Di&aacute;rio' class='finalizar' id='2'>clique aqui</a>
@@ -246,7 +177,9 @@ if ($_GET["atribuicao"]) {
                 </td>
             </tr>            
             <?php
-            $res = $prazoDiario->listPrazos($atribuicao);
+            $sqlAdicional = ' AND a.codigo = :atribuicao ';
+            $params = array('atribuicao' => $atribuicao, 'ano' => $ANO, 'semestre' => $SEMESTRE);
+            $res = $prazoDiario->listPrazos($params, $sqlAdicional);
             if ($res) {
                 ?>
                 <tr>
@@ -263,6 +196,10 @@ if ($_GET["atribuicao"]) {
                             foreach ($res as $reg) {
                                 $reg['data'] = dataPTBR($reg['data']);
                                 $title = $reg['motivo'];
+
+                                if (is_numeric(substr($reg['dataConcessao'], 0,4)))
+                                    $reg['dataConcessao'] = dataPTBR($reg['dataConcessao']);
+
                                 if (strlen($reg['motivo']) > 70)
                                     $reg['motivo'] = abreviar($reg['motivo'], 70);
                                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
@@ -271,7 +208,7 @@ if ($_GET["atribuicao"]) {
                                     <td align='center'><?= $i ?></td>
                                     <td><?= $reg['data'] ?></td>
                                     <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
-                                    <td><?= dataPTBR($reg['dataConcessao']) ?></td>
+                                    <td><?= $reg['dataConcessao'] ?></td>
                                     <?php
                                     $i--;
                                 }
@@ -291,7 +228,6 @@ if ($_GET["atribuicao"]) {
 ?>
 
 <script>
-<?php if ($info) print "info();" ?>
 <?php if ($pergunta) print "pergunta();" ?>
 
     $(document).ready(function() {
@@ -299,13 +235,6 @@ if ($_GET["atribuicao"]) {
             pergunta();
         });
     });
-
-    function info() {
-        $.Zebra_Dialog('<strong><?php print $info; ?></strong>', {
-            'type': 'information',
-            'title': '<?php print $SITE_TITLE; ?>'
-        });
-    }
 
     $("#unlock").click(function() {
         $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
@@ -321,7 +250,7 @@ if ($_GET["atribuicao"]) {
     });
 
     function pergunta() {
-        $.Zebra_Dialog('<strong><b>Deseja finalizar a digitação do diário e efetuar a entrega à secretaria?</b> <br /> <br />Atenção: O seu diário será bloqueado e somente o coordenador poderá desfazer esta operação.</strong>', {
+        $.Zebra_Dialog('<strong><?= $pergunta ?></strong>', {
             'type': 'question',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],

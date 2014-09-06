@@ -83,9 +83,9 @@ $dadosAula = $aulaFreq->getAula($aula);
                 ?>
                 <tr <?= $cdif ?> ><td align='center'><?= $reg['prontuario'] ?></td>
                     <td>
-                        <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot' title='<?= mostraTexto($reg['aluno']) ?>'>
-                            <img class='foto_lista' alt='Embedded Image' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' /></a>
-                        <a class='nav' href="javascript:$('#professor').load('<?= VIEW ?>/aluno/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>'); void(0);"><?= mostraTexto($reg['aluno']) ?></a>
+                        <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot'>
+                            <img class='foto_lista' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' /></a>
+                        <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/aluno/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>'); void(0);"><?= mostraTexto($reg['aluno']) ?></a>
                     </td>
                     <?php
                     $frequencia = $freq->getFrequencia($reg['matricula'], $atribuicao);

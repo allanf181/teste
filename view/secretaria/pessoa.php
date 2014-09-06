@@ -24,8 +24,9 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     unset($_POST['estado']);
     unset($_POST['estadoNaturalidade']);
 
-    if (!$_POST['senha']) unset($_POST['senha']);
-    
+    if (!$_POST['senha'])
+        unset($_POST['senha']);
+
     $tipo = $_POST['tipo'];
     unset($_POST['tipo']);
 
@@ -81,26 +82,29 @@ if ($_GET["opcao"] == 'validacao') {
             <tr><th align="center" width="40">#</th><th align="left">Aluno</th><th align="left">Foto</th>
                 <th width="40" align="center"><input type='checkbox' checked id='select-all' name='select-all' class='campoTodos' value='' /></th></tr>
             <?php
-            foreach ($pessoa->countBloqPic() as $reg) {
-                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-                ?>
-                <tr <?= $cdif ?>>
-                    <td align='center'><?= $i ?></td>
-                    <td align=left><?= $reg['nome'] ?></td>
-                    <td align=left>
-                        <img alt="foto" width="100" src="<?= INC ?>/file.inc.php?type=pic&force=<?= crip('1') ?>&id=<?= crip($reg['codigo']) ?>" />
-                    </td>
-                    <?php
-                    if ($reg['bloqueioFoto']) {
-                        $bloqueado = 'checked';
-                    }
+            $res = $pessoa->countBloqPic();
+            if ($res[0]['total']) {
+                foreach ($res as $reg) {
+                    $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                     ?>
-                    <td align='center'>
-                        <input <?= $bloqueado ?> type='checkbox' id='bloqueioFoto' name='bloqueioFoto[]' value='<?= $reg['codigo'] ?>"' />
-                    </td>
-                </tr>
-                <?php
-                $i++;
+                    <tr <?= $cdif ?>>
+                        <td align='center'><?= $i ?></td>
+                        <td align=left><?= $reg['nome'] ?></td>
+                        <td align=left>
+                            <img alt="foto" width="100" src="<?= INC ?>/file.inc.php?type=pic&force=<?= crip('1') ?>&id=<?= crip($reg['codigo']) ?>" />
+                        </td>
+                        <?php
+                        if ($reg['bloqueioFoto']) {
+                            $bloqueado = 'checked';
+                        }
+                        ?>
+                        <td align='center'>
+                            <input <?= $bloqueado ?> type='checkbox' id='bloqueioFoto' name='bloqueioFoto[]' value='<?= $reg['codigo'] ?>"' />
+                        </td>
+                    </tr>
+                    <?php
+                    $i++;
+                }
             }
             ?>
         </table>
@@ -415,7 +419,7 @@ if (dcrip($_GET["nome"])) {
         <?php
         if ($codigo) {
             ?>
-            <img id="divFoto" style="width: 200px; height: 200px" src='<?=INC?>/file.inc.php?type=pic&id=<?=crip($codigo)?>&timestamp=<?=time()?>' />
+            <img id="divFoto" style="width: 200px; height: 200px" src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($codigo) ?>&timestamp=<?= time() ?>' />
             <?php
         }
         ?>
@@ -500,7 +504,7 @@ require PATH . VIEW . '/paginacao.php';
             <td align='left'><?= $reg['prontuario'] ?></td>
             <td>
                 <div <?= $output ?> style='float: left; margin-right: 5px'>
-                    <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' class='screenshot' title='<?= mostraTexto($reg['nome']) ?>'>
+                    <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' class='screenshot'>
                         <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' />
                     </a>
                 </div><?= mostraTexto($reg['nome']) ?>

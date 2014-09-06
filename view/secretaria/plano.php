@@ -49,16 +49,22 @@ if ($_GET["opcao"] == 'controlePlano') {
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
-if (dcrip($_GET["turma"])) {
-    $turma = dcrip($_GET["turma"]);
-    $params['turma'] = $turma;
-    $sqlAdicional = ' AND t.codigo = :turma ';
-}
-
 if (dcrip($_GET["curso"])) {
     $curso = dcrip($_GET["curso"]);
     $params['curso'] = $curso;
     $sqlAdicional .= ' AND c.codigo = :curso ';
+
+    if ($_SESSION['regAnterior'] && $curso != $_SESSION['regAnterior']) {
+        unset($_GET["turma"]);
+        unset($_GET["professor"]);
+    }
+    $_SESSION['regAnterior'] = $curso;    
+}
+
+if (dcrip($_GET["turma"])) {
+    $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= ' AND t.codigo = :turma ';
 }
 
 if (dcrip($_GET["professor"])) {

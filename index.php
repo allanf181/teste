@@ -219,14 +219,14 @@ if (isset($_SESSION["loginTipo"])) {
             // MENU PROFESSOR
             require CONTROLLER . "/atribuicao.class.php";
             $disc = new Atribuicoes();
-            $disc = $disc->listAtribuicoes($_SESSION['loginCodigo'], 'professor', $ANO, 'menu');
+            $disc = $disc->getAtribuicoesFromPapel($_SESSION['loginCodigo'], 'professor', $ANO, 'menu');
             $menuDiferencial='professor';
         }
         if (in_array($ALUNO, $_SESSION["loginTipo"])) {
           // MENU ALUNO
             require CONTROLLER . "/atribuicao.class.php";
             $disc = new Atribuicoes();
-            $disc = $disc->listAtribuicoes($_SESSION['loginCodigo'], 'aluno', $ANO, 'menu');
+            $disc = $disc->getAtribuicoesFromPapel($_SESSION['loginCodigo'], 'aluno', $ANO, 'menu');
             $menuDiferencial='aluno';
         }
         if ($menuDiferencial) {

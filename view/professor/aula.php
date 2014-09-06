@@ -168,11 +168,11 @@ if ($_GET['opcao'] == '') {
     <?php
 }
 
-if ($LIMITE_AULA_PROF != 0) {
+if ($LIMITE_DIARIO_PROF != 0) {
     // DATA DE INICIO E FIM DA ATRIBUICAO PARA RESTRINGIR O CALENDARIO
     require CONTROLLER . "/atribuicao.class.php";
     $att = new Atribuicoes();
-    $res = $att->getAtribuicao($atribuicao, $LIMITE_AULA_PROF, $LIMITE_DIARIO_PROF);
+    $res = $att->getAtribuicao($atribuicao, $LIMITE_DIARIO_PROF);
 }
 ?>
 

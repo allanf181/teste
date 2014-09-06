@@ -28,7 +28,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
 
-$res = $att->getAtribuicao(dcrip($_GET['atribuicao']), $LIMITE_AULA_PROF, $LIMITE_DIARIO_PROF);
+$res = $att->getAtribuicao(dcrip($_GET['atribuicao']), $LIMITE_DIARIO_PROF);
 extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
 
 ?>

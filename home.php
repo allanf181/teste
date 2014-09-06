@@ -31,6 +31,9 @@ require SESSAO;
                 require CONTROLLER . "/planoEnsino.class.php";
                 $plano = new PlanosEnsino();
 
+                require CONTROLLER . "/professor.class.php";
+                $prof = new Professores();
+
                 // REMOVER FOTO
                 if (isset($_GET['removerFoto']))
                     $pessoa->removeFoto($user);
@@ -104,7 +107,7 @@ require SESSAO;
                 }
             }
 
-// Verifica se o aluno preencheu o sócioEconômico
+            // Verifica se o aluno preencheu o sócioEconômico
             if (in_array($ALUNO, $_SESSION["loginTipo"])) {
                 require CONTROLLER . "/aluno.class.php";
                 $aluno = new Alunos();
@@ -162,7 +165,7 @@ require SESSAO;
             }
 
 
-// AVISOS PARA PROFESSOR
+            // AVISOS PARA PROFESSOR
             if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
 
                 if (!$userDados[0]['lattes']) {
@@ -189,13 +192,16 @@ require SESSAO;
                 }
 
                 // Verificando se há correções para o Plano de Ensino.
-                $res = $plano->hasChangePlano($user);
-
+                $sqlAdicional =  "AND pe.valido = '0000-00-00 00:00:00' "
+                                . "AND (pe.solicitacao IS NOT NULL AND pe.solicitacao <> \"\") "
+                                . "AND p.professor = :cod ";
+                $params = array('cod' => $user);
+                $res = $plano->listPlanoEnsino($params, $sqlAdicional);  
                 if ($res) {
                     foreach ($res as $reg) {
                         ?>
-                        <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?php print $reg['PlanoSolicitante']; ?>, solicitou corre&ccedil;&atilde;o em seu Plano de Ensino de <?php print $reg['Disc']; ?>: <br><?php print $reg['PlanoSolicitacao']; ?></font>
-                        <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/professor/professor.php?atribuicao=<?php print crip($reg['CodAtribuicao']); ?>'); void(0);">Clique aqui para corrigir</a>
+                        <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?php print $reg['solicitante']; ?>, solicitou corre&ccedil;&atilde;o em seu Plano de Ensino de <?php print $reg['disciplina']; ?>: <br><?php print $reg['solicitacao']; ?></font>
+                        <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/professor/professor.php?atribuicao=<?php print crip($reg['atribuicao']); ?>'); void(0);">Clique aqui para corrigir</a>
                         <?php
                     }
                 }
@@ -205,7 +211,7 @@ require SESSAO;
         </td>
 
         <?php
-// SISTEMA DE AVISOS
+        // SISTEMA DE AVISOS
         require CONTROLLER . "/aviso.class.php";
         $aviso = new Avisos();
         $res = $aviso->getAvisoGeral($user);
@@ -242,9 +248,15 @@ require SESSAO;
 <?php
 // INFORMES PARA COORDENADORES
 if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $_SESSION['regAnterior']=null;
+    
     require CONTROLLER . "/prazoDiario.class.php";
     $prazoDiario = new PrazosDiarios();
-    $res = $prazoDiario->listPrazosToCoord($user, $ANO, $SEMESTRE);
+    $sqlAdicional = " AND pd.dataConcessao IS NULL "
+            . "AND c.codigo IN (SELECT curso "
+            . "FROM Coordenadores WHERE coordenador = :coordenador)";
+    $params = array('coordenador' => $user, 'ano' => $ANO, 'semestre' => $SEMESTRE);
+    $res = $prazoDiario->listPrazos($params, $sqlAdicional);
     if ($res) {
         ?>
         <br><br><table id="listagem">
@@ -254,6 +266,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 <th align='center' width='80'>Disciplina</th>
                 <th align='center' width='80'>Motivo</th>
                 <th align='center' width='80'>Data</th>
+                <th align='center' width='10'>&nbsp;</th>
             </tr>
             <?php
             $i = $item;
@@ -264,12 +277,13 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                     $reg['motivo'] = abreviar($reg['motivo'], 70);
                 ?>
                 <tr <?= $cdif ?>>
-                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['turma']) ?>'); void(0);" title='Clique aqui para liberar'>
-                            <?= $reg['professor'] ?></a>
-                    </td>
+                    <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
                     <td><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
                     <td><?= dataPTBR($reg['data']) ?></td>
+                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['turma']) ?>&professor=<?= crip($reg['codProfessor']) ?>'); void(0);" title='Clique aqui para liberar'>
+                            Liberar</a>
+                    </td>                    
                 </tr>
                 <?php
                 $i++;
@@ -279,22 +293,35 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         <?php
     }
 
-    $res = $plano->listChangePlano($user, $ANO, $SEMESTRE);
+    $sqlAdicional = "AND t.ano = :ano "
+            . "AND (t.semestre=:sem OR t.semestre=0)"
+            . "AND pe.finalizado <> '0000-00-00 00:00:00' "
+            . "AND pe.valido = '0000-00-00 00:00:00' "
+            . "AND c.codigo IN (SELECT curso FROM Coordenadores WHERE coordenador = :cod) ";
+    $params = array('ano'=>$ANO, 'sem'=>$SEMESTRE, 'cod'=>$user);
+    $res = $plano->listPlanoEnsino($params, $sqlAdicional);
     if ($res) {
         ?>
         <br><br><table id="listagem">
             <caption>Lista de Professores que aguardam por valida&ccedil;&atilde;o do Plano de Ensino.</caption>
-            <tr><th width='220'>Nome</th><th align='center' width='80'>Disciplina</th></tr>
+            <tr>
+                <th width='220'>Nome</th>
+                <th align='center' width='80'>Disciplina</th>
+                <th align='center' width='10'>&nbsp;</th>
+            </tr>
             <?php
             $i = $item;
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
-                <tr <?=$cdif?>>
-                    <td><a href="javascript:$('#index').load('<?=VIEW?>/secretaria/plano.php?curso=<?=crip($reg['codCurso'])?>&turma=<?= crip($reg['turma']) ?>'); void(0);" title='Clique aqui para validar'>
-                            <?=$reg['Professor'] ?></a>
+                <tr <?= $cdif ?>>
+                    <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
+                    <td><?= $reg['disciplina'].$reg['subturma'] ?></td>
+                    <td>
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/plano.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codProfessor']) ?>'); void(0);" title='Clique aqui para validar'>
+                            Validar
+                        </a>
                     </td>
-                    <td><?=$reg['Disciplina']?></td>
                 </tr>
                 <?php
                 $i++;

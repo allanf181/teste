@@ -60,13 +60,17 @@ require SESSAO;
 
 <br>
 <br>
-<!--<b>Vers&atilde;o 1.407</b>
+<b>Vers&atilde;o 1.407</b>
 <br>
-<br> - Problemas com notas/avaliações - chamado #155
-<br> - Problema de sincronização com o Nambei - #151
-<br> - Reestruturação de código dos Planos de Ensino
+<br> - Problemas com notas/avalia&ccedil;&otilde;es - chamado #155
+<br> - Problema de sincroniza&ccedil;&atilde;o com o Nambei - #151
+<br> - Reestrutura&ccedil;&atilde;o de c&oacute;digo - Planos de Ensino
+<br> - Reestrutura&ccedil;&atilde;o de Secretaria/Socioecon&ocirc;mico
+<br> - Reestrutura&ccedil;&atilde;o de Limites em Institui&ccedil;&otilde;es.
+<br> - Atendimento do Professor realocado para o menu Relat&oacute;rios.
+<br> - Corrigido problema do chamado #157
 <hr>
--->
+<br>
 <b>Vers&atilde;o 1.406</b>
 <br>
 <br> - Unifica&ccedil;&atilde;o dos Prazos de Aulas e Di&aacute;rios - chamado #117

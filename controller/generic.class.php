@@ -10,7 +10,7 @@ Abstract class Generic {
     }
 
     // MÉTODO PARA INSERÇÃO DE OBJETO
-    public function insertOrUpdate($params) {
+    public function insertOrUpdate($params, $table = null) {
         $bd = new database();
 
         // decriptografa elementos que possam
@@ -38,7 +38,9 @@ Abstract class Generic {
         $COL = implode(',', $COL);
         $UP = implode(',', $UP);
 
-        $table = get_called_class();
+        if (!$table)
+            $table = get_called_class();
+        
         if (!$params['codigo']) {
             $sql = "INSERT INTO $table ($COL) VALUES ($INS)";
             unset($params['codigo']);
