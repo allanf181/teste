@@ -12,129 +12,115 @@ require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
 require SESSAO;
-
 ?>
-
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
-// inicializando as vari�veis do formul�rio
-$data=date("d/m/Y");
-$filtro="";
-$filtragem = "";
-if ($_GET["data"] != '')
-    $data = $_GET["data"];
-if (($_GET["filtro"]) != ''){
-    $filtro = $_GET["filtro"];
 
-    $filtragem = "and ((l.url like '%$filtro%') or (p.nome like '%$filtro%'))";
+require CONTROLLER . "/log.class.php";
+$log = new Logs();
+
+if ($_GET["data"]) {
+    $data = $_GET["data"];
+    $params['data'] = dataMysql($data);
+    $sqlAdicional .= " AND STR_TO_DATE( l.data, '%Y-%m-%d' ) = :data ";
 }
 
-print "<script>\n";
-print "    $('#form_padrao').html5form({ \n";
-print "        method : 'POST', \n";
-print "        action : '$SITE', \n";
-print "        responseDiv : '#index', \n";
-print "        colorOn: '#000', \n";
-print "        colorOff: '#999', \n";
-print "        messages: 'br' \n";
-print "    }) \n";
-print "</script>\n";
-
-print "<div id=\"html5form\" class=\"main\">\n";
-print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
-
+if ($_GET["filtro"]) {
+    $filtro = $_GET["filtro"];
+    $params['filtro'] = '%'.$filtro.'%';
+    $sqlAdicional .= " AND ((l.url LIKE :filtro) OR (p.nome LIKE :filtro)) ";
+}
 ?>
-    <table align="center" width="100%" id="form">
-        <tr><td align="right" style="width: 100px">Data: </td><td><input value="<?php echo $data; ?>" type="text" name="data" id="data" onChange="$('#index').load('<?php print $SITE; ?>?filtro=<?php echo $filtro; ?>&data=' + this.value);"></td></tr>
-        <tr><td align="right">Filtro: </td><td><input value="<?php echo $filtro; ?>" type="text" value="<?php echo $filtro; ?>" name=filtro" id=filtro" onblur="$('#index').load('<?php print $SITE; ?>?data=<?php echo $data; ?>&filtro=' + encodeURIComponent(this.value));" />
-        <a href="#" title="Buscar"><img class="botao" style="width:15px;height:15px;" src='<?php print ICONS; ?>/sync.png' id="atualizaData" /></a>
-        &nbsp;&nbsp;<a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td>
-	</tr>
-    </table>
-</form>
+<script>
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?= $SITE ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
+</script>
 
+<div id="html5form" class="main">
+    <form id="form_padrao">
+        <table align="center" width="100%" id="form">
+            <tr>
+                <td align="right" style="width: 100px">Data: </td>
+                <td>
+                    <input value="<?php echo $data; ?>" type="text" name="data" id="data" onChange="$('#index').load('<?php print $SITE; ?>?filtro=<?php echo $filtro; ?>&data=' + this.value);">
+                </td>
+            </tr>
+            <tr>
+                <td align="right">Filtro: </td>
+                <td>
+                    <input value="<?php echo $filtro; ?>" type="text" value="<?php echo $filtro; ?>" name=filtro" id=filtro" onblur="$('#index').load('<?php print $SITE; ?>?data=<?php echo $data; ?>&filtro=' + encodeURIComponent(this.value));" />
+                    <a href="#" title="Buscar"><img class="botao" style="width:15px;height:15px;" src='<?php print ICONS; ?>/sync.png' id="atualizaData" /></a>
+                    &nbsp;&nbsp;<a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
 <?php
-    // inicializando as vari�veis
-    $item = 1;
-    $itensPorPagina = 100;
-    $primeiro = 1;
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-    $ultimo = 1;
+// PAGINACAO
+$itensPorPagina = 20;
+$item = 1;
+$ordem = '';
 
-    // validando a p�gina atual
-    if (!empty($_GET["item"])){
-        $item = $_GET["item"];
-        $anterior = $item - $itensPorPagina;
-        $proximo = $item + $itensPorPagina;
-    }
+if (isset($_GET['item']))
+    $item = $_GET["item"];
 
-    // validando a p�gina anterior
-    if ($item - $itensPorPagina < 1)
-        $anterior = 1;
+$sqlAdicional .= " AND origem  LIKE 'CRON%' ORDER BY l.data DESC ";
+$res = $log->listLogs($params, $sqlAdicional, $item, $itensPorPagina);
+$totalRegistros = count($log->listLogs($params, $sqlAdicional));
 
-	$SITENAV = $SITE."?data=$data&filtro=$filtro";
+if ($params['data'])
+    $params['data'] = dataPTBR($params['data']);
 
-	$data = dataMysql($data);
-    // descobrindo a quantidade total de registros
-    $sql = "SELECT COUNT( * ) 
-				FROM Logs l, Pessoas p
-				WHERE l.pessoa = p.codigo AND origem NOT LIKE 'CRON%'
-				AND STR_TO_DATE( l.data, '%Y-%m-%d' ) = '$data' $filtragem
-				ORDER BY l.data, l.codigo DESC";
-    $resultado = mysql_query($sql);
-    $linha = mysql_fetch_row($resultado);
-    $ultimo = $linha[0];
-    
-    // validando o pr�ximo item
-    if ($proximo > $ultimo){
-        $proximo = $item;
-        $ultimo = $item;
-    }
-    
-    // validando o �ltimo item
-    if ($ultimo % $itensPorPagina > 0)
-        $ultimo=$ultimo-($ultimo % $itensPorPagina)+1;    
- 
-	require(PATH.VIEW.'/navegacao.php'); ?>
+$params['filtro'] = urlencode($filtro);
 
-	<table id="listagem" border="0" align="center">
-    <tr><th align="center">URL</th><th style="width: 20%">Data</th><th width="100" style="width: 20%">Origem</th><th width="100" style="width: 20%">Pessoa</th></tr>
-    <?php
-    // efetuando a consulta para listagem
-    $sql = "SELECT l.codigo, l.url, date_format(l.data, '%d/%m/%Y %H:%i:%s'), p.codigo, p.nome, l.origem
-    			FROM Logs l, Pessoas p
-				WHERE l.pessoa = p.codigo AND origem NOT LIKE 'CRON%'
-				AND STR_TO_DATE( l.data, '%Y-%m-%d' ) = '$data' $filtragem
-		        ORDER BY l.data, l.codigo DESC limit ". ($item - 1) . ",$itensPorPagina";
-    //echo $sql;
-    $resultado = mysql_query($sql);
-    $i=0;
-    while ($linha = mysql_fetch_array($resultado)) {
-        $i%2==0 ? $cdif="class='cdif'" : $cdif="";
-        echo "<tr $cdif><td>$linha[1]</td><td align='left'>$linha[2]</td><td align='left'>$linha[5]</td><td align='left'>[$linha[3]]$linha[4]</td></tr>";
-        $i++;
-    }
-    mysql_close($conexao);
-    ?>
+$SITENAV = $SITE . "?" . mapURL($params);
+
+require PATH . VIEW . '/paginacao.php';
+?>
+
+<table id="listagem" border="0" align="center">
+    <tr>
+        <th align="center">URL</th>
+        <th style="width: 20%">Data</th>
+        <th width="100" style="width: 20%">Origem</th>
+        <th width="100" style="width: 20%">Pessoa</th>
+    </tr>
+            <?php
+            $i = 0;
+            foreach($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                ?>
+                <tr <?=$cdif?>>
+                    <td align='left'><?= $reg['url'] ?></td>
+                    <td align='left'><?= $reg['data'] ?></td>
+                    <td align='left'><?= $reg['origem'] ?></td>
+                    <td align='left'><?= $reg['pessoa'] ?></td>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
 </table>
 
-<?php 	require(PATH.VIEW.'/navegacao.php'); ?>
-
- 
 <script>
-$(document).ready(function(){
-	$("#data").datepicker({
-	    dateFormat: 'dd/mm/yy',
-	    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-	    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-	    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-	    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-	    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-	    nextText: 'Próximo',
-	    prevText: 'Anterior'
-	});
-});
+    $(document).ready(function() {
+        $("#data").datepicker({
+            dateFormat: 'dd/mm/yy',
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            nextText: 'Próximo',
+            prevText: 'Anterior'
+        });
+    });
 </script>

@@ -4,6 +4,35 @@ if(!class_exists('Generic'))
 
 class Logs extends Generic {
 
+    // USADO POR: ADMIN/LOGS.PHP
+    public function listLogs($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
+        $bd = new database();
+
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina";
+        
+        $sql = "SELECT l.codigo, l.url, 
+                    date_format(l.data, '%d/%m/%Y %H:%i:%s') as data, 
+                    p.codigo, p.nome as pessoa, l.origem
+                    FROM Logs l, Pessoas p
+                    WHERE l.pessoa = p.codigo ";
+        
+        $sql .= $sqlAdicional;
+        
+        $sql .= $nav;
+        
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res)
+        {
+            return $res;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
     // USADO POR: INC/HOME.PHP
     // Verifica se o CRON está sendo utilizado.
     public function hasCronActive() {

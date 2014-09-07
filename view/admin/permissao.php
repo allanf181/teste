@@ -12,8 +12,9 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-if ($_POST["opcao"] == 'InsertOrUpdate') {
+if ($_POST["opcao"] == 'Salvar') {
     unset($_POST['opcao']);
+    unset($_POST['tipoCopia']);
     $perms = $_POST["permissao"];
     $nome = $_POST["nome"];
     $menu = $_POST["menu"];
@@ -37,7 +38,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $ret['RESULTADO'] = '1';
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 
-    if (in_array(dcrip($_POST["tipo"]), $_SESSION["loginTipo"])) {
+    if (in_array(dcrip($_POST["codigo"]), $_SESSION["loginTipo"])) {
         print "<script> reload(); </script>\n";
     }
 
@@ -46,7 +47,14 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 
 
 if ($_POST["opcao"] == 'Copiar') {
+    $_POST['codigo'] = $_POST['tipo'];
+    $_POST['tipo'] = $_POST['tipoCopia'];
+    unset($_POST['tipoCopia']);
     unset($_POST['opcao']);
+    unset($_POST['permissao']);
+    unset($_POST['menu']);
+    unset($_POST['nome']);
+    
     $ret = $permissao->copyTipo($_POST);
     $ret['TIPO'] = 'TRUE_COPY_PERMISSAO';
     $ret['STATUS'] = 'OK';
@@ -59,10 +67,9 @@ if ($_POST["opcao"] == 'Copiar') {
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
-$nome = "";
-$tipo = "";
-if (isset($_GET["tipo"]))
-    $codigo = $_GET["tipo"];
+if (dcrip($_GET["tipo"]))
+    $tipo = $_GET["tipo"];
+
 ?>
 <script>
     $('#form_padrao').html5form({
@@ -77,34 +84,70 @@ if (isset($_GET["tipo"]))
 
 <div id="html5form" class="main">
     <form id="form_padrao">
-        <table align="center" id="form" width="100%">
-            <tr><td align="right" style="width: 100px">Tipo: </td><td>
-                    <select name="tipo" id="tipo" value="<?= $tipo ?>" onChange="$('#index').load('<?= $SITE ?>?tipo=' + this.value);">
+        <table align="center" border="0" id="form" width="100%">
+            <tr>
+                <td colspan="2" align="left" style="width: 100px">Tipo: 
+                    <select name="tipo" id="tipo">
                         <option></option>
                         <?php
                         require CONTROLLER . '/tipo.class.php';
-                        $tipo = new Tipos();
-                        $res = $tipo->listRegistros(null, null, null, 'ORDER BY nome');
+                        $tp = new Tipos();
+                        $res = $tp->listRegistros(null, null, null, 'ORDER BY nome');
                         foreach ($res as $reg) {
                             $selected = "";
-                            if ($reg['codigo'] == dcrip($codigo))
+                            if ($reg['codigo'] == dcrip($tipo))
                                 $selected = "selected";
                             echo "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
                         }
                         ?>
                     </select>
-                </td><td>
-                    <?php if ($codigo) {
+                </td>
+                <td>
+                    <?php if ($tipo) {
                         ?>
-                        <a href='#' title='Copiar' class='item-copiar' id='<?= $codigo ?>'><img class='botao' src='<?= ICONS ?>/copiar.gif' /></a>
+                        <a href='#' title='Copiar' class='item-copiar'><img class='botao' src='<?= ICONS ?>/copiar.gif' /></a>
                         <?php
                     }
                     ?>
-                </td></tr>
-            <tr><td align="right"></td><td>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div id='showCopia'>
+                        <br /><table id='listagem' style="width:400px; border: 1px solid black;">
+                            <tr>
+                                <td colspan="2" align="right">
+                                    <a href="#" onClick="hide('showCopia');">Cancelar</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Copiar as permiss&otilde;es de:</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select name="tipoCopia" id="tipoCopia">
+                                        <?php
+                                        foreach ($res as $reg) {
+                                            echo "<option value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <input type="submit" value="Copiar" id='Copiar' name='Copiar' />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>                
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
                     <?php
-                    if ($codigo) {
-                        $perms = $permissao->listaPermissoes(array(dcrip($codigo)), 'permissao');
+                    if ($tipo) {
+                        $perms = $permissao->listaPermissoes(array(dcrip($tipo)), 'permissao');
 
                         // Listando os diretórios dentro da VIEW.
                         $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html|\/common\/';
@@ -138,139 +181,80 @@ if (isset($_GET["tipo"]))
 
                                         if ($dir != $lastDir) {
                                             ?>
-                                </tr><tr><td colspan="4">&nbsp;</td></tr>
-                            </tr><tr><td colspan="4">&nbsp;</td></tr>
-                    </tr><tr><td colspan="4"><hr><font size="3"><b><?= $dir ?></b></font><hr></td></tr>
-                    <?php
-                    $lastDir = $dir;
-                }
+                                            <tr>
+                                                <td colspan="4">&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4">&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4"><hr><font size="3"><b><?= $dir ?></b></font><hr></td>
+                                            </tr>
+                                            <?php
+                                            $lastDir = $dir;
+                                        }
 
-                if ($i == 0)
-                    print "<tr>\n";
-                ?>
-                <td>
-                    <input type='checkbox' <?= $checkedPermissao ?> name='permissao[]' value='<?= $arquivo ?>' onclick="return libera('<?= $descricao['nome'].$i ?>', this.checked);" />
-                    <b><font size="1"><a href="#" title='<?= $descricao['descricaoArquivo'] ?><br><?= $descricao['descricaoLink'] ?>'><?= $descricao['nome'] ?></a></font></b>
-                    <br><input type='checkbox' <?= $disabled ?> <?= $checkedLink ?> name='menu[<?= $arquivo ?>]' id="M_<?= $descricao['nome'].$i ?>" value='<?= $arquivo ?>' />
-                    <font size="1"> - link vis&iacute;vel</font>
-                    <br><input type="text" <?= $disabled ?> name="nome[<?= $arquivo ?>]" id="<?= $descricao['nome'].$i ?>" value="<?= $arquivoNomeMenu ?>" />
-                </td>
-                <?php
-                $i++;
-                if ($i == 4) {
-                    print "</tr><tr><td colspan=\"4\"><hr></td></tr>\n";
-                    $i = 0;
-                }
-            }
-        }
-    }
-    ?>
-    <input type="hidden" name="codigo" value="<?= crip($perms['codigo']) ?>" />
-    <?php
-}
-?>
-</table>
-</td></tr>
-<tr><td></td><td>
-        <input type="hidden" name="opcao" value="InsertOrUpdate" />
-        <?php if ($codigo) { ?>
-            <input type="submit" value="Salvar" />
-        <?php } ?>
-    </td></tr>
-</table>
-</form>
-</div>
-
-</table>
-
-<style>
-    .ontop {
-        z-index: 999;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        display: none;
-        position: absolute;				
-        background-color: #666;
-        color: #aaaaaa;
-        opacity: .95;
-    }
-    #popup {
-        width: 400px;
-        height: 200px;
-        position: absolute;
-        color: #000000;
-        background-color: #fff;
-        top: 50%;
-        left: 50%;
-        margin-top: -100px;
-        margin-left: -150px;
-    }
-</style>
-
-<div id="popDiv" class="ontop">
-    <script>
-        $('#form_copiar').html5form({
-            method: 'POST',
-            action: '<?= $SITE ?>',
-            responseDiv: '#index',
-            colorOn: '#000',
-            colorOff: '#999',
-            messages: 'br'
-        })
-    </script>
-
-    <div id="html5form" class="main">
-        <form id="form_copiar">
-            <table border="0" id="popup">
-                <tr><td colspan="2" align="right"><a href="#" onClick="hide('popDiv');">Fechar</a></td></tr>
-                <tr><td colspan="2">Copiar as permiss&otilde;es de:</td></tr>
-                <input type="hidden" name="codigo" id="codigo" value="<?= $codigo ?>">
-                <tr><td><select name="tipo" id="tipo">
-                            <?php
-                            foreach ($res as $reg) {
-                                $selected = "";
-                                if ($reg['codigo'] == $codigo)
-                                    $selected = "selected";
-                                echo "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                                        if ($i == 0)
+                                            print "<tr>\n";
+                                        ?>
+                                        <td>
+                                            <input type='checkbox' <?= $checkedPermissao ?> name='permissao[]' value='<?= $arquivo ?>' onclick="return libera('<?= $descricao['nome'] . $i ?>', this.checked);" />
+                                            <b><font size="1"><a href="#" title='<?= $descricao['descricaoArquivo'] ?><br><?= $descricao['descricaoLink'] ?>'><?= $descricao['nome'] ?></a></font></b>
+                                            <br><input type='checkbox' <?= $disabled ?> <?= $checkedLink ?> name='menu[<?= $arquivo ?>]' id="M_<?= $descricao['nome'] . $i ?>" value='<?= $arquivo ?>' />
+                                            <font size="1"> - link vis&iacute;vel</font>
+                                            <br><input type="text" <?= $disabled ?> name="nome[<?= $arquivo ?>]" id="<?= $descricao['nome'] . $i ?>" value="<?= $arquivoNomeMenu ?>" />
+                                        </td>
+                                        <?php
+                                        $i++;
+                                        if ($i == 4) {
+                                            print "</tr><tr><td colspan=\"4\"><hr></td></tr>\n";
+                                            $i = 0;
+                                        }
+                                    }
+                                }
                             }
                             ?>
-                        </select>
-                    </td></tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="hidden" name="opcao" value="Copiar" />    
-                        <input type="submit" value="Copiar" onClick="hide('popDiv');" />
-                    </td>
-                </tr>
-            </table>
-        </form>
-    </div>
+                            <input type="hidden" name="codigo" value="<?= crip($perms['codigo']) ?>" />
+                            <?php
+                        }
+                        ?>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="3">
+                    <?php if ($tipo) { ?>
+                        <input type="hidden" name='opcao' id='opcao' value='' />
+                        <input type="submit" value="Salvar" id='Salvar' name='Salvar' />
+                    <?php } ?>
+                </td></tr>
+        </table>
+    </form>
 </div>
 
 <script>
-    function pop(div) {
-        document.getElementById(div).style.display = 'block';
-    }
-    function hide(div) {
-        document.getElementById(div).style.display = 'none';
-    }
-
-    document.onkeydown = function(evt) {
-        evt = evt || window.event;
-        if (evt.keyCode == 27) {
-            hide('popDiv');
-        }
-    };
-
     $(document).ready(function() {
+        $('#showCopia').hide();
+
+        $('#tipo').change(function() {
+            $('#index').load('<?= $SITE ?>?tipo=' + $('#tipo').val());
+        });
+            
         $(".item-copiar").click(function() {
-            pop('popDiv');
+            $('#showCopia').show();
+        });
+
+        $("#Copiar").mouseover(function() {
+            $('#opcao').val('Copiar');
+        });
+
+        $("#Salvar").mouseover(function() {
+            $('#opcao').val('Salvar');
         });
     });
     function reload() {
-        $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o: o registro foi salvo com sucesso, por&eacute;m o site deve ser recarregado para exibir as novas altera&ccedil;&otilde;es. Deseja recarregar?', {
+        $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o: o registro foi salvo com sucesso, por&eacute;m o site deve ser recarregado para exibir as novas altera&ccedil;&otilde;es. Deseja recarregar?</strong>', {
             'type': 'question',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],

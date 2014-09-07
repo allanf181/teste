@@ -269,7 +269,7 @@ function dcripArray($array) {
 // Autor: Naylor - 29/07
 function mapURL($array) {
     foreach ($array as $key => $value) {
-        $ret[] = "$key=$value";
+        $ret[] = "$key=".urlencode($value);
     }
     return implode('&', $ret);
 }

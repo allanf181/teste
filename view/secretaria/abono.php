@@ -36,7 +36,7 @@ if ($_GET["opcao"] == 'delete') {
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
 // inicializando as variáveis do formulário
@@ -99,6 +99,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             </tr>
             <tr><td align="right">Aluno: </td>
                 <td><select name="aluno" id="aluno" style="width: 350px">
+                        <option></option>
+
                         <?php
                         require CONTROLLER . '/pessoa.class.php';
                         $pessoa = new Pessoas();
@@ -189,8 +191,10 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     $res = $abono->listAbonos($params, $sqlAdicional, $item, $itensPorPagina);
     $totalRegistros = count($abono->listAbonos($params, $sqlAdicional));
 
-    if ($params['dataFim']) $params['dataFim'] = dataPTBR($params['dataFim']);
-    if ($params['dataInicio']) $params['dataInicio'] = dataPTBR($params['dataInicio']);
+    if ($params['dataFim'])
+        $params['dataFim'] = dataPTBR($params['dataFim']);
+    if ($params['dataInicio'])
+        $params['dataInicio'] = dataPTBR($params['dataInicio']);
     $params['aluno'] = crip($params['aluno']);
     $params['atribuicao'] = $_GET['atribuicao'];
     $SITENAV = $SITE . "?" . mapURL($params);
@@ -212,7 +216,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
         $i = $item;
         foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            if ($reg['dataFim'] && $reg['dataFim']!='00/00/0000') $reg['dataInicio'] = $reg['dataInicio'].' a '.$reg['dataFim'];
+            if ($reg['dataFim'] && $reg['dataFim'] != '00/00/0000')
+                $reg['dataInicio'] = $reg['dataInicio'] . ' a ' . $reg['dataFim'];
             ?>
             <tr <?php print $cdif; ?>><td><?php print $reg['dataInicio']; ?></td>
                 <td><?php print $reg['prontuario']; ?></td>
@@ -244,7 +249,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
         }
 
         function valida() {
-            if ($('#dataInicio').val() != "" && $('#motivo').val() != ""
+            if ($('#aluno').val() != "" && $('#dataInicio').val() != "" 
+                    && $('#motivo').val() != ""
                     && ($('#atribuicao').val() != "" || $('#aula').val() != "")) {
                 $('#salvar').enable();
             } else {
@@ -306,10 +312,10 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 }
             });
 
-            <?php if (!$_GET["codigo"]) { ?>
+<?php if (!$_GET["codigo"]) { ?>
                 $('#dataInicio, #dataFim, #aluno, #atribuicao').change(function() {
                     atualizar();
                 });
-            <?php } ?>
+<?php } ?>
         });
     </script>
