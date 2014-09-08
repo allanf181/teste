@@ -36,7 +36,6 @@ if ($_GET["opcao"] == 'delete') {
 }
 
 // LISTAGEM
-print dcrip($_GET["codigo"]);
 if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     // consulta no banco
     $params = array('codigo' => dcrip($_GET["codigo"]));
@@ -99,7 +98,7 @@ require PATH . VIEW . '/paginacao.php';
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
-                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
             </a>
         </th>
     </tr>
@@ -110,13 +109,13 @@ require PATH . VIEW . '/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         $codigo = crip($reg['codigo']);
         ?>
-        <tr <?php print $cdif; ?>><td align='center'><?php print $i; ?></td>
-            <td><?php print $reg['nome']; ?>
-            </td><td><?php print $reg['sigla']; ?></td>
+        <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
+            <td><?= $reg['nome'] ?>
+            </td><td><?= $reg['sigla'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>
-                    <img class='botao' src='<?php print ICONS; ?>/config.png' />
+                    <img class='botao' src='<?= ICONS ?>/config.png' />
                 </a>
             </td>
         </tr>
@@ -129,9 +128,9 @@ require PATH . VIEW . '/paginacao.php';
 <script>
     $(document).ready(function() {
         $(".item-excluir").click(function() {
-            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function(caption) {
                     if (caption == 'Sim') {
@@ -140,7 +139,7 @@ require PATH . VIEW . '/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                     }
                 }
             });
@@ -148,7 +147,7 @@ require PATH . VIEW . '/paginacao.php';
 
         $(".item-alterar").click(function() {
             var codigo = $(this).attr('id');
-            $('#index').load('<?php print $SITE; ?>?codigo=' + codigo);
+            $('#index').load('<?= $SITE ?>?codigo=' + codigo);
         });
 
         $('#select-all').click(function(event) {

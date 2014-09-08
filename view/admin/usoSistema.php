@@ -22,23 +22,14 @@ require SESSAO;
 </style>
 
 <?php
-$resultado = mysql_query("SELECT
-        SUM((SELECT COUNT(*) FROM Aulas au WHERE au.atribuicao = a.codigo)) as aula,
-        SUM((SELECT COUNT(*) FROM Frequencias f, Aulas au WHERE au.codigo = f.aula AND au.atribuicao = a.codigo)) as frequencia,
-        SUM((SELECT COUNT(*) FROM Avaliacoes av WHERE av.atribuicao = a.codigo)) as avaliacao,
-        SUM((SELECT COUNT(*) FROM Avaliacoes av, Notas n WHERE av.codigo = n.avaliacao AND av.atribuicao = a.codigo)) as nota
-        FROM Atribuicoes a, Disciplinas d, Turmas t, Professores pr, Pessoas p
-        WHERE a.disciplina = d.codigo
-        AND t.codigo = a.turma
-        AND pr.atribuicao = a.codigo
-        AND p.codigo = pr.professor
-		AND (t.semestre=$semestre OR t.semestre=0)
-		AND t.ano = $ano
-		GROUP BY pr.professor ORDER BY aula DESC, frequencia DESC, avaliacao DESC, nota DESC");
-$uso = 0;
-$count = 0;
-while ($linha = mysql_fetch_array($resultado)) {
-    if ($linha[0] || $linha[1] || $linha[2] || $linha[3])
+require CONTROLLER . "/atribuicao.class.php";
+$atribuicao = new Atribuicoes();
+
+$params = array('ano' => $ANO, 'semestre' => $SEMESTRE);
+
+$res = $atribuicao->getDadosUsoSistema($params);
+foreach ($res as $reg) {
+    if ($reg['aula'] || $reg['frequencia'] || $reg['avaliacao'] || $reg['nota'])
         $uso++;
     $count++;
 }
@@ -58,80 +49,44 @@ $width2 = (100 - $uso);
     </table>
 </div>
 <?php
-// inicializando as vari?veis
+// PAGINACAO
+$itensPorPagina = 20;
 $item = 1;
-$itensPorPagina = 50;
-$primeiro = 1;
-$anterior = $item - $itensPorPagina;
-$proximo = $item + $itensPorPagina;
-$ultimo = 1;
+$ordem = '';
 
-// validando a p?gina atual
-if (!empty($_GET["item"])) {
+if (isset($_GET['item']))
     $item = $_GET["item"];
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-}
 
-// validando a p?gina anterior
-if ($item - $itensPorPagina < 1)
-    $anterior = 1;
+$res = $atribuicao->getDadosUsoSistema($params, null, $item, $itensPorPagina);
+$totalRegistros = count($atribuicao->getDadosUsoSistema($params, null, $item, $itensPorPagina));
 
-// descobrindo a quantidade total de registros
-$resultado = mysql_query("SELECT COUNT(*)
-		FROM Atribuicoes a, Disciplinas d, Turmas t, Professores pr, Pessoas p
-        WHERE a.disciplina = d.codigo
-        AND t.codigo = a.turma
-        AND pr.atribuicao = a.codigo
-        AND p.codigo = pr.professor        
-	AND (t.semestre=$semestre OR t.semestre=0)
-	AND t.ano = $ano
-	GROUP BY pr.professor ORDER BY aula DESC, frequencia DESC, avaliacao DESC, nota DESC, p.nome ASC");
-$linha = mysql_fetch_row($resultado);
-$ultimo = $linha[0];
-
-// validando o pr?ximo item
-if ($proximo > $ultimo) {
-    $proximo = $item;
-    $ultimo = $item;
-}
-
-// validando o ?ltimo item
-if ($ultimo % $itensPorPagina > 0)
-    $ultimo = $ultimo - ($ultimo % $itensPorPagina) + 1;
-
-$SITENAV = $SITE . "?";
-require(PATH . VIEW . '/navegacao.php');
+$SITENAV = $SITE . '?';
+require PATH . VIEW . '/paginacao.php';
 ?>
-
 <table id="listagem" border="0" align="center">
-    <tr><th width='220'>Nome</th><th align='center' width='80'>Aulas Lan&ccedil;adas</th><th align='center' width='90'>Frequ&ecirc;ncias Cadastradas</th><th align='center' width='80'>Avalia&ccedil;&otilde;es</th><th align='center' width='30'>Notas Lan&ccedil;adas</th><th align='center' width='70'>&Uacute;ltimo Registro de Aula</th></tr>
+    <tr>
+        <th width='220'>Nome</th>
+        <th align='center' width='80'>Aulas Lan&ccedil;adas</th>
+        <th align='center' width='90'>Frequ&ecirc;ncias Cadastradas</th>
+        <th align='center' width='80'>Avalia&ccedil;&otilde;es</th>
+        <th align='center' width='30'>Notas Lan&ccedil;adas</th>
+        <th align='center' width='70'>&Uacute;ltimo Registro de Aula</th>
+    </tr>
     <?php
-// efetuando a consulta para listagem
-    $resultado = mysql_query("SELECT p.nome,
-        SUM((SELECT COUNT(*) FROM Aulas au WHERE au.atribuicao = a.codigo)) as aula,
-        SUM((SELECT COUNT(*) FROM Frequencias f, Aulas au WHERE au.codigo = f.aula AND au.atribuicao = a.codigo)) as frequencia,
-        SUM((SELECT COUNT(*) FROM Avaliacoes av WHERE av.atribuicao = a.codigo)) as avaliacao,
-        SUM((SELECT COUNT(*) FROM Avaliacoes av, Notas n WHERE av.codigo = n.avaliacao AND av.atribuicao = a.codigo)) as nota,
-        (SELECT date_format(data, '%d/%m/%Y') FROM Aulas ad WHERE ad.atribuicao = a.codigo ORDER BY data DESC LIMIT 1) as ultAula
-        FROM Atribuicoes a, Disciplinas d, Turmas t, Professores pr, Pessoas p
-        WHERE a.disciplina = d.codigo
-        AND t.codigo = a.turma
-        AND pr.atribuicao = a.codigo
-        AND p.codigo = pr.professor        
-	AND (t.semestre=$semestre OR t.semestre=0)
-	AND t.ano = $ano
-	GROUP BY pr.professor ORDER BY aula DESC, frequencia DESC, avaliacao DESC, nota DESC, p.nome ASC limit " . ($item - 1) . ",$itensPorPagina");
     $i = $item;
-    while ($linha = mysql_fetch_array($resultado)) {
+    foreach ($res as $reg) {
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-        echo "<tr $cdif><td>$linha[0]</td><td>$linha[1]</td><td align='center'>$linha[2]</td><td align='center'>$linha[3]</td><td align='center'>$linha[4]</td><td align='center'>$linha[5]</td><td align='center'>$linha[6]</td></tr>";
+        ?>
+        <tr <?= $cdif ?>>
+            <td><?= $reg['nome'] ?></td>
+            <td><?= $reg['aula'] ?></td>
+            <td align='center'><?= $reg['frequencia'] ?></td>
+            <td align='center'><?= $reg['avaliacao'] ?></td>
+            <td align='center'><?= $reg['nota'] ?></td>
+            <td align='center'><?= $reg['ultAula'] ?></td>
+        </tr>
+        <?php
         $i++;
     }
     ?>
-
-    <?php
-    require(PATH . VIEW . '/navegacao.php');
-
-    mysql_close($conexao);
-    
+</table>

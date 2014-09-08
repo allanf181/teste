@@ -1,4 +1,4 @@
-<?php 
+<?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
 //Permite a adição, alteração ou exclusão dos tipos de perfis possíveis no acesso ao sistema WebDiário.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
@@ -13,168 +13,171 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-if ($_POST["opcao"] == 'InsertOrUpdate') {
-    $codigo = $_POST["campoCodigo"];
-    $nome = $_POST["campoNome"];
+require CONTROLLER . "/tipo.class.php";
+$tipo = new Tipos();
 
-    if (empty($codigo)){
-        $resultado = mysql_query("insert into Tipos values(0,'$nome')"); 
-        if ($resultado==1)
-			mensagem('OK', 'TRUE_INSERT');
-        else
-			mensagem('NOK', 'FALSE_INSERT');
-		$_GET["codigo"] = crip(mysql_insert_id());
-    }
-    else{
-        $resultado = mysql_query("update Tipos set nome='$nome' where codigo=$codigo"); 
-        if ($resultado==1)
-			mensagem('OK', 'TRUE_UPDATE');
-        else
-			mensagem('NOK', 'FALSE_UPDATE');
-		$_GET["codigo"] = crip($_POST["campoCodigo"]);
-    }
+// INSERT E UPDATE
+if ($_POST["opcao"] == 'InsertOrUpdate') {
+    unset($_POST['opcao']);
+
+    $ret = $tipo->insertOrUpdate($_POST);
+
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    if (dcrip($_POST['codigo']))
+        $_GET["codigo"] = $_POST['codigo'];
+    else
+        $_GET["codigo"] = crip($ret['RESULTADO']);
 }
 
+// DELETE
 if ($_GET["opcao"] == 'delete') {
-    $codigo = dcrip($_GET["codigo"]);
-    $resultado = mysql_query("delete from Tipos where codigo=$codigo");
-	if ($resultado==1)
-		mensagem('OK', 'TRUE_DELETE');
-	else
-		mensagem('OK', 'FALSE_DELETE_DEP');
+    $ret = $tipo->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
 
+// LISTAGEM
+if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
+    // consulta no banco
+    $params = array('codigo' => dcrip($_GET["codigo"]));
+    $res = $tipo->listRegistros($params);
+    extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
+}
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-<?php
-    // inicializando as variáveis do formulário
-    $codigo="";
-    $nome="";
-    $sigla="";
-    if (!empty ($_GET["codigo"])){ // se o parâmetro não estiver vazio
-        
-        // consulta no banco
-        $resultado = mysql_query("select * from Tipos where codigo=".dcrip($_GET["codigo"]));
-        $linha = mysql_fetch_row($resultado);
-        
-        // armazena os valores nas variáveis
-        $codigo = $linha[0];
-        $nome = $linha[1];
-        $restricao = " WHERE Tipos.codigo=".dcrip($_GET["codigo"]);
-    }
-        
-    print "<script>\n";
-    print "    $('#form_padrao').html5form({ \n";
-    print "        method : 'POST', \n";
-    print "        action : '$SITE', \n";
-    print "        responseDiv : '#index', \n";
-    print "        colorOn: '#000', \n";
-    print "        colorOff: '#999', \n";
-    print "        messages: 'br' \n";
-    print "    }) \n";
-    print "</script>\n";
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
+<script>
 
-    print "<div id=\"html5form\" class=\"main\">\n";
-    print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?php print $SITE; ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
+</script>
+
+<div id="html5form" class="main">
+    <form id="form_padrao">
+        <table align="center" width="100%" id="form">
+            <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
+            <tr>
+                <td align="right">Nome: </td>
+                <td><input type="text" id="nome" maxlength="45" name="nome" value="<?= $nome ?>" /></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="hidden" name="opcao" value="InsertOrUpdate" />
+                    <table width="100%">
+                        <tr>
+                            <td><input type="submit" value="Salvar" id="salvar" /></td>
+                            <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<?php
+// PAGINACAO
+$itensPorPagina = 20;
+$item = 1;
+$ordem = '';
+
+if (isset($_GET['item']))
+    $item = $_GET["item"];
+
+$res = $tipo->listRegistros($params, $item, $itensPorPagina);
+
+$totalRegistros = $tipo->count();
+$SITENAV = $SITE . '?';
+require PATH . VIEW . '/paginacao.php';
 ?>
-    <table align="center" width="100%" id="form">
-        <input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" />
-        <tr><td align="right">Nome: </td><td><input type="text" id="campoNome" maxlength="45" name="campoNome" value="<?php echo $nome; ?>" /></td></tr>
-        <tr><td></td><td>
-	<input type="hidden" name="opcao" value="InsertOrUpdate" />
-	<table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-		<td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
-	</tr></table>
-	</td></tr>
-    </table>
-	</form>
-	</div>
-
-<?php
-
-    // inicializando as variáveis
-    $item = 1;
-    $itensPorPagina = 50;
-    $primeiro = 1;
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-    $ultimo = 1;
-
-    // validando a página atual
-    if (!empty($_GET["item"])){
-        $item = $_GET["item"];
-        $anterior = $item - $itensPorPagina;
-        $proximo = $item + $itensPorPagina;
-    }
-
-    // validando a página anterior
-    if ($item - $itensPorPagina < 1)
-        $anterior = 1;
-
-    // descobrindo a quantidade total de registros
-    $resultado = mysql_query("select count(*) from Tipos $restricao");
-    $linha = mysql_fetch_row($resultado);
-    $ultimo = $linha[0];
-    
-    // validando o próximo item
-    if ($proximo > $ultimo){
-        $proximo = $item;
-        $ultimo = $item;
-    }
-    
-    // validando o último item
-    if ($ultimo % $itensPorPagina > 0)
-        $ultimo=$ultimo-($ultimo % $itensPorPagina)+1;    
-
-
-$SITENAV = $SITE.'?';
-
-require(PATH.VIEW.'/navegacao.php'); ?>
 
 <table id="listagem" border="0" align="center">
-    <tr><th align="center" width="40">#</th><th align="left">Tipo</th><th align="center" width="40">A&ccedil;&atilde;o</th></tr>
+    <tr>
+        <th align="center" width="40">#</th>
+        <th align="left">Tipo</th>
+        <th align="center" width="50">&nbsp;&nbsp;
+            <input type="checkbox" id="select-all" value="">
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+            </a>
+        </th>
+    </tr>
     <?php
     // efetuando a consulta para listagem
-    $resultado = mysql_query("select * from Tipos $restricao order by nome limit " . ($item - 1) . ",$itensPorPagina");
     $i = $item;
-    while ($linha = mysql_fetch_array($resultado)) {
-        $i%2==0 ? $cdif="class='cdif'" : $cdif="";
-        echo "<tr $cdif><td align='left'>$i</td><td>".mostraTexto($linha[1])."</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a><a href='#' title='Alterar' class='item-alterar' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/config.png' /></a></td></tr>";
+    foreach ($res as $reg) {
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        $codigo = crip($reg['codigo']);
+        ?>
+        <tr <?php print $cdif; ?>><td align='center'><?php print $i; ?></td>
+            <td><?php print mostraTexto($reg['nome']); ?>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
+                <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>
+                    <img class='botao' src='<?= ICONS ?>/config.png' />
+                </a>
+            </td>
+        </tr>
+        <?php
         $i++;
     }
     ?>
-<?php 	require(PATH.VIEW.'/navegacao.php');
-
- mysql_close($conexao);
- ?>
 </table>
 <script>
-function valida() {
-    if ( $('#campoNome').val() == "" ) {
-        $('#salvar').attr('disabled', 'disabled');
-    } else {
-        $('#salvar').enable();
+    function valida() {
+        if ($('#nome').val() == "") {
+            $('#salvar').attr('disabled', 'disabled');
+        } else {
+            $('#salvar').enable();
+        }
     }
-}
-$(document).ready(function(){
-	valida();
-    $('#campoNome').keyup(function(){
+    $(document).ready(function() {
         valida();
+        $('#nome').keyup(function() {
+            valida();
+        });
+
+        $(".item-excluir").click(function() {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+
+                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
+                    }
+                }
+            });
+        });
+
+        $(".item-alterar").click(function() {
+            var codigo = $(this).attr('id');
+            $('#index').load('<?= $SITE ?>?codigo=' + codigo);
+        });
+        
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
+        });        
     });
-
-	$(".item-excluir").click(function(){
-		var codigo = $(this).attr('id');
-		jConfirm('Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {
-			if ( r )	
-				$('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
-		});
-	});
-
-	$(".item-alterar").click(function(){
-		var codigo = $(this).attr('id');
-		$('#index').load('<?php print $SITE; ?>?codigo=' + codigo);
-	});
-});    
 </script>

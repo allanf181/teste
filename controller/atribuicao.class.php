@@ -398,6 +398,42 @@ class Atribuicoes extends Generic {
         return $rs;
     }
 
+    // LISTA OS DADOS PARA ESTATISTICAS DO USO DO SISTEMA
+    // USADO POR: ADMIN/USOSISTEMA.PHP
+    public function getDadosUsoSistema($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
+        $bd = new database();
+
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
+
+        $sql = "SELECT p.nome,
+                SUM((SELECT COUNT(*) FROM Aulas au WHERE au.atribuicao = a.codigo)) as aula,
+                SUM((SELECT COUNT(*) FROM Frequencias f, Aulas au WHERE au.codigo = f.aula AND au.atribuicao = a.codigo)) as frequencia,
+                SUM((SELECT COUNT(*) FROM Avaliacoes av WHERE av.atribuicao = a.codigo)) as avaliacao,
+                SUM((SELECT COUNT(*) FROM Avaliacoes av, Notas n WHERE av.codigo = n.avaliacao AND av.atribuicao = a.codigo)) as nota,
+                (SELECT date_format(data, '%d/%m/%Y') FROM Aulas ad WHERE ad.atribuicao = a.codigo ORDER BY data DESC LIMIT 1) as ultAula
+                FROM Atribuicoes a, Disciplinas d, Turmas t, Professores pr, Pessoas p
+                WHERE a.disciplina = d.codigo
+                AND t.codigo = a.turma
+                AND pr.atribuicao = a.codigo
+                AND p.codigo = pr.professor        
+                AND (t.semestre=:semestre OR t.semestre=0)
+                AND t.ano = :ano";
+
+        $sql .= " $sqlAdicional ";
+
+        $sql .= " GROUP BY pr.professor ORDER BY aula DESC, frequencia DESC, avaliacao DESC, nota DESC ";
+
+        $sql .= "$nav";
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }    
 }
 
 ?>

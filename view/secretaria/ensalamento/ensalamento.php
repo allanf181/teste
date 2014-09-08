@@ -23,7 +23,7 @@ if ($_GET["opcao"] == 'delete') {
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
 if (dcrip($_GET["turma"])) {
@@ -44,38 +44,58 @@ if (dcrip($_GET["turma"])) {
 </script>
 
 <div id="html5form" class="main">
-    <form id="form_padrao"></form>
-    <table align="center" width="100%" id="form">
-        <input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" />
-        <tr><td align="right" style="width: 100px">Turma: </td><td>
-                <select name="campoTurma" id="campoTurma" value="<?php echo $turma; ?>">
-                    <option></option>
-                    <?php
-                    require CONTROLLER . '/turma.class.php';
-                    $turmas = new Turmas();
-                    $paramsTurma = array(':ano' => $ANO,':semestre' => $SEMESTRE);
-                    $res = $turmas->listTurmas($paramsTurma);
-                    foreach ($res as $reg) {
-                        $selected = "";
-                        if ($reg['codTurma'] == $turma)
-                            $selected = "selected";
-                        print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] . " [".$reg['curso']."]</option>";
-                    }
-                    ?>
-                </select>
-            </td>
-            <?php if ($turma) { ?>
-                <td><a href="#" class='ensalamento'><img src="<?= VIEW ?>/css/images/horario.png" width="50%"></a></td>
-            <?php } ?>
-        </tr>
-        <tr><td></td><td>   
-                <input type="hidden" name="opcao" value="InsertOrUpdate" />
-                <table width="100%"><tr>
-                        <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td>
-                    </tr></table>
-            </td><td></td></tr>
-    </table>
-</form>
+    <form id="form_padrao">
+        <table align="center" width="100%" id="form">
+            <input type="hidden" name="codigo" value="<?= crip($codigo); ?>" />
+            <tr>
+                <td align="right" style="width: 100px">Turma: </td>
+                <td>
+                    <select name="turma" id="turma" value="<?= $turma ?>">
+                        <option></option>
+                        <?php
+                        require CONTROLLER . '/turma.class.php';
+                        $turmas = new Turmas();
+                        $paramsTurma = array(':ano' => $ANO, ':semestre' => $SEMESTRE);
+                        $res = $turmas->listTurmas($paramsTurma);
+                        foreach ($res as $reg) {
+                            $selected = "";
+                            if ($reg['codTurma'] == $turma)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] . " [" . $reg['curso'] . "]</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+                <?php if ($turma) { ?>
+                    <td><a href="#" class='ensalamento'><img src="<?= VIEW ?>/css/images/horario.png" width="50%"></a></td>
+                <?php } ?>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="hidden" name="opcao" value="InsertOrUpdate" />
+                    <table width="100%">
+                        <tr>
+                            <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div id='showEnsalamento'>
+    <?php
+    // COPIA DE:
+    if ($turma) {
+        $tipo = 'turma';
+        $codigo = $turma;
+        require PATH . VIEW . '/common/ensalamento.php';
+    }
+    ?>
+</div>
 <?php
 // PAGINACAO
 $item = 1;
@@ -90,16 +110,25 @@ $params['semestre'] = $SEMESTRE;
 $res = $ensalamento->listEnsalamentos($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($ensalamento->listEnsalamentos($params, $sqlAdicional));
 
-$params['turma'] = crip($curso);
+$params['turma'] = crip($turma);
 
 $SITENAV = $SITE . "?" . mapURL($params);
 
 require(PATH . VIEW . '/paginacao.php');
 ?>	
 <table id="listagem" border="0" align="center">
-    <tr><th align="center" width="40">#</th><th>Atribui&ccedil;&atilde;o</th><th>Sala</th><th width="180">Hor&aacute;rio</th><th align="center" width="40">
+    <tr>
+        <th align="center" width="40">#</th>
+        <th>Atribui&ccedil;&atilde;o</th>
+        <th>Sala</th>
+        <th width="180">Hor&aacute;rio</th>
+        <th align="center" width="40">
             <input type='checkbox' id="select-all" value="" />
-            <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+            </a>
+        </th>
+    </tr>
     <?php
     $i = $item;
     $dias = diasDaSemana();
@@ -122,167 +151,62 @@ require(PATH . VIEW . '/paginacao.php');
     ?>
 </table>
 
-<style>
-    .ontop {
-        z-index: 999;
-        width: 100%;
-        height: 1000px;
-        top: 0;
-        left: 0;
-        display: none;
-        position: absolute;				
-        background-color: #666;
-        color: #aaaaaa;
-        opacity: .95;
-    }
-    #popup {
-        width: 800px;
-        min-height: 200px;
-        position: absolute;
-        color: #000000;
-        background-color: #fff;
-        top: 40%;
-        left: 30%;
-        margin-top: -100px;
-        margin-left: -150px;
-    }
-</style>
-
-<div id="popDiv" class="ontop">
-    <?php
-    // MOSTRA ENSALAMENTO
-    if ($turma) {
-
-        $codigo = dcrip($_GET['turma']);
-        $tipo = 'turma';
-
-        $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
-
-        foreach ($res as $reg) {
-            $reg['horario'] = str_ireplace("[$match[1]]", "", $reg['horario']);
-            $link = $reg['disciplina'] . ' (' . $reg['professor'] . '): ' . $reg['sala'] . ' - ' . $reg['localizacao'];
-            $horas[$reg['diaSemana']][] = "<a href='#' title='$link'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
-            $turmaNome = $reg['turma'];
-        }
-
-        require CONTROLLER . "/turno.class.php";
-        $t = new Turnos();
-        $res = $t->listRegistros();
-        foreach ($res as $reg)
-            $turnos[$reg['sigla']] = $reg['nome'];
-
-        $MOSTRA = "Turma $turmaNome";
-
-        if ($atribuicao)
-            $MOSTRA = $discNome[$atribuicao];
-        ?>
-        <h2><font color="white"><?= $MOSTRA ?></h2>
-
-        <center><table width="80%" border="0" summary="Calendário" id="tabela_boletim">
-                <thead>
-                <tr><td colspan="7" align="right"><a href="#" onClick="hide('popDiv');">Fechar</a></td></tr>
-                    <tr>
-                        <?php
-                        foreach (diasDaSemana() as $dCodigo => $dNome) {
-                            ?>
-                            <th abbr="Domingo" title="<?= $dNome ?>"><span style='font-weight: bold; color: white'><?= $dNome ?></span></th>
-                            <?php
-                        }
-                        ?>
-                    </tr>
-                </thead>
-                <tr align="center">
-                    <?php
-                    for ($i = 1; $i <= 7; $i++) {
-                        $TA = '';
-                        ?>
-                        <td style='width: 10%;' valign="top">
-                            <?php
-                            if (isset($horas[$i]))
-                                foreach ($horas[$i] as $disc) {
-                                    preg_match('#\[(.*?)\]#', $disc, $match);
-                                    $T = $match[1];
-                                    if ($T != $TA) {
-                                        print strtoupper($turnos[$T]) . "<hr>\n";
-                                        $TA = $T;
-                                    }
-                                    print str_ireplace("[$match[1]]", "", $disc);
-                                    print '<br>-----------------<br>';
-                                }
-                            ?>
-                        </td>
-                        <?php
-                    }
-                    ?>
-                </tr>
-            </table>
-        </center>
-        <?php
-    }
-    ?>
-</div>
-
 <script>
-function atualizar(getLink) {
-    var turma = $('#campoTurma').val();
-    var URLS = '<?php print $SITE; ?>?turma=' + turma;
-    if (!getLink)
-        $('#index').load(URLS + '&item=<?php print $item; ?>');
-    else
-        return URLS;
-}
-
-function pop(div) {
-    document.getElementById(div).style.display = 'block';
-}
-function hide(div) {
-    document.getElementById(div).style.display = 'none';
-}
-
-document.onkeydown = function(evt) {
-    evt = evt || window.event;
-    if (evt.keyCode == 27) {
-        hide('popDiv');
+    function atualizar(getLink) {
+        var turma = $('#turma').val();
+        var URLS = '<?= $SITE ?>?turma=' + turma;
+        if (!getLink)
+            $('#index').load(URLS + '&item=<?= $item ?>');
+        else
+            return URLS;
     }
-};
 
-$(document).ready(function() {
-    $('#select-all').click(function(event) {
-        if (this.checked) {
-            // Iterate each checkbox
-            $(':checkbox').each(function() {
-                this.checked = true;
-            });
-        } else {
-            $(':checkbox').each(function() {
-                this.checked = false;
-            });
+    document.onkeydown = function(evt) {
+        evt = evt || window.event;
+        if (evt.keyCode == 27) {
+            $('#showEnsalamento').hide();
         }
-    });
+    };
 
-    $('#campoTurma').change(function() {
-        atualizar();
-    });
+    $(document).ready(function() {
+        $('#showEnsalamento').hide();
 
-    $(".ensalamento").click(function() {
-        pop('popDiv');
-    });
-
-    $(".item-excluir").click(function() {
-        $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
-            'type': 'question',
-            'title': '<?php print $TITLE; ?>',
-            'buttons': ['Sim', 'Não'],
-            'onClose': function(caption) {
-                if (caption == 'Sim') {
-                    var selected = [];
-                    $('input:checkbox:checked').each(function() {
-                        selected.push($(this).val());
-                    });
-                    $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
-                }
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
             }
         });
+
+        $(".ensalamento").click(function() {
+            $('#showEnsalamento').show();
+        });
+
+        $('#turma').change(function() {
+            atualizar();
+        });
+
+        $(".item-excluir").click(function() {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+                'type': 'question',
+                'title': '<?php print $TITLE; ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+                        $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                    }
+                }
+            });
+        });
     });
-});
 </script>

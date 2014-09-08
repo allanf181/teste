@@ -8,7 +8,9 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <?php
 
-require CONTROLLER . "/ensalamento.class.php";
+if (!class_exists('Ensalamentos'))
+    require CONTROLLER . "/ensalamento.class.php";
+
 $ensalamento = new Ensalamentos();
 $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
 
@@ -33,7 +35,7 @@ else
 if ($atribuicao)
     $MOSTRA = $discNome[$atribuicao];
 ?>
-<h2><font color="white"><?= $MOSTRA ?></h2>
+<h2><font color="white"><?= $MOSTRA ?></font></h2>
 <center>
     <table width="80%" border="0" class='ensalamento'>
         <thead>
