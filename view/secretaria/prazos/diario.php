@@ -161,7 +161,7 @@ if (!empty($curso)) {
         if ($res) {
             $paramsPrazo['ano'] = $ANO;
             $paramsPrazo['semestre'] = $SEMESTRE;
-            $sqlAdicionalPrazo = ' AND pd.atribuicao = :atribuicao AND pd.dataConcessao IS NULL ';
+            $sqlAdicionalPrazo = ' AND pd.atribuicao = :atribuicao ';
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 $paramsPrazo['atribuicao'] = $reg['atribuicao'];
@@ -170,7 +170,8 @@ if (!empty($curso)) {
                 if ($attPrazo = $prazo->listPrazos($paramsPrazo, $sqlAdicionalPrazo)) {
                     $concessao = abreviar($attPrazo[0]['dataConcessao'], 22);
                     $motivo = $attPrazo[0]['motivo'];
-                    $cdif="style='background-color: red;'";
+                    if (!$attPrazo[0]['dConcessao'])
+                        $cdif="style='background-color: red;'";
                 }
                 ?>
                 <tr <?= $cdif ?>>

@@ -23,7 +23,7 @@ class PrazosDiarios extends Generic {
                     date_format(pd.dataConcessao, '%d/%m/%Y às %H:%m:%s')) as dataConcessao,
                     d.nome as disciplina, a.codigo as atribuicao,
                     c.codigo as codCurso, t.codigo as turma,
-                    p.professor as codProfessor,pd.motivo
+                    p.professor as codProfessor,pd.motivo, dataConcessao as dConcessao
                 FROM PrazosDiarios pd, Atribuicoes a, Turmas t, 
                     Disciplinas d, Cursos c, Professores p
                 WHERE pd.atribuicao = a.codigo
@@ -36,7 +36,7 @@ class PrazosDiarios extends Generic {
 
         $sql .= " $sqlAdicional ";
 
-        $sql .= " GROUP BY pd.codigo ORDER BY pd.data DESC ";
+        $sql .= " GROUP BY pd.codigo ORDER BY pd.data, pd.dataConcessao DESC ";
         
         $sql .= "$nav";
 

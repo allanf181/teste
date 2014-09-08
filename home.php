@@ -277,8 +277,8 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                     $reg['motivo'] = abreviar($reg['motivo'], 70);
                 ?>
                 <tr <?= $cdif ?>>
-                    <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
-                    <td><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
+                    <td width='120'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
+                    <td width='120'><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
                     <td><?= $reg['data'] ?></td>
                     <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['turma']) ?>&professor=<?= crip($reg['codProfessor']) ?>'); void(0);" title='Clique aqui para liberar'>
