@@ -194,11 +194,7 @@ if ($_GET["atribuicao"]) {
                             <?php
                             $i = count($res);
                             foreach ($res as $reg) {
-                                $reg['data'] = dataPTBR($reg['data']);
                                 $title = $reg['motivo'];
-
-                                if (is_numeric(substr($reg['dataConcessao'], 0,4)))
-                                    $reg['dataConcessao'] = dataPTBR($reg['dataConcessao']);
 
                                 if (strlen($reg['motivo']) > 70)
                                     $reg['motivo'] = abreviar($reg['motivo'], 70);

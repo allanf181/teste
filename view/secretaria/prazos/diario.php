@@ -148,6 +148,7 @@ if (!empty($curso)) {
             <th align="left">Professor</th>
             <th align="left">Turma</th>
             <th align="left">Fechado</th>
+            <th align="left">Liberado em:</th>            
             <th width="40" align="center">
                 <input type='checkbox' id='select-all' name='select-all' class='campoTodos' value='' />
             </th>
@@ -158,17 +159,29 @@ if (!empty($curso)) {
         $res = $att->getAllAtribuicoes($params, $sqlAdicional);
         $i = 1;
         if ($res) {
+            $paramsPrazo['ano'] = $ANO;
+            $paramsPrazo['semestre'] = $SEMESTRE;
+            $sqlAdicionalPrazo = ' AND pd.atribuicao = :atribuicao AND pd.dataConcessao IS NULL ';
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                $paramsPrazo['atribuicao'] = $reg['atribuicao'];
+                $concessao=null;
+                $motivo=null;
+                if ($attPrazo = $prazo->listPrazos($paramsPrazo, $sqlAdicionalPrazo)) {
+                    $concessao = abreviar($attPrazo[0]['dataConcessao'], 22);
+                    $motivo = $attPrazo[0]['motivo'];
+                    $cdif="style='background-color: red;'";
+                }
                 ?>
                 <tr <?= $cdif ?>>
                     <td align='center'><?= $i ?></td>
                     <td>
-                        <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= mostraTexto($reg['disciplina']).$reg['bimestre'].$reg['subturma'] ?></a>
+                        <a title='Abrir Di&aacute;rio' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= mostraTexto($reg['disciplina']).$reg['bimestre'].$reg['subturma'] ?></a>
                     </td>
                     <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
                     <td align=left><?= $reg['turma'] ?></td>
                     <td align='left'><?= $reg['origem'] ?></td>
+                    <td align='left'><a href='#' title='<?=$motivo?>'><?= $concessao ?></a></td>
 
                     <td align='center'>
                         <input type='checkbox' id='campoPrazo' name='campoPrazo[]' value='<?= $reg['atribuicao'] ?>' />
@@ -182,7 +195,7 @@ if (!empty($curso)) {
     </table>
     <?php
     // LISTAGEM DE PRAZOS PRORROGADOS NO SEMESTRE
-    $itensPorPagina = 4;
+    $itensPorPagina = 10;
     $item = 1;
 
     if (isset($_GET['item']))
@@ -213,7 +226,7 @@ if (!empty($curso)) {
             ?>
             <tr <?= $cdif ?>>
                 <td align='center'><?= $i ?></td>
-                <td><?= dataPTBR($reg['data']) ?></td>
+                <td><?= $reg['data'] ?></td>
                 <td><?= $reg['disciplina'] ?></td>
                 <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
                 <td>
@@ -267,11 +280,11 @@ if (!empty($curso)) {
             turma = $('#turma').val();
             professor = $('#professor').val();
 
-            if (botao == 'liberar')
-                var modo = 'Confirma a liberação temporária do prazo de gerenciamento do diário? \n\n Motivo:';
+            if (botao == 'liberou')
+                var modo = 'Confirma a liberação temporária do prazo de gerenciamento do diário? <br><br> Motivo:';
 
-            if (botao == 'fechar')
-                var modo = 'Confirma a fechar o diário? \n\n Motivo:';
+            if (botao == 'fechou')
+                var modo = 'Confirma a fechar o diário? <br><br> Motivo:';
 
             $.Zebra_Dialog('<strong>' + modo + '</strong>', {
                 'type': 'prompt',
@@ -283,7 +296,7 @@ if (!empty($curso)) {
                         $('input:checkbox:checked').each(function() {
                             selected.push($(this).val());
                         });
-                        $('#index').load('<?php print $SITE; ?>?opcao=controleDiario&curso=' + curso + '&turma=' + turma + '&motivo=' + valor + '&professor=' + professor + '&botao=' + botao + '&codigo=' + selected);
+                        $('#index').load('<?php print $SITE; ?>?opcao=controleDiario&curso=' + curso + '&turma=' + turma + '&motivo=' + encodeURIComponent(valor) + '&professor=' + professor + '&botao=' + botao + '&codigo=' + selected);
                     }
                 }
             });

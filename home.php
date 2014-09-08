@@ -265,7 +265,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 <th width='150'>Nome</th>
                 <th align='center' width='80'>Disciplina</th>
                 <th align='center' width='80'>Motivo</th>
-                <th align='center' width='80'>Data</th>
+                <th align='center' width='80'>Data da Solicita&ccedil;&atilde;o</th>
                 <th align='center' width='10'>&nbsp;</th>
             </tr>
             <?php
@@ -280,7 +280,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                     <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
                     <td><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
-                    <td><?= dataPTBR($reg['data']) ?></td>
+                    <td><?= $reg['data'] ?></td>
                     <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['turma']) ?>&professor=<?= crip($reg['codProfessor']) ?>'); void(0);" title='Clique aqui para liberar'>
                             Liberar</a>
                     </td>                    
@@ -305,8 +305,8 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         <br><br><table id="listagem">
             <caption>Lista de Professores que aguardam por valida&ccedil;&atilde;o do Plano de Ensino.</caption>
             <tr>
-                <th width='220'>Nome</th>
-                <th align='center' width='80'>Disciplina</th>
+                <th width='120'>Nome</th>
+                <th align='center' width='120'>Disciplina</th>
                 <th align='center' width='10'>&nbsp;</th>
             </tr>
             <?php

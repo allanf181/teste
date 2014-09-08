@@ -17,13 +17,13 @@ class PrazosDiarios extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
         
-        $sql = "SELECT pd.data, pd.motivo,
+        $sql = "SELECT date_format(pd.data, '%d/%m/%Y às %H:%m:%s') as data,
                 IF(pd.dataConcessao IS NULL,
                     'Aguardando liberação do coordenador...',
-                    pd.dataConcessao) as dataConcessao,
+                    date_format(pd.dataConcessao, '%d/%m/%Y às %H:%m:%s')) as dataConcessao,
                     d.nome as disciplina, a.codigo as atribuicao,
                     c.codigo as codCurso, t.codigo as turma,
-                    p.professor as codProfessor
+                    p.professor as codProfessor,pd.motivo
                 FROM PrazosDiarios pd, Atribuicoes a, Turmas t, 
                     Disciplinas d, Cursos c, Professores p
                 WHERE pd.atribuicao = a.codigo
@@ -36,10 +36,10 @@ class PrazosDiarios extends Generic {
 
         $sql .= " $sqlAdicional ";
 
-        $sql .= " GROUP BY a.codigo ORDER BY pd.data DESC ";
+        $sql .= " GROUP BY pd.codigo ORDER BY pd.data DESC ";
         
         $sql .= "$nav";
-       
+
         $res = $bd->selectDB($sql, $params);
 
         if ($res)
