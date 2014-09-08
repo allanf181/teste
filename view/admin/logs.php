@@ -72,7 +72,6 @@ $ordem = '';
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$sqlAdicional .= " AND origem  LIKE 'CRON%' ORDER BY l.data DESC ";
 $res = $log->listLogs($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($log->listLogs($params, $sqlAdicional));
 
