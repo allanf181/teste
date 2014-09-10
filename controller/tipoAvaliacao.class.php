@@ -10,11 +10,14 @@ class TiposAvaliacoes extends Generic {
     }
 
     // USADO POR: PROFESSOR/AVALIACAO.PHP
-    public function listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipo) {
+    public function listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipo, $final=null) {
         $bd = new database();
 
+        if (!$final)
+            $final = '0';
+        
         if ($tipo == 'recuperacao' || $tipo == 'avaliacao' || !$tipo)
-            $sqlAdicional = " AND ( t.tipo = 'avaliacao' OR t.tipo = 'recuperacao' ) ";
+            $sqlAdicional = " AND ( t.tipo = 'avaliacao' OR t.tipo = 'recuperacao' ) AND t.final = $final ";
         else
             $sqlAdicional = " AND t.tipo = '$tipo'";
 
@@ -25,26 +28,14 @@ class TiposAvaliacoes extends Generic {
 		AND a.turma = tu.codigo 
 		AND tu.curso = c.codigo 
 		AND a.codigo = :cod
-		AND ( (t.final = 0 OR t.final IS NULL AND a.bimestre < 4) OR (a.bimestre = 4))
-		AND t.tipo NOT IN (SELECT t1.tipo FROM Avaliacoes a1, TiposAvaliacoes t1 
-		WHERE a1.tipo= t1.codigo 
-		AND a1.tipo = t.codigo 
-		AND a1.atribuicao = :cod
-		AND t1.tipo = 'recuperacao' 
-		AND t1.final = 0)
+
                 $sqlAdicional
-		ORDER BY t.nome";
+		ORDER BY t.tipo, t.final";
         $params = array(':cod' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
         
         if ($res) {
             foreach ($res as $reg) {
-                if ($reg['bimestre'] == 4 && $tipo == 'avaliacao' && $reg['final'])
-                    continue;
-                
-                if ($reg['bimestre'] == 4 && $tipo == 'recuperacao' && !$reg['final'])
-                    continue;
-
                 // MOSTRA AS AVALIACOES CASO AINDA NAO ATINGIU OS PONTOS NO CASO
                 // DE PESO E MEDIA
                 if ( ($calculo == 'peso' || $calculo == 'soma') 

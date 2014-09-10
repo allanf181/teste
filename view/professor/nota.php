@@ -137,7 +137,7 @@ if ($_SESSION['dataExpirou'])
                             if ($reg['habilitar']) {
                                 ?>
                                 <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
-                                <input <?= $disabled ?> tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
+                                <input <?= $disabled ?> id='<?= $i ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
                                 <?php
                                 $situacao = array();
                                 if ($reg['bimestre'] > 0) { // Busca as Notas dos Bimestres
@@ -153,7 +153,10 @@ if ($_SESSION['dataExpirou'])
                                     <td align='center'><font color='<?= $color ?>'><?= $dados['media'] ?></font></td>
                                     <?php
                                 }
-
+                                
+                                if ($i==1)
+                                    $travaFinal = $resAval['final'];
+                                
                                 if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']] )
                                     $resAval['final'] = 1;
                                 $dados1 = $nota->resultadoBimestral($reg['codAluno'], $resAval['turmaCodigo'], $resAval['discNumero'], $resAval['final']);
@@ -167,17 +170,33 @@ if ($_SESSION['dataExpirou'])
                                 if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']] )  {
                                     ?>
                                     <td align='center'><?= abreviar($dados1['situacao'], 24) ?></td>
-                                    <?php
+                                    <?php //TRAVANDO PARA REAVALIACAO FINAL
+                                    $trava=null;
+                                    if ( !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
+                                        ?>
+                                        <script> $('#<?= $i ?>').attr('disabled','disabled'); </script>
+                                        <?php
+                                    }
                                 }
                                 ?>
                                 <td align='center'><?=$situacao[$reg['codAluno']]?></td>
-                                <?php
+                                <?php //TRAVANDO PARA RECUPERACAO
+                                if ( !$travaFinal && !$situacao[$reg['codAluno']] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
+                                    ?>
+                                    <script> $('#<?= $i ?>').attr('disabled','disabled'); </script>
+                                    <?php
+                                }
                             } else {
                                 $dados = $nota->resultado($reg['matricula'], $atribuicao, $resAval['final']);
                                 ?>
                                 <td align='center'><?= $dados['media'] ?></td>
-                                <td align='center'><?= $dados['situacao'] ?></td>
-                                <?php
+                                <td align='center'>1<?= $dados['situacao'] ?></td>
+                                <?php // TRAVANDO PARA ATRIBUICOES NAO BIMESTRAIS
+                               if ( !$dados['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota'] ) {
+                                    ?>
+                                    <script> $('#<?= $i ?>').attr('disabled','disabled'); </script>
+                                    <?php
+                                }                                
                             }
                         } else {
                             ?>

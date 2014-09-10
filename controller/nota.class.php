@@ -7,25 +7,28 @@ class Notas extends Frequencias {
 
     //Funcao para Inserir Notas
     public function putNotas($params) {
-    	$c=0;
+        $c = 0;
 
-	foreach ($params['matricula'] as $matricula => $nota) {
-            $new_params['codigo'] = $params['codigo'][$matricula];
-            $new_params['avaliacao'] = $params['avaliacao'];
-            $new_params['matricula'] = $matricula;
-            if ($nota == '0') $nota = '0.0'; //PDO NAO ACEITA ZERO PARA STRING
-            $new_params['nota'] = $nota;
+        foreach ($params['matricula'] as $matricula => $nota) {
+            if ($nota != null) {
+                $new_params['codigo'] = $params['codigo'][$matricula];
+                $new_params['avaliacao'] = $params['avaliacao'];
+                $new_params['matricula'] = $matricula;
+                if ($nota == '0')
+                    $nota = '0.0'; //PDO NAO ACEITA ZERO PARA STRING
+                $new_params['nota'] = $nota;
 
-            $res = $this->insertOrUpdate($new_params);
-            if ($res)
-                $c++;
-	}
+                $res = $this->insertOrUpdate($new_params);
+                if ($res)
+                    $c++;
+            }
+        }
         $rs['TIPO'] = 'UPDATE';
         $rs['RESULTADO'] = $c;
         $rs['STATUS'] = 'OK';
         return $rs;
     }
-    
+
     // Funcao utilizada para gerar resultado dos 4 Bimestres
     public function resultadoBimestral($aluno, $turma, $numeroDisciplina, $final = 0, $fechamento = 0) {
         $bd = new database();
@@ -82,10 +85,10 @@ class Notas extends Frequencias {
 			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
 			WHERE t2.codigo = :turma))
 		AND d.numero = :numDisc";
-        
+
         $params = array(':aluno' => $aluno,
-                ':turma' => $turma,
-                ':numDisc' => $numeroDisciplina);        
+            ':turma' => $turma,
+            ':numDisc' => $numeroDisciplina);
         $res = $bd->selectDB($sql, $params);
 
         $c = 0;
@@ -101,7 +104,7 @@ class Notas extends Frequencias {
                 $calculo .= $dados['calculo'];
                 $rec += $dados['recuperacao'];
                 $final += $dados['final'];
-                
+
                 if ($reg['bimestre'] == 4)
                     $notaUltimoBimestre = $dados['media'];
             }
@@ -109,7 +112,7 @@ class Notas extends Frequencias {
 
         // MEDIA DAS MEDIAS DOS BIMESTRES
         $media = $medias / $c;
-
+        
         // MEDIA DAS FREQUENCIAS DO BIMESTRE
         $frequencia = $frequencias / $c;
 
@@ -119,7 +122,7 @@ class Notas extends Frequencias {
         if ($calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec);
         } else {  // ALUNO PRECISA DE REAVALIACAO FINAL
-            $dados = array_merge($dados,$this->checkIfRec($atribuicao, $media, $final, $notaUltimoBimestre));
+            $dados = array_merge($dados, $this->checkIfRec($atribuicao, $media, $final, $notaUltimoBimestre));
         }
 
         // SITUACAO DAS NOTAS
@@ -190,10 +193,11 @@ class Notas extends Frequencias {
 			AND n.matricula = :matricula
 			$sqlFinal
                         ORDER BY substitutiva ASC ";
+
         $params = array(':att' => $atribuicao,
-                ':matricula' => $matricula);
+            ':matricula' => $matricula);
         $res = $bd->selectDB($sql, $params);
-        
+                
         if (!$res)
             return null;
         $media = 0;
@@ -210,7 +214,8 @@ class Notas extends Frequencias {
 
                 if ($tipo == 'media' || $tipo == 'soma') {
                     $medias[$reg['sigla']] = $reg['nota'];
-                    if ($reg['nota']) $total++;
+                    if ($reg['nota'])
+                        $total++;
                 }
 
                 if ($tipo == 'formula')
@@ -236,7 +241,7 @@ class Notas extends Frequencias {
                 $final = 1;
             }
         }
-        
+                        
         if ($tipo == 'media' && $medias)
             $media = array_sum($medias) / $total;
         if ($tipo == 'peso')
@@ -267,8 +272,8 @@ class Notas extends Frequencias {
             $dados['mediaAvaliacao'] = $media;
             $dados['notaRecuperacao'] = $rec;
         }
-        
-        if ($calculo) { // SE TEM RECUPERACAO
+
+        if ($calculoFinal || $calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec, $tipo, $formula);
 
             // PARA FECHAMENTO DO BIMESTRE SO INTERESSA ATE AQUI
@@ -353,9 +358,9 @@ class Notas extends Frequencias {
 
         $notaMaior = $res[0]['notaMaior'];
         $notaMenor = $res[0]['notaMenor'];
-        
+
         if (($media >= $notaMaior && $media < $notaMenor) ||
-            ($final && $notaUltimoBimestre < $res[0]['notaUltimBimestre'])
+                ($final && $notaUltimoBimestre < $res[0]['notaUltimBimestre'])
         ) {
             $dados['situacao'] = $res[0]['nome'];
             $dados['siglaSituacao'] = $res[0]['sigla'];

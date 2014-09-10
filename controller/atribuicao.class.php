@@ -1,10 +1,6 @@
 <?php
-
 if (!class_exists('Generic'))
     require_once CONTROLLER . '/generic.class.php';
-
-if (!class_exists('Notas'))
-    require CONTROLLER . "/notaFinal.class.php";
 
 class Atribuicoes extends Generic {
 
@@ -69,7 +65,7 @@ class Atribuicoes extends Generic {
             if (!$res[0]['bimestre'] && !$res[0]['semestre'])
                 $res[0]['bimestreNome'] = 'ANUAL';
             elseif ($res[0]['bimestre'] && $res[0]['semestre'])
-                $res[0]['bimestreNome'] .= 'º BIMESTRE';
+                $res[0]['bimestreNome'] .= $res[0]['bimestre'].'º BIMESTRE';
             elseif (!$res[0]['bimestre'] && $res[0]['semestre'])
                 $res[0]['bimestreNome'] = 'SEMESTRAL';
 
@@ -138,7 +134,7 @@ class Atribuicoes extends Generic {
                 $res[0]['info1'] = 'STATUS_DIARIO_4';
             if ($res[0]['status'] == 100)
                 $res[0]['info1'] = 'STATUS_DIARIO_100';
-            if ($res[0]['prazoDiff'] && !$res[0]['status']) {
+            if ($res[0]['prazoDiff'] && $res[0]['prazoDiff'] >= 0 && !$res[0]['status']) {
                 $res[0]['info1'] = 'STATUS_DIARIO_101';
                 $res[0]['info2'] = $res[0]['prazoFormat'];
             }
@@ -340,6 +336,8 @@ class Atribuicoes extends Generic {
                     $ok++;
 
                 //ALTERAR NOTASFINAIS PARA SINCRONIZAR NOVAMENTE
+                if (!class_exists('NotasFinais'))
+                    require CONTROLLER . "/notaFinal.class.php";
                 $nota = new NotasFinais();
                 if ($nota->fecharDiario($atribuicao)) {
                     $params_nota = array('codigo' => $atribuicao);

@@ -197,9 +197,10 @@ if ($_GET['opcao'] == 'insert') {
 
                                 if ($tipoAval == 'substitutiva') {
                                     $res1 = $avaliacao->listAvaliacoes($atribuicao, 'substitutiva');
+
                                     $tipo = $tipoAvaliacao->listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipoAval);
                                 } else {
-                                    $res1 = $tipoAvaliacao->listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipoAval);
+                                    $res1 = $tipoAvaliacao->listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipoAval, dcrip($_GET['final']));
                                 }
                                 foreach ($res1 as $reg) {
                                     $selected = "";
@@ -319,6 +320,7 @@ if ($_GET['opcao'] == '') {
                 $totalPesoOrPonto = $reg['totalPeso'];
                 if ($calculo == 'media' || $calculo == 'formula')
                     $reg['peso'] = '';
+
                 if ($reg['recuperacao'])
                     $reg['peso'] = $reg['recuperacao'];
 
@@ -328,6 +330,9 @@ if ($_GET['opcao'] == '') {
 
                 if ($reg['tipo'] == 'pontoExtra')
                     $totalPesoOrPonto = $reg['totalPonto'];
+
+                if ($reg['tipo'] == 'recuperacao')
+                    $final = 1;
 
                 $reg['tipo'] = strtoupper($reg['tipo']);
                 $titleAval = strtoupper($reg['recuperacao']);
@@ -346,7 +351,7 @@ if ($_GET['opcao'] == '') {
                     } else {
                         ?>
                         <td align='center' width="20"><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
-                            <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= crip(round($totalPesoOrPonto - $reg['peso'], 2)) ?>&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip($reg['tipo']) ?>'); void(0);" class='nav' title='Alterar'>
+                            <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= crip(round($totalPesoOrPonto - $reg['peso'], 2)) ?>&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip($reg['tipo']) ?>&final=<?= crip($reg['final']) ?>'); void(0);" class='nav' title='Alterar'>
                                 <img class='botao' src='<?= ICONS ?>/config.png' /></a>
                         </td>
                         <?php
@@ -360,7 +365,7 @@ if ($_GET['opcao'] == '') {
         <?php if ((($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4))) { ?>
             <?php if ($_SESSION['dataExpirou'] == 0) {
                 ?>
-                <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&tipo=<?= crip($reg['tipo']) ?>'); void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
+                <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&tipo=<?= crip($reg['tipo']) ?>&final=<?= crip($final) ?>'); void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
                 &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>'); void(0);" title="Cadastrar Ponto Extra"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
                 &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva') ?>'); void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
                 <?php

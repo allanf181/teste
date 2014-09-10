@@ -224,7 +224,7 @@ if ($_GET["atribuicao"]) {
 ?>
 
 <script>
-<?php if ($pergunta) print "pergunta();" ?>
+<?php if ($pergunta && !$erro) print "pergunta();" ?>
 
     $(document).ready(function() {
         $(".finalizar").click(function() {
@@ -252,9 +252,9 @@ if ($_GET["atribuicao"]) {
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption) {
                 if (caption == 'Sim') {
-                    $('#index').load('<?php print $SITE; ?>?opcao=controleDiario&status=2&atribuicao=<?= crip($atribuicao) ?>');
-                                    }
-                                }
-                            });
-                        }
+                    $('#index').load('<?= $SITE ?>?opcao=controleDiario&status=2&atribuicao=' + '<?= crip($atribuicao) ?>');
+                }
+            }
+        });
+    }
 </script>

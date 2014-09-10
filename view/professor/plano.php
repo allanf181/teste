@@ -43,13 +43,15 @@ if ($_GET['pagina']) {
         $tipo = $_GET['pagina'];
         $ret = $$tipo->insertOrUpdate($_POST);
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-        if ($_POST['codigo']) $_GET["codigo"] = $_POST['codigo'];
-        else $_GET["codigo"] = crip($ret['RESULTADO']);        
+        if ($_POST['codigo'])
+            $_GET["codigo"] = $_POST['codigo'];
+        else
+            $_GET["codigo"] = crip($ret['RESULTADO']);
     }
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
 <ul class="tabs">
@@ -93,11 +95,11 @@ if ($_GET['pagina']) {
 
         $pd = ($res) ? 'SIM' : 'N&Atilde;O';
         print "<br>Plano de Ensino digitado: $pd<br>";
-        
+
         $count = 0;
         if ($ret = $planoAula->listPlanoAulas(dcrip($atribuicao)))
-           $count = count($ret);
-                
+            $count = count($ret);
+
         if ($count <= 0)
             $disabled = 'disabled';
         print "Quantidade de aulas cadastradas no Plano de Aula: $count<br>";
@@ -287,6 +289,10 @@ if ($_GET['pagina'] == "planoAula") {
     }
     ?>
     <script>
+        function validaItem(item) {
+            item.value = item.value.replace(",", ".");
+        }
+
         $('#form_padrao').html5form({
             method: 'POST',
             action: '<?= $SITE; ?>',
@@ -306,7 +312,7 @@ if ($_GET['pagina'] == "planoAula") {
             <table id="form" border="0" width="100%">
                 <tr>
                     <td align="left">Semana: </td>
-                    <td><input type="text" size="2" <?= $disabled; ?> id="semana" name="semana" maxlength="2" value="<?= $semana; ?>"/>
+                    <td><input type="text" size="4" <?= $disabled; ?> onchange="validaItem(this)" id="semana" name="semana" maxlength="4" value="<?= $semana; ?>"/>
                 </tr>
                 <tr>
                     <td align="left">Conte&uacute;do: </td>

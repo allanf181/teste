@@ -60,6 +60,13 @@ require SESSAO;
 
 <br>
 <br>
+<b>Vers&atilde;o 1.408</b>
+<br>
+<br> - Organizar ordem dos planos de aula - chamado #160
+<br> - Travamento da digitação de Instrumento Final de Avaliação e Reavaliação Final - #162
+<br> - Reestrutura&ccedil;&atilde;o de c&oacute;digo - Admin
+<hr>
+<br>
 <b>Vers&atilde;o 1.407</b>
 <br>
 <br> - Problemas com notas/avalia&ccedil;&otilde;es - chamado #155
