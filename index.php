@@ -316,10 +316,6 @@ if (isset($_SESSION["loginTipo"])) {
 <div class="right">
 
 <div id="index"></div>
-
-<?php
-    mysql_close($conexao);
-?>
 </div>
 </div>
 <div class="footer" <?php if (!$_SESSION['loginCodigo']) print 'style="margin-right: 195px; "'; ?> >

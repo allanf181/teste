@@ -257,28 +257,6 @@ class Atribuicoes extends Generic {
         }
     }
 
-    // USADO POR: SECRETARIA/PLANO.PHP
-    // Retorna os bimestres de uma atribuicao
-    public function getFechamento($turma) {
-        $bd = new database();
-
-        $sql = "SELECT a.bimestre as bimestre,
-                IF(t.semestre = 0,'ANUAL', IF(a.bimestre = 0, 'SEMESTRAL',CONCAT(a.bimestre,'º BIM'))) as nome
-                FROM Atribuicoes a, Turmas t 
-                WHERE t.codigo=a.turma 
-                AND t.codigo=:turma
-                GROUP BY a.bimestre";
-
-        $params = array(':turma' => $turma);
-
-        $res = $bd->selectDB($sql, $params);
-        if ($res) {
-            return $res;
-        } else {
-            return false;
-        }
-    }
-
     // LISTA TODAS ATRIBUICOES
     // USADO POR: SECRETARIA/PRAZOS/DIARIO.PHP
     public function getAllAtribuicoes($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {

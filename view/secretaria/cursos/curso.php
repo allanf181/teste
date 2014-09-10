@@ -17,7 +17,6 @@ $cursos = new Cursos();
 
 // INSERT E UPDATE
 if ($_POST["opcao"] == 'InsertOrUpdate') {
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
     $ret = $cursos->insertOrUpdate($_POST);
@@ -62,16 +61,27 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
             <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
-            <tr><td align="right">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="145" disabled value="<?php echo $nome; ?>"/></td></tr>
-            <tr><td align="right">Nome Alternativo: </td><td><input type="text" maxlength="145" style="width: 400px" title="Nome alternativo utilizado no atestado de matrícula." name="nomeAlternativo" id="nomeAlternativo" value="<?php echo $nomeAlternativo; ?>"/></td></tr>            
-            <tr><td></td>
+            <tr>
+                <td align="right">Nome: </td>
+                <td><input type="text" name="nome" id="nome" maxlength="145" disabled value="<?php echo $nome; ?>"/></td>
+            </tr>
+            <tr>
+                <td align="right">Nome Alternativo: </td>
+                <td><input type="text" maxlength="145" style="width: 400px" title="Nome alternativo utilizado no atestado de matrícula." name="nomeAlternativo" id="nomeAlternativo" value="<?php echo $nomeAlternativo; ?>"/></td>
+            </tr>            
+            <tr>
+                <td>&nbsp;</td>
                 <td>
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
-                    <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" class="submit" /></td>
+                    <table width="100%">
+                        <tr>
+                            <td><input type="submit" value="Salvar" id="salvar" class="submit" /></td>
                             <td><input type="reset" value="Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?php print $SITE; ?>');
-                                            void(0);" /></td>
-                        </tr></table>
-                </td></tr>
+                                            void(0);"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </table>
     </form>
 </div>
@@ -93,7 +103,16 @@ require PATH . VIEW . '/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
-    <tr><th align="center" width="40">#</th><th align="left">Curso</th><th align="left">Modalidade</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+    <tr>
+        <th align="center" width="40">#</th>
+        <th align="left">Curso</th>
+        <th align="left">Modalidade</th>
+        <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+            </a>
+        </th>
+    </tr>
     <?php
     // efetuando a consulta para listagem
     $i = $item;
@@ -101,12 +120,15 @@ require PATH . VIEW . '/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         $codigo = crip($reg['codigo']);
         ?>
-        <tr <?php print $cdif; ?>><td align='center'><?php print $i; ?></td>
-            <td><?php print $reg['nome']; ?>
-            </td><td><?php print $reg['modalidade']; ?></td>
+        <tr <?php print $cdif; ?>>
+            <td align='center'><?php print $i; ?></td>
+            <td><?php print $reg['nome']; ?></td>
+            <td><?php print $reg['modalidade']; ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
-                <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'><img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
+                <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>
+                    <img class='botao' src='<?php print ICONS; ?>/config.png' />
+                </a>
             </td>
         </tr>
         <?php
@@ -138,7 +160,7 @@ require PATH . VIEW . '/paginacao.php';
 
         $(".item-alterar").click(function() {
             var codigo = $(this).attr('id');
-            $('#index').load('<?php print $SITE; ?>?codigo=' + codigo);           
+            $('#index').load('<?php print $SITE; ?>?codigo=' + codigo);
         });
 
         $('#select-all').click(function(event) {

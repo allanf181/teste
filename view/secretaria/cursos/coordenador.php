@@ -13,215 +13,237 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-if ($_POST["opcao"] == 'InsertOrUpdate') {
-    $codigo = $_POST["campoCodigo"];
-    $coordenador = $_POST["campoCoordenador"];
-    $curso = $_POST["campoCurso"];
+require CONTROLLER . "/professor.class.php";
+$prof = new Professores();
 
-    if (empty($codigo)){
-        $resultado = mysql_query("insert into Coordenadores values(NULL, $coordenador, $curso)");
-        if ($resultado==1)
-			mensagem('OK', 'TRUE_INSERT');
-        else
-			mensagem('NOK', 'FALSE_INSERT');
-		
-		$_GET["codigo"] = crip(mysql_insert_id());
-    }else{
-        $resultado = mysql_query("update Coordenadores set coordenador=$coordenador,curso=$curso where codigo=$codigo");
-        if ($resultado==1)
-			mensagem('OK', 'TRUE_UPDATE');
-        else
-			mensagem('NOK', 'FALSE_UPDATE');
-		
-		$_GET["codigo"] = crip($_POST["campoCodigo"]); 
-    }
+require CONTROLLER . "/coordenador.class.php";
+$coord = new Coordenadores();
+
+// INSERT E UPDATE
+if ($_POST["opcao"] == 'InsertOrUpdate') {
+    unset($_POST['opcao']);
+
+    $ret = $coord->insertOrUpdate($_POST);
+
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    if (dcrip($_POST['codigo']))
+        $_GET["codigo"] = $_POST['codigo'];
+    else
+        $_GET["codigo"] = crip($ret['RESULTADO']);
+    
+    $_GET["curso"] = $_POST['curso'];
 }
 
+// DELETE
 if ($_GET["opcao"] == 'delete') {
-    $codigo = dcrip($_GET["codigo"]);
-    $resultado = mysql_query("delete from Coordenadores where codigo=$codigo");
-    if ($resultado==1)
-		mensagem('OK', 'TRUE_DELETE');
-    else
-		mensagem('NOK', 'FALSE_DELETE');
+    $ret = $coord->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
 
-?> 
+if (dcrip($_GET["curso"])) {
+    $curso = dcrip($_GET["curso"]);
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c.codigo = :curso ';
+}
 
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-
-<?php
-    // inicializando as variï¿½veis do formulï¿½rio
-    $codigo="";
-    $coordenador="";
-    $curso="";
-    
-    if (!empty ($_GET["codigo"])){ // se o parï¿½metro nï¿½o estiver vazio
-        
-        // consulta no banco
-        $sql = "SELECT codigo, coordenador, curso FROM Coordenadores WHERE codigo = ".dcrip($_GET["codigo"]);
-		//print $sql;
-        $resultado = mysql_query($sql);
-        $linha = mysql_fetch_row($resultado);
-        
-        // armazena os valores nas variï¿½veis
-        $codigo = $linha[0];
-        $coordenador = $linha[1];
-        $curso = $linha[2];
-        $restricao = " AND c.codigo=".dcrip($_GET["codigo"]);
-    }
-    print "<script>\n";
-    print "    $('#form_padrao').html5form({ \n";
-    print "        method : 'POST', \n";
-    print "        action : '$SITE', \n";
-    print "        responseDiv : '#index', \n";
-    print "        colorOn: '#000', \n";
-    print "        colorOff: '#999', \n";
-    print "        messages: 'br' \n";
-    print "    }) \n";
-    print "</script>\n";
-
-    print "<div id=\"html5form\" class=\"main\">\n";
-    print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
+// LISTAGEM
+if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
+    // consulta no banco
+    $params1 = array('codigo' => dcrip($_GET["codigo"]));
+    $res = $coord->listRegistros($params1);
+    extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
+}
 ?>
-    <table align="center" width="100%" id="form">
-        <input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" />
-        <tr><td align="right">Curso: </td><td><select name="campoCurso" id="campoCurso" value="<?php echo $curso; ?>"><option></option>
-                    <?php
-                        $resultado = mysql_query("select c.codigo, c.nome, m.nome, m.codigo 
-                        							from Cursos c, Modalidades m
-                        							where m.codigo = c.modalidade
-													order by c.nome");
-                        $selected=""; // controla a alteraÃ§Ã£o no campo select
-                        while ($linha = mysql_fetch_array($resultado)){
-                            if ($linha[0]==$curso)
-                               $selected="selected";
-							if ($linha[3] < 1000 || $linha[3] >= 2000) $linha[1] = "$linha[1] [$linha[2]]";                              
-                            echo "<option $selected value='$linha[0]'>[$linha[0]] $linha[1]</option>";
-                            $selected="";
-                        }
-                        
-                    ?>
-                </select>
-        </td></tr>
-        <tr><td align="right">Coordenador: </td><td>
-        	<select name="campoCoordenador" id="campoCoordenador" value="<?php echo $coordenador; ?>">
-        		<option></option>
-                    <?php
-                        $resultado = mysql_query("SELECT * FROM Pessoas p, PessoasTipos pt
-                        							WHERE pt.pessoa = p.codigo AND pt.tipo = $COORD ORDER BY p.nome");
-                        $selected=""; // controla a alteracao no campo select
-                        $i=0;
-                        while ($linha = mysql_fetch_array($resultado)){
-                            if ($linha[0]==$coordenador)
-                               $selected="selected";
-                            echo "<option $selected value='$linha[0]'>".mostraTexto($linha[1])."</option>";
-                            $selected="";
-                            $i++;
-                        }
-                        if (!$i)
-                        	echo "<option selected>Nenhuma pessoa cont&eacute;m o tipo Coordenador</option>";
-                    ?>
-                </select>
-        </td></tr>
-        <tr><td></td><td>
-		<input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" />
-	    <input type="hidden" name="opcao" value="InsertOrUpdate" />    
-		<table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-			<td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
-		</tr></table>
-		</td></tr>
-    </table></center>
-</form>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
+<script>
 
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?= $SITE ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
+</script>
+<div id="html5form" class="main">
+    <form id="form_padrao">
+        <table align="center" width="100%" id="form">
+            <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
+            <tr>
+                <td align="right">Curso: </td>
+                <td>
+                    <select name="curso" id="curso" value="<?= $curso ?>">
+                        <option></option>
+                        <?php
+                        require CONTROLLER . '/curso.class.php';
+                        $cursos = new Cursos();
+                        foreach ($cursos->listCursos(null) as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $curso)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['curso'] . " [" . $reg['codigo'] . "]</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">Coordenador: </td>
+                <td>
+                    <select name="coordenador" id="coordenador" value="<?= $coordenador ?>">
+                        <option></option>
+                        <?php
+                        require CONTROLLER . '/pessoa.class.php';
+                        $pessoa = new Pessoas();
+                        $sqlAdicionalCoord = ' AND pt.tipo = :coord ';
+                        $paramsCoord = array('coord' => $COORD);
+                        $resCoord = $pessoa->listPessoasTipos($paramsCoord, $sqlAdicionalCoord, null, null);
+                        foreach ($resCoord as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $coordenador)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        }
+                        if (!$resCoord) {
+                            ?>
+                            <option selected>Nenhuma pessoa cont&eacute;m o tipo Coordenador</option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr><td>&nbsp;</td>
+                <td>
+                    <input type="hidden" name="opcao" value="InsertOrUpdate" />    
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <input type="submit" value="Salvar" id="salvar" />
+                            </td>
+                            <td>
+                                <a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
 <?php
-    // inicializando as variï¿½veis
-    $item = 1;
-    $itensPorPagina = 50;
-    $primeiro = 1;
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-    $ultimo = 1;
+// PAGINACAO
+$itensPorPagina = 20;
+$item = 1;
+$ordem = '';
 
-    // validando a pï¿½gina atual
-    if (!empty($_GET["item"])){
-        $item = $_GET["item"];
-        $anterior = $item - $itensPorPagina;
-        $proximo = $item + $itensPorPagina;
-    }
+if (isset($_GET['item']))
+    $item = $_GET["item"];
 
-    // validando a pï¿½gina anterior
-    if ($item - $itensPorPagina < 1)
-        $anterior = 1;
+if ($params['curso'] = $curso)
+    $sqlAdicional = ' AND c.codigo = :curso ';
 
-    // descobrindo a quantidade total de registros
-    $resultado = mysql_query("SELECT COUNT(*) 
-							    FROM Coordenadores c, Cursos cu, Pessoas p 
-							    WHERE c.coordenador = p.codigo 
-							    AND c.curso = cu.codigo $restricao");
-    $linha = mysql_fetch_row($resultado);
-    $ultimo = $linha[0];
-    
-    // validando o prï¿½ximo item
-    if ($proximo > $ultimo){
-        $proximo = $item;
-        $ultimo = $item;
-    }
-    
-    // validando o ï¿½ltimo item
-    if ($ultimo % $itensPorPagina > 0)
-        $ultimo=$ultimo-($ultimo % $itensPorPagina)+1;    
- 
-$SITENAV = $SITE.'?';
+$res = $coord->listCoordenadores($params, $sqlAdicional, $item, $itensPorPagina);
+$totalRegistros = count($coord->listCoordenadores($params, $sqlAdicional, $item, $itensPorPagina));
 
-require(PATH.VIEW.'/navegacao.php'); ?>
+$SITENAV = $SITE . "?" . mapURL($params);
+require PATH . VIEW . '/paginacao.php';
+?>
 
 <table id="listagem" border="0" align="center">
-    <tr><th align="left" width="60">C&oacute;digo</th><th align="left">Curso</th><th align="left">Coordenador</th><th align="center" width="40">A&ccedil;&atilde;o</th></tr>
+    <tr>
+        <th align="left" width="60">C&oacute;digo</th>
+        <th align="left">Curso</th>
+        <th align="left">Coordenador</th>
+        <th align="center" width="50">&nbsp;&nbsp;
+            <input type="checkbox" id="select-all" value="">
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
+            </a>
+        </th>
+    </tr>
     <?php
     // efetuando a consulta para listagem
-    $resultado = mysql_query("SELECT c.codigo, cu.nome, p.nome, cu.codigo FROM Coordenadores c, Cursos cu, Pessoas p 
-							    WHERE c.coordenador = p.codigo 
-							    AND c.curso = cu.codigo $restricao ORDER BY cu.nome limit ". ($item - 1) . ",$itensPorPagina");
     $i = $item;
-    while ($linha = mysql_fetch_array($resultado)) {
-        $i%2==0 ? $cdif="class='cdif'" : $cdif="";
-		$codigo = crip($linha[0]);
-        echo "<tr $cdif><td>".$linha[3]."</td><td>".mostraTexto($linha[1])."</td><td>".mostraTexto($linha[2])."</td><td><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a><a href='#' title='Alterar' class='item-alterar' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/config.png' /></a></td></tr>";
+    foreach ($res as $reg) {
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        ?>
+        <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
+            <td><?= mostraTexto($reg['curso']) ?>
+            <td><?= mostraTexto($reg['coordenador']) ?>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
+                <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>
+                    <img class='botao' src='<?= ICONS ?>/config.png' />
+                </a>
+            </td>
+        </tr>
+        <?php
         $i++;
     }
-    mysql_close($conexao);
     ?>
-    
-<?php require(PATH.VIEW.'/navegacao.php'); ?>
+</table>
 
 <script>
-function valida() {
-    if ( $('#campoCurso').val() == "" || $('#campoCoordenador').val() == "" ) {
-        $('#salvar').attr('disabled', 'disabled');
-    } else {
-        $('#salvar').enable();
+    function valida() {
+        if ($('#curso').val() == "" || $('#coordenador').val() == "") {
+            $('#salvar').attr('disabled', 'disabled');
+        } else {
+            $('#salvar').enable();
+        }
     }
-}
-$(document).ready(function(){
-    valida();
-    $('#campoCurso, #campoCoordenador').change(function(){
-        valida();
+
+    function atualiza() {
+        curso = $('#curso').val();
+        $('#index').load('<?= $SITE ?>?curso=' + curso);
+    }
+
+    $('#curso').change(function() {
+        atualiza();
     });
 
-	$(".item-excluir").click(function(){
-		var codigo = $(this).attr('id');
-		jConfirm('Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {
-			if ( r )	
-				$('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
-		});
-	});
-	    
-	$(".item-alterar").click(function(){
-		var codigo = $(this).attr('id');
-		$('#index').load('<?php print $SITE; ?>?codigo=' + codigo);
-	});
-});    
+    $(document).ready(function() {
+        valida();
+        $('#curso, #coordenador').change(function() {
+            valida();
+        });
+
+        $(".item-excluir").click(function() {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
+                    }
+                }
+            });
+        });
+
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+
+        $(".item-alterar").click(function() {
+            var codigo = $(this).attr('id');
+            $('#index').load('<?= $SITE ?>?codigo=' + codigo);
+        });
+    });
 </script>

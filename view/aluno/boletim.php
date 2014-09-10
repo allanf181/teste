@@ -15,17 +15,24 @@ require PERMISSAO;
 
 $turma = dcrip($_GET["turma"]);
 $aluno = dcrip($_GET["aluno"]);
-if (dcrip($_GET["bimestre"]))
-    $bimestre = dcrip($_GET["bimestre"]);
 
+$params = array('aluno' => $aluno,'turma' => $turma);
+$sqlAdicional = ' AND p.codigo=:aluno AND t.codigo=:turma ';
+
+if (dcrip($_GET["bimestre"])) {
+    $bimestre = dcrip($_GET["bimestre"]);
+    $params['bimestre'] = $bimestre;
+    $sqlAdicional .= ' AND a.bimestre=:bimestre ';
+}
+
+$sqlAdicional .= ' ORDER BY a.bimestre, d.nome ';
 require CONTROLLER . "/matricula.class.php";
 $matricula = new Matriculas();
 
 require CONTROLLER . "/nota.class.php";
 $nota = new Notas();
 
-$res = $matricula->getDadosMatricula($aluno, $turma, $bimestre);
-
+$res = $matricula->getMatriculas($params, $sqlAdicional);
 $resultadoGlobal = $nota->resultadoModulo($aluno, $turma);
 
 require CONTROLLER . "/avaliacao.class.php";

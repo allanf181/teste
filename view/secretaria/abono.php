@@ -219,7 +219,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             if ($reg['dataFim'] && $reg['dataFim'] != '00/00/0000')
                 $reg['dataInicio'] = $reg['dataInicio'] . ' a ' . $reg['dataFim'];
             ?>
-            <tr <?php print $cdif; ?>><td><?php print $reg['dataInicio']; ?></td>
+            <tr <?php print $cdif; ?>>
+                <td><?php print $reg['dataInicio']; ?></td>
                 <td><?php print $reg['prontuario']; ?></td>
                 <td><?php print mostraTexto($reg['nome']); ?></td>
                 <td><a href="#" title="<?php print mostraTexto($reg['tipo']); ?>"><?php print $reg['sigla']; ?></a></td>
@@ -228,7 +229,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     <input type='checkbox' id='deletar' name='deletar[]' value='<?php print crip($reg['codigo']); ?>' />
                     <a href='#' title='Alterar' class='item-alterar' id='<?php print crip($reg['codigo']); ?>'>
                         <img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
-                </td></tr>
+                </td>
+            </tr>
             <?php
             $i++;
         }

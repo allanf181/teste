@@ -13,85 +13,94 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
+require CONTROLLER . "/horario.class.php";
+$horario = new Horarios();
+
+// DELETE
 if ($_GET["opcao"] == 'delete') {
-    $codigo = dcrip($_GET["codigo"]);
-	$resultado = mysql_query("delete from Horarios where codigo=$codigo");
-    if ($resultado==1)
-		mensagem('OK', 'TRUE_DELETE');
-    else
-		mensagem('INFO', 'FALSE_DELETE_DEP');
+    $ret = $horario->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
 ?>
-
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
-    // inicializando as vari?veis
-    $item = 1;
-    $itensPorPagina = 50;
-    $primeiro = 1;
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-    $ultimo = 1;
+// PAGINACAO
+$itensPorPagina = 20;
+$item = 1;
+$ordem = '';
 
-    // validando a p?gina atual
-    if (!empty($_GET["item"])){
-        $item = $_GET["item"];
-        $anterior = $item - $itensPorPagina;
-        $proximo = $item + $itensPorPagina;
-    }
+if (isset($_GET['item']))
+    $item = $_GET["item"];
 
-    // validando a p?gina anterior
-    if ($item - $itensPorPagina < 1)
-        $anterior = 1;
+$res = $horario->listRegistros($params, $item, $itensPorPagina);
 
-    // descobrindo a quantidade total de registros
-    $resultado = mysql_query("select count(*) from Horarios $restricao");
-    $linha = mysql_fetch_row($resultado);
-    $ultimo = $linha[0];
-    
-    // validando o pr?ximo item
-    if ($proximo > $ultimo){
-        $proximo = $item;
-        $ultimo = $item;
-    }
-    
-    // validando o ?ltimo item
-    if ($ultimo % $itensPorPagina > 0)
-        $ultimo=$ultimo-($ultimo % $itensPorPagina)+1;    
- 
-	$SITENAV = $SITE."?";
-	    require PATH . VIEW . '/paginacao.php';
- ?>
+$totalRegistros = $horario->count();
+$SITENAV = $SITE . '?';
+require PATH . VIEW . '/paginacao.php';
+?>
 
-	<table id="listagem" border="0" align="center">
-    <tr><th align="center" width="40">#</th><th>Nome</th><th>Hor&aacute;rio</th><th align="center" width="40">A&ccedil;&atilde;o</th></tr>
+<table id="listagem" border="0" align="center">
+    <tr>
+        <th align="center" width="40">#</th>
+        <th>Nome</th>
+        <th>Hor&aacute;rio</th>
+        <th align="center" width="50">&nbsp;&nbsp;
+            <input type="checkbox" id="select-all" value="">
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
+            </a>
+        </th>    </tr>
     <?php
     // efetuando a consulta para listagem
-    $resultado = mysql_query("SELECT codigo, nome, DATE_FORMAT(inicio, '%H:%i'), DATE_FORMAT(fim, '%H:%i') FROM Horarios $restricao ORDER BY inicio limit ". ($item - 1) . ",$itensPorPagina");
     $i = $item;
-    while ($linha = mysql_fetch_array($resultado)) {
-        $i%2==0 ? $cdif="class='cdif'" : $cdif="";
-		echo "<tr $cdif><td align='left'>$i</td><td>$linha[1]</td><td>$linha[2] a $linha[3]</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
+    foreach ($res as $reg) {
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        ?>
+        <tr <?= $cdif ?>>
+            <td align='center'><?= $i ?></td>
+            <td><?=$reg['nome']?></td>
+            <td><?=$reg['inicio']?> a <?=$reg['fim']?></td>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?=crip($reg['codigo'])?>' />
+            </td>
+        </tr>
+        <?php
         $i++;
     }
     ?>
+</table>
 
-<?php 
-
-
-mysql_close($conexao);
-?>
 <script>
-$(document).ready(function(){
-	$(".item-excluir").click(function(){
-		var codigo = $(this).attr('id');
-		jConfirm('Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {
-			if ( r )	
-				$('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
-		});
-	});
-});    
+    $(document).ready(function() {
+        $(".item-excluir").click(function() {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
+                    }
+                }
+            });
+        });
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+    });
 </script>

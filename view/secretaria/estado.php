@@ -49,7 +49,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -107,14 +107,13 @@ require PATH . VIEW . '/paginacao.php';
     $i = $item;
     foreach ($res as $reg) {
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-        $codigo = crip($reg['codigo']);
         ?>
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
             <td><?= $reg['nome'] ?>
             </td><td><?= $reg['sigla'] ?></td>
             <td align='center'>
-                <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
-                <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
+                <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>
                     <img class='botao' src='<?= ICONS ?>/config.png' />
                 </a>
             </td>

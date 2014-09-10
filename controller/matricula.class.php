@@ -12,36 +12,33 @@ class Matriculas extends Generic {
     
     // USADO POR: BOLETIM.PHP
     // Retorna dados da matricula (Disciplina, Turma, etc..)
-    public function getDadosMatricula($aluno, $turma, $bimestre = null) {
+    public function getMatriculas($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
-        
-        if ($bimestre) {
-            $params['bimestre'] = $bimestre;
-            $bimestre = " AND at.bimestre = :bimestre";
-        }
+
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina";
         
         $sql = "SELECT d.numero, d.nome as disciplina,
-                    a.prontuario, at.bimestre, at.codigo as atribuicao, 
-                    s.nome as situacao, at.status, d.codigo as codDisciplina,
-                    a.nome as pessoa, t.numero as turma, m.codigo as matricula,
+                    IF(a.bimestre > 0, CONCAT(' [', a.bimestre,'º BIM]'), '') as bimestre,
+                    p.prontuario, a.codigo as atribuicao, 
+                    IF(LENGTH(a.subturma) > 0,CONCAT(' [',a.subturma,']'),CONCAT(' [',a.eventod,']')) as subturma, 
+                    s.nome as situacao, a.status, d.codigo as codDisciplina,
+                    p.nome as pessoa, t.numero as turma, m.codigo as matricula,
+                    DATE_FORMAT(m.data, '%d/%m/%Y') as data,
                     IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso
-		FROM Matriculas m, Pessoas a, Turmas t, Turnos tu, Cursos c, 
-                    Atribuicoes at, Disciplinas d, Situacoes s
-		WHERE m.aluno=a.codigo 
-		AND at.turma=t.codigo 
-		AND d.codigo=at.disciplina
-		AND m.atribuicao=at.codigo
+		FROM Matriculas m, Pessoas p, Turmas t, Turnos tu, Cursos c, 
+                    Atribuicoes a, Disciplinas d, Situacoes s
+		WHERE m.aluno=p.codigo 
+		AND a.turma=t.codigo 
+		AND d.codigo=a.disciplina
+		AND m.atribuicao=a.codigo
 		AND t.turno=tu.codigo 
 		AND c.codigo=t.curso
-		AND m.situacao=s.codigo
-		AND a.codigo=:aluno
-		AND t.codigo=:turma
-		ORDER BY at.bimestre, d.nome";
+		AND m.situacao=s.codigo";
         
-        $sql .= $bimestre;
+        $sql .= $sqlAdicional;
         
-        $params['aluno'] = $aluno;
-        $params['turma'] = $turma;
+        $sql .= $nav;
         
         $res = $bd->selectDB($sql, $params);
 

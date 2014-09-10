@@ -13,253 +13,197 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
+require CONTROLLER . "/atribuicao.class.php";
+$atribuicao = new Atribuicoes();
+
+require CONTROLLER . "/professor.class.php";
+$prof = new Professores();
+
+// DELETE
 if ($_GET["opcao"] == 'delete') {
-	$codigo = dcrip($_GET["codigo"]);
-	$resultado = mysql_query("DELETE FROM Atribuicoes WHERE codigo=$codigo");
-	if ($resultado==1)
-		mensagem('OK', 'TRUE_DELETE');
-	else
-		mensagem('INFO', 'DELETE');
-	
-	$_GET["codigo"] = null;
+    $ret = $atribuicao->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    $_GET["codigo"] = null;
 }
 ?>
-
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
-// inicializando as variÃ¡veis do formulÃ¡rio
-$codigo="";
-$professor="";
-$turma="";
-$restricao="";
-$restricao2="";
-$bimestre="";
-$grupo="";
-
-$ordem="d.numero,t.numero";
-
-if (isset($_GET["turma"])){
-    $turma=dcrip($_GET["turma"]);
-    if (!empty($turma))
-    	$restricao = " AND t.codigo=$turma";
+if (dcrip($_GET["turma"])) {
+    $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= ' AND t.codigo = :turma ';
 }
 
-if (isset($_GET["professor"])) {
-  $professor = dcrip($_GET["professor"]);
-  if (!empty($professor))
- 		$restricao2 = " AND p.professor = $professor";
+if (dcrip($_GET["professor"])) {
+    $professor = dcrip($_GET["professor"]);
+    $params['professor'] = $professor;
+    $sqlAdicional .= ' AND p.professor = :professor ';
 }
 
-if (isset($_GET["ordem"])){
-    $ordem=$_GET["ordem"];
-    if ($ordem=="d")
-    $ordem="d.nome";
-    else if ($ordem=="t")
-    $ordem="t.numero";
-    else if ($ordem=="n")
-    $ordem="d.numero";    
-}
-
-print "<script>\n";
-print "    $('#form_padrao').html5form({ \n";
-print "        method : 'POST', \n";
-print "        action : '$SITE', \n";
-print "        responseDiv : '#index', \n";
-print "        colorOn: '#000', \n";
-print "        colorOff: '#999', \n";
-print "        messages: 'br' \n";
-print "    }) \n";
-print "</script>\n";
-
-print "<div id=\"html5form\" class=\"main\">\n";
-print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 ?>
-<table align="center" align="left" id="form" width="100%" >
-	<input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" />
-	<tr><td align="right" style="width: 100px">Turma: </td><td>
-		<select name="campoTurma" id="campoTurma" value="<?php echo $turma; ?>" style="width: 650px">
-			<option></option>
-			<?php
+<script>
 
-			$resultado = mysql_query("select distinct t.codigo, t.numero, c.nome, m.nome, m.codigo, c.codigo
-                        							from Cursos c, Turmas t, Modalidades m
-                        							where t.curso=c.codigo 
-                        							and m.codigo = c.modalidade
-													and (t.semestre=$semestre OR t.semestre=0) 
-													order by c.nome, t.numero");
-			$selected=""; // controla a alteraÃ§Ã£o no campo select
-			while ($linha = mysql_fetch_array($resultado)){
-				if ($linha[0]==$turma)
-				$selected="selected";
-                if ($linha[4] < 1000 || $linha[4] >= 2000) $linha[2] = "$linha[2] [$linha[3]]";				
-				echo "<option $selected value='".crip($linha[0])."'>[$linha[1]] $linha[2] ($linha[5])</option>";
-				$selected="";
-			}
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?php print $SITE; ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
+</script>
 
-			?>
-		</select>
-	</td></tr>
-  <tr><td align="right">Professor: </td><td><select name="campoProfessor" id="campoProfessor" style="width: 350px">
-        <?php
-          if ($turma) $profSQL = "AND pr.atribuicao IN (SELECT a1.codigo FROM Atribuicoes a1 WHERE a1.turma = $turma)";
-          $sql = "SELECT DISTINCT p.codigo, p.nome 
-          				FROM Pessoas p, PessoasTipos pt, Professores pr
-          				WHERE p.codigo = pt.pessoa
-          				AND pt.tipo = $PROFESSOR
-          				AND pr.professor = p.codigo
-          				$profSQL
-           				ORDER BY p.nome";
-          $resultado = mysql_query($sql);
-          $selected = "";
-          if (mysql_num_rows($resultado) > 0) {
-              echo "<option value=''>Todos</option>";
-              $prof_ant = 0;
-              while ($linha = mysql_fetch_array($resultado)) {
-              	$selected = "";
-                if ($linha[0] == $professor) {
-                	$selected = "selected";
-                	$prof_ant = 1;
-                }
-                echo "<option $selected value='".crip($linha[0])."'>$linha[1]</option>";
-                $selected = "";
-              }
-              if (!$prof_ant)
-              	$restricao2 = '';
-          }
-          else {
-              echo "<option value=''>Não há professores cadastrados.</option>";
-          }
-          ?>
-      </select>
-      </td></tr>	
-<tr><td>
-	<table width="100%"><tr><td>&nbsp;</td>
-	<td align="right"><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td>
-</tr></table>
-</td></tr>
-</table>
+<div id="html5form" class="main">
+    <form id="form_padrao">
+        <table align="center" align="left" id="form" width="100%" >
+            <input type="hidden" name="campoCodigo" value="<?= crip($codigo) ?>" />
+            <tr>
+                <td align="right" style="width: 100px">Turma: </td>
+                <td>
+                    <select name="turma" id="turma" value="<?= crip($turma) ?>" style="width: 650px">
+                        <option></option>
+                        <?php
+                        require CONTROLLER . '/turma.class.php';
+                        $turmas = new Turmas();
+                        $paramsTurma = array(':ano' => $ANO, ':semestre' => $SEMESTRE);
+                        foreach ($turmas->listTurmas($paramsTurma, $sqlAdicionaTurma) as $reg) {
+                            $selected = "";
+                            if ($reg['codTurma'] == $turma)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] . " [" . $reg['curso'] . "]</option>";
+                        }
+                        ?>
+                    </select>
+                </td></tr>
+            <tr>
+                <td align="right">Professor: </td>
+                <td>
+                    <select name="professor" id="professor" style="width: 350px">
+                        <option></option>
+                        <?php
+                        $sqlAdicionalProf = "AND pr.atribuicao "
+                                . "IN (SELECT a1.codigo "
+                                . "FROM Atribuicoes a1 "
+                                . "WHERE a1.turma = :turmaP)";
+                        $paramsProf['tipo'] = $PROFESSOR;
+                        $paramsProf['turmaP'] = $turma;
 
-</form>
-
+                        foreach ($prof->listProfessores($paramsProf, $sqlAdicionalProf) as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $professor)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>	
+            <tr>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td align="right">
+                                <a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
 <?php
-// inicializando as variÃ¡veis
+// PAGINACAO
+$itensPorPagina = 20;
 $item = 1;
-$itensPorPagina = 25;
-$primeiro = 1;
-$anterior = $item - $itensPorPagina;
-$proximo = $item + $itensPorPagina;
-$ultimo = 1;
+$ordem = '';
 
-// validando a pÃ¡gina atual
-if (!empty($_GET["item"])){
-	$item = $_GET["item"];
-	$anterior = $item - $itensPorPagina;
-	$proximo = $item + $itensPorPagina;
-}
+if (isset($_GET['item']))
+    $item = $_GET["item"];
 
-// validando a pÃ¡gina anterior
-if ($item - $itensPorPagina < 1)
-$anterior = 1;
+$params['ano'] = $ANO;
+$params['semestre'] = $SEMESTRE;
 
-// descobrindo a quantidade total de registros
-$sql = "SELECT COUNT(*) FROM (SELECT COUNT(*)
-        FROM Atribuicoes a,Disciplinas d, Turmas t,Cursos c,Turnos tu, Professores p
-				WHERE a.disciplina = d.codigo 
-        and a.turma = t.codigo
-				and t.curso = c.codigo
-				and t.turno = tu.codigo
-        and p.atribuicao = a.codigo
-				and t.ano=$ano
-				and (t.semestre=$semestre OR t.semestre=0) $restricao $restricao2
-				GROUP BY a.codigo
-				ORDER BY a.bimestre, $ordem) contar";
-//print $sql;
-$resultado = mysql_query($sql);
-$linha = mysql_fetch_row($resultado);
-$ultimo = $linha[0];
+$res = $atribuicao->getAllAtribuicoes($params, $sqlAdicional, $item, $itensPorPagina);
+$totalRegistros = count($atribuicao->getAllAtribuicoes($params, $sqlAdicional, $item, $itensPorPagina));
 
-// validando o prÃ³ximo item
-if ($proximo > $ultimo){
-	$proximo = $item;
-	$ultimo = $item;
-}
+$params['turma'] = $_GET['turma'];
+$params['professor'] = $_GET['professor'];
+$params['ordem'] = $_GET['ordem'];
+$SITENAV = $SITE . "?" . mapURL($params);
 
-// validando o Ãºltimo item
-if ($ultimo % $itensPorPagina > 0)
-$ultimo=$ultimo-($ultimo % $itensPorPagina)+1;
-
-$SITENAV = $SITE."?turma=".crip($turma);
-
-    require(PATH.VIEW.'/navegacao.php'); ?>
+require PATH . VIEW . '/paginacao.php';
+?>
 
 <table id="listagem" border="0" align="center">
-	<tr><th align="left" width="60"><a href="#Ordenar" class="ordenacao" id="n">N&uacute;mero</a></th><th align="left"><a href="#Ordenar" class="ordenacao" id="d">Disciplina</a></th><th>Professor</th><th><a href="#Ordenar" class="ordenacao" id="t">Turma</a></th><th width="40">A&ccedil;&atilde;o</th></tr>
-	<?php
-	// efetuando a consulta para listagem
-	$sql = "SELECT a.codigo, d.nome,d.codigo,t.numero, c.nome, tu.nome, d.numero,
-				a.bimestre, a.grupo, a.subturma, a.eventod
-				FROM Atribuicoes a,Disciplinas d, Turmas t,Cursos c,Turnos tu, Professores p
-				WHERE a.disciplina = d.codigo 
-        and a.turma = t.codigo
-				and t.curso = c.codigo
-				and t.turno = tu.codigo
-        and p.atribuicao = a.codigo
-				and t.ano=$ano
-				and (t.semestre=$semestre OR t.semestre=0) $restricao $restricao2
-				GROUP BY a.codigo
-				ORDER BY a.bimestre, $ordem limit ". ($item - 1) . ",$itensPorPagina";
-	//echo $sql;
-	$resultado = mysql_query($sql);
-	$i = $item;
-	if ($resultado){
-            require CONTROLLER . "/professor.class.php";
-            $professor = new Professores();
-            
-		while ($linha = mysql_fetch_array($resultado)) {
-			$i%2==0 ? $cdif="class='cdif'" : $cdif="class='cdif2'";
-			($linha[7]>0) ? $bimestre="$linha[7]ºBIM:":$bimestre="";
-			($linha[8]!="0") ? $grupo=" Grupo $linha[8]":$grupo="";
-			$codigo = crip($linha[0]);
-			if (!$linha[9]) $linha[9] = $linha[10];
+    <tr>
+        <th align="left" width="60">N&uacute;mero</th>
+        <th align="left">Disciplina</th>
+        <th>Professor</th>
+        <th>Turma</th>
+        <th align="center" width="50">&nbsp;&nbsp;
+            <input type="checkbox" id="select-all" value="">
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
+            </a>
+        </th>
+    </tr>
+    <?php
+    $i = $item;
+    foreach ($res as $reg) {
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        ?>
+        <tr <?php print $cdif; ?>>
+            <td><?php print $reg['numero']; ?></td>
+            <td>
+                <a title='Abrir Di&aacute;rio' target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= $reg['disciplina'] ?> <?= $reg['bimestre'] ?></a>
+            </td>
+            <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
+            <td align=left><?= $reg['turma'] ?></td>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['atribuicao']) ?>' />
+            </td>
+        </tr>
+        <?php
+        $i++;
+    }
+    ?>
+</table>
 
-                        echo "<tr $cdif><td align='left'>$linha[6]</td><td><a target=\"_blank\" href='".VIEW."/secretaria/relatorios/inc/diario.php?atribuicao=".crip($linha[0])."'>$bimestre ".mostraTexto($linha[1])."</a></td><td align='left'>".$professor->getProfessor($linha[0],'<br>', 1, 1)."</td><td align=left>$linha[3] $grupo [$linha[9]]</td><td align='left'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
-			$i++;
-		}
-	}
-	mysql_close($conexao);
-	?>
-
-	<?php     require(PATH.VIEW.'/navegacao.php'); ?>
-
-	
 <script>
-function atualizar(getLink){
-  var turma = $('#campoTurma').val();
-  var professor = $('#campoProfessor').val();
-	var URLS = '<?php print $SITE; ?>?turma=' + turma + '&professor=' + professor;
-	if (!getLink)
-		$('#index').load(URLS + '&item=<?php print $item; ?>');
-	else
-		return URLS;
-}
+    function atualizar(getLink) {
+        var turma = $('#turma').val();
+        var professor = $('#professor').val();
+        var URLS = '<?= $SITE ?>?turma=' + turma + '&professor=' + professor;
+        if (!getLink)
+            $('#index').load(URLS + '&item=<?= $item ?>');
+        else
+            return URLS;
+    }
 
-$(document).ready(function(){
-	$(".ordenacao").click(function(){ 
-		$('#index').load(atualizar(1) +'&ordem='+ $(this).attr('id'));
-	});
-
-	$(".item-excluir").click(function(){
-		var codigo = $(this).attr('id');
-		jConfirm('Aten&ccedil;&atilde;o, ser&atilde;o exclu&iacute;das as avalia&ccedil;&otilde;es, notas e ensalamentos gerados para essa atribui&ccedil;&atilde;o. Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {
-			if ( r )	
-				$('#index').load(atualizar(1) + '&opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
-		});
-	});
-	
-   	$('#campoTurma, #campoProfessor').change(function(){
-    	atualizar();
-	});
-});    
+    $(document).ready(function() {
+        $(".item-excluir").click(function() {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+                        $('#index').load(atualizar(1) + '&opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
+                    }
+                }
+            });
+        });
+        
+        $('#turma, #professor').change(function() {
+            atualizar();
+        });
+    });
 </script>

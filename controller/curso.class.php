@@ -46,7 +46,7 @@ class Cursos extends Generic {
         $sql .= " $sqlAdicional ";
         $sql .= " $nav ";
         $sql .= " ORDER BY c.nome ";
-        
+        print $sql;
         $res = $bd->selectDB($sql, $params);
 
         if ($res)

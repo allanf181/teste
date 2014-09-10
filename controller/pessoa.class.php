@@ -27,7 +27,7 @@ class Pessoas extends Generic {
         return false;
     }
 
-    //UTILIZADO POR: SECRETARIA/ABONO.PHP
+    //UTILIZADO POR: SECRETARIA/ABONO.PHP, SECRETARIA/CURSOS/COORDENADOR.PHP
     //RETORNA PESSOAS DE UM DETERMINADO TIPO
     public function listPessoasTipos($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
