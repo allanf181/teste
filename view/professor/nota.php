@@ -55,13 +55,7 @@ $resAval = $aval->getAvaliacao($avaliacao);
     <?php if ($resAval['calculo'] == 'peso') { ?>
         (peso: <?= $resAval['peso'] ?>)
     <?php } ?>
-    <br> Nota m&aacute;xima permitida:
-    <?php
-    if ($resAval['calculo'] == 'soma' && !$resAval['tipo'] == 'recuperacao')
-        print $resAval['peso'];
-    else
-        print $resAval['notaMaxima'];
-    ?>
+    <br> Nota m&aacute;xima permitida: <?= $resAval['notaMaxima'] ?>
     <br />
 </div>
 <br><hr>
@@ -190,7 +184,7 @@ if ($_SESSION['dataExpirou'])
                                 $dados = $nota->resultado($reg['matricula'], $atribuicao, $resAval['final']);
                                 ?>
                                 <td align='center'><?= $dados['media'] ?></td>
-                                <td align='center'>1<?= $dados['situacao'] ?></td>
+                                <td align='center'><?= $dados['situacao'] ?></td>
                                 <?php // TRAVANDO PARA ATRIBUICOES NAO BIMESTRAIS
                                if ( !$dados['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota'] ) {
                                     ?>

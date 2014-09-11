@@ -236,8 +236,8 @@ class Notas extends Frequencias {
                 $calculo = $reg['calculo'];
             }
             if ($reg['tipo'] == 'recuperacao' && $reg['final']) {
-                $recFinal = $reg['nota'];
-                $calculoFinal = $reg['calculo'];
+                $rec = $reg['nota'];
+                $calculo = $reg['calculo'];
                 $final = 1;
             }
         }
@@ -273,14 +273,14 @@ class Notas extends Frequencias {
             $dados['notaRecuperacao'] = $rec;
         }
 
-        if ($calculoFinal || $calculo) { // SE TEM RECUPERACAO
+        if ($calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec, $tipo, $formula);
 
             // PARA FECHAMENTO DO BIMESTRE SO INTERESSA ATE AQUI
             if ($bimestre == 4 && $final) {
                 $dados['media'] = round($media, 2);
-                $dados['recuperacao'] = $recFinal;
-                $dados['calculo'] = $calculoFinal;
+                $dados['recuperacao'] = $rec;
+                $dados['calculo'] = $calculo;
                 $dados['final'] = $final;
                 return $dados;
             }
