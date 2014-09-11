@@ -117,7 +117,7 @@ class Avaliacoes extends Generic {
                 av.peso as peso, av.nome as nome, ti.tipo as tipo,
 		DATEDIFF(a.prazo, NOW()) as prazo, a.status as status,
 		d.numero as discNumero, a.bimestre as bimestre, ti.final,
-                t.numero as turma, a.calculo as calculo, ti.notaMaxima as max,
+                t.numero as turma, a.calculo as calculo,
                 IF(ti.tipo NOT LIKE 'recuperacao' 
                     AND a.calculo LIKE 'soma', av.peso, ti.notaMaxima) as notaMaxima
  		FROM Atribuicoes a, Disciplinas d, Turmas t, Cursos c, Turnos tu,

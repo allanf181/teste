@@ -74,6 +74,36 @@ class TiposAvaliacoes extends Generic {
         }
     }
 
+    // USADO POR: SECRETARIA/CURSOS/TIPOSAVALIACOES.PHP
+    // LISTA TODAS AS AVALIACOES DE TODAS AS MODALIDADES
+    public function listAvaliacoesModalidades($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
+        $bd = new database();
+
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
+
+        $sql = "SELECT t.codigo, t.nome, m.nome as modalidade,
+                CASE t.tipo WHEN 'avaliacao' THEN 'Avalia&ccedil;&atilde;o'
+                WHEN 'recuperacao' THEN 'Recupera&ccedil;&atilde;o'
+                WHEN 'pontoExtra' THEN 'Ponto Extra'
+                WHEN 'substitutiva' THEN 'Substitutiva' END as tipo,
+                IF(t.final = 1, 'Final', '') as final
+                FROM TiposAvaliacoes t, Modalidades m
+    		WHERE t.modalidade = m.codigo";
+
+        $sql .= " $sqlAdicional ";
+
+        $sql .= ' ORDER BY t.nome ';
+  
+        $sql .= "$nav";
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res)
+            return $res;
+        else
+            return false;
+    }    
 }
 
 ?>

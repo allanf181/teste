@@ -6,7 +6,6 @@
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -63,12 +62,12 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -112,7 +111,6 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 // PAGINACAO
 $itensPorPagina = 20;
 $item = 1;
-$ordem = '';
 
 if (isset($_GET['item']))
     $item = $_GET["item"];
@@ -187,7 +185,7 @@ require PATH . VIEW . '/paginacao.php';
         });
 
         $(".item-excluir").click(function() {
-            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?php print $TITLE; ?>',
                 'buttons': ['Sim', 'Não'],

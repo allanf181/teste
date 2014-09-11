@@ -6,7 +6,6 @@
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -86,7 +85,6 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 // PAGINACAO
 $itensPorPagina = 20;
 $item = 1;
-$ordem = '';
 
 if (isset($_GET['item']))
     $item = $_GET["item"];

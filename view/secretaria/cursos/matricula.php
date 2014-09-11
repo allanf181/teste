@@ -6,7 +6,6 @@
 //1
 
 require '../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -283,7 +282,7 @@ require PATH . VIEW . '/paginacao.php';
         });
 
         $(".item-excluir").click(function() {
-            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],

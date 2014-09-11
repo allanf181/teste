@@ -183,8 +183,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     // PAGINACAO
     $itensPorPagina = 20;
     $item = 1;
-    $ordem = '';
-
+    
     if (isset($_GET['item']))
         $item = $_GET["item"];
 
@@ -279,7 +278,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             });
 
             $(".item-excluir").click(function() {
-                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                     'type': 'question',
                     'title': '<?php print $TITLE; ?>',
                     'buttons': ['Sim', 'Não'],

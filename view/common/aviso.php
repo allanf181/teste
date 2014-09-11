@@ -74,7 +74,6 @@ if ($_GET["opcao"] == 'delete') {
 // PAGINACAO
 $itensPorPagina = 20;
 $item = 1;
-$ordem = '';
 
 if (isset($_GET['item']))
     $item = $_GET["item"];
@@ -134,7 +133,7 @@ require PATH . VIEW . '/paginacao.php';
             });
 
             $(".item-excluir").click(function() {
-                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                     'type': 'question',
                     'title': '<?php print $TITLE; ?>',
                     'buttons': ['Sim', 'Não'],

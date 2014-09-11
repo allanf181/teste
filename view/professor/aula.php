@@ -187,7 +187,7 @@ if ($LIMITE_DIARIO_PROF != 0) {
 
     $(document).ready(function() {
         $(".item-excluir").click(function() {
-            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],

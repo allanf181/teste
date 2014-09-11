@@ -14,24 +14,15 @@ require SESSAO;
 
 require CONTROLLER . "/situacao.class.php";
 $situacoes = new Situacoes();
-
-// LISTAGEM
-if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
-    // consulta no banco
-    $params = array('codigo' => dcrip($_GET["codigo"]));
-    $res = $situacoes->listRegistros($params);
-    extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
-}
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <div id="sitelist">
     <?php
 // PAGINACAO
     $itensPorPagina = 20;
     $item = 1;
-    $ordem = '';
 
     if (isset($_GET['item']))
         $item = $_GET["item"];
@@ -44,7 +35,11 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     ?>
 
     <table id="listagem" border="0" align="center">
-        <tr><th align="center" width="40">#</th><th align="left">Situação</th><th>Sigla</th></tr>
+        <tr>
+            <th align="center" width="40">#</th>
+            <th align="left">Situação</th>
+            <th>Sigla</th>
+        </tr>
         <?php
         // efetuando a consulta para listagem
         $i = $item;
@@ -52,13 +47,14 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
             $codigo = crip($reg['codigo']);
             ?>
-            <tr <?php print $cdif; ?>>
-                <td align='center'><?php print $i; ?></td>
-                <td><?php print $reg['nome']; ?></td>
-                <td><?php print $reg['sigla']; ?></td>
+            <tr <?= $cdif ?>>
+                <td align='center'><?= $i ?></td>
+                <td><?= $reg['nome'] ?></td>
+                <td><?= $reg['sigla'] ?></td>
             </tr>
-    <?php
-    $i++;
-}
-?>
+            <?php
+            $i++;
+        }
+        ?>
     </table>
+</div>

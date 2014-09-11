@@ -30,9 +30,15 @@ class Turmas extends Generic {
         return false;
     }
 
-    public function listTurmas($params, $sqlAdicional = null) {
+    // USADO POR: AVISO.PHP, MATRICULA.PHP, ATRIBUICAO.PHP, ENSALAMENTO.PHP
+    // PROFESSORATRIBUICAO.PHP, PLANO.PHP, DIARIO.PHP, SOCIOECONOMICO.PHP
+    // LISTA TODAS AS TURMAS
+    public function listTurmas($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
+        
         $sql = "SELECT t.codigo as codTurma, t.numero as numero,
                     IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
                         IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)) 
@@ -45,8 +51,11 @@ class Turmas extends Generic {
 	            AND (semestre= :semestre OR semestre=0)";
 
         $sql .= " $sqlAdicional ";
+
         $sql .= " ORDER BY c.nome, t.numero ";
-                
+  
+        $sql .= "$nav";
+        
         $res = $bd->selectDB($sql, $params);
 
         if ($res)

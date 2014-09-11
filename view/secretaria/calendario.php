@@ -6,7 +6,6 @@
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -121,7 +120,6 @@ require PATH.VIEW.'/common/calendario.php';
 // PAGINACAO
 $itensPorPagina = 20;
 $item = 1;
-$ordem = '';
 
 if (isset($_GET['item']))
     $item = $_GET["item"];
@@ -209,7 +207,7 @@ require PATH . VIEW . '/paginacao.php';
         });
 
         $(".item-excluir").click(function() {
-            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?php print $TITLE; ?>',
                 'buttons': ['Sim', 'Não'],

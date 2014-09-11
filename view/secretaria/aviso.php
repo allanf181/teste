@@ -6,7 +6,6 @@
 //1
 
 require '../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 
 if ($_GET['dados']) {

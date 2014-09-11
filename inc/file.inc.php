@@ -1,7 +1,6 @@
 <?php
 
 require 'config.inc.php';
-require MYSQL;
 require FUNCOES;
 
 $type = $_GET['type'];

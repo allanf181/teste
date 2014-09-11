@@ -30,98 +30,7 @@ if (isset($_GET["bimestre"]))
 ?>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 
-<script>
-    function Links() {
-        var turma = $('#campoTurma').val();
-        var bimestre = $('#campoBimestre').val();
-        $('#index').load('<?php print $SITE; ?>?turma=' + turma + '&bimestre=' + bimestre);
-    }
 
-    $(document).ready(function() {
-        var lastTd;
-        var lastImage;
-        var imagem1;
-        var haItemAtivo;
-        var textoLink;
-
-        $('#atualizar').click(function() {
-            Links();
-        });
-
-        if ($('#menu').is(':hidden'))
-            $('#maximizar').text('restaurar');
-
-        $("#campoTurma").change(function() {
-            Links();
-        });
-
-        $("#campoBimestre").change(function() {
-            Links();
-        });
-
-        $('#boletimTurma tr').dblclick(function() {
-            if (lastTd)
-                lastTd.css('font-size', '8pt');
-            if (lastImage) {
-                lastImage.css('width', '20px');
-                lastImage.css('height', '20px');
-            }
-
-            if (imagem1 != $(this).find("img").attr("src") || !haItemAtivo) {
-                imagem1 = $(this).find("img").attr("src");
-                lastTd = $(this).find("td");
-                lastImage = $(this).find("img");
-
-                lastTd.css('font-size', '12pt');
-                lastImage.css('width', '50px');
-                lastImage.css('height', '50px');
-                haItemAtivo = true;
-            }
-            else
-                haItemAtivo = false;
-
-        });
-
-        $('#maximizar').click(gerenciaMaximizar);
-
-        function gerenciaMaximizar() {
-            if ($('#maximizar').text() == 'restaurar') {
-                textoLink = 'Maximizar';
-                $('#menu, #header, #menuEsquerdo').show();
-                $('body').css('width', '100%');
-                $('#wrap').css('margin', '0 auto');
-                $('#wrap').css('background', null);
-                $('#wrap').css('width', '1024px');
-                $('body').css('background', '#e1f2d0 url(<?php print IMAGES; ?>/bg.jpg) repeat-y top center');
-                $('.right').css('width', '794px');
-                $('#maximizar').text(textoLink);
-                $('#titulo').css('width', '100%');
-                $('.alunoNome').hide('fast');
-                $('.alunoPrimeiroNome').show('fast');
-
-            }
-            else {
-                textoLink = 'restaurar';
-                $('#menu, #header, #menuEsquerdo').hide();
-                $('body').css('width', '100%');
-                $('#wrap').css('margin', '0');
-                $('#wrap').css('background', null);
-                $('#wrap').css('width', '100%');
-                $('body').css('background', 'white');
-                $('.right').css('width', '100%');
-                $('#maximizar').text(textoLink);
-                $('#titulo').css('width', '250px');
-                $('.alunoNome').show('fast');
-                $('.alunoPrimeiroNome').hide('fast');
-            }
-        }
-
-        if ($('#maximizar').text() == 'restaurar')
-            $('#titulo').css('width', '250px');
-        else
-            $('#titulo').css('width', '100%');
-    });
-</script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
@@ -364,4 +273,95 @@ $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . cr
         $('.alunoPrimeiroNome').hide('slow');
 
     }
+
+    function Links() {
+        var turma = $('#campoTurma').val();
+        var bimestre = $('#campoBimestre').val();
+        $('#index').load('<?php print $SITE; ?>?turma=' + turma + '&bimestre=' + bimestre);
+    }
+
+    $(document).ready(function() {
+        var lastTd;
+        var lastImage;
+        var imagem1;
+        var haItemAtivo;
+        var textoLink;
+
+        $('#atualizar').click(function() {
+            Links();
+        });
+
+        if ($('#menu').is(':hidden'))
+            $('#maximizar').text('restaurar');
+
+        $("#campoTurma").change(function() {
+            Links();
+        });
+
+        $("#campoBimestre").change(function() {
+            Links();
+        });
+
+        $('#boletimTurma tr').dblclick(function() {
+            if (lastTd)
+                lastTd.css('font-size', '8pt');
+            if (lastImage) {
+                lastImage.css('width', '20px');
+                lastImage.css('height', '20px');
+            }
+
+            if (imagem1 != $(this).find("img").attr("src") || !haItemAtivo) {
+                imagem1 = $(this).find("img").attr("src");
+                lastTd = $(this).find("td");
+                lastImage = $(this).find("img");
+
+                lastTd.css('font-size', '12pt');
+                lastImage.css('width', '50px');
+                lastImage.css('height', '50px');
+                haItemAtivo = true;
+            }
+            else
+                haItemAtivo = false;
+
+        });
+
+        $('#maximizar').click(gerenciaMaximizar);
+
+        function gerenciaMaximizar() {
+            if ($('#maximizar').text() == 'restaurar') {
+                textoLink = 'Maximizar';
+                $('#menu, #header, #menuEsquerdo').show();
+                $('body').css('width', '100%');
+                $('#wrap').css('margin', '0 auto');
+                $('#wrap').css('background', null);
+                $('#wrap').css('width', '1024px');
+                $('body').css('background', '#e1f2d0 url(<?php print IMAGES; ?>/bg.jpg) repeat-y top center');
+                $('.right').css('width', '794px');
+                $('#maximizar').text(textoLink);
+                $('#titulo').css('width', '100%');
+                $('.alunoNome').hide('fast');
+                $('.alunoPrimeiroNome').show('fast');
+
+            }
+            else {
+                textoLink = 'restaurar';
+                $('#menu, #header, #menuEsquerdo').hide();
+                $('body').css('width', '100%');
+                $('#wrap').css('margin', '0');
+                $('#wrap').css('background', null);
+                $('#wrap').css('width', '100%');
+                $('body').css('background', 'white');
+                $('.right').css('width', '100%');
+                $('#maximizar').text(textoLink);
+                $('#titulo').css('width', '250px');
+                $('.alunoNome').show('fast');
+                $('.alunoPrimeiroNome').hide('fast');
+            }
+        }
+
+        if ($('#maximizar').text() == 'restaurar')
+            $('#titulo').css('width', '250px');
+        else
+            $('#titulo').css('width', '100%');
+    });
 </script>

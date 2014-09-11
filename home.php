@@ -1,7 +1,6 @@
 <?php
 include_once "inc/config.inc.php";
 
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 require SESSAO;

@@ -6,104 +6,104 @@
 //1
 
 require '../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
+require CONTROLLER . "/turma.class.php";
+$turma = new Turmas();
+
+// DELETE
 if ($_GET["opcao"] == 'delete') {
-    $codigo = dcrip($_GET["codigo"]);
-    $resultado = mysql_query("delete from Turmas where codigo=$codigo") ;
-    if ($resultado==1)
-		mensagem('OK', 'TRUE_DELETE');
-    else
-		mensagem('INFO', 'DELETE');
+    $ret = $turma->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
 ?>
-
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
-    // inicializando as variáveis
-    $item = 1;
-    $itensPorPagina = 50;
-    $primeiro = 1;
-    $anterior = $item - $itensPorPagina;
-    $proximo = $item + $itensPorPagina;
-    $ultimo = 1;
+// PAGINACAO
+$itensPorPagina = 20;
+$item = 1;
 
-    // validando a página atual
-    if (!empty($_GET["item"])){
-        $item = $_GET["item"];
-        $anterior = $item - $itensPorPagina;
-        $proximo = $item + $itensPorPagina;
-    }
+if (isset($_GET['item']))
+    $item = $_GET["item"];
 
-    // validando a página anterior
-    if ($item - $itensPorPagina < 1)
-        $anterior = 1;
+$params['ano'] = $ANO;
+$params['semestre'] = $SEMESTRE;
 
-    // descobrindo a quantidade total de registros
-    $resultado = mysql_query("SELECT COUNT(*) 
-	            FROM Turmas, Cursos, Turnos 
-	            WHERE Turmas.curso = Cursos.codigo 
-	            and (Turmas.semestre=$semestre OR Turmas.semestre=0)
-	            and Turmas.ano=$ano
-	            and Turmas.turno = Turnos.codigo $anoRestricao ");
-    $linha = mysql_fetch_row($resultado);
-    $ultimo = $linha[0];
-    
-    // validando o próximo item
-    if ($proximo > $ultimo){
-        $proximo = $item;
-        $ultimo = $item;
-    }
-    
-    // validando o último item
-    if ($ultimo % $itensPorPagina > 0)
-        $ultimo=$ultimo-($ultimo % $itensPorPagina)+1;    
- 
-$SITENAV = $SITE."?";
-require(PATH.VIEW.'/navegacao.php'); ?>
+$res = $turma->listTurmas($params, $sqlAdicional, $item, $itensPorPagina);
+$totalRegistros = count($turma->listTurmas($params, $sqlAdicional, null, null));
+
+$SITENAV = $SITE . '?';
+require PATH . VIEW . '/paginacao.php';
+?>
 
 <table id="listagem" border="0" align="center">
-    <tr><th>N&uacute;mero</th><th>Curso</th><th>Modalidade</th><th width="40">A&ccedil;&atilde;o</th></tr>
+    <tr>
+        <th>N&uacute;mero</th>
+        <th>Curso</th>
+        <th>Modalidade</th>
+        <th align="center" width="50">&nbsp;&nbsp;
+            <input type="checkbox" id="select-all" value="">
+            <a href="#" class='item-excluir'>
+                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+            </a>
+        </th>
+    </tr>
     <?php
     // efetuando a consulta para listagem
-    $sql = "SELECT t.codigo, t.ano, t.semestre, t.numero, c.nome, m.nome, c.codigo
-            FROM Turmas t, Cursos c, Modalidades m 
-            WHERE t.curso = c.codigo 
-            and (t.semestre=$semestre OR t.semestre=0)
-            and t.ano=$ano
-            and m.codigo = c.modalidade $anoRestricao $restricao 
-            ORDER BY c.nome, t.numero limit ". ($item - 1) . ",$itensPorPagina";
-    //echo $sql;
-    $resultado = mysql_query($sql);
     $i = $item;
-    while ($linha = mysql_fetch_array($resultado)) {
-        $i%2==0 ? $cdif="class='cdif'" : $cdif="";
-        echo "<tr $cdif><td align='left'>$linha[3]</td><td align='left'>".mostraTexto($linha[4])." ($linha[6])</td><td align='left'>".mostraTexto($linha[5])."</td><td align='center'><a href='#' title='Excluir' class='item-excluir' id='" . crip($linha[0]) . "'><img class='botao' src='".ICONS."/remove.png' /></a></td></tr>";
+    foreach ($res as $reg) {
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        ?>
+        <tr <?= $cdif ?>>
+            <td><?= $reg['numero'] ?></td>
+            <td align='left'><?= $reg['curso'] ?></td>
+            <td align='left'><?= $reg['modalidade'] ?></td>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codTurma']) ?>' />
+            </td>
+        </tr>
+        <?php
         $i++;
     }
-    mysql_close($conexao);
     ?>
-
 </table>
 
-<?php require(PATH.VIEW.'/navegacao.php'); ?>
-
 <script>
-$(document).ready(function(){
-	$(".item-excluir").click(function(){
-		var codigo = $(this).attr('id');
-		jConfirm('Deseja continuar com a exclus&atilde;o?', '<?php print $TITLE; ?>', function(r) {
-			if ( r )	
-				$('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
-		});
-	});
-});    
+    $(document).ready(function() {
+        $(".item-excluir").click(function() {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function(caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function() {
+                            selected.push($(this).val());
+                        });
+                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
+                    }
+                }
+            });
+        });
+
+        $('#select-all').click(function(event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+    });
 </script>

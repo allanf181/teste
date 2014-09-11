@@ -6,7 +6,6 @@
 //1
 
 require '../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -162,7 +161,7 @@ if ($_GET["nomeDisciplina"]) {
         $(document).ready(function() {
 
             $(".item-excluir").click(function() {
-                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                     'type': 'question',
                     'title': '<?php print $TITLE; ?>',
                     'buttons': ['Sim', 'Não'],

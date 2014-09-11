@@ -193,7 +193,7 @@ require(PATH . VIEW . '/paginacao.php');
         });
 
         $(".item-excluir").click(function() {
-            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?', {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?php print $TITLE; ?>',
                 'buttons': ['Sim', 'Não'],
