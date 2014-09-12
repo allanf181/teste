@@ -27,7 +27,7 @@ class Frequencias extends FrequenciasAbonos {
             $new_params['quantidade'] = $new_qtd;
 
             $res = $this->insertOrUpdate($new_params);
-           
+
             if ($res)
                 $c++;
         }
@@ -130,6 +130,37 @@ class Frequencias extends FrequenciasAbonos {
             $dados['auladada'] = $auladada;
 
             return $dados;
+        } else {
+            return false;
+        }
+    }
+
+    // RETORNA OS DADOS DA LISTAGEM DE FREQUENCIAS
+    // USADO POR: SECRETARIA/RELATORIOS/FREQUENCIAS.PHP, INC/BOLETIMTURMA.PHP
+    public function getListaFrequencias($turma, $mes) {
+        $bd = new database();
+
+        $sql = "SELECT p.codigo as codAluno, date_format(au.data, '%d/%m') as dataFormatada,
+        		IfNULL(f.quantidade,0) as frequencia, upper(p.nome) as aluno,
+                        au.codigo as codAula, d.nome as disciplina,
+        		at.codigo as atribuicao, au.data as data, m.aluno as matricula,
+                        au.quantidade
+                FROM Atribuicoes at
+                join Disciplinas d on at.disciplina=d.codigo
+                join Aulas au on au.atribuicao=at.codigo
+                join Frequencias f on f.aula=au.codigo
+                join Matriculas m on f.matricula=m.codigo
+                join Pessoas p on m.aluno=p.codigo
+                where at.turma=:turma
+                and date_format(au.data, '%m')=$mes
+                group by p.nome, au.codigo
+                order by au.data, p.nome";
+        
+        $params = array('turma' => $turma);
+        $res = $bd->selectDB($sql, $params);
+        
+        if ($res) {
+            return $res;
         } else {
             return false;
         }

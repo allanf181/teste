@@ -411,8 +411,8 @@ class Atribuicoes extends Generic {
         }
     }  
     
-    // LISTA OS DADOS PARA ESTATISTICAS DO USO DO SISTEMA
-    // USADO POR: ADMIN/USOSISTEMA.PHP
+    // RETORNA OS DADOS DO BOLETIM TURMA
+    // USADO POR: SECRETARIA/RELATORIOS/BOLETIMTURMA.PHP, INC/BOLETIMTURMA.PHP
     public function getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento) {
         $bd = new database();
 

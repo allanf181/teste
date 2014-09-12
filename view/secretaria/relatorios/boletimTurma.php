@@ -7,7 +7,6 @@
 
 require '../../../inc/config.inc.php';
 
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
@@ -22,9 +21,6 @@ $nota = new Notas();
 
 require CONTROLLER . "/atribuicao.class.php";
 $atribuicao = new Atribuicoes();
-
-$turma = "";
-$bimestre = "";
 
 if (dcrip($_GET["turma"]))
     $turma = dcrip($_GET["turma"]);
@@ -50,7 +46,6 @@ if ($_GET["bimestre"] != 'undefined')
     .hover { background-color: #bfe0c5; }
     .noslim { background-color: #e1f2d0; }
 </style>
-
 
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
@@ -264,7 +259,7 @@ if ($turma && $fechamento) {
                                 $dados = $nota->resultado($dMatricula[$c], $dCodigo);
                                 ?>
                                 <td align='center'>
-                                    <a title='<?=$disciplinasNomes2[$dCodigo]?><br>Faltas: <?= $dados['faltas'] ?><br>Aulas Dadas: <?= $dados['auladada'] ?><br>Frequ&ecirc;ncia: <?= arredondar($dados['frequencia']) ?>%'><font color='<?= $dados['color'] ?>'><?= $dados['media'] ?></font></a>
+                                    <a title='<?= $disciplinasNomes2[$dCodigo] ?><br>Faltas: <?= $dados['faltas'] ?><br>Aulas Dadas: <?= $dados['auladada'] ?><br>Frequ&ecirc;ncia: <?= arredondar($dados['frequencia']) ?>%'><font color='<?= $dados['color'] ?>'><?= $dados['media'] ?></font></a>
                                 </td>
                                 <?php
                             } else {
@@ -316,13 +311,6 @@ if ($turma && $fechamento) {
 $_SESSION['VOLTAR'] = "index";
 $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . crip($turma) . "&bimestre=" . crip($bimestre);
 ?>
-
-<div style="text-align: center; margin-top: 10px">
-    <a id="atualizar" href="#" title="Atualizar">
-        <img class="botao" src="<?= ICONS ?>/sync.png" />
-    </a>
-</div>
-
 <script>
     if ($('#maximizar').text() == 'Maximizar') {
         $('.alunoNome').hide('slow');
@@ -332,12 +320,6 @@ $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . cr
         $('.alunoNome').show('slow');
         $('.alunoPrimeiroNome').hide('slow');
 
-    }
-
-    function Links() {
-        var turma = $('#turma').val();
-        var bimestre = $('#bimestre').val();
-        $('#index').load('<?= $SITE ?>?turma=' + turma + '&bimestre=' + bimestre);
     }
 
     $(document).ready(function() {
@@ -351,7 +333,7 @@ $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . cr
                 $("colgroup").eq($(this).index()).removeClass("hover");
             }
         });
-        
+
         var lastTd;
         var lastImage;
         var imagem1;
@@ -365,12 +347,10 @@ $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . cr
         if ($('#menu').is(':hidden'))
             $('#maximizar').text('restaurar');
 
-        $("#turma").change(function() {
-            Links();
-        });
-
-        $("#bimestre").change(function() {
-            Links();
+        $("#turma, #bimestre").change(function() {
+            var turma = $('#turma').val();
+            var bimestre = $('#bimestre').val();
+            $('#index').load('<?= $SITE ?>?turma=' + turma + '&bimestre=' + bimestre);
         });
 
         $('#listagem tr').dblclick(function() {
