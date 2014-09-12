@@ -128,7 +128,7 @@ class Frequencias extends FrequenciasAbonos {
             $dados['frequencia'] = round($frequencia, 1);
             $dados['faltas'] = $faltas;
             $dados['auladada'] = $auladada;
-            
+
             return $dados;
         } else {
             return false;

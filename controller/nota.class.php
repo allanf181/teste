@@ -200,11 +200,10 @@ class Notas extends Frequencias {
             ':matricula' => $matricula);
         $res = $bd->selectDB($sql, $params);
                 
-        if (!$res)
-            return null;
         $media = 0;
         $total = 0;
         $final = 0;
+        
         foreach ($res as $reg) {
             $bimestre = $reg['bimestre'];
             $tipo = $reg['calculoAtt'];
@@ -243,7 +242,7 @@ class Notas extends Frequencias {
                 $final = 1;
             }
         }
-                        
+    
         if ($tipo == 'media' && $medias)
             $media = array_sum($medias) / $total;
         if ($tipo == 'peso')
@@ -258,7 +257,7 @@ class Notas extends Frequencias {
 
         // CALCULANDO A FREQUENCIA
         $dados = $this->getFrequencia($matricula, $atribuicao);
-        
+
         // GARANTINDO A MEDIA MENOR QUE 10
         if ($media > 10)
             $media = 10;

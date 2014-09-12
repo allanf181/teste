@@ -68,9 +68,7 @@ for ($j = 1; $j <= 12; $j++) {
                             $Dias = date('t', $Data);
                             $n = 0;
                             for ($i = 1, $d = 1; $d <= $Dias;) {
-                                $cdif = "class='cdif2'";
-                                if ($n % 2 == 0)
-                                    $cdif = "class='cdif'";
+                                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                                 ?>
                                 <tr <?= $cdif ?> >
                                     <?php

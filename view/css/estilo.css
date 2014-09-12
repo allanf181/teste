@@ -723,25 +723,16 @@ h3{
     color: white;
     text-align: center;
 }
-#tabela_boletim tr.cdif2 th{
-    color: white;
-    text-align: center;
-}
+
 #tabela_boletim tr.cdif td{
     background: #fff;
     cursor: default;
 }
-#tabela_boletim tr.cdif2 td{
-    background: #bedfc2;
-    cursor: default;
+
+#tabela_boletim tr td:hover{
+    background: #009540;
 }
 
-#tabela_boletim tr.cdif td:hover{
-    background: #009540;
-}
-#tabela_boletim tr.cdif2 td:hover{
-    background: #009540;
-}
 ul.menu_esquerdo{
     list-style-type: none;
     padding-left: 0px;

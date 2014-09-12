@@ -78,7 +78,7 @@ $dadosAula = $aulaFreq->getAula($aula);
             <?php
             $i = 1;
             foreach ($aulaFreq->listAlunosByAula($atribuicao, $aula) as $reg) {
-                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "class='cdif2'";
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?= $cdif ?> ><td align='center'><?= $reg['prontuario'] ?></td>
                     <td>
