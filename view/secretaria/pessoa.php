@@ -56,10 +56,10 @@ if ($_GET["opcao"] == 'removeFoto') {
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
 ?>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
+
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
-
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 
 <?php
 if ($_GET["opcao"] == 'validacao') {
@@ -502,7 +502,7 @@ require PATH . VIEW . '/paginacao.php';
             <td align='left'><?= $reg['prontuario'] ?></td>
             <td>
                 <div <?= $output ?> style='float: left; margin-right: 5px'>
-                    <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' class='screenshot'>
+                    <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' class='screenshot nav' title='<?= mostraTexto($reg['nome']) ?>'>
                         <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' />
                     </a>
                 </div><?= mostraTexto($reg['nome']) ?>

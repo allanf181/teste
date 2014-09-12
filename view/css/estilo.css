@@ -298,13 +298,6 @@ li{
 	padding:5px;
 	display:none;
 	color:#fff;
-	}
-
-
-#boletimTurma tr td{
-    font-size: 8pt;
-    border-left: solid 1px black;
-    height: 10px;
 }
 
 #form{

@@ -42,7 +42,7 @@ class Turmas extends Generic {
         $sql = "SELECT t.codigo as codTurma, t.numero as numero,
                     IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
                         IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)) 
-                    as curso,
+                    as curso, c.fechamento,
                     m.nome as modalidade, m.codigo as codModalidade, c.codigo as codCurso
                     FROM Turmas t, Cursos c, Modalidades m
 	            WHERE t.curso = c.codigo 

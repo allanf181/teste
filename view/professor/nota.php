@@ -35,10 +35,9 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
 ?>
-
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
-<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <?php
 $avaliacao = dcrip($_GET["avaliacao"]);
 $atribuicao = dcrip($_GET["atribuicao"]);
@@ -119,8 +118,8 @@ if ($_SESSION['dataExpirou'])
                     ?>
                 <tr <?= $cdif ?>>
                     <td align='center'><?= $reg['prontuario'] ?></td>
-                    <td><a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot nav'>
-                            <img style='width: 20px; height: 20px' alt='Embedded Image' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' />
+                    <td><a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot nav' title='<?= mostraTexto($reg['aluno']) ?>'>
+                            <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' />
                         </a>
                         <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/aluno/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>'); void(0);"><?= mostraTexto($reg['aluno']) ?></a>
                     </td>

@@ -409,7 +409,52 @@ class Atribuicoes extends Generic {
         } else {
             return false;
         }
-    }    
+    }  
+    
+    // LISTA OS DADOS PARA ESTATISTICAS DO USO DO SISTEMA
+    // USADO POR: ADMIN/USOSISTEMA.PHP
+    public function getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento) {
+        $bd = new database();
+
+        $params = array('turma' => $turma);
+
+        if ($bimestre != 'final' && $fechamento == 'b') {
+            $sqlAdicional = " IN (SELECT t1.codigo FROM Turmas t1 
+                        	WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
+                		WHERE t2.codigo = :turma)) AND a.bimestre=:bimestre ";
+            $params['bimestre'] = $bimestre;
+        } else if ($bimestre == 'final' && $fechamento == 'b') {
+            $sqlAdicional = " IN (SELECT t1.codigo FROM Turmas t1 
+                                WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
+                                WHERE t2.codigo = :turma)) ";
+        } else {
+            $sqlAdicional = " = :turma ";
+        }
+
+        $sql = "SELECT 	al.codigo as codAluno, al.nome as aluno, 
+                        d.codigo as codDiciplina, d.numero as numero, 
+                        d.nome as disciplina, m.situacao, a.status,
+                	m.codigo as codModalidade, a.codigo as atribuicao,
+                        s.listar, s.habilitar, s.nome as situacao, 
+                        s.sigla, a.bimestre
+			FROM Atribuicoes a 
+			LEFT JOIN Disciplinas d on a.disciplina=d.codigo 
+			LEFT JOIN Matriculas m on m.atribuicao=a.codigo 
+			LEFT JOIN Pessoas al on m.aluno=al.codigo
+			LEFT JOIN Situacoes s on m.situacao=s.codigo
+			WHERE a.turma 
+			$sqlAdicional 
+			ORDER BY a.bimestre, d.nome, al.nome";
+
+        $res = $bd->selectDB($sql, $params);
+        
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }  
+    
 }
 
 ?>
