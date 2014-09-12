@@ -256,7 +256,7 @@ class Notas extends Frequencias {
 
         // CALCULANDO A FREQUENCIA
         $dados = $this->getFrequencia($matricula, $atribuicao);
-
+        
         // GARANTINDO A MEDIA MENOR QUE 10
         if ($media > 10)
             $media = 10;
@@ -285,7 +285,9 @@ class Notas extends Frequencias {
                 return $dados;
             }
         } else {  // ALUNO PRECISA DE RECUPERACAO
-            $dados = array_merge($this->checkIfRec($atribuicao, $media), $dados);
+            $dadosRec = $this->checkIfRec($atribuicao, $media);
+            if ($dadosRec)
+                $dados = array_merge($dadosRec, $dados);
         }
 
         // ARREDONDANDO A MEDIA PARA DUAS CASAS
