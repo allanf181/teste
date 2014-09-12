@@ -216,6 +216,10 @@ th {
     background: #00913d;    
 }
 
+#listagem tr:hover{
+    background: #009540;
+}
+
 a{
     border: none;
 }
