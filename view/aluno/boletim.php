@@ -36,14 +36,12 @@ $resultadoGlobal = $nota->resultadoModulo($aluno, $turma);
 
 require CONTROLLER . "/avaliacao.class.php";
 $avaliacao = new Avaliacoes();
-
-
 ?>
 <center>
     <div class='fundo_listagem'>
 
         <div id='alunos_cabecalho'>
-            <img alt="foto" style="width: 150px; height: 130px" src="<?php print INC; ?>/file.inc.php?type=pic&id=<?= crip($aluno) ?>" />
+            <img alt="foto" style="width: 150px; height: 130px" src="<?= INC ?>/file.inc.php?type=pic&id=<?= crip($aluno) ?>" />
             <div class="alunos_dados_nome"><?= $res[0]['pessoa'] ?></div><br />
             <div class="alunos_dados_prontuario"><?= $res[0]['prontuario'] ?></div>
         </div>

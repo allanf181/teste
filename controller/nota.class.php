@@ -317,8 +317,8 @@ class Notas extends Frequencias {
 
         foreach ($res as $reg) {
             if ($reg['situacao']) {
-                if ($reg['fechamento'] == 's')
-                    $dados = $this->resultado($l[0], $l[1]);
+                if ($reg['fechamento'] == 's' || $reg['fechamento'] == 'a')
+                    $dados = $this->resultado($reg['matricula'], $reg['atribuicao']);
                 if ($reg['fechamento'] == 'b')
                     $dados = $this->resultadoBimestral($aluno, $turma, $reg['numero']);
 
