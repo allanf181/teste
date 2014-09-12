@@ -61,7 +61,7 @@ if (!$LOCATION_CRON) {
 	mysql_query($sql);
 	?>
 	<script>
-  		$('#turmasaRetorno').text('<?php print $i; ?> registros processados...');
+  		$('#db2TurmasRetorno').text('<?php print $i; ?> registros processados...');
 	</script><?php
 } else {
 	$sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";

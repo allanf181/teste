@@ -120,7 +120,7 @@ if (!$LOCATION_CRON) {
     mysql_query($sql);
     ?>
     <script>
-        $('#cursosaRetorno').text('<?php print $i; ?> cursos processados | <?php print $j; ?> disciplinas processadas');
+        $('#db2CursosDisciplinasRetorno').text('<?php print $i; ?> cursos processados | <?php print $j; ?> disciplinas processadas');
     </script><?php
 } else {
     $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";

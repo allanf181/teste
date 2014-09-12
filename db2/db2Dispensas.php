@@ -63,7 +63,7 @@ if (!$LOCATION_CRON) {
     mysql_query($sql);
     ?>
     <script>
-        $('#dispensaRetorno').text('Dispensas: <?php print $f; ?>');
+        $('#db2DispensasRetorno').text('Dispensas: <?php print $f; ?>');
     </script><?php
 } else {
     $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";

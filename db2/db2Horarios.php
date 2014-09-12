@@ -124,7 +124,7 @@ if (!$LOCATION_CRON) {
     mysql_query($sql);
     ?>
     <script>
-        $('#horariosRetorno').text('Feriados: <?php print $f; ?> |Horas: <?php print $h; ?> |Salas: <?php print $s; ?>');
+        $('#db2HorariosRetorno').text('Feriados: <?php print $f; ?> |Horas: <?php print $h; ?> |Salas: <?php print $s; ?>');
     </script><?php
 } else {
     $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
