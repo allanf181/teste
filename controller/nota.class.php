@@ -122,7 +122,9 @@ class Notas extends Frequencias {
         if ($calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec);
         } else {  // ALUNO PRECISA DE REAVALIACAO FINAL
-            $dados = array_merge($dados, $this->checkIfRec($atribuicao, $media, $final, $notaUltimoBimestre));
+            $dadosRec = $this->checkIfRec($atribuicao, $media, $final, $notaUltimoBimestre);
+            if ($dadosRec)
+                $dados = array_merge($dados, $dadosRec);
         }
 
         // SITUACAO DAS NOTAS
