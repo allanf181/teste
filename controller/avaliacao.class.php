@@ -11,7 +11,7 @@ class Avaliacoes extends Generic {
 
     // LISTA AVALIACOES DO ALUNO
     // USADO POR: VIEW/ALUNO/AVALIACAO.PHP, BOLETIM.PHP
-    public function listAvaliacoesAluno($aluno, $atribuicao) {
+    public function listAvaliacoesAluno($params, $sqlAdicional=null) {
         $bd = new database();
 
         $sql = "SELECT av.nome, av.sigla, ti.nome as tipoAval,
@@ -26,11 +26,10 @@ class Avaliacoes extends Generic {
 		left join TiposAvaliacoes ti on av.tipo=ti.codigo
  		left join Pessoas al on m.aluno=al.codigo 
  		left join Situacoes s on s.codigo = m.situacao 
- 		WHERE a.codigo=:atr 
+ 		WHERE a.codigo=:atribuicao 
  		AND m.aluno=:aluno
- 		ORDER BY al.nome";
+                $sqlAdicional";
 
-        $params = array(':aluno' => $aluno, ':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
@@ -62,8 +61,8 @@ class Avaliacoes extends Generic {
 		(SELECT final FROM TiposAvaliacoes WHERE codigo = a.tipo AND tipo='recuperacao' AND final=1) as final,
 		at.bimestre, a.sigla, t.numero,
                 (SELECT CONCAT(nome, ' (', sigla,')') FROM Avaliacoes WHERE codigo = a.substitutiva) as substitutiva
-                FROM Turnos tu, Turmas t, Disciplinas d, Atribuicoes at
-                LEFT JOIN Avaliacoes a ON a.atribuicao=at.codigo $sqlAdicional
+            FROM Turnos tu, Turmas t, Disciplinas d, Atribuicoes at
+            LEFT JOIN Avaliacoes a ON a.atribuicao=at.codigo $sqlAdicional
             LEFT JOIN TiposAvaliacoes ti ON ti.codigo = a.tipo
             WHERE at.codigo = :atr
             AND at.turma=t.codigo 
@@ -81,7 +80,7 @@ class Avaliacoes extends Generic {
     }
 
     // USADO POR: VIEW/PROFESSOR/PROFESSOR.PHP
-    public function getQdeAvaliacoes($atribuicao) {
+    public function getQdeAvaliacoes($params, $sqlAdicional) {
         $bd = new database();
 
         $sql = "SELECT (SELECT count(av.codigo) 
@@ -95,10 +94,9 @@ class Avaliacoes extends Generic {
 		AND c.codigo = tu.curso
 		AND c.modalidade = m.codigo
 		AND a.turma = tu.codigo
-		AND a.codigo = :atr
-		AND t.tipo = 'avaliacao'";
+		AND a.codigo = :atribuicao
+		$sqlAdicional";
 
-        $params = array(':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
         if ($res[0]) {
             return $res[0];
@@ -153,7 +151,8 @@ class Avaliacoes extends Generic {
 		left join Notas n on n.avaliacao=av.codigo and n.matricula=m.codigo 
 		left join Pessoas al on m.aluno=al.codigo 
                 left join Situacoes s on s.codigo = m.situacao 
-		WHERE a.codigo=:atribuicao AND av.codigo=:avaliacao 
+		WHERE a.codigo=:atribuicao 
+                AND av.codigo=:avaliacao 
                 ORDER BY al.nome";
         $params = array(':atribuicao' => $atribuicao, ':avaliacao' => $avaliacao);
 
@@ -165,6 +164,26 @@ class Avaliacoes extends Generic {
         }
     }
 
+    // USADO POR: VIEW/SECRETARIA/RELATORIOS/DIARIO.PHP
+    public function getAvaliacoes($atribuicao) {
+        $bd = new database();
+
+        $sql = "SELECT a.codigo,a.sigla,a.nome,
+                    date_format(a.data, '%d/%m/%Y') as data
+                    FROM Avaliacoes a, TiposAvaliacoes t 
+                    WHERE a.tipo = t.codigo 
+                    AND atribuicao = :atribuicao 
+                    AND t.tipo <> 'recuperacao'";
+
+        $params = array('atribuicao' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+        
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }    
 }
 
 ?>

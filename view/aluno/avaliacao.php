@@ -17,7 +17,10 @@ $aluno = $_SESSION["loginCodigo"];
 
 require CONTROLLER . "/avaliacao.class.php";
 $avaliacao = new Avaliacoes();
-$res = $avaliacao->listAvaliacoesAluno($aluno, $atribuicao);
+
+$params = array(':aluno' => $aluno, ':atribuicao' => $atribuicao);
+$sqlAdicional = ' ORDER BY al.nome ';
+$res = $avaliacao->listAvaliacoesAluno($params, $sqlAdicional);
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>

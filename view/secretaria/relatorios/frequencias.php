@@ -88,7 +88,10 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 </table>
 <?php
 if ($turma) {
-    foreach ($frequencia->getListaFrequencias($turma, $mes + 1) as $reg) {
+    $mes = $mes + 1;
+    $params['turma'] = $turma;
+    $sqlAdicional = "WHERE at.turma=:turma AND date_format(au.data, '%m')=$mes group by p.nome, au.codigo";
+    foreach ($frequencia->getListaFrequencias($params, $sqlAdicional) as $reg) {
         $datas[] = $reg['dataFormatada'];
         $aulas[$reg['dataFormatada']][$reg['codAula']] = $reg['quantidade'];
         $disciplinas[$reg['codAula']] = $reg['disciplina'];

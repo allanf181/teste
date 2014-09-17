@@ -1,32 +1,23 @@
 <?php
 require '../../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
-// lista os alunos cadastrados
+require CONTROLLER . "/aula.class.php";
+$aula = new Aulas();
 
-$restricao = ""; // padrÃ£Ã©em restriÃ§
-
-if (!empty($_GET["curso"])) {
+if (dcrip($_GET["curso"])) {
     $curso = dcrip($_GET["curso"]);
-    $restricao = " AND c.codigo=$curso";
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c.codigo = :curso ';
 }
 
-$sql = "SELECT SUBSTRING(p.nome, 1, 37) as professor, SUBSTRING(d.nome, 1, 35) as disc, d.ch,
-                (SELECT SUM(quantidade) FROM Aulas au WHERE au.atribuicao = a.codigo) as aulas,
-                t.numero,
-                SUBSTRING(c.nome, 1, 27) as curso
-                FROM Disciplinas d, Cursos c, Atribuicoes a, Pessoas p, Turmas t, Professores pr
-                WHERE d.curso = c.codigo
-                AND p.codigo = pr.professor
-                AND pr.atribuicao = a.codigo
-                AND t.codigo = a.turma
-                AND a.disciplina = d.codigo
-                and t.ano=$ano 
-				and (t.semestre=$semestre OR t.semestre=0)
-                $restricao order by d.nome";
-//print $sql;
+$params['ano'] = $ANO;
+$params['semestre'] = $SEMESTRE;
+$sqlAdicional.= ' AND t.ano=:ano AND (t.semestre=:semestre OR t.semestre=0) GROUP BY a.codigo ORDER BY p.nome ';
+
+$linha2 = $aula->listLancamentoAula($params, $sqlAdicional);
+
 $titulo = "LANÇAMENTO DE AULAS POR DISCIPLINA";
 $titulo2 = "";
 $rodape = $SITE_TITLE;
@@ -37,7 +28,7 @@ $alturaLinha = 10;
 $orientacao = "L"; //Landscape
 //$orientacao = "P"; //Portrait
 $papel = "A4";
-$colunas = array("professor", "disc", "d.ch", "aulas", "t.numero", "curso");
+$colunas = array("professor", "disciplina", "ch", "aulas", "numero", "curso");
 $titulosColunas = array("PROFESSOR", "DISCIPLINA", "C. HORÁRIA", "QDE. AULAS", "TURMA", "CURSO");
 $largura = array(70,80,22,23,20,60);
 

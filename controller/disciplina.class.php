@@ -10,22 +10,20 @@ class Disciplinas extends Generic {
         //
     }
 
+    //USADO POR: SECREATARIA/DISCIPLINA.PHP, RELATORIOS/DISCIPLINAS.PHP
     public function listDisciplinas($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
-        $sql = "SELECT d.codigo as codigo, d.nome as disciplina, d.numero as numero, 
-                d.ch as ch, m.nome as modalidade,
-                IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso
+        $sql = "SELECT d.numero as numero, d.nome as disciplina,
+                IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
+                d.ch as ch, m.nome as modalidade, d.codigo as codigo
     		FROM Disciplinas d, Cursos c, Modalidades m
     		WHERE d.curso = c.codigo
-    		AND m.codigo = c.modalidade 
-    		";
+    		AND m.codigo = c.modalidade";
 
-        if ($params["curso"] || $params["numeroDisciplina"] || $params["nomeDisciplina"] || $params["codigo"]) {
-            $sql .= " $sqlAdicional ";
-        }
+        $sql .= " $sqlAdicional ";
 
         $sql .= "$nav";
         $res = $bd->selectDB($sql, $params);

@@ -63,14 +63,10 @@ $avaliacao = new Avaliacoes();
         $professor = new Professores();
         
         foreach ($res as $reg) {
-            if ($reg['bimestre'])
-                $bimestre = " - ".$reg['bimestre']."&ordm; BIMESTRE";
-            else
-                $bimestre = '';
             ?>
             <br><table id='tabela_boletim' align='center'>
                 <tr class='cdif'>
-                    <th colspan="2"><?= $reg['disciplina'] ?> <?= $bimestre ?></th>
+                    <th colspan="2"><?= $reg['disciplina'] ?> <?= $reg['bimestreFormat'] ?></th>
                     <th style='width: 100px'><?= $reg['numero'] ?></th>
                     <th colspan="3" style="color: white"><?= $professor->getProfessor($reg['atribuicao'],'<br>', 0, 1) ?></tr>
 
@@ -101,7 +97,9 @@ $avaliacao = new Avaliacoes();
                 <?php
                 // busca as avaliações da disciplina atual
                 $i = 0;
-                $aval = $avaliacao->listAvaliacoesAluno($aluno, $reg['atribuicao']);
+                $params = array(':aluno' => $aluno, ':atribuicao' => $reg['atribuicao']);
+                $sqlAdicional = ' ORDER BY al.nome ';
+                $aval = $avaliacao->listAvaliacoesAluno($params,$sqlAdicional);
                 foreach ($aval as $a) {
                     if ($a['calculo'] == 'FORMULA')
                         $aval = str_replace ('$', '', $a['formula']);

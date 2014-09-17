@@ -36,12 +36,13 @@ class Pessoas extends Generic {
             $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina";
 
         $sql = "SELECT p.codigo, p.nome as nome,
-                p.prontuario, p.email
-               	FROM Pessoas p, PessoasTipos pt
+                p.prontuario, p.email, t.nome as tipo
+               	FROM Pessoas p, PessoasTipos pt, Tipos t
                	WHERE p.codigo = pt.pessoa
+                AND t.codigo = pt.tipo
                 $sqlAdicional
 		ORDER BY p.nome $nav";
-
+        
         $res = $bd->selectDB($sql, $params);
         if ($res) {
             return $res;
@@ -79,7 +80,7 @@ class Pessoas extends Generic {
             return false;
         }
     }
-
+    
     // USADO POR: SECRETARIA/PESSOA.PHP
     // RETORNA QUANTIDADE DE FOTOS BLOQUEADAS
     public function countBloqPic() {

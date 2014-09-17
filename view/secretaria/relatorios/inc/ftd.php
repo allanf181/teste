@@ -1,9 +1,11 @@
 <?php
 
 require '../../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
+
+require CONTROLLER . '/ftdDado.class.php';
+$ftd = new FTDDados();
 
 // Preparando os dados
 function createArray($Arr) {
@@ -17,8 +19,7 @@ function createArray($Arr) {
 $fonte = 'Arial';
 $tamanho = 7;
 $alturaLinha = 7;
-$orientacao = "P"; // Landscape
-// $orientacao = "P"; //Portrait
+$orientacao = "P";
 $papel = "A4";
 
 include PATH . LIB . '/fpdf17/pdfDiario.php';
@@ -27,74 +28,60 @@ $pdf = new PDF ();
 
 if (dcrip($_GET["professor"])) {
     $professor = dcrip($_GET["professor"]);
+    if ($professor != 'Todos') {
+        $params['codigo'] = $professor;
+        $sqlAdicional .= ' AND p.codigo = :codigo ';
+    }
 
     $detalhada = $_GET["detalhada"];
 
-    if (dcrip($_GET["professor"]) != 'Todos')
-        $sqlProfessor = " and fd.professor = " . dcrip($_GET["professor"]);
+    $params['ano'] = $ANO;
+    $params['sem'] = $SEMESTRE;
+    $params['professor'] = $PROFESSOR;
 
-    $sql = "SELECT fd.codigo FROM FTDDados fd, Pessoas p
-        	WHERE p.codigo = fd.professor
-        	AND ano = '$ano'
-                AND (semestre = '$semestre' OR semestre = 0)
-		$sqlProfessor
-		AND (fd.finalizado <> '' AND fd.finalizado <> '0000-00-00 00:00:00')
-		ORDER BY p.nome";
-    //print $sql;
-    $r = mysql_query($sql);
-    if (mysql_num_rows($r) > 0) {
-        while ($linha = mysql_fetch_array($r)) {
-            $codigo = $linha[0];
-            $sql = "SELECT p.nome, p.prontuario, fd.ano, fd.semestre, fd.telefone, fd.celular,
-			fd.email, fd.area, fd.regime, fd.observacao, fd.TP, fd.TPT, fd.TD,
-			fd.TDT, fd.ITE, fd.ITS, fd.A, fd.AT, fd.AtvDocente, fd.Projetos,
-			fd.Intervalos, fd.Total, fh.registro, fh.horario, fd.finalizado
-			FROM Pessoas p, FTDDados fd, FTDHorarios fh
-			WHERE p.codigo = fd.professor
-			AND fd.codigo = fh.ftd
-			AND fd.codigo = $codigo
-			ORDER BY p.nome, fh.horario";
-            //echo $sql;
-            $resultado = mysql_query($sql);
-            if ($resultado)
-                while ($l = mysql_fetch_array($resultado)) {
-                    $nome = $l[0];
-                    $prontuario = $l[1];
-                    $ano = $l[2];
-                    $semestre = $l[3];
-                    $telefone = $l[4];
-                    $celular = $l[5];
-                    $email = $l[6];
-                    $area = $l[7];
-                    $regime = $l[8];
-                    $obs = $l[9];
-                    $TP = createArray(explode(',', $l[10]));
-                    $TPT = createArray(explode(',', $l[11]));
-                    $TD = createArray(explode(',', $l[12]));
-                    $TDT = createArray(explode(',', $l[13]));
-                    $ITE = createArray(explode(',', $l[14]));
-                    $ITS = createArray(explode(',', $l[15]));
-                    $A = createArray(explode(',', $l[16]));
-                    $AT = $l[17];
-                    $AtvDocente = $l[18];
-                    $Projetos = $l[19];
-                    $Intervalos = $l[20];
-                    $Total = $l[21];
-                    $registro = $l[22];
-                    $horario = $l[23];
-                    $finalizado = $l[24];
-                    $horarios[$registro] = $horario; // FTD Detalhada
+    $sqlAdicional .= " AND (fd.finalizado <> '' AND fd.finalizado <> '0000-00-00 00:00:00') ";
 
-                    if (substr($registro, 3, 1) == 1) { // achando a primeira entrada
-                        $k = substr($registro, 0, 1) . substr($registro, 2, 1) . substr($registro, 3, 1);
-                        if (!$first_in[$k])
-                            $first_in[$k] = $horario;
-                    }
-                    if (substr($registro, 3, 1) == 2) { // achando a ultima saida
-                        $k = substr($registro, 0, 1) . substr($registro, 2, 1) . substr($registro, 3, 1);
-                        $last_out[$k] = $horario;
-                    }
+    $res = $ftd->listFTDs($params, null, null, $sqlAdicional);
+    if ($res) {
+        foreach ($res as $regFTD) {
+            foreach ($ftd->getDadosFTD($regFTD['codProfessor'], $ANO, $SEMESTRE) as $reg) {
+                $nome = $regFTD['professor'];
+                $prontuario = $regFTD['prontuario'];
+                $ano = $regFTD['ano'];
+                $semestre = $regFTD['semestre'];
+                $telefone = $regFTD['telefone'];
+                $celular = $regFTD['celular'];
+                $email = $regFTD['email'];
+                $area = $reg['area'];
+                $regime = $reg['regime'];
+                $obs = $reg['observacao'];
+                $TP = createArray(explode(',', $reg['TP']));
+                $TPT = createArray(explode(',', $reg['TPT']));
+                $TD = createArray(explode(',', $reg['TD']));
+                $TDT = createArray(explode(',', $reg['TDT']));
+                $ITE = createArray(explode(',', $reg['ITE']));
+                $ITS = createArray(explode(',', $reg['ITS']));
+                $A = createArray(explode(',', $reg['A']));
+                $AT = $reg['AT'];
+                $AtvDocente = $reg['AtvDocente'];
+                $Projetos = $reg['Projetos'];
+                $Intervalos = $reg['Intervalos'];
+                $Total = $reg['Total'];
+                $registro = $reg['registro'];
+                $horario = $reg['horario'];
+                $finalizado = $reg['finalizado'];
+                $horarios[$registro] = $horario; // FTD Detalhada
+
+                if (substr($registro, 3, 1) == 1) { // achando a primeira entrada
+                    $k = substr($registro, 0, 1) . substr($registro, 2, 1) . substr($registro, 3, 1);
+                    if (!$first_in[$k])
+                        $first_in[$k] = $horario;
                 }
+                if (substr($registro, 3, 1) == 2) { // achando a ultima saida
+                    $k = substr($registro, 0, 1) . substr($registro, 2, 1) . substr($registro, 3, 1);
+                    $last_out[$k] = $horario;
+                }
+            }
 
             $pdf->AliasNbPages();
             $pdf->AddPage($orientacao, $papel);
@@ -102,7 +89,7 @@ if (dcrip($_GET["professor"])) {
             $pdf->SetFillColor(255, 255, 255);
             $pdf->SetLineWidth(.1);
 
-            // Cabeçalho
+// Cabeçalho
             $pdf->SetFont($fonte, 'B', $tamanho + 2);
             $pdf->Image(PATH . IMAGES . "/logo.png", 11, 11, 45);
             $pdf->Cell(46, 15, "", 1, 0, 'C', false);
@@ -112,7 +99,7 @@ if (dcrip($_GET["professor"])) {
             $pdf->SetFont($fonte, 'B', $tamanho + 2);
             $pdf->Cell(60, 5, abreviar(utf8_decode($SITE_TITLE), 33), 1, 2, 'C', false);
             $pdf->Cell(60, 5, abreviar(utf8_decode($SITE_CIDADE), 33), 1, 2, 'C', false);
-            $pdf->Cell(60, 5, abreviar(utf8_decode("Ano/Semestre: $semestre/$ano"), 33), 1, 0, 'C', false);
+            $pdf->Cell(60, 5, abreviar(utf8_decode("Semestre/Ano: $ano/$semestre"), 33), 1, 0, 'C', false);
 
             $pdf->Ln();
             $pdf->Ln();
@@ -187,7 +174,7 @@ if (dcrip($_GET["professor"])) {
                 $pdf->SetFillColor(255, 255, 255);
 
                 if ($obs) {
-                    // Observcao a ser incluida na FTD
+// Observcao a ser incluida na FTD
                     $pdf->Cell(24, $alturaLinha, utf8_decode("Observação:"), 1, 0, 'C', true);
                     $pdf->MultiCell(144, $alturaLinha, utf8_decode("$obs"), 1, 1, 'L', true);
                 }
@@ -199,7 +186,7 @@ if (dcrip($_GET["professor"])) {
                 $pdf->Cell(144, $alturaLinha, html_entity_decode("Carga hor&aacute;ria di&aacute;ria"), 1, 0, 'C', true);
                 $pdf->Ln();
 
-                // carga horaria total
+// carga horaria total
                 $pdf->SetFillColor(255, 255, 255);
                 $pdf->Cell(24, $alturaLinha, "", 0, 0, 'C', true);
                 for ($c = 1; $c <= 6; $c++) {
@@ -208,7 +195,7 @@ if (dcrip($_GET["professor"])) {
 
                 $pdf->Ln();
 
-                // carga horario semanal
+// carga horario semanal
                 $pdf->Cell(24, $alturaLinha, "", 0, 0, 'C', true);
                 $pdf->SetFillColor(192, 192, 192);
                 $pdf->Cell(48, $alturaLinha, html_entity_decode("Carga hor&aacute;ria semanal"), 1, 0, 'L', true);
@@ -230,7 +217,7 @@ if (dcrip($_GET["professor"])) {
 
                 $pdf->Ln();
                 $pdf->Cell(120, $alturaLinha, "", 0, 0, 'R', true);
-                $pdf->Cell(70, $alturaLinha, $SITE_CIDADE . ', ' . html_entity_decode(formata($finalizado)), 0, 0, 'R', true);
+                $pdf->Cell(70, $alturaLinha, utf8_decode($SITE_CIDADE) . ', ' . html_entity_decode(formata($finalizado)), 0, 0, 'R', true);
                 $pdf->Ln();
                 $pdf->Ln();
                 $pdf->Ln();
@@ -337,7 +324,7 @@ if (dcrip($_GET["professor"])) {
                         $c++;
                     }
 
-                    //TOTAL PERIODO NA HORIZONTAL
+//TOTAL PERIODO NA HORIZONTAL
                     $pdf->Cell(24, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
                     for ($c = 1; $c <= 6; $c++) {
                         $pdf->Cell(24, $alturaLinha, utf8_decode($TD[$p . 'TDP' . $c]), 1, 0, 'C', true);
@@ -346,7 +333,7 @@ if (dcrip($_GET["professor"])) {
                     $pdf->Ln();
                     $pdf->Ln();
 
-                    // 2 PERIODO ////
+// 2 PERIODO ////
                     $pdf->SetFont($fonte, 'B', $tamanho + 4);
                     if ($p == 1) {
                         foreach ($dias as $dCodigo => $dNome) {
@@ -371,7 +358,7 @@ if (dcrip($_GET["professor"])) {
                     }
                 }
 
-                //TOTAL DIARIO
+//TOTAL DIARIO
                 $pdf->Cell(24, $alturaLinha, html_entity_decode("TOTAL DI&Aacute;RIO"), 1, 0, 'C', true);
                 $pdf->SetFont($fonte, 'B', $tamanho + 3);
                 for ($i = 1; $i <= 6; $i++) {
@@ -381,7 +368,7 @@ if (dcrip($_GET["professor"])) {
                 $pdf->Ln();
                 $pdf->Ln();
 
-                //INTERVALO
+//INTERVALO
                 $pdf->SetFont($fonte, 'B', $tamanho + 4);
                 foreach ($dias as $dCodigo => $dNome) {
                     $col = (!$dCodigo) ? 1 : 2;
@@ -424,7 +411,7 @@ if (dcrip($_GET["professor"])) {
                 $atividade[6] = 'Projeto Externo';
                 $atividade[7] = 'Complemen. Aula';
                 $atividade[8] = 'Dedução Intervalos';
-    
+
                 $pdf->Ln();
                 $pdf->Ln();
 
@@ -478,7 +465,7 @@ if (dcrip($_GET["professor"])) {
                     $pdf->Ln();
                     $pdf->Ln();
                     $pdf->SetFont($fonte, 'B', $tamanho + 2);
-                    // Observcao a ser incluida na FTD
+// Observcao a ser incluida na FTD
                     $pdf->Cell(24, $alturaLinha, utf8_decode("Observação:"), 1, 0, 'C', true);
                     $pdf->MultiCell(168, $alturaLinha, utf8_decode("$obs"), 1, 1, 'C', true);
                 }
@@ -487,7 +474,7 @@ if (dcrip($_GET["professor"])) {
                 $pdf->Ln();
                 $pdf->Ln();
 
-                // ASSINATURAS
+// ASSINATURAS
                 $pdf->Cell(60, $alturaLinha, str_repeat('_', 28), 0, 0, 'R', true);
                 $pdf->Cell(2, $alturaLinha, "", 0, 0, 'R', true);
                 $pdf->Cell(60, $alturaLinha, str_repeat('_', 28), 0, 0, 'R', true);
@@ -506,9 +493,7 @@ if (dcrip($_GET["professor"])) {
         print utf8_decode("FTD está em processo de correção ou não foi finalizada pelo Docente!");
         die;
     }
+
+    $pdf->Output();
 }
-
-mysql_close();
-
-$pdf->Output();
 ?>

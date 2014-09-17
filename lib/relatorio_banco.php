@@ -16,23 +16,11 @@ $pdf->rodape = $rodape;
 $pdf->AliasNbPages();
 $pdf->AddPage($orientacao, $papel);
 $pdf->SetFont($fonte, 'B', $tamanho);
-//echo $sql;
-$resultado = mysql_query($sql);
+
 $pdf->SetFillColor(255, 255, 255);
 $pdf->SetLineWidth(.1);
 
-if (!$resultado) die ('Sem dados para gerar a lista.');
-
-$j=1;
-while ($linha = mysql_fetch_array($resultado)) {
-		array_unshift($linha, $j++); // contador
-    $linha2[]=$linha;
-}
-
 if (!$linha2) die ('Sem dados para gerar a lista.');
-
-array_unshift($titulosColunas, "N"); //contador
-array_unshift($largura, 8);
 
 if (array_sum($largura) < 270) {
     foreach ($linha2 as $linha) {
@@ -52,6 +40,9 @@ if (array_sum($largura) < 270) {
     $largura[count($largura) - 1] = 0; //ultima coluna eh 0 (automatica)
 }
 
+//CONTADOR
+$pdf->Cell(10, $alturaLinha, 'N', 1, 0, 'L', true);
+
 foreach ($titulosColunas as $coluna => $value) {
     $pdf->Cell($largura[$coluna], $alturaLinha, utf8_decode($value), 1, 0, 'L', false);
 }
@@ -65,13 +56,17 @@ foreach ($linha2 as $linha) {
         $pdf->SetFillColor(240, 240, 240);
     else
         $pdf->SetFillColor(255, 255, 255);
-    //$pdf->SetDrawColor(128,0,0);
-    foreach ($titulosColunas as $coluna => $value) {
-        $pdf->Cell($largura[$coluna], $alturaLinha, substr(utf8_decode($linha[$coluna]), 0, $largura[$coluna]-4) , 1, 0, 'L', true);
+
+
+    //CONTADOR
+    $pdf->Cell(10, $alturaLinha, $i, 1, 0, 'L', true);
+
+    foreach ($colunas as $coluna => $value) {
+        $pdf->Cell($largura[$coluna], $alturaLinha, substr(utf8_decode($linha[$value]), 0, $largura[$coluna]-4) , 1, 0, 'L', true);
     }
     $pdf->Ln();
     $i++;
 }
-mysql_close();
+
 $pdf->Output();
 ?>

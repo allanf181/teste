@@ -114,7 +114,7 @@ if (dcrip($_GET["nome"])) {
                             $selected = "";
                             if ($reg['atribuicao'] == $atribuicao)
                                 $selected = "selected";
-                            print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['bimestre'] .' '. $reg['disciplina'] . $reg['subturma'] . "</option>";
+                            print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['bimestreFormat'] .' '. $reg['disciplina'] . $reg['subturma'] . "</option>";
                         }
                         ?>
                     </select>
@@ -244,7 +244,7 @@ require PATH . VIEW . '/paginacao.php';
             <td align='left'><?= $reg['prontuario'] ?></td>
             <td><?= mostraTexto($reg['pessoa']) ?></td>
             <td align='left'>
-                <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title='<?= $professor->getProfessor($reg['atribuicao'], '', 0, 0) ?>'><?= $reg['bimestre'] . ' ' . $reg['disciplina'] . ' [' . $reg['numero'] . ']' ?></a>
+                <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title='<?= $professor->getProfessor($reg['atribuicao'], '', 0, 0) ?>'><?= $reg['bimestreFormat'] . ' ' . $reg['disciplina'] . ' [' . $reg['numero'] . ']' ?></a>
             </td>
             <td align='left'><?= mostraTexto($reg['situacao']) ?></td>
             <td align='left'><?= $reg['data'] ?></td>

@@ -70,8 +70,9 @@ if ($_GET["atribuicao"]) {
 
         require CONTROLLER . "/avaliacao.class.php";
         $avaliacao = new Avaliacoes();
-        $qdeAvaliacoes = $avaliacao->getQdeAvaliacoes($atribuicao);
-
+        $params = array('atribuicao' => $atribuicao);
+        $qdeAvaliacoes = $avaliacao->getQdeAvaliacoes($params, " AND t.tipo = 'avaliacao' ");
+        
         if ($status == 4) {
             $pergunta = $QUESTION_DIARIO1;
         }

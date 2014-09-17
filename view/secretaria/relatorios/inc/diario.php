@@ -1,7 +1,6 @@
 <?php
 
 require '../../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
@@ -11,26 +10,25 @@ $prof = new Professores();
 require CONTROLLER . "/nota.class.php";
 $nota = new Notas();
 
-// diÃ¡rio
-if (date("m") < 8)
-    $semestre = 1;
-else
-    $semestre = 2;
-$ano = date("Y");
+require CONTROLLER . "/aula.class.php";
+$aula = new Aulas();
 
-$restricao = ""; // sem restriÃ§Ã£o
+require CONTROLLER . '/atribuicao.class.php';
+$att = new Atribuicoes();
 
-if (!empty($_GET ["atribuicao"])) {
+require CONTROLLER . '/avaliacao.class.php';
+$aval = new Avaliacoes();
+
+if (dcrip($_GET["atribuicao"])) {
     $atribuicao = dcrip($_GET["atribuicao"]);
-    $restricao = " and a.atribuicao=$atribuicao";
+    $params['atribuicao'] = $atribuicao;
+    $sqlAdicional .= ' AND at.codigo = :atribuicao ';
 }
 
-// $titulo = "DiÃ¡rio de Classe";
 $fonte = 'Arial';
 $tamanho = 7;
 $alturaLinha = 4;
 $orientacao = "L"; // Landscape
-// $orientacao = "P"; //Portrait
 $papel = "A3";
 
 $largura = array(
@@ -44,43 +42,26 @@ $larguraDia = 4; // campos de dias
 
 include PATH . LIB . '/fpdf17/pdfDiario.php';
 
-$sql = "SELECT DATE_FORMAT(data, '%m'), c.nome, d.ch,
-	t.numero, tu.nome, t.semestre, d.nome, d.numero, a.bimestre,
-	a.calculo, c.fechamento, c.nomeAlternativo, a.subturma, m.nome, m.codigo
-	FROM Atribuicoes a, Aulas au, Cursos c, Modalidades m, Disciplinas d, Turmas t, Turnos tu 
-	WHERE au.atribuicao = a.codigo 
-	AND d.codigo = a.disciplina 
-	AND d.curso = c.codigo
-	AND c.modalidade = m.codigo
-	AND t.codigo = a.turma 
-	AND tu.codigo = t.turno
-	AND a.codigo = $atribuicao";
-//print $sql;						
-$result = mysql_query($sql);
-if (mysql_num_rows($result) != '') {
-    for ($i = 0; $i < mysql_num_rows($result); ++$i) {
-        $numeroTurma = mysql_result($result, $i, "d.numero") . ' ' . mysql_result($result, $i, "t.numero") . ' ' . mysql_result($result, $i, "a.subturma");
-        $numeroDisciplina = mysql_result($result, $i, "d.numero");
-        $semestre = mysql_result($result, $i, "t.semestre") . " SEMESTRE";
-        $disciplina = mysql_result($result, $i, "d.nome");
-        $bimestre = mysql_result($result, $i, "a.bimestre");
-        $CH = mysql_result($result, $i, "d.ch");
-        $bimTexto = ($bimestre) ? " - $bimestre BIMESTRE - " : "";
-        $calculo = mysql_result($result, $i, "a.calculo");
-        $fechamento = mysql_result($result, $i, "c.fechamento");
+$res = $att->getAtribuicao($atribuicao);
+$numeroTurma = $res['numeroDisciplina'] . ' ' . $res['turma'] . ' ' . $res['subturma'];
+$numeroDisciplina = $res['numero'];
+$semestre = $res['semestre'] . " SEMESTRE";
+$disciplina = $res['disciplina'];
+$bimestre = $res['bimestre'];
+$CH = $res['ch'];
+$bimTexto = ($bimestre) ? " - $bimestre BIMESTRE - " : "";
+$calculo = $res['calculo'];
+$fechamento = $res['fechamento'];
+$curso = $res['curso'];
 
-        $curso = (mysql_result($result, $i, "c.nomeAlternativo")) ? mysql_result($result, $i, "c.nomeAlternativo") : mysql_result($result, $i, "c.nome");
-        if ((mysql_result($result, $i, "m.codigo") < 1000 || mysql_result($result, $i, "m.codigo") >= 2000) && !mysql_result($result, $i, "c.nomeAlternativo"))
-            $curso = mysql_result($result, $i, "m.nome") . ' - ' . mysql_result($result, $i, "c.nome");
+if ($fechamento == 'a')
+    $bimestreEsemestre = 'ANUAL';
+if ($fechamento == 'b')
+    $bimestreEsemestre = $bimestre . "º BIM / $semestre";
+if ($fechamento == 's')
+    $bimestreEsemestre = $semestre;
 
-        if ($fechamento == 'a')
-            $bimestreEsemestre = 'ANUAL';
-        if ($fechamento == 'b')
-            $bimestreEsemestre = $bimestre . "º BIM / $semestre";
-        if ($fechamento == 's')
-            $bimestreEsemestre = $semestre;
-    }
-} else {
+if (!$res) {
     die('Nenhuma aula foi registrada.');
 }
 
@@ -88,19 +69,11 @@ $professor = $prof->getProfessor($atribuicao, '', 0, 0);
 
 $CAMPO_ESTATICO = 7;
 
-// avalicao
-$result2 = mysql_query("SELECT a.codigo,a.sigla,a.nome,
-    			date_format(a.data, '%d/%m/%Y') as data
-			FROM Avaliacoes a, TiposAvaliacoes t 
-			WHERE a.tipo = t.codigo 
-			AND atribuicao = $atribuicao 
-			AND t.tipo <> 'recuperacao' 
-                        ORDER BY a.sigla, a.codigo");
-$qde_avaliacao = mysql_num_rows($result2);
+$avaliacoes = $aval->getQdeAvaliacoes($params, " AND t.tipo <> 'recuperacao' ");
+$qde_avaliacao = $avaliacoes['avalCadastradas'];
 
 $totalDias = 80 - $qde_avaliacao - $CAMPO_ESTATICO;
 $REG2[] = '';
-$linha = 0;
 
 $pdf = new PDF ();
 
@@ -160,23 +133,9 @@ function cabecalho() {
     $pdf->Ln();
 
     // 3ª LINHA
-    global $result2, $qde_avaliacao, $atribuicao, $totalDias;
+    global $aula, $qde_avaliacao, $atribuicao, $totalDias, $aulas;
 
-    $sql = "SELECT DATE_FORMAT(data, '%d') as dia, 
-		DATE_FORMAT(data, '%m') as mes, quantidade, codigo 
-		FROM Aulas 
-		WHERE atribuicao = $atribuicao 
-		ORDER BY data, codigo";
-    $result = mysql_query($sql);
-    if (mysql_num_rows($result) != 0) {
-        $pdf->SetFont($fonte, '', $tamanho - 2);
-        for ($i = 0; $i < mysql_num_rows($result); ++$i) {
-            $quantidade = mysql_result($result, $i, "quantidade");
-            if ($quantidade <= 2)
-                $quantidade = 3;
-            $quantidadeTotal += $quantidade;
-        }
-    }
+    $quantidadeTotal = $aula->countQdeAulas($atribuicao);
 
     $totalDias = intval((293 - $quantidadeTotal) / 4);
     $totalDias -= $qde_avaliacao * 2;
@@ -196,93 +155,82 @@ function cabecalho() {
     $pdf->Ln();
 
     // 5ª LINHA
-    if (mysql_num_rows($result) != 0) {
-        $pdf->Cell(78, 5, utf8_decode(""), 0, 0, 'C', true);
+    $pdf->Cell(78, 5, utf8_decode(""), 0, 0, 'C', true);
 
-        $pdf->SetFont($fonte, '', $tamanho - 2);
+    $pdf->SetFont($fonte, '', $tamanho - 2);
 
-        // imprime o MES
-        for ($i = 0; $i < mysql_num_rows($result); ++$i) {
-            $mes = mysql_result($result, $i, "mes");
-            $quantidade = mysql_result($result, $i, "quantidade");
-            if ($quantidade <= 2)
-                $quantidade = 3;
+    $aulas = $aula->listAulasProfessor($atribuicao, 'ORDER BY data ASC');
+    // imprime o MES
+    foreach ($aulas as $reg) {
+        $mes = $reg['mes'];
+        $quantidade = $reg['quantidade'];
+        if ($quantidade <= 2)
+            $quantidade = 3;
 
-            $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$mes"), 1, 0, 'C', true);
-            $linha ++;
-        }
-
-        // completa quadros
-        for ($j = 1; $j < ($totalDias); $j ++) {
-            $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
-        }
-
-        $pdf->Cell(4, $alturaLinha, "", 0, 0, 'C', true);
-        $pdf->SetFont($fonte, '', $tamanho - 1);
-        $pdf->Cell($N, $alturaLinha, utf8_decode("Avaliações"), 1, 0, 'C', true);
-        $pdf->Cell($N, $alturaLinha, utf8_decode("Notas"), 1, 0, 'C', true);
-        $pdf->Cell($larguraDia * 2, $alturaLinha, utf8_decode("Faltas"), 1, 0, 'C', true);
-
-        // Pular linha
-        $pdf->Ln();
-        $linha = 0;
-
-        $pdf->Cell(5, 5, utf8_decode("Nº"), 0, 0, 'C', true);
-        $pdf->Cell(53, 5, utf8_decode(""), 0, 0, 'C', true);
-        $pdf->Cell(12, 5, utf8_decode("Prontuário"), 0, 0, 'C', true);
-        $pdf->Cell(8, 5, utf8_decode("Dia"), 0, 0, 'R', true);
-
-
-        // imprime o dia
-        $pdf->SetFont($fonte, '', $tamanho - 2);
-        for ($i = 0; $i < mysql_num_rows($result); $i ++) {
-            $dia = mysql_result($result, $i, "dia");
-            $quantidade = mysql_result($result, $i, "quantidade");
-            if ($quantidade <= 2)
-                $quantidade = 3;
-
-            $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$dia"), 1, 0, 'C', true);
-            $linha++;
-        }
-
-        // completa quadros
-        for ($j = 1; $j < ($totalDias); $j ++) {
-            $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
-        }
-
-        $pdf->Cell(4, $alturaLinha, "", 0, 0, 'C', true);
-        $pdf->SetFont($fonte, '', $tamanho);
-        $pdf->Cell($N, $alturaLinha, "", 0, 0, 'C', true);
-        $pdf->Cell($N, $alturaLinha, "", 0, 0, 'C', true);
-        $pdf->Cell($larguraDia * 2, $alturaLinha, "", 0, 0, 'C', true);
+        $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$mes"), 1, 0, 'C', true);
     }
+
+    // completa quadros
+    for ($j = 1; $j < ($totalDias); $j ++) {
+        $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
+    }
+
+    $pdf->Cell(4, $alturaLinha, "", 0, 0, 'C', true);
+    $pdf->SetFont($fonte, '', $tamanho - 1);
+    $pdf->Cell($N, $alturaLinha, utf8_decode("Avaliações"), 1, 0, 'C', true);
+    $pdf->Cell($N, $alturaLinha, utf8_decode("Notas"), 1, 0, 'C', true);
+    $pdf->Cell($larguraDia * 2, $alturaLinha, utf8_decode("Faltas"), 1, 0, 'C', true);
+
+    // Pular linha
+    $pdf->Ln();
+
+    $pdf->Cell(5, 5, utf8_decode("Nº"), 0, 0, 'C', true);
+    $pdf->Cell(53, 5, utf8_decode(""), 0, 0, 'C', true);
+    $pdf->Cell(12, 5, utf8_decode("Prontuário"), 0, 0, 'C', true);
+    $pdf->Cell(8, 5, utf8_decode("Dia"), 0, 0, 'R', true);
+
+
+    // imprime o dia
+    $pdf->SetFont($fonte, '', $tamanho - 2);
+    foreach ($aulas as $reg) {
+        $dia = $reg['dia'];
+        $quantidade = $reg['quantidade'];
+        if ($quantidade <= 2)
+            $quantidade = 3;
+
+        $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$dia"), 1, 0, 'C', true);
+    }
+
+    // completa quadros
+    for ($j = 1; $j < ($totalDias); $j ++) {
+        $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
+    }
+
+    $pdf->Cell(4, $alturaLinha, "", 0, 0, 'C', true);
+    $pdf->SetFont($fonte, '', $tamanho);
+    $pdf->Cell($N, $alturaLinha, "", 0, 0, 'C', true);
+    $pdf->Cell($N, $alturaLinha, "", 0, 0, 'C', true);
+    $pdf->Cell($larguraDia * 2, $alturaLinha, "", 0, 0, 'C', true);
+
     $pdf->Ln();
 }
-            
+
 // Pular linha
-$linha = 0;
+$i = 0;
 // Mostrando os alunos
-$sql = "SELECT p.nome, m.codigo, p.prontuario, s.nome, s.listar, s.habilitar, m.aluno
-			FROM Matriculas m, Atribuicoes a, Pessoas p, Situacoes s
-			WHERE a.codigo = m.atribuicao 
-			AND p.codigo = m.aluno 
-			AND s.codigo = m.situacao
-			AND a.codigo = $atribuicao
-			ORDER BY p.nome";
-$result = mysql_query($sql);
-
-for ($i = 0; $i < mysql_num_rows($result); ++$i) {
-
+$params = array('atribuicao' => $atribuicao);
+$sqlAdicional = ' WHERE a.codigo=:atribuicao GROUP BY al.codigo ORDER BY al.nome ';
+foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
     if ($i == 0 || $i == 55)
         cabecalho();
 
-    $nome = mysql_result($result, $i, "p.nome");
-    $snome = mysql_result($result, $i, "s.nome");
-    $slistagem = mysql_result($result, $i, "s.listar");
-    $shabilitar = mysql_result($result, $i, "s.habilitar");
-    $prontuario = mysql_result($result, $i, "p.prontuario");
-    $matricula = mysql_result($result, $i, "m.codigo");
-    $aluno = mysql_result($result, $i, "m.aluno");
+    $nome = $reg['aluno'];
+    $snome = $reg['situacao'];
+    $slistagem = $reg['listar'];
+    $shabilitar = $reg['habilitar'];
+    $prontuario = $reg['prontuario'];
+    $matricula = $reg['matricula'];
+    $aluno = $reg['codAluno'];
     $pdf->Cell($larguraDia, $alturaLinha, $i + 1, 1, 0, 'C', true);
 
     $pdf->SetFont($fonte, '', $tamanho);
@@ -294,37 +242,16 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
     if ($shabilitar) {
         if ($slistagem) {
             // Verificar Frequencia
-            $sql = "SELECT (
-			SELECT quantidade
-			FROM Frequencias
-			WHERE aula = a.codigo
-			AND matricula = $matricula
-			) as freq, quantidade as auladada,a.data
-			FROM Aulas a
-			WHERE a.atribuicao = $atribuicao
-			ORDER BY data, codigo";
-            //print "$sql <br>";
-            $faltas = mysql_query($sql);
-            $quantidadeTotal=0;
-            for ($j = 0; $j < mysql_num_rows($faltas); $j++) {
-                $quantidade = mysql_result($faltas, $j, "auladada");
+            $quantidadeTotal = 0;
+            $resAula = $aula->listAulasAluno($aluno, $atribuicao);
+            foreach ($resAula as $reg) {
+                $quantidade = $reg['quantidade'];
                 if ($quantidade <= 2)
                     $quantidade = 3;
                 $quantidadeTotal += $quantidade;
-                if (!$A = $nota->getFrequenciaAbono($aluno, $atribuicao, mysql_result($faltas, $j, "a.data"))) {
-                    $falta = mysql_result($faltas, $j, "freq");
-                    if ($falta) {
-                        $F = $falta;
-                    } else {
-                        $F = str_repeat('*', mysql_result($faltas, $j, "auladada"));
-                    }
-                } else {
-                    $F = $A['sigla'];
-                }
 
                 $pdf->SetFont($fonte, '', $tamanho - 3);
-                $pdf->Cell($quantidade, $alturaLinha, $F, 1, 0, 'C', true);
-                $linha ++;
+                $pdf->Cell($quantidade, $alturaLinha, $reg['falta'], 1, 0, 'C', true);
             }
 
             // completa quadros
@@ -335,11 +262,9 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
             $pdf->Cell($larguraDia, $alturaLinha, "", 0, 0, 'C', true);
 
             if ($qde_avaliacao != 0) {
-                for ($n = 0; $n < $qde_avaliacao; ++$n) {
-                    $avaliacao = mysql_result($result2, $n, "a.sigla");
-
+                foreach ($aval->getAvaliacoes($atribuicao) as $reg) {
                     $pdf->SetFont($fonte, '', 6);
-                    $pdf->Cell($larguraDia, $alturaLinha, utf8_decode($avaliacao), 1, 0, 'C', true);
+                    $pdf->Cell($larguraDia, $alturaLinha, utf8_decode($reg['sigla']), 1, 0, 'C', true);
                 }
             }
 
@@ -349,29 +274,17 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
             $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("NCC"), 1, 0, 'C', true);
             $pdf->SetFont($fonte, '', 5);
 
+
+            $params = array(':aluno' => $aluno, ':atribuicao' => $atribuicao);
             // Verificar Avalicao do Aluno
-            $sql = "SELECT n.nota, a.peso,
-			(SELECT COUNT(*) FROM Avaliacoes WHERE atribuicao=$atribuicao AND tipo NOT IN (SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'recuperacao') ) as total
-			FROM Notas n, Atribuicoes at, Avaliacoes a
-			WHERE n.avaliacao = a.codigo
-			AND a.atribuicao = at.codigo
-			AND a.atribuicao = $atribuicao
-			AND n.matricula = $matricula
-			AND a.tipo NOT IN (SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'recuperacao')
-                        ORDER BY a.sigla, a.codigo";
-            //print "$sql<br><br>";
-            $notas = mysql_query($sql);
-            for ($j = 0; $j < mysql_num_rows($notas); $j++) {
-                $nt = mysql_result($notas, $j, "n.nota");
-                $peso = mysql_result($notas, $j, "a.peso");
-                $qdeAval = mysql_result($notas, $j, "total");
-                $pdf->Cell($larguraDia, $alturaLinha, $nt, 1, 0, 'C', true);
+            foreach ($aval->listAvaliacoesAluno($params) as $reg) {
+                $pdf->Cell($larguraDia, $alturaLinha, $reg['nota'], 1, 0, 'C', true);
             }
 
-            for ($t = $j; $t < $qdeAval; $t++)
+            for ($t = $j; $t < $qde_avaliacao; $t++)
                 $pdf->Cell($larguraDia, $alturaLinha, '-', 1, 0, 'C', true);
 
-            $linha ++;
+            $i++;
 
             $MEDIAS = $nota->resultado($matricula, $atribuicao);
 
@@ -381,14 +294,13 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
             $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['media'], 1, 0, 'C', true);
             $pdf->Cell(8, $alturaLinha, $MEDIAS['faltas'], 1, 0, 'C', true);
         } else {
-            $pdf->Cell((($totalDias*4)+$quantidadeTotal)-4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
+            $pdf->Cell((($totalDias * 4) + $quantidadeTotal) - 4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
         }
     } else {
-        $pdf->Cell((($totalDias*4)+$quantidadeTotal)-4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
+        $pdf->Cell((($totalDias * 4) + $quantidadeTotal) - 4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
     }
     // Pular linha
     $pdf->Ln();
-    $linha = 0;
 }
 $pdf->Ln();
 
@@ -425,44 +337,29 @@ $pdf->SetFont($fonte, '', $tamanho);
 $pdf->SetFillColor(255, 255, 255);
 $pdf->SetLineWidth(.1);
 
-// Mostrando o conteúdo da disciplina ministrado
-$sql = "SELECT au.conteudo, au.quantidade, DATE_FORMAT(au.data, '%m') as mes,
-		DATE_FORMAT(au.data, '%d') as dia, a.observacoes, a.competencias, au.atividade
-		FROM Aulas au, Atribuicoes a, Disciplinas d, Cursos c, Modalidades m
-		WHERE a.codigo = au.atribuicao
-		AND d.codigo = a.disciplina 
-		AND d.curso = c.codigo
-		AND c.modalidade = m.codigo
-		AND a.codigo = $atribuicao
-		ORDER BY au.data";
-
-//print $sql;
-$resultado = mysql_query($sql);
-$linha = mysql_fetch_array($resultado);
-
 $limit = 105; // tamanho limite
 $limit2 = 120;
 
-$observ = $linha[4];
-$competencias = $linha[5];
+$observ = $aulas[0]['observacoes'];
+$competencias = $aulas[0]['competencias'];
 
 $obs = explode("\n", wordwrap($observ, $limit2));
 $comp = explode("\n", wordwrap($competencias, $limit2));
 
 $k = 0;
 $j = 0;
-for ($i = 0; $i < mysql_num_rows($resultado); ++$i) {
+foreach($aulas as $reg) {
     $dias = null;
     $aulasDadas = null;
-    $conteudo = mysql_result($resultado, $i, "au.conteudo");
-    $mes = mysql_result($resultado, $i, "mes");
-    $dia = mysql_result($resultado, $i, "dia");
-    $aulasDadas = mysql_result($resultado, $i, "au.quantidade");
+    $conteudo = $reg['conteudo'];
+    $mes = $reg['mes'];
+    $dia = $reg['dia'];
+    $aulasDadas = $reg['quantidade'];
 
     for ($a = 0; $a < $aulasDadas; ++$a)
         $dias .= ($a != $aulasDadas - 1) ? $dia . ',' : $dia;
 
-    $ATV = explode("\n", wordwrap(mysql_result($resultado, $i, "au.atividade"), $limit - 10));
+    $ATV = explode("\n", wordwrap($reg['atividade'], $limit - 10));
     $conteudo = explode("\n", wordwrap(str_replace("\r\n", ";", trim($conteudo)), $limit));
 
     $REG = ($ATV > $conteudo) ? $ATV : $conteudo;
@@ -559,8 +456,6 @@ $pdf->Ln();
 $pdf->Ln();
 $pdf->Cell(70, $alturaLinha, utf8_decode("COORDENADOR"), 0, 0, 'R', false);
 $pdf->Cell(185, $alturaLinha, utf8_decode($professor), 0, 0, 'R', false);
-
-mysql_close();
 
 $pdf->Output();
 ?>

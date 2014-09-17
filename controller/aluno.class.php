@@ -61,7 +61,38 @@ class Alunos extends Generic {
         {
             return false;
         }
-    }    
+    }
+    
+    // USADO POR: RELATORIOS.PHP
+    public function listAlunos($params, $sqlAdicional, $camposExtra) {
+        $bd = new database();
+        
+    	$sql = "select a.prontuario, upper(a.nome) as nome
+        $camposExtra
+        from Tipos ti, PessoasTipos pt, Pessoas a, Cidades c, 
+            Matriculas m, Turmas t, Cursos c2, Atribuicoes at
+        where pt.tipo = ti.codigo
+        and a.codigo = pt.pessoa
+        and a.cidade=c.codigo 
+        and m.aluno=a.codigo 
+        and m.atribuicao=at.codigo
+        and at.turma=t.codigo 
+        and t.curso=c2.codigo 
+        $sqlAdicional
+        group by a.codigo
+        order by a.nome"; 
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ( $res )
+        {
+            return $res;
+        }
+        else
+        {
+            return false;
+        }
+    }     
 }
 
 ?>

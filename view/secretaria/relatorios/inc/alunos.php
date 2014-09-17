@@ -1,145 +1,128 @@
 <?php
+
 require '../../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
-// lista os alunos cadastrados
+require CONTROLLER . '/aluno.class.php';
+$aluno = new Alunos();
 
-if (isset($_GET["curso"]) && isset($_GET["turma"])) {
-    
-//    echo "<br>endereco: ".($_GET["endereco"])==true;
+require CONTROLLER . '/turma.class.php';
+$turmas = new Turmas();
 
-    $ano = $_SESSION["ano"];
-    $semestre = $_SESSION["semestre"];
-    
-    if (!empty($_GET["curso"]))
-        $curso = dcrip($_GET["curso"]);
-    if (!empty($_GET["turma"]))
-        $turma = dcrip($_GET["turma"]);
-    
-    // valores fixos
-    $titulosColunas[]="Prontuário";
-    $titulosColunas[]="Nome";
-    $largura[]=14;
-    $largura[]=60;
-    //12,60,20,15,40,20,20,20,20,30, 0);
-    if (($_GET["rg"])=='true'){
-        $rg = ", a.rg";
-        $titulosColunas[]="RG";
-        $largura[]=16;
-    }
-    if (($_GET["cpf"])=='true'){
-        $cpf = ", a.cpf";
-        $titulosColunas[]="CPF";
-        $largura[]=18;
-    }
-    if (($_GET["nasc"])=='true'){
-        $nasc = ", date_format(a.nascimento, '%d/%m/%Y') nascimento ";
-        $titulosColunas[]="Nasc";
-        $largura[]=14;
-    }
-    if (($_GET["endereco"])=='true'){
-        $endereco = ", a.endereco";
-        $titulosColunas[]="Endereço";
-        $largura[]=60;
-    }
-    if (($_GET["bairro"])=='true'){
-        $bairro = ", a.bairro";
-        $titulosColunas[]="Bairro";
-        $largura[]=25;
-    }
-    if (($_GET["cidade"])=='true'){
-        $cidade = ", c.nome";
-        $titulosColunas[]="Cidade";
-        $largura[]=25;
-    }
-    if (($_GET["telefone"])=='true'){
-        $telefone = ", a.telefone";
-        $titulosColunas[]="Telefone";
-        $largura[]=18;
-    }
-    if (($_GET["celular"])=='true'){
-        $celular = ", a.celular";
-        $titulosColunas[]="Celular";
-        $largura[]=18;
-    }
-    if (($_GET["email"])=='true'){
-        $email = ", a.email";
-        $titulosColunas[]="Email";
-        $largura[]=40;
-    }
-    $largura[]='';
-    
-    $restricao = ""; // padrão é sem restrição
-    
-    // restrições
-    if (!empty($curso) && empty($turma)){
-        $sql = "select c.nome from Cursos c where c.codigo=$curso";
-        $result = mysql_query($sql);
-        $linha = mysql_fetch_row($result);
-        $nomeCurso = $linha[0];
-        
-        $restricao.= " and t.curso=$curso";
-    }
-    else
-        $campoCurso = ", c2.nome";
-    
-    if (!empty($turma)){
-        $sql = "select c.nome, t.numero from Cursos c, Turmas t where c.codigo=$curso and t.codigo=$turma";
-        //echo $sql;
-        $result = mysql_query($sql);
-        $linha = mysql_fetch_row($result);
-        $nomeCurso = $linha[0];
-        $nomeTurma = $linha[1];
-
-        $restricao.= " and t.codigo=$turma";
-    }
-    else
-        $campoTurma = ", t.numero";
-    
-    
-    $sql = "select a.prontuario, upper(a.nome)
-        $rg $cpf $nasc $endereco $bairro $cidade $telefone $celular $email $obs  $campoCurso $campoTurma
-        from Tipos ti, PessoasTipos pt, Pessoas a, Cidades c, Matriculas m, Turmas t, Cursos c2, Atribuicoes at
-        where pt.tipo = ti.codigo
-        and a.codigo = pt.pessoa
-        and a.cidade=c.codigo 
-        and m.aluno=a.codigo 
-        and m.atribuicao=at.codigo
-        and at.turma=t.codigo 
-        and t.curso=c2.codigo 
-        $restricao
-        and ti.codigo=$ALUNO 
-        group by a.nome
-        order by a.nome";
-
-    //echo $sql;
-
-    $titulo = "Relação de Alunos";
-    $titulo2 = "";
-    if (empty($campoCurso)){
-        $titulo = $nomeCurso;
-    }
-    else if (empty($campoTurma)){ 
-        $titulo = $nomeCurso;
-        $titulo2 = $nomeTurma;
-    }
-    else{
-        $titulosColunas[]="Curso";
-        $largura[]=30;
-        $titulosColunas[]="Turma";
-        $largura[]=15;
-    }
-    $rodape = $SITE_TITLE;
-    $fonte = 'Times';
-    $tamanho = 7;
-    $alturaLinha = 5;
-    $orientacao = "L"; //Landscape 
-    //$orientacao = "P"; //Portrait 
-    $papel = "A4";
-    
-    // gera o relatório em PDF
-    include(PATH.LIB.'/relatorio_banco.php');
+if (dcrip($_GET["curso"])) {
+    $curso = dcrip($_GET["curso"]);
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c2.codigo = :curso ';
 }
+
+if (dcrip($_GET["turma"])) {
+    $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= ' AND t.codigo = :turma ';
+}
+
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $params['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicional .= " AND c2.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
+}
+
+// valores fixos
+$titulosColunas[] = "Prontuário";
+$titulosColunas[] = "Nome";
+$colunas[] = 'prontuario';
+$colunas[] = 'nome';
+$largura[] = 14;
+$largura[] = 60;
+
+if (($_GET["rg"]) == 'true') {
+    $camposExtra = ", a.rg";
+    $titulosColunas[] = "RG";
+    $colunas[] = 'rg';
+    $largura[] = 16;
+}
+if (($_GET["cpf"]) == 'true') {
+    $camposExtra .= ", a.cpf";
+    $titulosColunas[] = "CPF";
+    $colunas[] = 'cpf';
+    $largura[] = 18;
+}
+if (($_GET["nasc"]) == 'true') {
+    $camposExtra .= ", date_format(a.nascimento, '%d/%m/%Y') nascimento ";
+    $titulosColunas[] = "Nasc";
+    $colunas[] = 'nascimento';
+    $largura[] = 14;
+}
+if (($_GET["endereco"]) == 'true') {
+    $camposExtra .= ", a.endereco";
+    $colunas[] = 'endereco';
+    $titulosColunas[] = "Endereço";
+    $largura[] = 60;
+}
+if (($_GET["bairro"]) == 'true') {
+    $camposExtra .= ", a.bairro";
+    $colunas[] = 'bairro';    
+    $titulosColunas[] = "Bairro";
+    $largura[] = 25;
+}
+if (($_GET["cidade"]) == 'true') {
+    $camposExtra .= ", c.nome as cidade";
+    $titulosColunas[] = "Cidade";
+    $colunas[] = 'cidade';    
+    $largura[] = 25;
+}
+if (($_GET["telefone"]) == 'true') {
+    $camposExtra .= ", a.telefone";
+    $colunas[] = 'telefone';    
+    $titulosColunas[] = "Telefone";
+    $largura[] = 18;
+}
+if (($_GET["celular"]) == 'true') {
+    $camposExtra .= ", a.celular";
+    $colunas[] = 'celular';    
+    $titulosColunas[] = "Celular";
+    $largura[] = 18;
+}
+if (($_GET["email"]) == 'true') {
+    $camposExtra .= ", a.email";
+    $colunas[] = 'email';    
+    $titulosColunas[] = "Email";
+    $largura[] = 40;
+}
+$largura[] = '';
+
+$params['aluno'] = $ALUNO;
+$sqlAdicional .= ' and ti.codigo=:aluno ';
+
+$linha2 = $aluno->listAlunos($params, $sqlAdicional, $camposExtra);
+
+$titulo = "Relação de Alunos";
+$titulo2 = "";
+
+    $params['ano'] = $ANO;
+    $params['semestre'] = $SEMESTRE;
+    unset($params['aluno']);
+    unset($params['coord']);
+    
+if ($curso && !$turma) {
+    $sqlAdicional = ' AND c.codigo = :curso ';
+    $res = $turmas->listTurmas($params, $sqlAdicional);
+    $titulo = $res[0]['curso'];
+} else if ($curso && $turma) {
+    $sqlAdicional = ' AND c.codigo = :curso AND t.codigo = :turma ';
+    $res = $turmas->listTurmas($params, $sqlAdicional);
+    $titulo = $res[0]['curso'];
+    $titulo2 = $res[0]['numero'];
+}
+
+$rodape = $SITE_TITLE;
+$fonte = 'Times';
+$tamanho = 7;
+$alturaLinha = 5;
+$orientacao = "L"; //Landscape 
+//$orientacao = "P"; //Portrait 
+$papel = "A4";
+
+// gera o relatório em PDF
+include(PATH . LIB . '/relatorio_banco.php');
 ?>

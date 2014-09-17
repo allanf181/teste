@@ -111,15 +111,17 @@ class FTDDados extends FTDHorarios {
     }
 
 
-    // USADO POR: PROFESSOR/FTD.PHP
+    // USADO POR: PROFESSOR/FTD.PHP, RELATORIOS/FTDDetalhada e Resumida
     public function getDadosFTD($codigo, $ano, $semestre) {
         $bd = new database();
         
         $sql = "SELECT fh.registro, fh.horario, fd.observacao,
                     fd.finalizado, fd.solicitacao, fd.telefone, fd.celular,
-                    fd.email, fd.area, fd.regime, fd.codigo,
+                    fd.email, fd.area, fd.regime, fd.codigo, fd.observacao,
                     date_format(fd.valido, '%d/%m/%Y %H:%i') as valido,
-                    (SELECT nome FROM Pessoas WHERE codigo = fd.solicitante) as solicitante
+                    (SELECT nome FROM Pessoas WHERE codigo = fd.solicitante) as solicitante,
+                    fd.TP, fd.TPT, fd.TD, fd.TDT, fd.ITE, fd.ITS, fd.A, fd.AT, 
+                    fd.AtvDocente, fd.Projetos,	fd.Intervalos, fd.Total
 		FROM FTDDados fd, FTDHorarios fh
 		WHERE fd.codigo = fh.ftd
 		AND fd.ano = :ano 
@@ -146,9 +148,10 @@ class FTDDados extends FTDHorarios {
         $sql = "SELECT fd.codigo as codigo, p.nome as professor,
     		date_format(fd.finalizado, '%d/%m/%Y %H:%i') as finalizado,
     		date_format(fd.valido, '%d/%m/%Y %H:%i') as valido,
-                fd.solicitacao as solicitacao,
+                fd.solicitacao as solicitacao, fd.professor as codProfessor,
     		(SELECT nome FROM Pessoas WHERE codigo = fd.solicitante) as solicitante,
-    		p.codigo as pessoaCodigo
+    		p.codigo as pessoaCodigo, fd.ano, fd.semestre, p.telefone,
+                p.celular, p.email, p.prontuario
 		FROM Pessoas p, PessoasTipos pt, FTDDados fd
 		WHERE p.codigo = pt.pessoa
 		AND p.codigo = fd.professor

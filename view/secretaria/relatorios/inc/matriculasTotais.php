@@ -1,37 +1,41 @@
 <?php
 require '../../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
 include PATH.LIB.'/fpdf17/pdfDiario.php';
 
-$curso = dcrip($_GET["curso"]);
+require CONTROLLER . '/matricula.class.php';
+$matricula = new Matriculas();
 
-// restrições
-if (!empty($curso))
-	$restricao.= " and c.codigo=$curso";
-	    
-if (!empty($turma))
-  $restricao.= " and t.codigo=$turma";
+if (dcrip($_GET["curso"])) {
+    $curso = dcrip($_GET["curso"]);
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c.codigo = :curso ';
+}
 
-if (!empty($situacao))
-  $restricao.= " and s.codigo=$situacao";
-	    
-$sql = "SELECT SUBSTRING(c.nome, 1, 62), s.nome, t.numero, COUNT(DISTINCT m.aluno), s.codigo
-				FROM Matriculas m, Atribuicoes a, Turmas t, Situacoes s, Cursos c
-				WHERE
-				m.atribuicao = a.codigo
-				AND a.turma = t.codigo
-				AND s.codigo = m.situacao
-				AND c.codigo = t.curso
-				$restricao
-				GROUP BY t.numero,s.nome
-        ORDER BY c.nome, t.numero, a.bimestre";
-$resultado = mysql_query($sql);
+if (dcrip($_GET["turma"])) {
+    $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= ' AND t.codigo = :turma ';
+}
 
-if (mysql_num_rows($resultado) == '')
-	die ('Nenhum registro foi encontrado.');	
+if (dcrip($_GET["situacao"])) {
+    $situacao = dcrip($_GET["situacao"]);
+    $params['situacao'] = $situacao;
+    $sqlAdicional .= ' AND s.codigo = :situacao ';
+}
+
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $params['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicional .= " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
+}
+
+$sqlAdicional .= ' GROUP BY t.numero,s.nome ORDER BY c.nome, t.numero, a.bimestre ';
+
+$campoExtra = ',COUNT(DISTINCT m.aluno) as quantidadeMatricula';
+
+$res = $matricula->getMatriculas($params, $sqlAdicional,null,null,$campoExtra);	
 
 $fonte = 'Times';
 $orientacao = "P"; //Portrait 
@@ -64,20 +68,20 @@ $pdf->Ln();
 $pdf->SetFont($fonte, '', $tamanho+3);
 $i=0;
 $j=1;
-while ($l = mysql_fetch_array($resultado)) {
+foreach($res as $reg) {
 	if ($i % 2 == 0)
   	$pdf->SetFillColor(240, 240, 240);
   else
   	$pdf->SetFillColor(255, 255, 255);
   
 	$pdf->Cell(10, 5, $j++, 1, 0, 'L', true);
-	$pdf->Cell(100, 5, utf8_decode($l[0]), 1, 0, 'L', true);
-	$pdf->Cell(40, 5, utf8_decode($l[1]), 1, 0, 'L', true);
-	$pdf->Cell(20, 5, utf8_decode($l[2]), 1, 0, 'L', true);
-	$pdf->Cell(20, 5, utf8_decode($l[3]), 1, 0, 'C', true);
+	$pdf->Cell(100, 5, utf8_decode($reg['curso']), 1, 0, 'L', true);
+	$pdf->Cell(40, 5, utf8_decode($reg['situacao']), 1, 0, 'L', true);
+	$pdf->Cell(20, 5, utf8_decode($reg['turma']), 1, 0, 'L', true);
+	$pdf->Cell(20, 5, utf8_decode($reg['quantidadeMatricula']), 1, 0, 'C', true);
 
-	$SIT[$l[4]] += $l[3];
-	$SITCOD[$l[4]] = $l[1];
+	$SIT[$reg['codSituacao']] += $reg['quantidadeMatricula'];
+	$SITCOD[$reg['codSituacao']] = $reg['situacao'];
 
 	$pdf->Ln();
   $i++;

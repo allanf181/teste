@@ -136,27 +136,28 @@ class Frequencias extends FrequenciasAbonos {
     }
 
     // RETORNA OS DADOS DA LISTAGEM DE FREQUENCIAS
-    // USADO POR: SECRETARIA/RELATORIOS/FREQUENCIAS.PHP, INC/BOLETIMTURMA.PHP
-    public function getListaFrequencias($turma, $mes) {
+    // USADO POR: SECRETARIA/RELATORIOS/FREQUENCIAS.PHP, INC/BOLETIMTURMA.PHP,
+    public function getListaFrequencias($params, $sqlAdicional) {
         $bd = new database();
 
         $sql = "SELECT p.codigo as codAluno, date_format(au.data, '%d/%m') as dataFormatada,
         		IfNULL(f.quantidade,0) as frequencia, upper(p.nome) as aluno,
-                        au.codigo as codAula, d.nome as disciplina,
+                        au.codigo as codAula, d.nome as disciplina, sum(au.quantidade) as aulas,
         		at.codigo as atribuicao, au.data as data, m.aluno as matricula,
-                        au.quantidade
+                        au.quantidade, s.nome as situacao, p.prontuario, m.codigo as codMatricula,
+                        p.rg
                 FROM Atribuicoes at
                 join Disciplinas d on at.disciplina=d.codigo
                 join Aulas au on au.atribuicao=at.codigo
                 join Frequencias f on f.aula=au.codigo
                 join Matriculas m on f.matricula=m.codigo
+                join Situacoes s on s.codigo=m.situacao 
                 join Pessoas p on m.aluno=p.codigo
-                where at.turma=:turma
-                and date_format(au.data, '%m')=$mes
-                group by p.nome, au.codigo
+                join Turmas t on t.codigo = at.turma
+                join Cursos c on c.codigo = t.curso
+                $sqlAdicional
                 order by au.data, p.nome";
         
-        $params = array('turma' => $turma);
         $res = $bd->selectDB($sql, $params);
         
         if ($res) {

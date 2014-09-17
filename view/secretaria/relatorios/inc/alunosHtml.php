@@ -1,75 +1,62 @@
-
 <?php
+
 require '../../../../inc/config.inc.php';
-require PATH.LIB.'/relatorio.php';
+require PATH . LIB . '/relatorio.php';
 
-require MYSQL;
 require VARIAVEIS;
+require FUNCOES;
 
-// lista os alunos cadastrados
+require CONTROLLER . '/aluno.class.php';
+$aluno = new Alunos();
 
-if (isset ($_GET["curso"])&& isset ($_GET["turma"])){
-
-	if (!empty($_GET["curso"]))
-	    $curso = dcrip($_GET["curso"]);
-	if (!empty($_GET["turma"]))
-	    $turma = dcrip($_GET["turma"]);
-	$restricao = ""; // padrão é sem restrição
-	
-	$conteudo = $cabecalho;
-	$conteudo.= "<div id='container' style='font-family: helvetica'>";
-	$conteudo.= "<h1>Alunos</h1>";
-	$conteudo.="<table border='1' width='100%'>";
-	$cor = "white";
-	$n = 1;
-	
-	// restrições
-	if (!empty($semestre))
-	    $restricao.= " and (t.semestre=$semestre OR t.semestre=0)";
-	if (!empty($curso))
-	    $restricao.= " and t.curso=$curso";
-	if (!empty($turma))
-	    $restricao.= " and t.codigo=$turma";
-	
-	$sql = "select a.prontuario, a.nome, a.rg, 
-	        date_format(a.nascimento, '%d/%m/%Y') nascimento , a.endereco, a.bairro, c.nome, 
-	        a.telefone, a.celular, a.email, c2.nome 
-	        from Pessoas a, PessoasTipos pt, Cidades c, Matriculas m, Turmas t, Cursos c2, Atribuicoes at
-	        where pt.pessoa = a.codigo  
-	        and a.cidade=c.codigo 
-	        and m.aluno=a.codigo 
-	        and m.atribuicao=at.codigo
-	        and at.turma=t.codigo 
-	        and t.curso=c2.codigo 
-	        and t.ano=$ano 
-	        $restricao
-	        and pt.tipo=$ALUNO
-	        group by a.nome
-	        order by a.nome";
-	        
-	$resultado = mysql_query($sql);
-	
-	//print $sql;
-	
-	$conteudo.="<tr><th>#</th><th>Prontu&aacute;rio</th><th>Nome</th><th>RG</th><th>Nascimento</th><th>Endere&ccedil;o</th><th>Bairro</th><th>Cidade</th><th>Telefone</th><th>Celular</th><th>E-mail</th><th>Curso</th></tr>";
-	
-	while ($linha = mysql_fetch_array($resultado)) {
-	    $conteudo.="<tr bgcolor='$cor'><td>$n</td><td>$linha[0]</td><td>".utf8_decode ($linha[1])."</td><td>".utf8_decode ($linha[2])."</td><td>".utf8_decode ($linha[3])."</td><td>".utf8_decode ($linha[4])."</td><td>".utf8_decode ($linha[5])."</td><td>".utf8_decode ($linha[6])."</td><td>".utf8_decode ($linha[7])."</td><td>".utf8_decode ($linha[8])."</td><td>".utf8_decode ($linha[9])."</td><td>".utf8_decode ($linha[10])."</td></tr>";
-	
-	
-	    // alterna a cor de fundo da linha
-	    $n++;
-	    if ($n % 2 == 0)
-	        $cor = "gray";
-	    else
-	        $cor = "white";
-	}
-	
-	$conteudo.="</table>";
-	
-	echo $conteudo;
-	
-	//geraPDF($conteudo, 0); // retrato
-	//geraPDF($conteudo, 1); // paisagem
+if (dcrip($_GET["curso"])) {
+    $curso = dcrip($_GET["curso"]);
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c2.codigo = :curso ';
 }
+
+if (dcrip($_GET["turma"])) {
+    $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= ' AND t.codigo = :turma ';
+}
+
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $params['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicional .= " AND c2.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
+}
+
+$camposExtra .= ", a.rg";
+$camposExtra .= ", date_format(a.nascimento, '%d/%m/%Y') nascimento ";
+$camposExtra .= ", a.endereco";
+$camposExtra .= ", a.bairro";
+$camposExtra .= ", c.nome as cidade";
+$camposExtra .= ", a.telefone";
+$camposExtra .= ", a.celular";
+$camposExtra .= ", a.email";
+$camposExtra .= ", c2.nome as curso";
+
+$conteudo = $cabecalho;
+$conteudo.= "<div id='container' style='font-family: helvetica'>";
+$conteudo.= "<h1>Alunos</h1>";
+$conteudo.="<table border='1' width='100%'>";
+$cor = "white";
+$n = 1;
+
+$conteudo.="<tr><th>#</th><th>Prontu&aacute;rio</th><th>Nome</th><th>RG</th><th>Nascimento</th><th>Endere&ccedil;o</th><th>Bairro</th><th>Cidade</th><th>Telefone</th><th>Celular</th><th>E-mail</th><th>Curso</th></tr>";
+
+foreach ($aluno->listAlunos($params, $sqlAdicional, $camposExtra) as $linha) {
+    $conteudo.="<tr bgcolor='$cor'><td>$n</td><td>" . $linha['prontuario'] . "</td><td>" . utf8_decode($linha['nome']) . "</td><td>" . utf8_decode($linha['rg']) . "</td><td>" . utf8_decode($linha['nascimento']) . "</td><td>" . utf8_decode($linha['endereco']) . "</td><td>" . utf8_decode($linha['bairro']) . "</td><td>" . utf8_decode($linha['cidade']) . "</td><td>" . utf8_decode($linha['telefone']) . "</td><td>" . utf8_decode($linha['celular']) . "</td><td>" . utf8_decode($linha['email']) . "</td><td>" . utf8_decode($linha['curso']) . "</td></tr>";
+
+    // alterna a cor de fundo da linha
+    $n++;
+    if ($n % 2 == 0)
+        $cor = "gray";
+    else
+        $cor = "white";
+}
+
+$conteudo.="</table>";
+
+echo $conteudo;
 ?>

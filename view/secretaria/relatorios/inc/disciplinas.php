@@ -1,22 +1,23 @@
 <?php
 require '../../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
-// lista os alunos cadastrados
+require CONTROLLER . '/disciplina.class.php';
+$disciplina = new Disciplinas();
 
-$restricao = ""; // padrão é sem restrição
-
-if (!empty($_GET["curso"])) {
+if (dcrip($_GET["curso"])) {
     $curso = dcrip($_GET["curso"]);
-    $restricao = " and c.codigo=$curso";
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c.codigo = :curso ';
 }
 
-$sql = "select d.numero, d.modulo, d.nome, SUBSTRING(c.nome, 1, 50) as curso
-from Disciplinas d, Cursos c where d.curso = c.codigo $restricao order by d.nome";
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $params['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicional .= " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
+}
 
-//print $sql;
+$linha2 = $disciplina->listDisciplinas($params, $sqlAdicional);
 
 $titulo = "Relação de Disciplinas";
 $titulo2 = "";
@@ -28,9 +29,9 @@ $alturaLinha = 10;
 $orientacao = "L"; //Landscape 
 //$orientacao = "P"; //Portrait 
 $papel = "A4";
-$colunas = array("d.numero", "d.modulo", "d.nome","curso");
-$titulosColunas = array("Código", "Módulo", "Disciplina", "Curso");
-$largura = array(30,20,110,110);
+$colunas = array("numero", "disciplina", "curso");
+$titulosColunas = array("Código", "Disciplina", "Curso");
+$largura = array(30,110,110);
 
 // gera o relatório em PDF
 include PATH.LIB.'/relatorio_banco.php';

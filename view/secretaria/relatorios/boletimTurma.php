@@ -116,7 +116,7 @@ if ($turma && $fechamento) {
         $bimestres[$reg['bimestre']] = $reg['bimestre'];
         $alunos[$reg['codAluno']] = $reg['aluno'];
         $disciplinasMediaNome[$reg['numero']] = $reg['numero'];
-        $disciplinas[$reg['atribuicao']][$reg['codAluno']] = $reg['codModalidade'];
+        $disciplinas[$reg['atribuicao']][$reg['codAluno']] = $reg['codMatricula'];
         $situacaoListar[$reg['codAluno']][$reg['atribuicao']] = $reg['listar'];
         $situacaoHabilitar[$reg['codAluno']][$reg['atribuicao']] = $reg['habilitar'];
         $situacaoNome[$reg['codAluno']][$reg['atribuicao']] = $reg['situacao'];

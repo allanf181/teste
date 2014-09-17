@@ -51,7 +51,7 @@ class Turmas extends Generic {
 	            AND (semestre= :semestre OR semestre=0)";
 
         $sql .= " $sqlAdicional ";
-
+        
         $sql .= " ORDER BY c.nome, t.numero ";
   
         $sql .= "$nav";

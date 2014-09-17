@@ -1,55 +1,35 @@
 <?php
 require '../../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
-$atribuicao = "";
+require CONTROLLER . '/atribuicao.class.php';
+$atribuicao = new Atribuicoes();
 
-$atribuicao = dcrip($_GET["atribuicao"]);
+require CONTROLLER . '/aula.class.php';
+$aula = new Aulas();
 
-if (!empty($atribuicao))
-    $restricao.= " and at.codigo=$atribuicao";
+if (dcrip($_GET["atribuicao"])) {
+    $params['atribuicao'] = dcrip($_GET["atribuicao"]);
+    $sqlAdicional = ' WHERE a.codigo=:atribuicao GROUP BY al.codigo ORDER BY al.nome ';
 
+    $linha2 = $aula->listAlunosByAula($params, $sqlAdicional);
 
-$sql = "select d.nome, t.numero from Disciplinas d, Turmas t, Atribuicoes a
-    where a.turma=t.codigo
-    and a.disciplina=d.codigo
-    and a.codigo=$atribuicao;";
-//echo $sql;
-$resultado = mysql_query($sql);
-$l = mysql_fetch_row($resultado);
+    $res = $atribuicao->getAtribuicao(dcrip($_GET["atribuicao"]));
 
-
-$sql = "select a.prontuario, a.nome, s.nome, '', '', '', '', '', '', '', '', '', ''
-from Pessoas a, PessoasTipos pt, Cidades c, Matriculas m, Turmas t, Atribuicoes at, Situacoes s
-where pt.pessoa = a.codigo 
-and m.situacao=s.codigo
-and a.cidade=c.codigo 
-and m.aluno=a.codigo 
-and m.atribuicao=at.codigo
-and at.turma=t.codigo
-and t.ano=$ano $restricao 
-and pt.tipo=$ALUNO
-group by a.codigo
-order by a.nome";
-
-//echo $sql;
-
-    $titulo = "Lista de Chamada $l[0] [$l[1]]";
+    $titulo = "Lista de Chamada: ".$res['disciplina']." [".$res['numeroDisciplina']."]";
     $titulo2 = "";
     $rodape = $SITE_TITLE;
     $fonte = 'Times';
     $tamanho = 8;
     $alturaLinha = 10;
     $orientacao = "L"; //Landscape
-//    $orientacao = "P"; //Portrait
     $papel = "A4";
     $titulosColunas = array("Prontuário", "Nome", "Situação", "___/___", "___/___", "___/___", "___/___", "___/___", "___/___", "___/___", "___/___", "___/___", "___/___");
-    $colunas = array("a.prontuario", "a.nome", "s.nome", "", "", "", "", "", "", "", "", "", "");
+    $colunas = array("prontuario", "aluno", "situacao", "", "", "", "", "", "", "", "", "", "");
     $largura = array(20, 85, 20, 15, 15, 15, 15, 15, 15, 15, 15, 15, 0);
 
     // gera o relatório em PDF
     include PATH.LIB.'/relatorio_banco.php';
-
+}
 ?>

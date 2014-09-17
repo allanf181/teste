@@ -74,7 +74,9 @@ $dadosAula = $aulaFreq->getAula($aula);
             </tr>
             <?php
             $i = 1;
-            foreach ($aulaFreq->listAlunosByAula($atribuicao, $aula) as $reg) {
+            $params = array('atribuicao' => $atribuicao, 'aula' => $aula);
+            $sqlAdicional = ' WHERE a.codigo=:atribuicao AND au.codigo=:aula ORDER BY al.nome ';
+            foreach ($aulaFreq->listAlunosByAula($params, $sqlAdicional) as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?= $cdif ?> ><td align='center'><?= $reg['prontuario'] ?></td>

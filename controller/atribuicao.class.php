@@ -1,4 +1,5 @@
 <?php
+
 if (!class_exists('Generic'))
     require_once CONTROLLER . '/generic.class.php';
 
@@ -24,7 +25,7 @@ class Atribuicoes extends Generic {
     }
 
     // USADO POR: ALUNO/ALUNO.PHP, PROFESSOR/PROFESSOR.PHP, PROFESSOR/PLANO.PHP
-    // BOLETIM.PHP
+    // BOLETIM.PHP, RELATORIOS/ATESTADOMATRICULA.PHP
     // Retorna dados da atribuicao (Disciplina, Turma, etc..)
     // Pode ser colocado com função no MySQL futuramente
     public function getAtribuicao($codigo, $LIMITE_DIARIO_PROF = 0) {
@@ -32,13 +33,15 @@ class Atribuicoes extends Generic {
 
         $sql = "SELECT d.nome as disciplina, t.numero as turma, a.status, a.prazo,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
-                a.bimestre as bimestre, c.fechamento as fechamento,
+                IF(a.bimestre = 0 AND t.semestre <> 0, CONCAT('no ',t.semestre,'º semestre do '),
+                    CONCAT('no ',a.bimestre,'º bimestre do ')) as bimestreFormat,
+                a.bimestre as bimestre, c.fechamento as fechamento,d.numero as numeroDisciplina,
         	t.semestre as semestre, t.ano as ano, t.codigo as turmaCodigo, a.subturma as subturma,
                 c.fechamento as fechamento, a.observacoes as observacoes, a.competencias as competencias,
                 m.codigo as codModalidade, m.nome as modalidade, d.ch as CH, a.aulaPrevista as aulaPrevista,
                 IF(a.prazo, date_format(a.prazo, '%H:%i de %d/%m/%Y'), '') as prazoFormat,
                 DATEDIFF(NOW(), a.dataInicio) as diarioAberto,
-                DATEDIFF(a.prazo, NOW()) as prazoDiff,
+                DATEDIFF(a.prazo, NOW()) as prazoDiff, date_format( a.dataInicio, '%d/%m/%Y') as dataInicioFormat,
                 date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), '%d/%m/%Y') as dataFimFormat,
                 date_format( DATE_SUB(NOW(), INTERVAL 365 DAY), '%d/%m/%Y') as dataInicioCal,
                 date_format( a.prazo, '%d/%m/%Y') as dataFimCal,
@@ -65,7 +68,7 @@ class Atribuicoes extends Generic {
             if (!$res[0]['bimestre'] && !$res[0]['semestre'])
                 $res[0]['bimestreNome'] = 'ANUAL';
             elseif ($res[0]['bimestre'] && $res[0]['semestre'])
-                $res[0]['bimestreNome'] .= $res[0]['bimestre'].'º BIMESTRE';
+                $res[0]['bimestreNome'] .= $res[0]['bimestre'] . 'º BIMESTRE';
             elseif (!$res[0]['bimestre'] && $res[0]['semestre'])
                 $res[0]['bimestreNome'] = 'SEMESTRAL';
 
@@ -358,10 +361,10 @@ class Atribuicoes extends Generic {
             $sql = 'SELECT codigo,motivo FROM PrazosDiarios WHERE atribuicao = :atribuicao AND dataConcessao IS NULL';
             if ($res = $bd->selectDB($sql, $params_pd)) {
                 $params_pd['codigo'] = $res[0]['codigo'];
-                $params_pd['motivo'] = $params['pessoa'] . ', '.$params['botao'].' o diário. Motivo: ' . $params['motivo'] . '<br>Motivo do Professor: ' . $res[0]['motivo'];
+                $params_pd['motivo'] = $params['pessoa'] . ', ' . $params['botao'] . ' o diário. Motivo: ' . $params['motivo'] . '<br>Motivo do Professor: ' . $res[0]['motivo'];
             } else {
                 $params_pd['data'] = date('Y-m-d H:i:s');
-                $params_pd['motivo'] = $params['pessoa'] . ', '.$params['botao'].' o diário. Motivo: ' . $params['motivo'];
+                $params_pd['motivo'] = $params['pessoa'] . ', ' . $params['botao'] . ' o diário. Motivo: ' . $params['motivo'];
             }
             $params_pd['dataConcessao'] = date('Y-m-d H:i:s');
             $ret = $this->insertOrUpdate($params_pd, 'PrazosDiarios');
@@ -409,11 +412,11 @@ class Atribuicoes extends Generic {
         } else {
             return false;
         }
-    }  
-    
+    }
+
     // RETORNA OS DADOS DO BOLETIM TURMA
     // USADO POR: SECRETARIA/RELATORIOS/BOLETIMTURMA.PHP, INC/BOLETIMTURMA.PHP
-    public function getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento) {
+    public function getAtribuicoesFromBoletimTurma($turma, $bimestre = null, $fechamento = null) {
         $bd = new database();
 
         $params = array('turma' => $turma);
@@ -434,27 +437,138 @@ class Atribuicoes extends Generic {
         $sql = "SELECT 	al.codigo as codAluno, al.nome as aluno, 
                         d.codigo as codDiciplina, d.numero as numero, 
                         d.nome as disciplina, m.situacao, a.status,
-                	m.codigo as codModalidade, a.codigo as atribuicao,
+                	m.codigo as codMatricula, a.codigo as atribuicao,
                         s.listar, s.habilitar, s.nome as situacao, 
-                        s.sigla, a.bimestre
+                        s.sigla, a.bimestre, al.prontuario,
+                        (SELECT numero FROM Turmas where codigo = a.turma) as turma
 			FROM Atribuicoes a 
 			LEFT JOIN Disciplinas d on a.disciplina=d.codigo 
 			LEFT JOIN Matriculas m on m.atribuicao=a.codigo 
 			LEFT JOIN Pessoas al on m.aluno=al.codigo
 			LEFT JOIN Situacoes s on m.situacao=s.codigo
 			WHERE a.turma 
-			$sqlAdicional 
+			$sqlAdicional
 			ORDER BY a.bimestre, d.nome, al.nome";
 
         $res = $bd->selectDB($sql, $params);
-        
+
         if ($res) {
             return $res;
         } else {
             return false;
         }
-    }  
-    
+    }
+
+    // USADO POR: RELATORIOS.PHP
+    // Lista os fechamentos existentes
+    public function getFechamentos($turma) {
+        $bd = new database();
+
+        $sql = "select a.bimestre, t.semestre
+                from Atribuicoes a, Turmas t
+                where t.codigo=a.turma
+                and t.codigo=:turma
+                GROUP BY a.bimestre";
+
+        $params = array(':turma' => $turma);
+        $res = $bd->selectDB($sql, $params);
+        if ($res) {
+            $new_res = array();
+            $i = 0;
+            foreach ($res as $reg) {
+                if ($reg['semestre'] != 0 && $reg['bimestre'] != 0) {
+                    $new_res[$i]['nome'] = $reg['bimestre'] . 'º Bimestre';
+                    $new_res[$i]['value'] = $reg['bimestre'];
+                    $i++;
+                }
+            }
+            if ($i) {
+                $new_res[$i]['nome'] = 'Final';
+                $new_res[$i]['value'] = 'final';
+            }
+            return $new_res;
+        } else {
+            return false;
+        }
+    }
+
+    // LISTA AS ATRIBUICOES DE DOCENTES
+    // USADO POR: RELATORIOS/DOCENTES.PHP
+    public function getAtribuicaoDocente($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
+        $bd = new database();
+
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
+
+        $sql = "SELECT DISTINCT p.prontuario, p.nome as pessoa, d.nome as disciplina,
+                    e.diaSemana, s.nome as sala,
+                    CONCAT(DATE_FORMAT(h.inicio, '%h:%i'), ' - ', DATE_FORMAT(h.fim, '%h:%i')) as horario
+                    FROM Ensalamentos e, Atribuicoes a, Professores pr, Pessoas p,
+                        Disciplinas d, Horarios h, Turmas t, Salas s, Cursos c
+                    WHERE e.atribuicao = a.codigo
+                    AND pr.atribuicao = a.codigo
+                    AND pr.professor = p.codigo
+                    AND d.codigo = a.disciplina
+                    AND h.codigo = e.horario
+                    AND s.codigo = e.sala
+                    AND t.codigo = a.turma
+                    AND t.curso = c.codigo
+                    AND t.semestre = :semestre
+                    AND t.ano = :ano";
+
+        $sql .= " $sqlAdicional ";
+
+        $sql .= "ORDER BY p.nome, d.nome, e.diaSemana, h.inicio, s.nome";
+
+        $sql .= "$nav";
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
+
+    // RETORNA OS DADOS DO BOLETIM INDIVIDUAL
+    // USADO POR: SECRETARIA/RELATORIOS/BOLETIM.PHP
+    public function getAtribuicoesFromBoletim($turma, $aluno = null) {
+        $bd = new database();
+
+        if ($aluno) {
+            $params['aluno'] = $aluno;
+            $sqlAdicional = ' AND al.codigo = :aluno ';
+        }
+        
+        $sql = "SELECT al.codigo as codAluno, al.nome as aluno, d.codigo as codDisciplina, 
+                        d.numero as numeroDisciplina, d.nome as disciplina, a.status,
+			m.codigo as matricula, a.codigo as atribuicao, s.listar, s.habilitar, 
+                        s.nome as situacao, s.sigla, a.bimestre, al.prontuario,
+			t.numero as turma,
+                        IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso
+		FROM Atribuicoes a 
+		LEFT JOIN Disciplinas d on a.disciplina=d.codigo 
+		LEFT JOIN Matriculas m on m.atribuicao=a.codigo 
+		LEFT JOIN Pessoas al on m.aluno=al.codigo
+		LEFT JOIN Situacoes s on m.situacao=s.codigo
+		LEFT JOIN Turmas t on t.codigo=a.turma
+		LEFT JOIN Cursos c on c.codigo=t.curso
+		WHERE a.turma IN (SELECT t1.codigo FROM Turmas t1 
+				WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
+				WHERE t2.codigo = :turma)) 
+                $sqlAdicional
+		ORDER BY a.bimestre, d.nome, al.nome";
+
+        $params['turma'] = $turma;
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }    
 }
 
 ?>

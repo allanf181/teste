@@ -109,7 +109,7 @@ if ($_GET['opcao'] == 'insert') {
     <?php
 }
 if ($_GET['opcao'] == '') {
-    $res = $aula->listAulasProfessor($atribuicao);
+    $res = $aula->listAulasProfessor($atribuicao, 'ORDER BY data DESC');
     ?>
     <div id="etiqueta" align="center">
         <span class='rotulo_professor'>Turma: </span><?= $res[0]['turma'] ?><br />

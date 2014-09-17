@@ -1,7 +1,6 @@
 <?php
 
 require '../../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require FUNCOES;
 
@@ -10,21 +9,7 @@ include PATH . LIB . '/fpdf17/pdfDiario.php';
 require CONTROLLER . "/ftdDado.class.php";
 $ftd = new FTDDados();
 
-$curso = dcrip($_GET["curso"]);
-
-// restrições
-if (!empty($curso))
-    $restricao.= " and c.codigo=$curso";
-
-$sql = "SELECT p.codigo, p.nome
-							FROM Pessoas p, PessoasTipos pt
- 							WHERE p.codigo = pt.pessoa
- 							AND pt.tipo = $PROFESSOR
- 							ORDER BY p.nome";
-$resultado = mysql_query($sql);
-
-if (mysql_num_rows($resultado) == '')
-    die('Nenhum registro foi encontrado.');
+$pessoa = new Pessoas();
 
 $fonte = 'Times';
 $orientacao = "P"; //Portrait 
@@ -50,16 +35,18 @@ $pdf->Ln();
 $dias = diasDaSemana();
 
 $i = 1;
-while ($l = mysql_fetch_array($resultado)) {
+$params['tipo'] = $PROFESSOR;
+$sqlAdicional = ' AND pt.tipo = :tipo ';
+foreach($pessoa->listPessoasTipos($params, $sqlAdicional) as $reg) {
     if ($i % 2 == 0)
         $pdf->SetFillColor(240, 240, 240);
     else
         $pdf->SetFillColor(255, 255, 255);
 
-    $pdf->Cell(90, 5, utf8_decode($l[1]), 1, 0, 'L', true);
+    $pdf->Cell(90, 5, utf8_decode($reg['nome']), 1, 0, 'L', true);
 
     $j = 0;
-    foreach ($ftd->getAtendimentoAluno($l[0], $ANO, $SEMESTRE) as $dia => $h) {
+    foreach ($ftd->getAtendimentoAluno($reg['codigo'], $ANO, $SEMESTRE) as $dia => $h) {
         if ($j == 1)
             $pdf->Cell(90, 5, utf8_decode(""), 1, 0, 'L', true);
 

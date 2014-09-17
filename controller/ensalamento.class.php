@@ -18,9 +18,10 @@ class Ensalamentos extends Generic {
                         t.numero as turma, e.diaSemana, s.nome as sala, 
                         h.nome as horario, date_format(h.inicio, '%H:%i') as inicio,
                         date_format(h.fim, '%H:%i') as fim
-	            	FROM Atribuicoes a, Pessoas p, Turmas t, Disciplinas d, Ensalamentos e, Horarios h, Salas s, Professores pr
+	            	FROM Atribuicoes a, Pessoas p, Turmas t, Disciplinas d, 
+                            Ensalamentos e, Horarios h, Salas s, Professores pr
 	                WHERE pr.atribuicao = a.codigo
-   					AND pr.professor = p.codigo
+   			AND pr.professor = p.codigo
 	                AND a.turma = t.codigo 
 	                AND e.atribuicao = a.codigo 
 	                AND h.codigo = e.horario
@@ -29,12 +30,11 @@ class Ensalamentos extends Generic {
 	                AND t.ano = :ano
 	                AND (t.semestre = :semestre OR t.semestre=0)";
 
-        if ($params["turma"])
-            $sql .= " $sqlAdicional ";
+        $sql .= " $sqlAdicional ";
 
         $sql .= "$nav";
         $res = $bd->selectDB($sql, $params);
-
+        
         if ($res)
             return $res;
         else

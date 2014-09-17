@@ -6,164 +6,116 @@
 //1
 
 require '../../../inc/config.inc.php';
-require MYSQL;
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-// especifica o ano e o semestre
-    $data = date("d/m/Y");
-    $turma = "";
-    $curso = "";
-    
-    $restricaoCoordenador="";
-    $restricaoCoordenadorAnd="";
-    if (in_array($COORD, $_SESSION["loginTipo"])){
-        $restricaoCoordenador = " WHERE c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador=".$_SESSION['loginCodigo'].")";
-        $restricaoCoordenadorAnd = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador=".$_SESSION['loginCodigo'].")";
+require CONTROLLER . '/atribuicao.class.php';
+$atribuicao = new Atribuicoes();
+
+require CONTROLLER . '/pessoa.class.php';
+$pessoa = new Pessoas();
+
+$data = date("d/m/Y");
+
+if (isset($_GET["relatorio"]) && $_GET["relatorio"] != "")
+    $relatorio = $_GET["relatorio"];
+
+if (dcrip($_GET["curso"])) {
+    $curso = dcrip($_GET["curso"]);
+    $params['curso'] = $curso;
+    $sqlAdicional .= ' AND c.codigo = :curso ';
+
+    if ($_SESSION['regAnterior'] && $curso != $_SESSION['regAnterior']) {
+        unset($_GET["turma"]);
     }
+    $_SESSION['regAnterior'] = $curso;
+}
 
-    if (isset($_GET["relatorio"]) && $_GET["relatorio"]!="")
-        $relatorio = $_GET["relatorio"];
+if (dcrip($_GET["turma"])) {
+    $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= ' AND t.codigo = :turma ';
+}
 
-    if (isset($_GET["turma"]) && $_GET["turma"]!="")
-        $turma = dcrip($_GET["turma"]);
-    if (isset($_GET["curso"]))
-        $curso = dcrip($_GET["curso"]);
-    if (isset($_GET["bimestre"]))
-        $bimestre = dcrip($_GET["bimestre"]);
-
-    ?>
-    <script>
-    function valida() {
-       	var turma = '';
-       	var curso = '';
-       	var relatorio = '';
-       	try { turma = $('#campoTurma').val(); } catch (e) {}
-       	try { curso = $('#campoCurso').val(); } catch (e) {}
-      	try { bimestre = $('#campoBimestre').val(); } catch (e) {}
-      	try { relatorio = $('#campoRelatorio').val(); } catch (e) {}
-		$('#index').load('<?php print $SITE; ?>?relatorio='+ $('#campoRelatorio').val() +'&turma='+ turma +'&curso=' + $('#campoCurso').val() +'&bimestre=' + $('#campoBimestre').val());
-    }
-    
-    $(document).ready(function(){      
-		$("#campoData").datepicker({
-		    dateFormat: 'dd/mm/yy',
-		    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-		    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-		    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-		    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-		    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-		    nextText: 'Próximo',
-		    prevText: 'Anterior'
-		});
-		
-		
-        $('#campoTurma, #campoCurso, #campoRelatorio, #campoBimestre').change(function(){
-			valida();
-        });
-	});
-        function relatorio(impressao, tipo){
-            try { var bimestre = document.getElementById("campoBimestre").value; } catch (e) {}
-            try { var aluno = document.getElementById("campoAluno").value; } catch (e) {}
-            try { var curso = document.getElementById("campoCurso").value; } catch (e) {}
-            try { var turma = document.getElementById("campoTurma").value; } catch (e) {}
-            try { var disciplina = document.getElementById("campoDisciplina").value; } catch (e) {}
-            try { var situacao = document.getElementById("campoSituacao").value; } catch (e) {}
-            try { var data1 = document.getElementById("campoData").value; } catch (e) {}
-            try { var professor = document.getElementById("campoProfessor").value; } catch (e) {}
-
-            try { var rg = document.getElementById("alunos_rg").checked; } catch (e) {}
-            try { var cpf = document.getElementById("alunos_cpf").checked; } catch (e) {}
-            try { var nasc = document.getElementById("alunos_nasc").checked; } catch (e) {}
-            try { var endereco = document.getElementById("alunos_endereco").checked; } catch (e) {}
-            try { var bairro = document.getElementById("alunos_bairro").checked; } catch (e) {}
-            try { var cidade = document.getElementById("alunos_cidade").checked; } catch (e) {}
-            try { var telefone = document.getElementById("alunos_telefone").checked; } catch (e) {}
-            try { var celular = document.getElementById("alunos_celular").checked; } catch (e) {}
-            try { var email = document.getElementById("alunos_email").checked; } catch (e) {}
-
-						var det = 0;
-						if (tipo == 'ftdd')
-							var det = 1;
-							
-						if (tipo == 'ftdr' || tipo == 'ftdd')
-							tipo = 'ftd';
-						
-            if (impressao=='pdf')
-                window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/'+tipo+'.php?curso='+curso+'&turma='+turma+'&bimestre='+bimestre+'&aluno='+aluno+'&atribuicao='+disciplina+'&data='+data1+'&situacao='+situacao
-                +'&rg='+rg+'&cpf='+cpf+'&nasc='+nasc+'&endereco='+endereco+'&bairro='+bairro+'&cidade='+cidade+'&telefone='+telefone+'&celular='+celular+'&professor='+professor+
-            '&email='+email+'&detalhada='+det,'_blank');
-            else
-                window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/'+tipo+'Html.php?curso='+curso+'&turma='+turma,'_blank');
-        }
-
-    </script>
-    <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-    <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $paramsCurso['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicionalCurso = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord)";
+}
 
 
-	<?php
-	$T=0;
-	$D=0;
-	$A=0;
-	$C=0;
-	$DT=0;
-	$SIT=0;
-	
-	if ($relatorio == 'alunos') { $C=1; $T=1; }
-	if ($relatorio == 'atendimento') {  }
-	if ($relatorio == 'boletim') { $C=1; $T=1; $A=1; }
-	if ($relatorio == 'boletimTurma') { $C=1; $T=1; }
-	if ($relatorio == 'carometro') { $C=1; $T=1; }
-	if ($relatorio == 'diario') { $C=1; $T=1; $D=1; }
-	if ($relatorio == 'disciplinas') { $C=1; }
-	if ($relatorio == 'docente') { $C=1; $T=1; }
-	if ($relatorio == 'lancamentos') { $C=1; }
-	if ($relatorio == 'chamada') { $C=1; $T=1; $D=1; }
-	if ($relatorio == 'presenca') { $C=1; $T=1; $DT=1; }
-	if ($relatorio == 'planoEnsino') { $C=1; $T=1; $D=1; }	
-	if ($relatorio == 'frequencia') { $C=1; $T=1; $D=1; $DT=1; }
-	if ($relatorio == 'matriculas') { $C=1; $T=1; $SIT=1; }
-	if ($relatorio == 'matriculasTotais') { $C=1; $T=1; $SIT=1; }
-	if ($relatorio == 'ftdr') { $P=1; }
-	if ($relatorio == 'ftdd') { $P=1; }
-		
-	?>	
+if (isset($_GET["bimestre"]))
+    $bimestre = dcrip($_GET["bimestre"]);
+?>
 
-    <table border="0" width="100%" id="form" width="100%">
-       <tr>
-           <td colspan="3">
-              <select name="campoRelatorio" id="campoRelatorio" style="width: 200px">
-              		<option value=""></option>              	
-              		<option <?php if ($relatorio=='alunos') print "selected"; ?> value="alunos">Alunos</option>
-              		<option <?php if ($relatorio=='atendimento') print "selected"; ?> value="atendimento">Atendimento do Professor</option>              		
-              		<option <?php if ($relatorio=='docente') print "selected"; ?> value="docente">Atribui&ccedil;&atilde;o Docente</option>              		
-              		<option <?php if ($relatorio=='boletim') print "selected"; ?> value="boletim">Boletim Individual</option>
-              		<option <?php if ($relatorio=='boletimTurma') print "selected"; ?> value="boletimTurma">Boletim Turma</option>
-              		<option <?php if ($relatorio=='carometro') print "selected"; ?> value="carometro">Car&ocirc;metro</option>
-              		<option <?php if ($relatorio=='diario') print "selected"; ?> value="diario">Di&aacute;rio</option>
-              		<option <?php if ($relatorio=='disciplinas') print "selected"; ?> value="disciplinas">Disciplinas do Curso</option>
-              		<option <?php if ($relatorio=='ftdr') print "selected"; ?> value="ftdr">FTD Resumida</option>
-              		<option <?php if ($relatorio=='ftdd') print "selected"; ?> value="ftdd">FTD Detalhada</option>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
-              		<option <?php if ($relatorio=='lancamentos') print "selected"; ?> value="lancamentos">Lan&ccedil;amento de Aulas</option>
-              		<option <?php if ($relatorio=='chamada') print "selected"; ?> value="chamada">Lista de Chamada</option>
-              		<option <?php if ($relatorio=='matriculas') print "selected"; ?> value="matriculas">Lista de Matr&iacute;culas</option>
-              		<option <?php if ($relatorio=='presenca') print "selected"; ?> value="presenca">Lista de Presen&ccedil;a</option>
-              		<option <?php if ($relatorio=='planoEnsino') print "selected"; ?> value="planoEnsino">Planos de Ensino</option>
-              		<option <?php if ($relatorio=='frequencia') print "selected"; ?> value="frequencia">Relat&oacute;rio de Frequ&ecirc;ncia</option>
-              		<option <?php if ($relatorio=='matriculasTotais') print "selected"; ?> value="matriculasTotais">Totaliza&ccedil;&atilde;o de Matr&iacute;culas</option>
-               </select>
-			</td>
+<?php
+$tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2);
+$tipo['atendimento'] = array('nome' => 'Atendimento');
+$tipo['boletim'] = array('nome' => 'Boletim Individual', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
+$tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' => 1, 'fechamento' => 1);
+$tipo['carometro'] = array('nome' => 'Carômetro', 'curso' => 1, 'turma' => 1);
+$tipo['diario'] = array('nome' => 'Diário', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
+$tipo['disciplinas'] = array('nome' => 'Disciplinas do Curso', 'curso' => 2);
+$tipo['docente'] = array('nome' => 'Atribuição Docente', 'curso' => 2, 'turma' => 1);
+$tipo['lancamentos'] = array('nome' => 'Lançamento de Aulas', 'curso' => 2);
+$tipo['chamada'] = array('nome' => 'Lista de Chamada', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
+$tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'data' => 1);
+$tipo['planoEnsino'] = array('nome' => 'Planos de Ensino', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
+$tipo['frequencia'] = array('nome' => 'Relatório de Frequências', 'curso' => 1, 'turma' => 1, 'disciplina' => 2, 'data' => 1);
+$tipo['matriculas'] = array('nome' => 'Lista de Matrículas', 'curso' => 2, 'turma' => 1, 'situacao' => 1);
+$tipo['matriculasTotais'] = array('nome' => 'Totalização de Matrículas', 'curso' => 2, 'turma' => 1, 'situacao' => 1);
+$tipo['ftdr'] = array('nome' => 'FTD Resumida', 'professor' => 1);
+$tipo['ftdd'] = array('nome' => 'FTD Detalhada', 'professor' => 1);
+
+$rel_curso = null;
+$rel_turma = null;
+$rel_situacao = null;
+$rel_fechamento = null;
+$rel_disciplina = null;
+$rel_professor = null;
+$rel_aluno = null;
+$rel_data = null;
+?>
+<table border="0" width="100%" id="form" width="100%">
+    <tr>
+        <td colspan="3">
+            <select name="relatorio" id="relatorio" style="width: 200px">
+                <option value=""></option>
+                <?php
+                foreach ($tipo as $k => $v) {
+                    $selected = null;
+                    if ($relatorio == $k) {
+                        $selected = 'selected';
+                        $rel_curso = $v['curso'];
+                        $rel_turma = $v['turma'];
+                        $rel_situacao = $v['situacao'];
+                        $rel_fechamento = $v['fechamento'];
+                        $rel_disciplina = $v['disciplina'];
+                        $rel_professor = $v['professor'];
+                        $rel_aluno = $v['aluno'];
+                        $rel_data = $v['data'];
+                    }
+                    ?>
+                    <option <?= $selected ?> value="<?= $k ?>"><?= $v['nome'] ?></option>
+                    <?php
+                }
+                ?>
+            </select>
+        </td>
+    </tr>
+
+    <!-- ================================ -->         	
+
+    <?php 
+    if ($relatorio == 'alunos') { ?>
+        <tr>
+            <td colspan="3">&nbsp;</td>
         </tr>
-
-        <!-- ================================ -->         	
-
-		<?php if ($relatorio == 'alunos') { ?>
-        <tr><td colspan="3">&nbsp;</td></tr>
         <tr>
             <td  colspan="2">Campos:
                 <input type="checkbox" id="alunos_rg" value="1" checked="checked" /><label for="alunos_rg">RG</label>
@@ -175,218 +127,247 @@ require SESSAO;
                 <input type="checkbox" id="alunos_telefone" value="1" checked="checked" /><label for="alunos_telefone">Telefone</label>
                 <input type="checkbox" id="alunos_celular" value="1" checked="checked" /><label for="alunos_celular">Celular</label>
                 <input type="checkbox" id="alunos_email" value="1" checked="checked" /><label for="alunos_email">E-mail</label>
-            </td></tr>
-        <?php } ?>
-        <tr><td colspan="3">&nbsp;</td></tr>
-		<tr>
-           	<td>
-
- 				<?php if ($C) { ?>
-                <tr><td>Curso: </td><td><select name="campoCurso" id="campoCurso" style="width: 350px">
-                    <?php if ((!$restricaoCoordenador && !$restricaoCoordenadorAnd ) && ($relatorio == 'docente' || $relatorio == 'matriculasTotais' || $relatorio == 'matriculas' || $relatorio == 'disciplinas' || $relatorio == 'alunos' || $relatorio == 'lancamentos')) { ?>
-                    	<option value="">Todos os cursos</option>
-           	        <?php } ?>
-                    <?php
-                    $sql = "select c.codigo, c.nome, m.nome, m.codigo 
-                    		from Cursos c, Modalidades m 
-                    		where c.modalidade = m.codigo $restricaoCoordenadorAnd
-                    		order by c.nome";
-                    $resultado = mysql_query($sql);
-                    $selected = "";
-                    while ($linha = mysql_fetch_array($resultado)) {
-                        if ($linha[0]==$curso)
-                            $selected="selected";
-												if ($linha[3] < 1000 || $linha[3] >= 2000) $linha[1] = "$linha[1] [$linha[2]]";                            
-                        echo "<option $selected value='".crip($linha[0])."'>[$linha[0]] $linha[1]</option>";
-                        $selected = "";
-                    }
-                    ?>
-                </select>
-                </td></tr>
-		        <?php } ?>
-				<?php if ($T) { ?>
-                <tr><td>Turma: </td>
-                	<td><select name="campoTurma" id="campoTurma" style="width: 350px">
-             	     <option></option>
-		            <?php if ($relatorio == 'alunos') {
-		            	if (!$turma) $selected = 'selected';
-						print "<option $selected value=\"\">Todos as turmas</option>\n";
-			        } ?>
-                    <?php
-                    $resultado = mysql_query("select t.codigo, t.numero, c.nome, tu.nome, t.semestre, t.ano, c.fechamento
-                    							from Turmas t, Cursos c, Turnos tu 
-                    							where t.curso=c.codigo 
-                    							and t.ano=$ano 
-                    							and t.turno=tu.codigo
-                    							and c.codigo = $curso
-                    							and (t.semestre=$semestre OR t.semestre=0) $restricaoCoordenadorAnd");
-                    $selected = "";
-                    if (mysql_num_rows($resultado) > 0) {
-                        while ($linha = mysql_fetch_array($resultado)) {
-                        	if ($linha[6] == 'b' && $relatorio != 'matriculas' && $relatorio != 'matriculasTotais') $S=1;
-                            if ($linha[0] == $turma)
-                                $selected = "selected";
-                            echo "<option $selected value='".crip($linha[0])."'>$linha[1]</option>";
-                            $selected = "";
-                        }
-                    }
-                    else {
-                        echo "<option value=''>Não há turmas cadastrados neste semestre/ano letivo</option>";
-                    }
-                    ?>
-                </select>
-                </td></tr>
-		        <?php } ?>
-
-				<?php if ($S) { ?>
-	            <tr><td>Fechamento: </td><td><select name="campoBimestre" id="campoBimestre" style="width: 350px">
-                		<option value=""></option>
-                    <?php
-                    if (isset($turma) && !empty($turma)) {
-                        $sql = "select a.bimestre
-                        			from Atribuicoes a, Turmas t 
-                        			where t.codigo=a.turma 
-                        			and t.codigo=$turma
-                        			GROUP BY a.bimestre";
-                        $resultado = mysql_query($sql);
-                        while ($linha = mysql_fetch_array($resultado)) {
-   	   	                    $selected = "";
-                            if ($linha[0] == $bimestre)
-                                $selected = "selected";
-                        	if ($linha[0] == 0) { $linha[0] = 'semestre'; $bim = 'Semestral'; }
-                        	if ($linha[0] != 0) $bim = $linha[0].'º Bimestre';
-                            echo "<option $selected value='".crip($linha[0])."'>$bim</option>";
-                        }
-                        if ($bimestre == 'final') $selected1 = "selected";
-                        if ($bim != 'Semestral' && $relatorio!='diario' && $relatorio!='chamada' && $relatorio!='presenca' && $relatorio!='planoEnsino')
-							print "<option $selected1 value=\"".crip('final')."\">Anual</option>\n";
-
-                    }
-                    ?>
-    	        </select>
-    	        </td></tr>
-		        <?php } //print $bimestre; ?>
-
-				<?php if ($D) { ?>
-                <tr><td>Disciplina: </td>
-                	<td><select name="campoDisciplina" id="campoDisciplina" style="width: 350px">
-                		<option value=""></option>
-		            <?php if ($relatorio != 'diario' && $relatorio != 'chamada' && $relatorio != 'presenca' && $relatorio != 'planoEnsino') { ?>
-						<option value="">Todos as disciplinas</option>
-			        <?php } ?>
-                    <?php
-                    if (isset($turma) && !empty($turma)) {
-                    	if ($S) $sqlBim = "and a.bimestre = $bimestre";
-                        $sql = "select DISTINCT a.codigo, d.codigo, d.nome
-                        			from Disciplinas d, Atribuicoes a, Turmas t 
-                        			where t.codigo=a.turma 
-                        			and a.disciplina=d.codigo 
-                        			and t.codigo=$turma
-                        			$sqlBim
-                        			GROUP BY d.codigo";
-                        $resultado = mysql_query($sql);
-                        
-                        while ($linha = mysql_fetch_array($resultado)) {
-                            echo "<option value='".crip($linha[0])."'>$linha[2]</option>";
-                        }
-                    }
-                    ?>
-                </select>
-                </td></tr>
-		        <?php } //echo $sql; ?>
-				
-				<?php if ($A) { ?>
-                <tr><td>Aluno: </td><td><select name="campoAluno" id="campoAluno" style="width: 350px">
-                    <?php
-                    $sql = "SELECT p.codigo, p.nome FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t
-                    							WHERE t.codigo = a.turma
-                    							AND m.atribuicao = a.codigo
-                    							AND m.aluno = p.codigo 
-                    							AND t.codigo = $turma
-                    							GROUP BY p.codigo
-                    							ORDER BY p.nome";
-                    $resultado = mysql_query($sql);
-                    $selected = "";
-                    if (mysql_num_rows($resultado) > 0) {
-                        echo "<option value='".crip("Todos")."'>Todos</option>";
-                        while ($linha = mysql_fetch_array($resultado)) {
-                            if ($linha[0] == $turma)
-                                $selected = "selected";
-                            echo "<option $selected value='".crip($linha[0])."'>$linha[1]</option>";
-                            $selected = "";
-                        }
-                    }
-                    else {
-                        echo "<option>Não há alunos cadastrados nessa turma.</option>";
-                    }
-                    ?>
-                </select>
-                </td></tr>
-   		        <?php } //print $sql; ?>
-
-				<?php if ($SIT) { ?>
-                <tr><td>Situa&ccedil;&atilde;o: </td>
-                	<td><select name="campoSituacao" id="campoSituacao" style="width: 350px">
-						<option value="">Todas as situa&ccedil;&otilde;es</option>
-                    <?php
-                    	if ($curso) $sql1 = " and c.codigo = $curso";
-                    	if ($turma) $sql1 .= " and t.codigo = $turma";
-	                    $sql = "SELECT s.codigo, s.nome 
-	                    		FROM Situacoes s, Matriculas m, Atribuicoes a, Turmas t, Cursos c
-	                    		WHERE s.codigo = m.situacao
-	                    		AND m.atribuicao = a.codigo
-	                    		AND t.codigo = a.turma
-	                    		AND c.codigo = t.curso
-	                    		$sql1
-	                    		GROUP BY s.codigo
-	                    		ORDER BY codigo";
-                        $resultado = mysql_query($sql);
-                        
-                        while ($linha = mysql_fetch_array($resultado)) {
-                        	if ($linha[0] >= 100) $linha[1] .= " (CURSO ANTIGO)";
-                            echo "<option value='".crip($linha[0])."'>$linha[1]</option>";
-                        }
-                    ?>
-                </select>
-                </td></tr>
-		        <?php } //echo $sql; ?>
-
-				<?php if ($P) { ?>
-                <tr><td>Professor: </td><td><select name="campoProfessor" id="campoProfessor" style="width: 350px">
-                    <?php
-                    $sql = "SELECT p.codigo, p.nome FROM Pessoas p, PessoasTipos pt
-                    							WHERE p.codigo = pt.pessoa
-                    							AND pt.tipo = $PROFESSOR
-                    							ORDER BY p.nome";
-                    $resultado = mysql_query($sql);
-                    $selected = "";
-                    if (mysql_num_rows($resultado) > 0) {
-                        echo "<option value='".crip("Todos")."'>Todos</option>";
-                        while ($linha = mysql_fetch_array($resultado)) {
-                            echo "<option $selected value='".crip($linha[0])."'>$linha[1]</option>";
-                            $selected = "";
-                        }
-                    }
-                    else {
-                        echo "<option>Não há professores cadastrados.</option>";
-                    }
-                    ?>
-                </select>
-                </td></tr>
-   		        <?php } //print $sql; ?>
-   		        		        
-                <?php if ($DT) { ?>
-                <tr><td>Data: </td><td><input value="<?php echo $data; ?>" readonly type="text" class="data1" name="campoData" id="campoData" /></td></tr>
-   		        <?php } ?>
             </td>
-
-		    <?php if ($relatorio) { ?>
-		      <tr><td colspan="3">&nbsp;</td></tr>
-	    	  <td width="60">
-	                <a href="#" onclick="relatorio('pdf', '<?php print $relatorio; ?>')"><img style="width: 30px" src="<?php print ICONS; ?>/icon-printer.gif" title="Imprimir em PDF" /></a>
-	                <?php if ($relatorio=='alunos') { ?><a href="#" onclick="relatorio('html', '<?php print $relatorio; ?>')"><img style="width: 23px" src="<?php print ICONS; ?>/info.png" title="Imprimir em HTML" /></a><?php } ?>
-	          </td>
-	        <?php } ?>
-
         </tr>
-    </table>
+    <?php } ?>
+    <tr>
+        <td colspan="3">&nbsp;</td>
+    </tr>
+    <?php 
+    if ($rel_curso) { ?>
+        <tr>
+            <td>Curso: </td>
+            <td>
+                <select name="curso" id="curso" style="width: 350px">
+                    <option value=""></option>
+                    <?php if ($rel_curso == 2) { ?>
+                        <option selected value="">Todos os cursos</option>
+                        <?php
+                    }
+                    require CONTROLLER . '/curso.class.php';
+                    $cursos = new Cursos();
+                    foreach ($cursos->listCursos($paramsCurso, $sqlAdicionalCurso, null, null) as $reg) {
+                        $selected = "";
+                        if ($reg['codigo'] == $curso)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['curso'] . " [" . $reg['codigo'] . "]</option>";
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+    <?php } ?>
+    <?php 
+    if ($rel_turma) { ?>
+        <tr>
+            <td>Turma: </td>
+            <td>
+                <select name="turma" id="turma" style="width: 350px">
+                    <option value=""></option>
+                    <?php if ($rel_turma == 2) { ?>
+                        <option selected value="">Todas as turmas</option>
+                        <?php
+                    }
+                    require CONTROLLER . '/turma.class.php';
+                    $turmas = new Turmas();
+                    $sqlAdicionaTurma = ' AND c.codigo = :curso ';
+                    $paramsTurma = array(':curso' => $curso, ':ano' => $ANO, ':semestre' => $SEMESTRE);
+                    foreach ($turmas->listTurmas($paramsTurma, $sqlAdicionaTurma) as $reg) {
+                        $selected = "";
+                        if ($reg['codTurma'] == $turma)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] ."</option>";
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+    <?php } 
+    if ($rel_fechamento) { ?>
+        <tr>
+            <td>Fechamento: </td>
+            <td>
+                <select name="bimestre" id="bimestre" style="width: 350px">
+                    <option value=""></option>
+                    <?php
+                    foreach ($atribuicao->getFechamentos($turma) as $reg) {
+                        $selected = "";
+                        if ($reg['value'] == $bimestre)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['value']) . "'>" . $reg['nome'] ."</option>";
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+    <?php } ?>
+
+    <?php if ($rel_disciplina) { ?>
+        <tr><td>Disciplina: </td>
+            <td><select name="disciplina" id="disciplina" style="width: 350px">
+                    <?php if ($rel_disciplina == 2) { ?>
+                        <option value="">Todas as disciplinas</option>
+                        <?php
+                    }
+                    $sqlAdicionaDisc = ' AND t.codigo = :turma ';
+                    $paramsDisc = array(':turma' => $turma, ':ano' => $ANO, ':semestre' => $SEMESTRE);
+                    foreach ($atribuicao->getAllAtribuicoes($paramsDisc, $sqlAdicionaDisc) as $reg) {
+                        $selected = "";
+                        if ($reg['atribuicao'] == $disciplina)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['disciplina'] . $reg['bimestre'] . $reg['subturma'] ."</option>";
+                    }
+                    ?>
+                </select>
+            </td></tr>
+    <?php } 
+    if ($rel_aluno) { ?>
+        <tr>
+            <td>Aluno: </td>
+            <td>
+                <select name="aluno" id="aluno" style="width: 350px">
+                    <option value="">Todos os alunos</option>                    
+                    <?php
+                    $sqlAdicionalAluno = "AND p.codigo IN (SELECT p.codigo 
+                                    FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t
+                                    WHERE t.codigo = a.turma
+                                    AND m.atribuicao = a.codigo
+                                    AND m.aluno = p.codigo 
+                                    AND t.codigo = :turma
+                                    GROUP BY p.codigo)";
+                        $paramsAluno = array('turma' => $turma);
+                        foreach ($pessoa->listPessoasTipos($paramsAluno, $sqlAdicionalAluno, null, null) as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $aluno)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        }
+                        ?>
+                </select>
+            </td>
+        </tr>
+    <?php } 
+    if ($rel_situacao) { ?>
+        <tr>
+            <td>Situa&ccedil;&atilde;o: </td>
+            <td>
+                <select name="situacao" id="situacao" style="width: 350px">
+                    <option value="">Todas as situa&ccedil;&otilde;es</option>
+                    <?php
+                        require CONTROLLER . '/situacao.class.php';
+                        $situacao = new Situacoes();
+                        $sqlAdicionalSit = "AND t.codigo = :turma";
+                        $paramsSit = array('turma' => $turma);
+                        foreach ($situacao->getSituacoes($paramsSit, $sqlAdicionalSit) as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $situacao)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        }
+                        ?>
+                </select>
+            </td>
+        </tr>
+    <?php }
+    if ($rel_professor) { ?>
+        <tr>
+            <td>Professor: </td>
+            <td>
+                <select name="professor" id="professor" style="width: 350px">
+                    <option selected value="<?=crip('Todos')?>">Todos</option>
+                    <?php
+                        $sqlAdicionalProf = ' AND pt.tipo = :prof ';
+                        $paramsProf = array('prof' => $PROFESSOR);
+                        foreach ($pessoa->listPessoasTipos($paramsProf, $sqlAdicionalProf, null, null) as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $aluno)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        }
+                        ?>
+                </select>
+            </td>
+        </tr>
+    <?php }
+    if ($rel_data) { ?>
+        <tr>
+            <td>Data: </td>
+            <td>
+                <input value="<?= $data ?>" readonly type="text" class="data1" name="data" id="data" />
+            </td>
+        </tr>
+    <?php } ?>
+</td>
+<?php if ($relatorio) { ?>
+    <tr>
+        <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+    <td width="60">
+        <a href="#" onclick="relatorio('pdf', '<?= $relatorio ?>')">
+            <img style="width: 30px" src="<?= ICONS ?>/icon-printer.gif" title="Imprimir em PDF" />
+        </a>
+        <?php if ($relatorio == 'alunos') { ?>
+            <a href="#" onclick="relatorio('html', '<?= $relatorio ?>')">
+                <img style="width: 23px" src="<?= ICONS ?>/info.png" title="Imprimir em HTML" />
+            </a>
+        <?php } ?>
+    </td>
+    </tr>
+<?php } ?>
+</table>
+
+<script>
+    $(document).ready(function() {
+        $("#data").datepicker({
+            dateFormat: 'dd/mm/yy',
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            nextText: 'Próximo',
+            prevText: 'Anterior'
+        });
+
+        $('#turma, #curso, #relatorio, #bimestre').change(function() {
+            var turma = $('#turma').val();
+            var curso = $('#curso').val();
+            var bimestre = $('#bimestre').val();
+            $('#index').load('<?= $SITE ?>?relatorio=' + $('#relatorio').val() + '&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre);
+        });
+    });
+    function relatorio(impressao, tipo) {
+        var bimestre = $('#bimestre').val();
+        var aluno = $('#aluno').val();
+        var curso = $('#curso').val();
+        var turma = $('#turma').val();
+        var disciplina = $('#disciplina').val();
+        var situacao = $('#situacao').val();
+        var data = $('#data').val();
+        var professor = $('#professor').val();
+        var rg = $('#alunos_rg').is(':checked');
+        var cpf = $('#alunos_cpf').is(':checked');
+        var nasc = $('#alunos_nasc').is(':checked');
+        var endereco = $('#alunos_endereco').is(':checked');
+        var bairro = $('#alunos_bairro').is(':checked');
+        var cidade = $('#alunos_cidade').is(':checked');
+        var telefone = $('#alunos_telefone').is(':checked');
+        var celular = $('#alunos_celular').is(':checked');
+        var email = $('#alunos_email').is(':checked');
+
+        var det = 0;
+        if (tipo == 'ftdd')
+            det = 1;
+        if (tipo == 'ftdr' || tipo == 'ftdd')
+            tipo = 'ftd';
+
+        if (impressao == 'pdf')
+            window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + '.php?curso=' + curso + '&turma=' + turma + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
+                    + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor +
+                    '&email=' + email + '&detalhada=' + det, '_blank');
+        else
+            window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma, '_blank');
+    }
+
+</script>
