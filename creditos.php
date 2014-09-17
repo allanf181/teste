@@ -60,6 +60,12 @@ require SESSAO;
 
 <br>
 <br>
+<b>Vers&atilde;o 1.409</b>
+<br>
+<br> - Correção da listagem de matrículas - #168
+<br> - Reestrutura&ccedil;&atilde;o de c&oacute;digo - RELAT&Oacute;RIOS
+<hr>
+<br>
 <b>Vers&atilde;o 1.408</b>
 <br>
 <br> - Organizar ordem dos planos de aula - chamado #160

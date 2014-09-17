@@ -20,7 +20,7 @@ $professor = new Professores();
 
 // DELETE
 if ($_GET["opcao"] == 'delete') {
-    $ret = $estado->delete($_GET["codigo"]);
+    $ret = $matricula->delete($_GET["codigo"]);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
@@ -249,7 +249,7 @@ require PATH . VIEW . '/paginacao.php';
             <td align='left'><?= mostraTexto($reg['situacao']) ?></td>
             <td align='left'><?= $reg['data'] ?></td>
             <td align='center'>
-                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['matricula']) ?>' />
                 <a href='#' class='item-atestado' id='<?= crip($reg['matricula']) ?>' title='Atestado'>
                     <img class='botao' src='<?= ICONS ?>/icon-printer.gif' />
                 </a>
@@ -293,7 +293,7 @@ require PATH . VIEW . '/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('#index').load(atualizarMatricula(1) + '&opcao=delete&codigo=' + codigo + '&item=<?= $item ?>');
+                        $('#index').load(atualizarMatricula(1) + '&opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                     }
                 }
             });
