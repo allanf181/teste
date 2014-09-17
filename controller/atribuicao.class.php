@@ -30,7 +30,12 @@ class Atribuicoes extends Generic {
     // Pode ser colocado com função no MySQL futuramente
     public function getAtribuicao($codigo, $LIMITE_DIARIO_PROF = 0) {
         $bd = new database();
-
+               
+        if ($LIMITE_DIARIO_PROF)
+            $inicio = $LIMITE_DIARIO_PROF;
+        else
+            $inicio = 365;
+                
         $sql = "SELECT d.nome as disciplina, t.numero as turma, a.status, a.prazo,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
                 IF(a.bimestre = 0 AND t.semestre <> 0, CONCAT('no ',t.semestre,'º semestre do '),
@@ -43,7 +48,7 @@ class Atribuicoes extends Generic {
                 DATEDIFF(NOW(), a.dataInicio) as diarioAberto,
                 DATEDIFF(a.prazo, NOW()) as prazoDiff, date_format( a.dataInicio, '%d/%m/%Y') as dataInicioFormat,
                 date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), '%d/%m/%Y') as dataFimFormat,
-                date_format( DATE_SUB(NOW(), INTERVAL 365 DAY), '%d/%m/%Y') as dataInicioCal,
+                date_format( DATE_SUB(NOW(), INTERVAL $inicio DAY), '%d/%m/%Y') as dataInicioCal,
                 date_format( a.prazo, '%d/%m/%Y') as dataFimCal,
                 DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), NOW()) as dataFimDiff
                 FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
@@ -61,8 +66,8 @@ class Atribuicoes extends Generic {
                 $res[0]['inicioCalendar'] = $res[0]['dataInicioCal'];
                 $res[0]['fimCalendar'] = $res[0]['dataFimCal'];
             } else {
-                $res[0]['inicioCalendar'] = date("d/m/Y", mktime(0, 0, 0, date("m"), date("d") - 365, date("Y")));
-                $res[0]['fimCalendar'] = date("d/m/Y", mktime(0, 0, 0, date("m"), date("d") + $LIMITE_DIARIO_PROF, date("Y")));
+                $res[0]['inicioCalendar'] = date("d/m/Y", mktime(0, 0, 0, date("m"), date("d") - $inicio, date("Y")));
+                $res[0]['fimCalendar'] = date("d/m/Y", mktime(0, 0, 0, date("m"), date("d") + $inicio, date("Y")));
             }
 
             if (!$res[0]['bimestre'] && !$res[0]['semestre'])
