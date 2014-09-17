@@ -63,6 +63,7 @@ require SESSAO;
 <b>Vers&atilde;o 1.409</b>
 <br>
 <br> - Correção da listagem de matrículas - #168
+<br> - Aviso sobre o término da sessão - #166
 <br> - Reestrutura&ccedil;&atilde;o de c&oacute;digo - RELAT&Oacute;RIOS
 <hr>
 <br>
