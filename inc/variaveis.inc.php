@@ -1,12 +1,12 @@
 <?php
 
 // SETANDO O ANO E SEMESTRE ATUAL.
-if (empty($_SESSION["ano"])) {
+if (empty($_SESSION["ano"]) || empty($_SESSION["semestre"])) {
     $_SESSION["ano"] = date('Y');
-    $semestre = 1;
+    $SEMESTRE = 1;
     if (date('m') > 7)
-        $semestre = 2;
-    $_SESSION["semestre"] = $semestre;
+        $SEMESTRE = 2;
+    $_SESSION["semestre"] = $SEMESTRE;
 }
 
 if (isset($_GET["ano"]))
@@ -14,10 +14,6 @@ if (isset($_GET["ano"]))
 
 if (isset($_GET["semestre"]))
     $_SESSION["semestre"] = $_GET["semestre"];
-
-// FUTURAMENTE RETIRAR
-$ano = $_SESSION["ano"];
-$semestre = $_SESSION["semestre"];
 
 // PADRAO, MAISCULA GLOBAL VARS
 $ANO = $_SESSION["ano"];

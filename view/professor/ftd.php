@@ -35,7 +35,7 @@ if ($_GET["dte"] && $_GET["dts"]) {
 <?php
 
 // BUSCANDO NO BANCO, CASO O PROFESSOR JA TENHA SALVO A FTD
-$res = $ftd->getDadosFTD($_SESSION['loginCodigo'], $ano, $semestre);
+$res = $ftd->getDadosFTD($_SESSION['loginCodigo'], $ANO, $SEMESTRE);
 
 $disabled = '';
 $VALIDO = 0;
@@ -132,7 +132,7 @@ if ($res) {
 <font size="1" color="red">* Clique sobre o quadro que deseja inserir a hora e tecle ENTER para confirmar.</font>
 <br><br>
 <center>
-    <font size="3"><b>FTD - FOLHA DE TRABALHO DOCENTE <br> <?= $semestre ?>&ordm; semestre <?= $ano ?> </b></font>
+    <font size="3"><b>FTD - FOLHA DE TRABALHO DOCENTE <br> <?= $SEMESTRE ?>&ordm; semestre <?= $ANO ?> </b></font>
     <table width="80%" border="0" summary="FTD" id="tabela_boletim">
         <thead>
             <tr>

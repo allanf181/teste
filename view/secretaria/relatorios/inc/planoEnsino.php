@@ -19,12 +19,6 @@ if (dcrip($_GET["atribuicao"])) {
     $params['atribuicao'] = $atribuicao;
     $sqlAdicional .= ' AND a.codigo = :atribuicao ';
 
-    $fonte = 'Arial';
-    $tamanho = 7;
-    $alturaLinha = 7;
-    $orientacao = "P"; // Landscape
-    $papel = "A3";
-
     include PATH . LIB . '/fpdf17/pdfDiario.php';
 
     foreach ($planoEnsino->listPlanoEnsino($params, $sqlAdicional) as $reg) {
@@ -56,38 +50,70 @@ if (dcrip($_GET["atribuicao"])) {
     $professores = $professor->getProfessor($atribuicao, '', 0, 0);
 
     $pdf = new PDF ();
-    $pdf->AliasNbPages();
-    $pdf->AddPage($orientacao, $papel);
-    $pdf->SetFont($fonte, '', $tamanho);
-    $pdf->SetFillColor(255, 255, 255);
-    $pdf->SetLineWidth(.1);
+    $fonte = 'Arial';
+    $tamanho = 7;
+    $alturaLinha = 7;
 
-// Cabeçalho
-    $pdf->SetFont($fonte, 'B', $tamanho + 5);
-    $pdf->Image(PATH . IMAGES . "/logo.png", 12, 12, 80);
+    function cabecalho($tipo) {
+        global $pdf, $SITE_CIDADE, $curso, $disciplina, $numero, $SEMESTRE, $ANO, $numeroAulaSemanal;
+        global $modalidade, $totalHoras, $totalAulas, $numeroProfessores, $professores;
+        global $fonte, $tamanho, $alturaLinha;
 
-    $pdf->Cell(90, 27, "", 1, 0, 'C', false);
-    $pdf->Cell(130, 27, utf8_decode("P L A N O   D E   E N S I N O"), 1, 0, 'C', false);
-    $pdf->Cell(58, 27, utf8_decode("CAMPUS: $SITE_CIDADE"), 1, 0, 'C', false);
-    $pdf->Ln();
-    $pdf->Cell(278, $alturaLinha, utf8_decode("1 - IDENTIFICAÇÃO"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(278, $alturaLinha, utf8_decode("CURSO: $curso"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(178, $alturaLinha, utf8_decode("COMPONENTE CURRICULAR: $disciplina"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("CÓDIGO DISCIPLINA: $numero"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(78, $alturaLinha, utf8_decode("SEMESTRE/ANO: $semestre/$ano"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE AULAS SEMANAIS: $numeroAulaSemanal"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("ÁREA: $modalidade"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(78, $alturaLinha, utf8_decode("TOTAL DE HORAS: $totalHoras"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("TOTAL DE AULAS: $totalAulas"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE PROFESSORES: $numeroProfessores"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(A) RESPONSÁVEL: $professores"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Ln();
+        $orientacao = "P"; // Landscape
+        $papel = "A3";
+
+        $pdf->AliasNbPages();
+        $pdf->AddPage($orientacao, $papel);
+        $pdf->SetFont($fonte, '', $tamanho);
+        $pdf->SetFillColor(255, 255, 255);
+        $pdf->SetLineWidth(.1);
+
+        // Cabeçalho
+        $pdf->SetFont($fonte, 'B', $tamanho + 5);
+        $pdf->Image(PATH . IMAGES . "/logo.png", 12, 12, 80);
+
+        $pdf->Cell(90, 27, "", 1, 0, 'C', false);
+        $pdf->Cell(130, 27, utf8_decode($tipo), 1, 0, 'C', false);
+        $pdf->Cell(58, 27, utf8_decode("CAMPUS: $SITE_CIDADE"), 1, 0, 'C', false);
+        $pdf->Ln();
+        $pdf->Cell(278, $alturaLinha, utf8_decode("1 - IDENTIFICAÇÃO"), 1, 0, 'L', true);
+        $pdf->Ln();
+        $pdf->Cell(278, $alturaLinha, utf8_decode("CURSO: $curso"), 1, 0, 'L', true);
+        $pdf->Ln();
+        $pdf->Cell(178, $alturaLinha, utf8_decode("COMPONENTE CURRICULAR: $disciplina"), 1, 0, 'L', true);
+        $pdf->Cell(100, $alturaLinha, utf8_decode("CÓDIGO DISCIPLINA: $numero"), 1, 0, 'L', true);
+        $pdf->Ln();
+        $pdf->Cell(78, $alturaLinha, utf8_decode("SEMESTRE/ANO: $SEMESTRE/$ANO"), 1, 0, 'L', true);
+        $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE AULAS SEMANAIS: $numeroAulaSemanal"), 1, 0, 'L', true);
+        $pdf->Cell(100, $alturaLinha, utf8_decode("ÁREA: $modalidade"), 1, 0, 'L', true);
+        $pdf->Ln();
+        $pdf->Cell(78, $alturaLinha, utf8_decode("TOTAL DE HORAS: $totalHoras"), 1, 0, 'L', true);
+        $pdf->Cell(100, $alturaLinha, utf8_decode("TOTAL DE AULAS: $totalAulas"), 1, 0, 'L', true);
+        $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE PROFESSORES: $numeroProfessores"), 1, 0, 'L', true);
+        $pdf->Ln();
+        $pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(A) RESPONSÁVEL: $professores"), 1, 0, 'L', true);
+        $pdf->Ln();
+        $pdf->Ln();
+    }
+
+    function rodape() {
+        global $pdf, $alturaLinha;
+        $pdf->Ln();
+        $pdf->Cell(139, $alturaLinha, utf8_decode("PROFESSOR(A)"), 1, 0, 'C', true);
+        $pdf->Cell(139, $alturaLinha, utf8_decode("COORDENADOR(A) DE ÁREA/CURSO"), 1, 0, 'C', true);
+        $pdf->Ln();
+        $pdf->Cell(39, $alturaLinha, utf8_decode("DATA"), 1, 0, 'C', true);
+        $pdf->Cell(100, $alturaLinha, utf8_decode("ASSINATURA"), 1, 0, 'C', true);
+        $pdf->Cell(39, $alturaLinha, utf8_decode("DATA"), 1, 0, 'C', true);
+        $pdf->Cell(100, $alturaLinha, utf8_decode("ASSINATURA"), 1, 0, 'C', true);
+        $pdf->Ln();
+        $pdf->Cell(39, 15, utf8_decode(""), 1, 0, 'L', true);
+        $pdf->Cell(100, 15, utf8_decode(""), 1, 0, 'L', true);
+        $pdf->Cell(39, 15, utf8_decode(""), 1, 0, 'L', true);
+        $pdf->Cell(100, 15, utf8_decode(""), 1, 0, 'L', true);
+    }
+    
+    cabecalho('P L A N O   D E   E N S I N O');
 
     foreach ($ITEM as $chave => $valor) {
         $limit = 140;
@@ -117,57 +143,9 @@ if (dcrip($_GET["atribuicao"])) {
             $pdf->Ln();
     }
 
-    $pdf->Ln();
-    $pdf->Cell(139, $alturaLinha, utf8_decode("PROFESSOR(A)"), 1, 0, 'C', true);
-    $pdf->Cell(139, $alturaLinha, utf8_decode("COORDENADOR(A) DE ÁREA/CURSO"), 1, 0, 'C', true);
-    $pdf->Ln();
-    $pdf->Cell(39, $alturaLinha, utf8_decode("DATA"), 1, 0, 'C', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("ASSINATURA"), 1, 0, 'C', true);
-    $pdf->Cell(39, $alturaLinha, utf8_decode("DATA"), 1, 0, 'C', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("ASSINATURA"), 1, 0, 'C', true);
-    $pdf->Ln();
-    $pdf->Cell(39, 15, utf8_decode(""), 1, 0, 'L', true);
-    $pdf->Cell(100, 15, utf8_decode(""), 1, 0, 'L', true);
-    $pdf->Cell(39, 15, utf8_decode(""), 1, 0, 'L', true);
-    $pdf->Cell(100, 15, utf8_decode(""), 1, 0, 'L', true);
+    rodape();
 
-///// PLANO DE AULA
-    $pdf->AliasNbPages();
-    $pdf->AddPage($orientacao, $papel);
-    $pdf->SetFont($fonte, '', $tamanho + 5);
-
-// Cabeçalho
-    $pdf->SetFont($fonte, 'B', $tamanho + 5);
-    $pdf->Image(PATH . IMAGES . "/logo.png", 12, 12, 80);
-    $pdf->Cell(90, 27, "", 1, 0, 'C', false);
-    $pdf->Cell(130, 27, utf8_decode("P L A N O   D E   A U L A"), 1, 0, 'C', false);
-    $pdf->Cell(58, 27, utf8_decode("CAMPUS: $SITE_CIDADE"), 1, 0, 'C', false);
-    $pdf->Ln();
-    $pdf->Cell(278, $alturaLinha, utf8_decode("1 - IDENTIFICAÇÃO"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(278, $alturaLinha, utf8_decode("CURSO: $curso"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(178, $alturaLinha, utf8_decode("COMPONENTE CURRICULAR: $disciplina"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("CÓDIGO DISCIPLINA: $numero"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(78, $alturaLinha, utf8_decode("SEMESTRE/ANO: $semestre/$ano"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE AULAS SEMANAIS: $numeroAulaSemanal"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("ÁREA: $modalidade"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(78, $alturaLinha, utf8_decode("TOTAL DE HORAS: $totalHoras"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("TOTAL DE AULAS: $totalAulas"), 1, 0, 'L', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE PROFESSORES: $numeroProfessores"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(A) RESPONSÁVEL: $professores"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Ln();
-    $pdf->Cell(278, $alturaLinha, utf8_decode("2 - CONTEÚDO PROGRAMÁTICO"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(278, $alturaLinha, utf8_decode("CONTEÚDO DESENVOLVIDO"), 1, 0, 'L', true);
-    $pdf->Ln();
-    $pdf->Cell(28, $alturaLinha, utf8_decode("SEMANA"), 1, 0, 'C', true);
-    $pdf->Cell(250, $alturaLinha, utf8_decode("DESCRIÇÃO DO CONTEÚDO/BASES TECNOLÓGICAS"), 1, 0, 'C', true);
-    $pdf->Ln();
+    cabecalho('P L A N O   D E   A U L A');
 
     $limit = 125;
     foreach ($planoAula->listPlanoAulas($atribuicao) as $reg) {
@@ -196,21 +174,8 @@ if (dcrip($_GET["atribuicao"])) {
         //$pdf->Ln();
     }
 
-    $pdf->Ln();
-    $pdf->Ln();
-    $pdf->Cell(139, $alturaLinha, utf8_decode("PROFESSOR(A)"), 1, 0, 'C', true);
-    $pdf->Cell(139, $alturaLinha, utf8_decode("COORDENADOR(A) DE ÁREA/CURSO"), 1, 0, 'C', true);
-    $pdf->Ln();
-    $pdf->Cell(39, $alturaLinha, utf8_decode("DATA"), 1, 0, 'C', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("ASSINATURA"), 1, 0, 'C', true);
-    $pdf->Cell(39, $alturaLinha, utf8_decode("DATA"), 1, 0, 'C', true);
-    $pdf->Cell(100, $alturaLinha, utf8_decode("ASSINATURA"), 1, 0, 'C', true);
-    $pdf->Ln();
-    $pdf->Cell(39, 15, utf8_decode(""), 1, 0, 'L', true);
-    $pdf->Cell(100, 15, utf8_decode(""), 1, 0, 'L', true);
-    $pdf->Cell(39, 15, utf8_decode(""), 1, 0, 'L', true);
-    $pdf->Cell(100, 15, utf8_decode(""), 1, 0, 'L', true);
-
+    rodape();
+    
     $pdf->Output();
 }
 ?>

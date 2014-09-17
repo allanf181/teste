@@ -99,7 +99,7 @@ if (dcrip($_GET["professor"])) {
             $pdf->SetFont($fonte, 'B', $tamanho + 2);
             $pdf->Cell(60, 5, abreviar(utf8_decode($SITE_TITLE), 33), 1, 2, 'C', false);
             $pdf->Cell(60, 5, abreviar(utf8_decode($SITE_CIDADE), 33), 1, 2, 'C', false);
-            $pdf->Cell(60, 5, abreviar(utf8_decode("Semestre/Ano: $ano/$semestre"), 33), 1, 0, 'C', false);
+            $pdf->Cell(60, 5, abreviar(utf8_decode("Semestre/Ano: $SEMESTRE/$ANO"), 33), 1, 0, 'C', false);
 
             $pdf->Ln();
             $pdf->Ln();

@@ -310,7 +310,7 @@ $resultado = mysql_query("select distinct t.codigo, t.numero, c.nome, m.nome, m.
                         							from Cursos c, Turmas t, Modalidades m
                         							where t.curso=c.codigo 
                         							and m.codigo = c.modalidade
-													and t.ano=$ano and (t.semestre=$semestre OR t.semestre=0) 
+													and t.ano=$ANO and (t.semestre=$SEMESTRE OR t.semestre=0) 
 													order by c.nome, t.numero");
 $selected = ""; // controla a alteraÃ§Ã£o no campo select
 while ($linha = mysql_fetch_array($resultado)) {
@@ -361,7 +361,7 @@ $resultado = mysql_query("select distinct t.codigo, t.numero, c.nome, m.nome, m.
                         							from Cursos c, Turmas t, Modalidades m
                         							where t.curso=c.codigo 
                         							and m.codigo = c.modalidade
-													and t.ano=$ano and (t.semestre=$semestre OR t.semestre=0) 
+													and t.ano=$ANO and (t.semestre=$SEMESTRE OR t.semestre=0) 
 													order by c.nome, t.numero");
 $selected = ""; // controla a alteraÃ§Ã£o no campo select
 while ($linha = mysql_fetch_array($resultado)) {

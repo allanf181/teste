@@ -75,7 +75,7 @@ if ($res) {
                 <td colspan="3">CÓDIGO DISCIPLINA: <b><?php print $numero; ?></b></td>
             </tr>
             <tr>
-                <td>SEMESTRE/ANO: <b><?php print "$semestre/$ano"; ?></b></td>
+                <td>SEMESTRE/ANO: <b><?php print "$SEMESTRE/$ANO"; ?></b></td>
                 <td>NÚMERO DE AULAS SEMANAIS: <b><?php print $numeroAulaSemanal; ?></b></td>
                 <td>ÁREA: <b><?php print $modalidade; ?></b></td>
             </tr>

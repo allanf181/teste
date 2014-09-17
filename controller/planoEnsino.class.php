@@ -37,7 +37,8 @@ class PlanosEnsino extends Generic {
 		d.nome as disciplina, d.ch as ch, d.numero as numero, a.codigo as atribuicao,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
                 m.nome as modalidade, m.codigo as codModalidade, t.numero as turma,
-                c.codigo as codCurso, p.professor as codProfessor, t.codigo as codTurma
+                c.codigo as codCurso, p.professor as codProfessor, t.codigo as codTurma,
+                t.ano, t.semestre
 		FROM PlanosEnsino pe, Atribuicoes a, Disciplinas d,
 		Cursos c, Modalidades m, Turmas t, Professores p
 		WHERE pe.atribuicao = a.codigo 
