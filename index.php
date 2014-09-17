@@ -29,11 +29,8 @@ include_once "inc/config.inc.php";
 <script src="<?= VIEW ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
 <link href="<?= VIEW ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css" media="screen" />
 
-<!-- desabilitar quando o Zebra tornar-se padrao -->
-<script src="<?= VIEW ?>/js/jquery-ui/jquery.alerts.js" type="text/javascript"></script>
-<link href="<?= VIEW ?>/js/jquery-ui/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
-
 <script type="text/javascript">
+    var first=0;
     function display_c(start){
         window.start = parseFloat(start);
         var end = 0 // change this to stop the counter at a higher value
@@ -53,21 +50,28 @@ include_once "inc/config.inc.php";
         var secs = Math.floor((window.start - (days * 86400 ) - (hours *3600 ) - (minutes*60)))
         var x = "Sessão expira em " + minutes + "min" + secs;
         document.getElementById('sessaoTime').innerHTML = x;
+
+        var x1 = minutes + "min" + secs + ". Deseja renovar o tempo?";
+        if (!first && days <= 0 && hours <= 0 && minutes <= 2) {
+            time_over();
+            first = 1;
+        }
+        try { document.getElementById('sessaoTimeOver').innerHTML = x1; } catch (e) {}
         window.start= window.start- 1;
         tt=display_c(window.start);
     }
 
     $(document).ready(function() {
-    $.ajaxSetup({
-        cache: false
-    });
-    $.loading({
-        onAjax: true,
-        text: 'Aguarde Carregando...',
-        mask: true,
-        img: '<?= IMAGES ?>/loader.gif',
-        align: 'center'
-    });
+        $.ajaxSetup({
+            cache: false
+        });
+        $.loading({
+            onAjax: true,
+            text: 'Aguarde Carregando...',
+            mask: true,
+            img: '<?= IMAGES ?>/loader.gif',
+            align: 'center'
+        });
 
     $('#setTroca').click(function(event) {
         var ano = $('#campoAnoIndex').val();
@@ -77,7 +81,7 @@ include_once "inc/config.inc.php";
         });
     });
     
-    $(window).scroll(function () {
+        $(window).scroll(function () {
             if ($(this).scrollTop() > 100) {
                 $('.scrollup').fadeIn();
             } else {
@@ -324,6 +328,21 @@ if (isset($_SESSION["loginTipo"])) {
     <span>Resolu&ccedil;&atilde;o m&iacute;nima 1024x768</span>
 </div>
 <a href="#" class="scrollup">Scroll</a>
-
+</div>
 </body>
 </html>
+
+<script>
+    function time_over() {
+        $.Zebra_Dialog('<strong>Professor, sua sessão vai expirar em <div id="sessaoTimeOver"></div></strong>', {
+            'type': 'question',
+            'title': '<?= $TITLE ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function(caption) {
+                if (caption == 'Sim') {
+                    window.start = <?php print $TIMEOUT*60; ?>;
+                }
+            }
+        });
+    }
+</script>

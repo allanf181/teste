@@ -18,7 +18,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 }
 
 if ($LDAP_ATIVADO) {
-    mensagem('INFO', 'LDAP_ATIVADO');    
+    mensagem('INFO', 'LDAP_ATIVADO');
     die;
 }
 // Instância a classe login
@@ -40,13 +40,13 @@ if (isset($_POST["opcao"]) && $_POST["opcao"] == 'alterarToBanco') {
             die;
 	} else {
             if ($senha)
-                print "<font color=\"red\" size=\"2\">Senha atual n&atilde;o confere.</font>";
+                mensagem('ERRO', 'PASS_NOT_MATCH');
 
             if ($chave)
-                print "<font color=\"red\" size=\"2\">Chave n&atilde;o confere ou est&aacute; inv&aacute;lida.</font>";
+                mensagem('ERRO', 'KEY_NOT_MATCH');
 	}
     } else {
-   	print "<script>jAlert('Caracteres inv&aacute;lidos. Tente novamente.', 'Erro');</script>\n";
+        mensagem('ERRO', 'WRONG_CHARACTER');
     }
     if ($senha)
         $_GET["opcao"] = 'alterar';

@@ -100,7 +100,10 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $INFO_PRONTUARIO_VAZIO = "Por favor, digite o prontu&aacute;rio!";
 
     $INFO_LDAP_ATIVADO = "O autentica&ccedil;&atilde;o LDAP est&aacute; ativada, n&atilde;o &eacute; poss&iacute;vel trocar ou recuperar a senha no WebDi&aacute;rio. Troque a senha em seu sistema de origem ou procure o suporte do campus.";
-
+    $ERRO_PASS_NOT_MATCH = 'Senha atual n&atilde;o confere';
+    $ERRO_KEY_NOT_MATCH = 'Chave n&atilde;o confere ou est&aacute; inv&aacute;lida.';
+    $ERRO_WRONG_CHARACTER = 'Caracteres inv&aacute;lidos. Tente novamente.';
+    
     //DIARIO
     $OK_PRAZO_DIARIO = 'Registro inserido com sucesso. Aguarde a libera&ccedil;&atilde;o do coordenador.';
     $NOK_PRAZO_DIARIO = 'Problema na solicita&ccedil;&atilde;o. Tente novamente.';
