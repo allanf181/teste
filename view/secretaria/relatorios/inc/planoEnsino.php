@@ -34,7 +34,6 @@ if (dcrip($_GET["atribuicao"])) {
         $ITEM['7 - AVALIAÇÃO'] = $reg['avaliacao'];
         $ITEM['7.1 - RECUPERAÇÃO PARALELA'] = $reg['recuperacaoParalela'];
         $ITEM[$reg['rfTitle']] = $reg["recuperacaoFinal"];
-        $ITEM[$titleRecuperacao] = $reg['recuperacaoFinal'];
         $ITEM['8 - BIBLIOGRAFIA BÁSICA'] = $reg['bibliografiaBasica'];
         $ITEM['8.1 - BIBLIOGRAFIA COMPLEMENTAR'] = $reg['bibliografiaComplementar'];
         $disciplina = $reg['disciplina'];

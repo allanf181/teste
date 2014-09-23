@@ -28,7 +28,7 @@ class PlanosEnsino extends Generic {
                 pe.recuperacaoParalela as recuperacaoParalela, pe.recuperacaoFinal as recuperacaoFinal,
                 IF(m.codigo=1001 OR
                    m.codigo=1003 OR 
-                   m.codigo < 1001, 'Reavaliação Final', 'Instrumento Final de Avaliação' )
+                   m.codigo < 1001, '7.2 - Reavaliação Final', '7.2 - Instrumento Final de Avaliação' )
                 as rfTitle,IF(LENGTH(a.subturma) > 0,CONCAT(' [',a.subturma,']'),CONCAT(' [',a.eventod,']')) as subturma, 
 		pe.bibliografiaBasica as bibliografiaBasica,
                 pe.bibliografiaComplementar as bibliografiaComplementar,

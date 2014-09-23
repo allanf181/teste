@@ -213,31 +213,31 @@ if ($_GET['pagina'] == "planoEnsino") {
                     <td><input type="text" size="1" <?= $disabled; ?> id="numeroProfessores" name="numeroProfessores" maxlength="1" value="<?php echo $numeroProfessores; ?>"/>
                 </tr>
                 <tr>
-                    <td align="left">Ementa: </td>
+                    <td align="left">2 - Ementa: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='ementa' name='ementa'><?= $ementa; ?></textarea>
                 </tr>
                 <tr>
-                    <td align="left">Objetivo: </td>
+                    <td align="left">3 - Objetivo: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='objetivo' name='objetivo'><?= $objetivo; ?></textarea>
                 </tr>
                 <tr>
-                    <td align="left">Conte&uacute;do Program&aacute;tico: </td>
+                    <td align="left">4 - Conte&uacute;do Program&aacute;tico: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='conteudoProgramatico' name='conteudoProgramatico'><?= $conteudoProgramatico; ?></textarea>
                 </tr>
                 <tr>
-                    <td align="left">Metodologia: </td>
+                    <td align="left">5 - Metodologia: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='metodologia' name='metodologia'><?= $metodologia; ?></textarea>
                 </tr>
                 <tr>
-                    <td align="left">Recurso Did&aacute;tico: </td>
+                    <td align="left">6 - Recurso Did&aacute;tico: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recursoDidatico' name='recursoDidatico'><?= $recursoDidatico; ?></textarea>
                 </tr>
                 <tr>
-                    <td align="left">Avalia&ccedil;&atilde;o: </td>
+                    <td align="left">7 - Avalia&ccedil;&atilde;o: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='avaliacao' name='avaliacao'><?= $avaliacao; ?></textarea>
                 </tr>  
                 <tr>
-                    <td align="left">Recupera&ccedil;&atilde;o Paralela: </td>
+                    <td align="left">7.1 - Recupera&ccedil;&atilde;o Paralela: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recuperacaoParalela' name='recuperacaoParalela'><?= $recuperacaoParalela; ?></textarea>
                 </tr>  
                 <tr>
@@ -245,11 +245,11 @@ if ($_GET['pagina'] == "planoEnsino") {
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recuperacaoFinal' name='recuperacaoFinal'><?= $recuperacaoFinal; ?></textarea>
                 </tr>
                 <tr>
-                    <td align="left">Bibliografia B&aacute;sica: </td>
+                    <td align="left">8 - Bibliografia B&aacute;sica: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='bibliografiaBasica' name='bibliografiaBasica'><?= $bibliografiaBasica; ?></textarea>
                 </tr>
                 <tr>
-                    <td align="left">Bibliografia Complementar: </td>
+                    <td align="left">8.1 - Bibliografia Complementar: </td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='bibliografiaComplementar' name='bibliografiaComplementar'><?= $bibliografiaComplementar; ?></textarea>
                 </tr>
             </table>
