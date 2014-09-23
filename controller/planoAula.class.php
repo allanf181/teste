@@ -25,6 +25,7 @@ class PlanosAula extends Generic {
                                 AND t1.codigo = a1.turma
                                 AND t.numero = t1.numero
 				AND a1.codigo = :cod)
+                GROUP BY pa.semana
                 ORDER BY pa.semana";
 
         $params = array(':cod'=> $codigo);
