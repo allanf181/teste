@@ -453,7 +453,7 @@ if (dcrip($_GET["nome"])) {
 </div>
 <?php
 // PAGINACAO
-$itensPorPagina = 20;
+$itensPorPagina = 40;
 $item = 1;
 
 if (isset($_GET['item']))
@@ -502,7 +502,7 @@ require PATH . VIEW . '/paginacao.php';
             <td align='left'><?= $reg['prontuario'] ?></td>
             <td>
                 <div <?= $output ?> style='float: left; margin-right: 5px'>
-                    <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' class='screenshot nav' title='<?= mostraTexto($reg['nome']) ?>'>
+                    <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' class='screenshot' title='<?= mostraTexto($reg['nome']) ?>'>
                         <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' />
                     </a>
                 </div><?= mostraTexto($reg['nome']) ?>
@@ -528,7 +528,6 @@ require PATH . VIEW . '/paginacao.php';
         }
         ?>
 </table>
-
 <script>
 
         function valida() {

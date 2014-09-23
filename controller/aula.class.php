@@ -11,7 +11,7 @@ class Aulas extends Frequencias {
 
     // LISTA OS CONTEUDOS DAS AULAS DO ALUNO
     // USADO POR: VIEW/ALUNO/AULA.PHP, VIEW/SECRETARIA/RELATORIOS/DIARIO.PHP
-    public function listAulasAluno($aluno, $atribuicao) {
+    public function listAulasAluno($aluno, $atribuicao, $sigla=null) {
         $bd = new database();
 
         $sql = "SELECT (
@@ -35,7 +35,7 @@ class Aulas extends Frequencias {
             $i = 0;
             foreach ($res as $reg) {
                 if ($A = $this->getFrequenciaAbono($aluno, $atribuicao, $reg['data'])) {
-                    $res[$i]['falta'] = $A['tipo'];
+                    $res[$i]['falta'] = (!$sigla) ? $A['tipo']:$A['sigla'];
                 } else {
                     if ($reg['quantidade'])
                         $res[$i]['falta'] = $reg['quantidade'];

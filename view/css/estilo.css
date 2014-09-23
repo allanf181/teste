@@ -293,6 +293,7 @@ li{
 #screenshot{
         z-index: 9999;
 	position:absolute;
+        margin-top: -165px;
 	border:1px solid #ccc;
 	background:#333;
 	padding:5px;

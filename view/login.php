@@ -67,7 +67,7 @@ if ($prontuario && $senha) {
                     <input type="hidden" name="try" value="<?php print $try; ?>" />
                 </div>
                 <tr><td colspan="2">&nbsp</td></tr>
-            <style>#entrar {margin-top: 15px;}</style>
+                <style>#entrar {margin-top: 15px;}</style>
                 <?php
             } else {
                 ?>
@@ -123,6 +123,12 @@ if ($opcao == 'recuperar') {
 }
 ?>
 <script>
+    $('#campoSenha').keypress(function (e) {
+        if (e.which == 13) {
+            $('#entrar').click();
+        }
+    });
+
     $('#form_login').html5form({
         method: 'POST',
         action: '<?php print VIEW; ?>/login.php',

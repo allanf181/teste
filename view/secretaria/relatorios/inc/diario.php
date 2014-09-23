@@ -243,7 +243,7 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
         if ($slistagem) {
             // Verificar Frequencia
             $quantidadeTotal = 0;
-            $resAula = $aula->listAulasAluno($aluno, $atribuicao);
+            $resAula = $aula->listAulasAluno($aluno, $atribuicao, 'sigla');
             foreach ($resAula as $reg) {
                 $quantidade = $reg['quantidade'];
                 if ($quantidade <= 2)
