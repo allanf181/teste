@@ -211,6 +211,7 @@ if (!$turma) {
                 ( (a.bimestre=0 AND (t.semestre=:semestre OR t.semestre=0)) OR (a.bimestre=:semestre)) ';
 }
 
+$sqlAdicional .= ' ORDER BY p.nome ';
 $res = $matricula->getMatriculas($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($matricula->getMatriculas($params, $sqlAdicional, null, null));
 
