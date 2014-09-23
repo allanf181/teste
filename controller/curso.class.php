@@ -44,9 +44,9 @@ class Cursos extends Generic {
     		WHERE m.codigo = c.modalidade";
 
         $sql .= " $sqlAdicional ";
-        $sql .= " $nav ";
         $sql .= " ORDER BY c.nome ";
-        print $sql;
+        $sql .= " $nav ";
+
         $res = $bd->selectDB($sql, $params);
 
         if ($res)

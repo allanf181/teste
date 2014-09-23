@@ -94,9 +94,8 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$res = $cursos->listRegistros($params, $item, $itensPorPagina);
-
-$totalRegistros = $cursos->count();
+$res = $cursos->listCursos($params, null, $item, $itensPorPagina);
+$totalRegistros = count($res = $cursos->listCursos($params, null, $item, $itensPorPagina));
 $SITENAV = $SITE . '?';
 require PATH . VIEW . '/paginacao.php';
 ?>
@@ -121,7 +120,7 @@ require PATH . VIEW . '/paginacao.php';
         ?>
         <tr <?php print $cdif; ?>>
             <td align='center'><?php print $i; ?></td>
-            <td><?php print $reg['nome']; ?></td>
+            <td><?php print $reg['curso']; ?></td>
             <td><?php print $reg['modalidade']; ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
