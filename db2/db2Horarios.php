@@ -25,11 +25,12 @@ $h = 0;
 $s = 0;
 
 while ($row = db2_fetch_object($res)) {
-    $sql = "SELECT * FROM Calendarios WHERE data = '" . $row->F_DATA . "'";
+    $ocorrencia = formatarTexto(addslashes((conv($row->F_DESCR))));
+    $sql = "SELECT * FROM Calendarios WHERE data = '" . $row->F_DATA . "' AND ocorrencia = '$ocorrencia'";
     $res2 = mysql_query($sql);
     if (!$calendario = mysql_fetch_object($res2)) {// DATA NÃO EXISTE, ENTÃO IMPORTA
         // IMPORTA A DATA
-        $sql = "INSERT INTO Calendarios VALUES (NULL, '" . $row->F_DATA . "', 0, '" . formatarTexto(addslashes((conv($row->F_DESCR)))) . "')";
+        $sql = "INSERT INTO Calendarios VALUES (NULL, '" . $row->F_DATA . "', 0, '$ocorrencia')";
         if (!$result = mysql_query($sql)) {
             if ($DEBUG)
                 echo "<br>Erro ao importar DATA: $sql \n";
