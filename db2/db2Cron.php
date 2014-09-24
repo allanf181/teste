@@ -47,22 +47,24 @@ $sql = "SELECT c.nome as city, COUNT(c.nome) registros
 $result = @mysql_query($sql);
 $cidPr = @mysql_fetch_object($result);
 
-// CHECANDO A VERSAO DO SISTEMA
-$conexao = mysql_connect("$IPSRVUPDATE", "$USERSRVUPDATE", "$PASSSRVUPDATE") or die (mysql_error());
-mysql_set_charset('utf8');
-mysql_select_db("BrtAtualizacao");
+require $LOCATION_CRON.'../lib/nusoap/lib/nusoap.php';
 
-// REGISTRANDO A VERSAO DO CAMPUS
-@mysql_query("INSERT INTO BrtAtualizacao.campus (codigo, nome, cidade, sigla, versao, data, cidadePredominante, serverSignature, serverName) "
-        . "VALUES (NULL, '$SITE_TITLE', '$SITE_CIDADE', '$DIGITANOTAS', '$VERSAO', NOW(), '".$cidPr->city."', '".php_uname()."', '".gethostname()."' ) ");
+$client = new nusoap_client("https://200.133.218.2:80/wsWD/server.wsdl", true);
+ 
+$client->setCredentials("WebDiarioWDWS", "W3bD1ari0_WS_WD_##!!", "basic");
 
-$resultado = mysql_query("SELECT versao FROM BrtAtualizacao.versao");
- if (mysql_num_rows($resultado) != '') {
- 	$versao = mysql_result($resultado, 0, "versao");
-
-        include("$LOCATION_CRON"."db2Mysql.php");
-	mysql_query("UPDATE Instituicoes SET versaoAtual = '$versao'");
+if ($client) {
+$result = $client->call("setversion", array("nome" => "$SITE_TITLE", 
+                                            "cidade" => "$SITE_CIDADE",
+                                            "digitaNotas" => "$DIGITANOTAS",
+                                            "versao" => "$VERSAO",
+                                            "cidadePredominante" => '".$cidPr->city."',
+                                            "uname" => php_uname(),
+                                            "hostname" => gethostname()));
 }
+
+
+mysql_query("UPDATE Instituicoes SET versaoAtual = '$result'");
 
 // DELETANDO LOGS ANTIGOS
 mysql_query("DELETE FROM Logs WHERE datediff(now(), data) > 30");
