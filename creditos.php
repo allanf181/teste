@@ -58,24 +58,29 @@ require SESSAO;
 
 </center>
 
+<br />
+<br />
+<b>Vers&atilde;o 1.411</b>
 <br>
+<br> - Adicionado WebServices de Atualiza&ccedil;&atilde;o de Vers&atilde;o
+<hr>
 <br>
 <b>Vers&atilde;o 1.410</b>
 <br>
-<br> - Correção do chamado - #174
-<br> - Correção do chamado - #175
-<br> - Correção do chamado - #176
-<br> - Correção do chamado - #177
-<br> - Correção do chamado - #178
-<br> - Correção do chamado - #179
-<br> - Correção do chamado - #180
-<br> - Correção do chamado - #181
+<br> - Corre&ccedil;&atilde;o do chamado - #174
+<br> - Corre&ccedil;&atilde;o do chamado - #175
+<br> - Corre&ccedil;&atilde;o do chamado - #176
+<br> - Corre&ccedil;&atilde;o do chamado - #177
+<br> - Corre&ccedil;&atilde;o do chamado - #178
+<br> - Corre&ccedil;&atilde;o do chamado - #179
+<br> - Corre&ccedil;&atilde;o do chamado - #180
+<br> - Corre&ccedil;&atilde;o do chamado - #181
 <hr>
 <br>
 <b>Vers&atilde;o 1.409</b>
 <br>
-<br> - Correção da listagem de matrículas - #168
-<br> - Aviso sobre o término da sessão - #166
+<br> - Corre&ccedil;&atilde;o da listagem de matr&iacute;culas - #168
+<br> - Aviso sobre o término da sess&atilde;o - #166
 <br> - Reestrutura&ccedil;&atilde;o de c&oacute;digo - RELAT&Oacute;RIOS
 <hr>
 <br>
