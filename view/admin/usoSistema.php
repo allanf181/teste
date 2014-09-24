@@ -32,6 +32,7 @@ foreach ($res as $reg) {
         $uso++;
     $count++;
 }
+
 $uso = round(($uso * 100) / $count);
 $width1 = "$uso";
 $width2 = (100 - $uso);
@@ -49,20 +50,21 @@ $width2 = (100 - $uso);
 </div>
 <?php
 // PAGINACAO
-$itensPorPagina = 20;
+$itensPorPagina = 60;
 $item = 1;
 
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
 $res = $atribuicao->getDadosUsoSistema($params, null, $item, $itensPorPagina);
-$totalRegistros = count($atribuicao->getDadosUsoSistema($params, null, $item, $itensPorPagina));
+$totalRegistros = count($atribuicao->getDadosUsoSistema($params, null, null, null));
 
 $SITENAV = $SITE . '?';
 require PATH . VIEW . '/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center">
     <tr>
+        <th width='20'>#</th>
         <th width='220'>Nome</th>
         <th align='center' width='80'>Aulas Lan&ccedil;adas</th>
         <th align='center' width='90'>Frequ&ecirc;ncias Cadastradas</th>
@@ -76,6 +78,7 @@ require PATH . VIEW . '/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>>
+            <td><?= $i ?></td>
             <td><?= $reg['nome'] ?></td>
             <td><?= $reg['aula'] ?></td>
             <td align='center'><?= $reg['frequencia'] ?></td>

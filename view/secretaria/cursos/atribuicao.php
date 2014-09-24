@@ -126,7 +126,7 @@ $params['ano'] = $ANO;
 $params['semestre'] = $SEMESTRE;
 
 $res = $atribuicao->getAllAtribuicoes($params, $sqlAdicional, $item, $itensPorPagina);
-$totalRegistros = count($atribuicao->getAllAtribuicoes($params, $sqlAdicional, $item, $itensPorPagina));
+$totalRegistros = count($atribuicao->getAllAtribuicoes($params, $sqlAdicional, null, null));
 
 $params['turma'] = $_GET['turma'];
 $params['professor'] = $_GET['professor'];

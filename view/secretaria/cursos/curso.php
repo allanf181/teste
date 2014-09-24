@@ -88,14 +88,14 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 
 <?php
 // PAGINACAO
-$itensPorPagina = 20;
+$itensPorPagina = 50;
 $item = 1;
 
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
 $res = $cursos->listCursos($params, null, $item, $itensPorPagina);
-$totalRegistros = count($res = $cursos->listCursos($params, null, $item, $itensPorPagina));
+$totalRegistros = count($res = $cursos->listCursos($params, null, null, null));
 $SITENAV = $SITE . '?';
 require PATH . VIEW . '/paginacao.php';
 ?>

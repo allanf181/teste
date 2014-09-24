@@ -145,7 +145,7 @@ if ($params['curso'] = $curso)
     $sqlAdicional = ' AND c.codigo = :curso ';
 
 $res = $coord->listCoordenadores($params, $sqlAdicional, $item, $itensPorPagina);
-$totalRegistros = count($coord->listCoordenadores($params, $sqlAdicional, $item, $itensPorPagina));
+$totalRegistros = count($coord->listCoordenadores($params, $sqlAdicional, null, null));
 
 $SITENAV = $SITE . "?" . mapURL($params);
 require PATH . VIEW . '/paginacao.php';
