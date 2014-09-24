@@ -60,6 +60,18 @@ require SESSAO;
 
 <br>
 <br>
+<b>Vers&atilde;o 1.410</b>
+<br>
+<br> - Correção do chamado - #174
+<br> - Correção do chamado - #175
+<br> - Correção do chamado - #176
+<br> - Correção do chamado - #177
+<br> - Correção do chamado - #178
+<br> - Correção do chamado - #179
+<br> - Correção do chamado - #180
+<br> - Correção do chamado - #181
+<hr>
+<br>
 <b>Vers&atilde;o 1.409</b>
 <br>
 <br> - Correção da listagem de matrículas - #168
