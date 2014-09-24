@@ -63,8 +63,8 @@ $result = $client->call("setversion", array("nome" => "$SITE_TITLE",
                                             "hostname" => gethostname()));
 }
 
-
-mysql_query("UPDATE Instituicoes SET versaoAtual = '$result'");
+if ($result)
+    mysql_query("UPDATE Instituicoes SET versaoAtual = '$result'");
 
 // DELETANDO LOGS ANTIGOS
 mysql_query("DELETE FROM Logs WHERE datediff(now(), data) > 30");
