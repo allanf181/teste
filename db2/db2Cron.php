@@ -58,7 +58,7 @@ $result = $client->call("setversion", array("nome" => "$SITE_TITLE",
                                             "cidade" => "$SITE_CIDADE",
                                             "digitaNotas" => "$DIGITANOTAS",
                                             "versao" => "$VERSAO",
-                                            "cidadePredominante" => '".$cidPr->city."',
+                                            "cidadePredominante" => $cidPr->city,
                                             "uname" => php_uname(),
                                             "hostname" => gethostname()));
 }
