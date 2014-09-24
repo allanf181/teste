@@ -26,7 +26,7 @@ $s = 0;
 
 while ($row = db2_fetch_object($res)) {
     $ocorrencia = formatarTexto(addslashes((conv($row->F_DESCR))));
-    $sql = "SELECT * FROM Calendarios WHERE data = '" . $row->F_DATA . "' AND ocorrencia = '$ocorrencia'";
+    $sql = "SELECT * FROM Calendarios WHERE dataInicio = '" . $row->F_DATA . "' AND ocorrencia = '$ocorrencia'";
     $res2 = mysql_query($sql);
     if (!$calendario = mysql_fetch_object($res2)) {// DATA NÃO EXISTE, ENTÃO IMPORTA
         // IMPORTA A DATA
