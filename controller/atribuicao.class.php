@@ -451,10 +451,8 @@ class Atribuicoes extends Generic {
 			LEFT JOIN Matriculas m on m.atribuicao=a.codigo 
 			LEFT JOIN Pessoas al on m.aluno=al.codigo
 			LEFT JOIN Situacoes s on m.situacao=s.codigo
-                        LEFT JOIN Ensalamentos e on e.atribuicao = a.codigo
 			WHERE a.turma 
 			$sqlAdicional
-                        AND e.horario = 10
 			ORDER BY a.bimestre, d.nome, al.nome";
 
         $res = $bd->selectDB($sql, $params);
