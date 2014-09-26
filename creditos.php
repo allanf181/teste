@@ -63,6 +63,7 @@ require SESSAO;
 <b>Vers&atilde;o 1.411</b>
 <br>
 <br> - Adicionado WebServices de Atualiza&ccedil;&atilde;o de Vers&atilde;o
+<br> - Corre&ccedil;&atilde;o do chamado - #184
 <hr>
 <br>
 <b>Vers&atilde;o 1.410</b>
