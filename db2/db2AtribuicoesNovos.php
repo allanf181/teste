@@ -91,7 +91,7 @@ for ($n = 1; $n <= 2; $n++) {
                             . "'" . $row->ED_DTINICIO . "',"
                             . "'" . $row->ED_DTFINAL . "',"
                             . "$row->ED_AUPREV, "
-                            . "0,0, $row->ED_EVENTOD)"; // STATUS
+                            . "0,$turno, $row->ED_EVENTOD)"; // STATUS
                     if (!$result = mysql_query($sql)) {
                         if ($DEBUG)
                             echo "<br>Erro ao importar ATRIBUICAO: $sql \n";
@@ -112,7 +112,7 @@ for ($n = 1; $n <= 2; $n++) {
                     }
                 } else {
                     $COD = mysql_result($att, 0, "codigo");
-                    $sql = "UPDATE Atribuicoes SET dataInicio='" . $row->ED_DTINICIO . "', dataFim='" . $row->ED_DTFINAL . "' WHERE codigo = $COD";
+                    $sql = "UPDATE Atribuicoes SET dataInicio='" . $row->ED_DTINICIO . "', dataFim='" . $row->ED_DTFINAL . "', periodo = $turno WHERE codigo = $COD";
                     if (!$result = mysql_query($sql)) {
                         if ($DEBUG)
                             echo "<br>Erro ao atualizar ATRIBUICAO: $sql \n";

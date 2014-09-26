@@ -75,6 +75,9 @@ for ($n = 1; $n <= 2; $n++) {
         $disciplina = mysql_fetch_object($result);
 
         if ($disciplina->codigo) {
+            // BUSCA O CODIGO DO TURNO
+            $turno = getTurno($row->NH_PERIODO);
+            
             // BUSCA O CODIGO DA TURMA
             $sql = "SELECT * FROM Turmas t WHERE numero='A$row->TD_TURMA' AND semestre = $n";
             $result = mysql_query($sql);
@@ -110,7 +113,7 @@ for ($n = 1; $n <= 2; $n++) {
                                 . "$i, "// BIMESTRE
                                 . "'" . $B_INI[$i] . "',"
                                 . "'" . $B_FIN[$i] . "',"
-                                . "0,0, '$subturma', $row->NH_EVENTOD)";
+                                . "0,$turno, '$subturma', $row->NH_EVENTOD)";
                         if (!$result = mysql_query($sql)) {
                             if ($DEBUG)
                                 echo "<br>Erro ao importar ATRIBUICAO: $sql \n";
@@ -132,7 +135,7 @@ for ($n = 1; $n <= 2; $n++) {
                     } else {
                         $COD = mysql_result($att, 0, "codigo");
                         $G = round( (($disciplina->ch * 6) / 5), 2);
-                        $sql = "UPDATE Atribuicoes SET aulaPrevista='".$G."', dataInicio='" . $B_INI[$i] . "', dataFim='" . $B_FIN[$i] . "' WHERE codigo = $COD";
+                        $sql = "UPDATE Atribuicoes SET aulaPrevista='".$G."', dataInicio='" . $B_INI[$i] . "', dataFim='" . $B_FIN[$i] . "', periodo = $turno WHERE codigo = $COD";
                         if (!$result = mysql_query($sql)) {
                             if ($DEBUG)
                                 echo "<br>Erro ao atualizar ATRIBUICAO: $sql \n";
