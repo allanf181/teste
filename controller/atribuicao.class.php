@@ -421,7 +421,7 @@ class Atribuicoes extends Generic {
 
     // RETORNA OS DADOS DO BOLETIM TURMA
     // USADO POR: SECRETARIA/RELATORIOS/BOLETIMTURMA.PHP, INC/BOLETIMTURMA.PHP
-    public function getAtribuicoesFromBoletimTurma($turma, $bimestre = null, $fechamento = null) {
+    public function getAtribuicoesFromBoletimTurma($turma, $bimestre = null, $fechamento = null, $turno = null) {
         $bd = new database();
 
         $params = array('turma' => $turma);
@@ -439,6 +439,11 @@ class Atribuicoes extends Generic {
             $sqlAdicional = " = :turma ";
         }
 
+        if ($turno) {
+            $sqlAdicionalTurno = " AND a.periodo = :turno ";
+            $params['turno'] = $turno;
+        }
+        
         $sql = "SELECT 	al.codigo as codAluno, al.nome as aluno, 
                         d.codigo as codDiciplina, d.numero as numero, 
                         d.nome as disciplina, m.situacao, a.status,
@@ -453,6 +458,7 @@ class Atribuicoes extends Generic {
 			LEFT JOIN Situacoes s on m.situacao=s.codigo
 			WHERE a.turma 
 			$sqlAdicional
+                        $sqlAdicionalTurno
 			ORDER BY a.bimestre, d.nome, al.nome";
 
         $res = $bd->selectDB($sql, $params);

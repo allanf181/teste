@@ -32,6 +32,11 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 
 if ($_GET["bimestre"] != 'undefined')
     $bimestre = dcrip($_GET["bimestre"]);
+
+
+if (dcrip($_GET["turno"]))
+    $turno = dcrip($_GET["turno"]);
+
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 
@@ -70,6 +75,21 @@ if ($_GET["bimestre"] != 'undefined')
                 ?>
             </select>
         </td></tr>
+    <tr><td align="right" style="width: 100px">Turno: </td><td>
+            <select name="turno" id="turno" value="<?= $turno ?>" style="width: 650px">
+                <option></option>
+                <?php
+                require CONTROLLER . '/turno.class.php';
+                $turnos = new Turnos();
+                foreach ($turnos->listRegistros() as $reg) {
+                    $selected = "";
+                    if ($reg['codigo'] == $turno)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                }
+                ?>
+            </select>
+        </td></tr>    
     <?php if ($fechamento == 'b') { ?>
         <tr><td align="right">Bimestre: </td><td>
                 <select name="bimestre" id="bimestre">
@@ -112,7 +132,7 @@ if ($_GET["bimestre"] != 'undefined')
 <div style="text-align: center; margin-top: 10px"><a href="#" id="maximizar">Maximizar</a></div>
 <?php
 if ($turma && $fechamento) {
-    foreach ($atribuicao->getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento) as $reg) {
+    foreach ($atribuicao->getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento, $turno) as $reg) {
         $bimestres[$reg['bimestre']] = $reg['bimestre'];
         $alunos[$reg['codAluno']] = $reg['aluno'];
         $disciplinasMediaNome[$reg['numero']] = $reg['numero'];
@@ -347,10 +367,11 @@ $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . cr
         if ($('#menu').is(':hidden'))
             $('#maximizar').text('restaurar');
 
-        $("#turma, #bimestre").change(function() {
+        $("#turma, #turno, #bimestre").change(function() {
             var turma = $('#turma').val();
+            var turno = $('#turno').val();
             var bimestre = $('#bimestre').val();
-            $('#index').load('<?= $SITE ?>?turma=' + turma + '&bimestre=' + bimestre);
+            $('#index').load('<?= $SITE ?>?turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre);
         });
 
         $('#listagem tr').dblclick(function() {
