@@ -11,7 +11,7 @@ class Academico24 extends Ruckusing_Migration_Base {
                                     WHERE 
                                         TABLE_SCHEMA = '" . MY_DB . "'
                                     AND TABLE_NAME = 'Instituicoes' 
-                                    AND COLUMN_NAME = '`limiteInsAulaProf`'");
+                                    AND COLUMN_NAME = 'limiteInsAulaProf'");
         if ($result)
             $this->execute("ALTER TABLE `Instituicoes` DROP `limiteInsAulaProf`;");
 

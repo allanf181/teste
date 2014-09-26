@@ -103,7 +103,7 @@ for ($n = 1; $n <= 2; $n++) {
                     $att = mysql_query($sql);
                     if (mysql_num_rows($att) == '') {
                         // IMPORTA A ATRIBUICAO
-                        $sql = "insert into Atribuicoes (codigo, disciplina, turma, bimestre, dataInicio, dataFim, status, grupo, subturma, eventod) "
+                        $sql = "insert into Atribuicoes (codigo, disciplina, turma, bimestre, dataInicio, dataFim, status, periodo, subturma, eventod) "
                                 . " values (0, "
                                 . "$disciplina->codigo, "
                                 . "$turma->codigo, "

@@ -180,7 +180,7 @@ class Atribuicoes extends Generic {
 			AND pr.professor=:cod 
                         AND (t.semestre=1 OR t.semestre=2 OR t.semestre=0)
                         AND t.ano = :ano
-			ORDER BY t.ano,t.semestre,a.bimestre,d.numero,a.grupo";
+			ORDER BY t.ano,t.semestre,a.bimestre,d.numero";
 
         $aluno = "SELECT t.ano as ano, t.semestre as semestre, 
                         at.bimestre as bimestre,
@@ -451,8 +451,10 @@ class Atribuicoes extends Generic {
 			LEFT JOIN Matriculas m on m.atribuicao=a.codigo 
 			LEFT JOIN Pessoas al on m.aluno=al.codigo
 			LEFT JOIN Situacoes s on m.situacao=s.codigo
+                        LEFT JOIN Ensalamentos e on e.atribuicao = a.codigo
 			WHERE a.turma 
 			$sqlAdicional
+                        AND e.horario = 10
 			ORDER BY a.bimestre, d.nome, al.nome";
 
         $res = $bd->selectDB($sql, $params);
