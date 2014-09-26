@@ -60,6 +60,11 @@ require SESSAO;
 
 <br />
 <br />
+<b>Vers&atilde;o 1.412</b>
+<br>
+<br> - Adicionada a op&ccedil;&atilde;o de impress&atilde;o em formato de planilha eletr&ocirc;nica da lista de chamada no menu do Professor.
+<hr>
+<br>
 <b>Vers&atilde;o 1.411</b>
 <br>
 <br> - Adicionado WebServices de Atualiza&ccedil;&atilde;o de Vers&atilde;o
