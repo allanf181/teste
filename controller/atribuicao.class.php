@@ -449,13 +449,14 @@ class Atribuicoes extends Generic {
                         d.nome as disciplina, m.situacao, a.status,
                 	m.codigo as codMatricula, a.codigo as atribuicao,
                         s.listar, s.habilitar, s.nome as situacao, 
-                        s.sigla, a.bimestre, al.prontuario,
+                        s.sigla, a.bimestre, al.prontuario, t.nome as turno,
                         (SELECT numero FROM Turmas where codigo = a.turma) as turma
 			FROM Atribuicoes a 
 			LEFT JOIN Disciplinas d on a.disciplina=d.codigo 
 			LEFT JOIN Matriculas m on m.atribuicao=a.codigo 
 			LEFT JOIN Pessoas al on m.aluno=al.codigo
 			LEFT JOIN Situacoes s on m.situacao=s.codigo
+                        LEFT JOIN Turnos t on t.codigo = a.periodo
 			WHERE a.turma 
 			$sqlAdicional
                         $sqlAdicionalTurno

@@ -36,7 +36,6 @@ if ($_GET["bimestre"] != 'undefined')
 
 if (dcrip($_GET["turno"]))
     $turno = dcrip($_GET["turno"]);
-
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 
@@ -95,35 +94,35 @@ if (dcrip($_GET["turno"]))
                 <select name="bimestre" id="bimestre">
                     <option></option>
                     <option <?php
-                    if ($bimestre == '1')
-                        echo "selected='selected'";
-                    else
-                        echo "";
-                    ?> value="<?= crip(1) ?>">1º bimestre</option>
+        if ($bimestre == '1')
+            echo "selected='selected'";
+        else
+            echo "";
+        ?> value="<?= crip(1) ?>">1º bimestre</option>
                     <option <?php
-                    if ($bimestre == '2')
-                        echo "selected='selected'";
-                    else
-                        echo "";
-                    ?> value="<?= crip(2) ?>">2º bimestre</option>
+                if ($bimestre == '2')
+                    echo "selected='selected'";
+                else
+                    echo "";
+        ?> value="<?= crip(2) ?>">2º bimestre</option>
                     <option <?php
-                    if ($bimestre == '3')
-                        echo "selected='selected'";
-                    else
-                        echo "";
-                    ?> value="<?= crip(3) ?>">3º bimestre</option>
+                if ($bimestre == '3')
+                    echo "selected='selected'";
+                else
+                    echo "";
+        ?> value="<?= crip(3) ?>">3º bimestre</option>
                     <option <?php
-                    if ($bimestre == '4')
-                        echo "selected='selected'";
-                    else
-                        echo "";
-                    ?> value="<?= crip(4) ?>">4º bimestre</option>
+                if ($bimestre == '4')
+                    echo "selected='selected'";
+                else
+                    echo "";
+        ?> value="<?= crip(4) ?>">4º bimestre</option>
                     <option <?php
-                    if ($bimestre == 'final')
-                        echo "selected='selected'";
-                    else
-                        echo "";
-                    ?> value="<?= crip('final') ?>">Final</option>
+                if ($bimestre == 'final')
+                    echo "selected='selected'";
+                else
+                    echo "";
+        ?> value="<?= crip('final') ?>">Final</option>
                 </select>
             </td>
         </tr>
@@ -144,7 +143,7 @@ if ($turma && $fechamento) {
 
         $professores = $professor->getProfessor($reg['atribuicao'], '', 0, 0);
 
-        $disciplinasNomes[$reg['bimestre']][$reg['atribuicao']][$reg['numero']] = $reg['disciplina'] . " - " . $professores;
+        $disciplinasNomes[$reg['bimestre']][$reg['atribuicao']][$reg['numero']] = $reg['disciplina'] . " - " . $professores . "<br>" . $reg['turno'];
         $disciplinasNomes2[$reg['atribuicao']] = $reg['disciplina'];
         $disciplnasStatusNomes[$reg['codDisciplina']][$reg['status']] = $reg['disciplina'] . " (" . $professores . ")";
         $disciplnasStatus[$reg['codDisciplina']] = $reg['status'];
@@ -342,8 +341,8 @@ $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . cr
 
     }
 
-    $(document).ready(function() {
-        $("#table").delegate('td', 'mouseover mouseleave', function(e) {
+    $(document).ready(function () {
+        $("#table").delegate('td', 'mouseover mouseleave', function (e) {
             if (e.type == 'mouseover') {
                 $(this).parent().addClass("hover");
                 $("colgroup").eq($(this).index()).addClass("hover");
@@ -360,21 +359,21 @@ $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . cr
         var haItemAtivo;
         var textoLink;
 
-        $('#atualizar').click(function() {
+        $('#atualizar').click(function () {
             Links();
         });
 
         if ($('#menu').is(':hidden'))
             $('#maximizar').text('restaurar');
 
-        $("#turma, #turno, #bimestre").change(function() {
+        $("#turma, #turno, #bimestre").change(function () {
             var turma = $('#turma').val();
             var turno = $('#turno').val();
             var bimestre = $('#bimestre').val();
             $('#index').load('<?= $SITE ?>?turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre);
         });
 
-        $('#listagem tr').dblclick(function() {
+        $('#listagem tr').dblclick(function () {
             if (lastTd)
                 lastTd.css('font-size', '8pt');
             if (lastImage) {
