@@ -57,7 +57,7 @@ if (isset($_GET["bimestre"]))
 $tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2);
 $tipo['atendimento'] = array('nome' => 'Atendimento');
 $tipo['boletim'] = array('nome' => 'Boletim Individual', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
-$tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' => 1, 'fechamento' => 1);
+$tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' => 1, 'fechamento' => 1, 'turno' => 1);
 $tipo['carometro'] = array('nome' => 'Carômetro', 'curso' => 1, 'turma' => 1);
 $tipo['diario'] = array('nome' => 'Diário', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['disciplinas'] = array('nome' => 'Disciplinas do Curso', 'curso' => 2);
@@ -74,6 +74,7 @@ $tipo['ftdd'] = array('nome' => 'FTD Detalhada', 'professor' => 1);
 
 $rel_curso = null;
 $rel_turma = null;
+$rel_turno = null;
 $rel_situacao = null;
 $rel_fechamento = null;
 $rel_disciplina = null;
@@ -93,6 +94,7 @@ $rel_data = null;
                         $selected = 'selected';
                         $rel_curso = $v['curso'];
                         $rel_turma = $v['turma'];
+                        $rel_turno = $v['turno'];
                         $rel_situacao = $v['situacao'];
                         $rel_fechamento = $v['fechamento'];
                         $rel_disciplina = $v['disciplina'];
@@ -221,6 +223,27 @@ $rel_data = null;
                 </select>
             </td></tr>
     <?php } 
+    
+    if ($rel_turno) { ?>
+        <tr><td>Per&iacute;rio: </td>
+        <td>
+            <select name="turno" id="turno" value="<?= $turno ?>">
+                <option></option>
+                <?php
+                require CONTROLLER . '/turno.class.php';
+                $turnos = new Turnos();
+                foreach ($turnos->listRegistros() as $reg) {
+                    $selected = "";
+                    if ($reg['codigo'] == $turno)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                }
+                ?>
+            </select>
+        </td>
+    </tr>
+    <?php } 
+    
     if ($rel_aluno) { ?>
         <tr>
             <td>Aluno: </td>
@@ -342,6 +365,7 @@ $rel_data = null;
         var aluno = $('#aluno').val();
         var curso = $('#curso').val();
         var turma = $('#turma').val();
+        var turno = $('#turno').val();
         var disciplina = $('#disciplina').val();
         var situacao = $('#situacao').val();
         var data = $('#data').val();
@@ -363,7 +387,7 @@ $rel_data = null;
             tipo = 'ftd';
 
         if (impressao == 'pdf')
-            window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + '.php?curso=' + curso + '&turma=' + turma + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
+            window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + '.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
                     + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor +
                     '&email=' + email + '&detalhada=' + det, '_blank');
         else

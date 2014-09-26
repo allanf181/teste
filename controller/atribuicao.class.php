@@ -167,9 +167,7 @@ class Atribuicoes extends Generic {
                             IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)) 
                         as curso,
                         m.codigo as codigoModalidade, m.nome as modalidade,
-                        (SELECT nome FROM Ensalamentos e, Horarios h
-                            WHERE e.horario = h.codigo 
-                            AND e.atribuicao = a.codigo LIMIT 1) as hora                        
+                        (SELECT nome FROM Turnos tu WHERE tu.codigo = a.periodo) as turno
 			FROM Disciplinas d, Turmas t, Atribuicoes a, 
                             Professores pr, Cursos c, Modalidades m
 			WHERE d.codigo = a.disciplina 
@@ -208,22 +206,20 @@ class Atribuicoes extends Generic {
                 if (isset($reg['subturma']))
                     $reg['numero'] = $reg['numero'] . ' [' . $reg['turma'] . '-' . $reg['subturma'] . ']';
 
-                if ($reg['hora']) {
-                    preg_match('#\[(.*?)\]#', $reg['hora'], $match);
-                    $reg['numero'] .= ' [' . $match[1] . ']';
-                }
+                if ($reg['turno'])
+                $reg['numero'] .= ' [' . $reg['turno'][0] . ']';
 
                 // SE FOR ANUAL
                 if ($reg['semestre'] == 0)
-                    $disciplinas[$reg['ano']]['A']['A'][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso']);
+                    $disciplinas[$reg['ano']]['A']['A'][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso'], $reg['turno']);
 
                 // SE FOR SEMESTRAL
                 if ($reg['bimestre'] == 0)
-                    $disciplinas[$reg['ano']][$reg['semestre']]['S'][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso']);
+                    $disciplinas[$reg['ano']][$reg['semestre']]['S'][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso'], $reg['turno']);
 
                 // SE FOR BIMESTRAL
                 if ($reg['bimestre'] != 0)
-                    $disciplinas[$reg['ano']][$reg['semestre']]['B'][$reg['bimestre']][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso']);
+                    $disciplinas[$reg['ano']][$reg['semestre']]['B'][$reg['bimestre']][$reg['atribuicao']] = array($reg['disciplina'], $reg['atribuicao'], $reg['numero'], $reg['curso'], $reg['turno']);
             }
             return $disciplinas;
         }

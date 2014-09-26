@@ -25,7 +25,9 @@ include PATH . LIB . '/fpdf17/pdfDiario.php';
 if (dcrip($_GET["turma"])) {
     $turma = dcrip($_GET["turma"]);
     $bimestre = dcrip($_GET["bimestre"]);
-
+    
+    $turno = dcrip($_GET["turno"]);
+    
     if ($bimestre && $bimestre != 'undefined') {
         $fechamento = 'b';
     } else
@@ -37,7 +39,8 @@ if (dcrip($_GET["turma"])) {
     $situacaoNome['MG'] = 'Média Global';
     $situacaoNome['FG'] = 'Frequência Global';
 
-    foreach ($atribuicao->getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento) as $reg) {
+    foreach ($atribuicao->getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento, $turno) as $reg) {
+        $turnoNome = $reg['turno'];
         $turmaNome = $reg['turma'];
         $bimestres[$reg['bimestre']] = $reg['bimestre'];
         $alunos[$reg['codAluno']] = $reg['aluno'];
@@ -65,7 +68,12 @@ if (dcrip($_GET["turma"])) {
     $pdf->Image(PATH . IMAGES . "/logo.png", 12, 12, 80);
     $pdf->Cell(85, 27, "", 1, 0, 'C', false);
     $pdf->Cell(230, 27, utf8_decode("B O L E T I M   D A   T U R M A"), 1, 0, 'C', false);
-    $pdf->Cell(85, 13.5, utf8_decode("TURMA: $turmaNome"), 1, 2, 'C', false);
+    $pdf->Cell(85, 9, utf8_decode("TURMA: $turmaNome"), 1, 2, 'C', false);
+
+    if ($turno)
+        $pdf->Cell(85, 9, utf8_decode(strtoupper($turnoNome)), 1, 2, 'C', false);
+    else
+        $pdf->Cell(85, 9, '', 1, 2, 'C', false);
 
     if ($fechamento == 's')
         $BIM = 'SEMESTRAL';
@@ -74,7 +82,7 @@ if (dcrip($_GET["turma"])) {
     if ($bimestre > 0)
         $BIM = $bimestre . 'º BIMESTRE';
 
-    $pdf->Cell(85, 13.5, utf8_decode($BIM), 1, 0, 'C', false);
+    $pdf->Cell(85, 9, utf8_decode($BIM), 1, 0, 'C', false);
     $pdf->Ln();
 
     $pdf->SetFont($fonte, 'B', $tamanho + 2);

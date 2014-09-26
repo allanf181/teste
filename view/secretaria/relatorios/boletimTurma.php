@@ -75,7 +75,7 @@ if (dcrip($_GET["turno"]))
             </select>
         </td></tr>
     <tr><td align="right" style="width: 100px">Turno: </td><td>
-            <select name="turno" id="turno" value="<?= $turno ?>" style="width: 650px">
+            <select name="turno" id="turno" value="<?= $turno ?>">
                 <option></option>
                 <?php
                 require CONTROLLER . '/turno.class.php';

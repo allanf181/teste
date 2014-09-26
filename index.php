@@ -241,7 +241,7 @@ if (isset($_SESSION["loginTipo"])) {
                 if (isset($disc[$ano]['A']['A']))
                     foreach ($disc[$ano]['A']['A'] as $atribuicao => $reg) { // ANUAL
                         ?>
-                        <li><a title="<?= $reg[0].'<br>'.$reg[3] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
+                        <li><a title="<?= $reg[0].'<br>'.$reg[3].'<br>'.$reg[4] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
                         <?php
                     }
                 foreach ($disc[$ano] as $semestre => $reg) {
@@ -253,7 +253,7 @@ if (isset($_SESSION["loginTipo"])) {
                         if (isset($disc[$ano][$semestre]['S'])) { // DISCIPLINA SEMESTRAL
                             foreach ($disc[$ano][$semestre]['S'] as $atribuicao => $reg) {
                                 ?>
-                                <li><a title="<?= $reg[0].'<br>'.$reg[3] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
+                                <li><a title="<?= $reg[0].'<br>'.$reg[3].'<br>'.$reg[4] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
                                 <?php
                             }
                         }
@@ -265,7 +265,7 @@ if (isset($_SESSION["loginTipo"])) {
                                 <?php
                                 foreach ($disc[$ano][$semestre]['B'][$bimestre] as $atribuicao => $reg) {
                                     ?>
-                                    <li><a title="<?= $reg[0].'<br>'.$reg[3] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
+                                    <li><a title="<?= $reg[0].'<br>'.$reg[3].'<br>'.$reg[4] ?>" href="javascript:$('#index').load('<?= VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?= $reg[2] ?></span></a></li>
                                     <?php
                                 }
                                 ?></ul></li><?php

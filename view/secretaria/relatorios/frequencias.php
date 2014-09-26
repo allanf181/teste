@@ -20,11 +20,22 @@ $frequencia = new Frequencias();
 
 $data = date("d/m/Y", time()); // data atual
 
-if (isset($_GET["mes"]))
+if (isset($_GET["mes"])) {
     $mes = $_GET["mes"];
+    $sqlAdicional = " WHERE date_format(au.data, '%m')=$mes+1 ";
+}
 
-if (dcrip($_GET["turma"]))
+if (dcrip($_GET["turma"])) {
     $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= " AND at.turma=:turma ";
+}
+
+if (dcrip($_GET["turno"])) {
+    $turno = dcrip($_GET["turno"]);
+    $params['turno'] = $turno;
+    $sqlAdicional .= " AND at.periodo=:turno ";
+}
 
 if (in_array($COORD, $_SESSION["loginTipo"])) {
     $paramsTurma['coord'] = $_SESSION['loginCodigo'];
@@ -84,13 +95,28 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 ?>
             </select>
         </td>
-    </tr>  
+    </tr>
+    <tr>
+        <td align="right" style="width: 30px">Turno: </td><td>
+            <select name="turno" id="turno" value="<?= $turno ?>">
+                <option></option>
+                <?php
+                require CONTROLLER . '/turno.class.php';
+                $turnos = new Turnos();
+                foreach ($turnos->listRegistros() as $reg) {
+                    $selected = "";
+                    if ($reg['codigo'] == $turno)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                }
+                ?>
+            </select>
+        </td>
+    </tr>
 </table>
 <?php
 if ($turma) {
-    $mes = $mes + 1;
-    $params['turma'] = $turma;
-    $sqlAdicional = "WHERE at.turma=:turma AND date_format(au.data, '%m')=$mes group by p.nome, au.codigo";
+    $sqlAdicional .= " group by p.nome, au.codigo ";
     foreach ($frequencia->getListaFrequencias($params, $sqlAdicional) as $reg) {
         $datas[] = $reg['dataFormatada'];
         $aulas[$reg['dataFormatada']][$reg['codAula']] = $reg['quantidade'];
@@ -120,11 +146,11 @@ if (!empty($turma)) {
         <tr>
             <th align="center" width="10">#</th>
             <th align="center"  style='width: 300px'>Nome</th>    
-            <?php
-            if ($datas) {
-                foreach (array_unique($datas) as $data) {
-                    $d[] = $data;
-                    ?>
+                <?php
+                if ($datas) {
+                    foreach (array_unique($datas) as $data) {
+                        $d[] = $data;
+                        ?>
                     <th align='center'>
                         <?php
                         foreach ($aulas[$data] as $cod => $n) {
@@ -171,14 +197,15 @@ if (!empty($turma)) {
 }
 ?>
 <script>
-    $(document).ready(function() {
-        $("#turma, #mes").change(function() {
+    $(document).ready(function () {
+        $("#turma, #mes, #turno").change(function () {
             var turma = $('#turma').val();
+            var turno = $('#turno').val();
             var mes = $('#mes').val();
-            $('#index').load('<?= $SITE ?>?turma=' + turma + '&mes=' + mes);
+            $('#index').load('<?= $SITE ?>?turma=' + turma + '&turno=' + turno + '&mes=' + mes);
         });
 
-        $("#table").delegate('td', 'mouseover mouseleave', function(e) {
+        $("#table").delegate('td', 'mouseover mouseleave', function (e) {
             if (e.type == 'mouseover') {
                 $(this).parent().addClass("hover");
                 $("colgroup").eq($(this).index()).addClass("hover");
