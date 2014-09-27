@@ -225,7 +225,7 @@ $rel_data = null;
     <?php } 
     
     if ($rel_turno) { ?>
-        <tr><td>Per&iacute;rio: </td>
+        <tr><td>Per&iacute;odo: </td>
         <td>
             <select name="turno" id="turno" value="<?= $turno ?>">
                 <option></option>

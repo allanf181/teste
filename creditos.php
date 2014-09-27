@@ -62,6 +62,9 @@ require SESSAO;
 <br />
 <b>Vers&atilde;o 1.412</b>
 <br>
+<br> - Corre&ccedil;&atilde;o do chamado - #185
+<br> - Corre&ccedil;&atilde;o do chamado - #146
+<br> - Corre&ccedil;&atilde;o do chamado - #164
 <br> - Adicionada a op&ccedil;&atilde;o de impress&atilde;o em formato de planilha eletr&ocirc;nica da lista de chamada no menu do Professor.
 <hr>
 <br>
