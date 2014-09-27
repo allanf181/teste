@@ -46,10 +46,9 @@ class Atribuicoes extends Generic {
                 m.codigo as codModalidade, m.nome as modalidade, d.ch as CH, a.aulaPrevista as aulaPrevista,
                 IF(a.prazo, date_format(a.prazo, '%H:%i de %d/%m/%Y'), '') as prazoFormat,
                 DATEDIFF(NOW(), a.dataInicio) as diarioAberto,
-                DATEDIFF(a.prazo, NOW()) as prazoDiff, date_format( a.dataInicio, '%d/%m/%Y') as dataInicioFormat,
+                DATEDIFF(a.prazo, NOW()) as prazoDiff, 
+                date_format( a.dataInicio, '%d/%m/%Y') as dataInicioFormat,
                 date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), '%d/%m/%Y') as dataFimFormat,
-                date_format( DATE_SUB(NOW(), INTERVAL $inicio DAY), '%d/%m/%Y') as dataInicioCal,
-                date_format( a.prazo, '%d/%m/%Y') as dataFimCal,
                 DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), NOW()) as dataFimDiff
                 FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
                 WHERE a.disciplina=d.codigo
@@ -63,8 +62,8 @@ class Atribuicoes extends Generic {
 
         if ($res[0]) {
             if ($res[0]['prazoFormat']) {
-                $res[0]['inicioCalendar'] = $res[0]['dataInicioCal'];
-                $res[0]['fimCalendar'] = $res[0]['dataFimCal'];
+                $res[0]['inicioCalendar'] = $res[0]['dataInicioFormat'];
+                $res[0]['fimCalendar'] = $res[0]['dataFimFormat'];
             } else {
                 $res[0]['inicioCalendar'] = date("d/m/Y", mktime(0, 0, 0, date("m"), date("d") - $inicio, date("Y")));
                 $res[0]['fimCalendar'] = date("d/m/Y", mktime(0, 0, 0, date("m"), date("d") + $inicio, date("Y")));
