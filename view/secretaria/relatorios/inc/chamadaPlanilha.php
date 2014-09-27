@@ -9,6 +9,8 @@ $atribuicao = new Atribuicoes();
 require CONTROLLER . '/aula.class.php';
 $aula = new Aulas();
 
+$orientacao = 'L'; // PORTRAIT
+
 if (dcrip($_GET["atribuicao"])) {
     $params['atribuicao'] = dcrip($_GET["atribuicao"]);
     $sqlAdicional = ' WHERE a.codigo=:atribuicao GROUP BY al.codigo ORDER BY al.nome ';
@@ -22,7 +24,7 @@ if (dcrip($_GET["atribuicao"])) {
 
     $titulosColunas = array("Prontuário", "Nome", "Situação");
     $colunas = array("prontuario", "aluno", "situacao");
-    $largura = array(20, 85, 20);
+    $largura = array(20, 55, 30);
 
     // gera o relatório em XLS
     include PATH.LIB.'/relatorio_planilha.php';
