@@ -43,7 +43,7 @@ $j=0;
 foreach ($linha2 as $linha) {
     $j=0;
     foreach ($colunas as $coluna => $value) {
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($j, $i, utf8_decode($linha[$value]));
+        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($j, $i, $linha[$value]);
         $j++;
     }
     $i++;
