@@ -19,6 +19,12 @@ if (dcrip($_GET["turma"])) {
     $sqlAdicional .= ' AND t.codigo = :turma ';
 }
 
+if (dcrip($_GET["turno"])) {
+    $turno = dcrip($_GET["turno"]);
+    $params['turno'] = $turno;
+    $sqlAdicional .= ' AND a.periodo = :turno ';
+}
+
 if (dcrip($_GET["situacao"])) {
     $situacao = dcrip($_GET["situacao"]);
     $params['situacao'] = $situacao;
@@ -34,7 +40,17 @@ $sqlAdicional .= ' group by p.nome order by c.nome, t.numero, p.nome ';
 $linha2 = $matricula->getMatriculas($params, $sqlAdicional);
 
 $titulo = str_repeat(" ", 30) . "Relatório de Matrículas";
-if ($turma) $titulo2 = 'Turma '.$linha2[0]['turma'];
+if ($turma)
+    $titulo2 = 'Turma ' . $linha2[0]['turma'];
+
+if ($turno) {
+    require CONTROLLER . '/turno.class.php';
+    $turnos = new Turnos();
+
+    $paramsTurno['codigo'] = $turno;
+    $turnoNome = $turnos->listRegistros($paramsTurno);
+    $titulo2 .= ' [' . $turnoNome[0]['nome'] . ']';
+}
 
 $rodape = $SITE_TITLE;
 $fonte = 'Times';

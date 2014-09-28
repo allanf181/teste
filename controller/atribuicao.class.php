@@ -270,7 +270,7 @@ class Atribuicoes extends Generic {
                         IF(LENGTH(a.subturma) > 0,CONCAT(' [',a.subturma,']'),CONCAT(' [',a.eventod,']')) as subturma, 
                         IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
                             IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)) 
-                        as curso, a.prazo,
+                        as curso, a.prazo, (SELECT nome FROM Turnos WHERE codigo = a.periodo) as turno,
                         m.codigo as codigoModalidade, m.nome as modalidade,
                         DATEDIFF(a.prazo,NOW()) as prazoDiff
                 FROM Disciplinas d, Turmas t, Atribuicoes a, 

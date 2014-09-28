@@ -21,6 +21,12 @@ if (dcrip($_GET["turma"])) {
     $sqlAdicional .= ' AND t.codigo = :turma ';
 }
 
+if (dcrip($_GET["turno"])) {
+    $turno = dcrip($_GET["turno"]);
+    $params['turno'] = $turno;
+    $sqlAdicional .= ' AND at.periodo = :turno ';    
+}
+
 if (in_array($COORD, $_SESSION["loginTipo"])) {
     $params['coord'] = $_SESSION['loginCodigo'];
     $sqlAdicional .= " AND c2.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";

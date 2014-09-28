@@ -22,6 +22,12 @@ if (dcrip($_GET["turma"])) {
     $sqlAdicional .= ' AND t.codigo = :turma ';
 }
 
+if (dcrip($_GET["turno"])) {
+    $turno = dcrip($_GET["turno"]);
+    $params['turno'] = $turno;
+    $sqlAdicional .= " AND at.periodo = :turno ";
+}
+
 if (in_array($COORD, $_SESSION["loginTipo"])) {
     $params['coord'] = $_SESSION['loginCodigo'];
     $sqlAdicional .= " AND c2.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
@@ -61,49 +67,50 @@ if (($_GET["endereco"]) == 'true') {
 }
 if (($_GET["bairro"]) == 'true') {
     $camposExtra .= ", a.bairro";
-    $colunas[] = 'bairro';    
+    $colunas[] = 'bairro';
     $titulosColunas[] = "Bairro";
     $largura[] = 25;
 }
 if (($_GET["cidade"]) == 'true') {
     $camposExtra .= ", c.nome as cidade";
     $titulosColunas[] = "Cidade";
-    $colunas[] = 'cidade';    
+    $colunas[] = 'cidade';
     $largura[] = 25;
 }
 if (($_GET["telefone"]) == 'true') {
     $camposExtra .= ", a.telefone";
-    $colunas[] = 'telefone';    
+    $colunas[] = 'telefone';
     $titulosColunas[] = "Telefone";
     $largura[] = 18;
 }
 if (($_GET["celular"]) == 'true') {
     $camposExtra .= ", a.celular";
-    $colunas[] = 'celular';    
+    $colunas[] = 'celular';
     $titulosColunas[] = "Celular";
     $largura[] = 18;
 }
 if (($_GET["email"]) == 'true') {
     $camposExtra .= ", a.email";
-    $colunas[] = 'email';    
+    $colunas[] = 'email';
     $titulosColunas[] = "Email";
     $largura[] = 40;
 }
 $largura[] = '';
 
 $params['aluno'] = $ALUNO;
-$sqlAdicional .= ' and ti.codigo=:aluno ';
+$sqlAdicional .= ' AND ti.codigo=:aluno ';
 
 $linha2 = $aluno->listAlunos($params, $sqlAdicional, $camposExtra);
 
 $titulo = "Relação de Alunos";
 $titulo2 = "";
 
-    $params['ano'] = $ANO;
-    $params['semestre'] = $SEMESTRE;
-    unset($params['aluno']);
-    unset($params['coord']);
-    
+$params['ano'] = $ANO;
+$params['semestre'] = $SEMESTRE;
+unset($params['aluno']);
+unset($params['coord']);
+unset($params['turno']);
+
 if ($curso && !$turma) {
     $sqlAdicional = ' AND c.codigo = :curso ';
     $res = $turmas->listTurmas($params, $sqlAdicional);
@@ -113,6 +120,15 @@ if ($curso && !$turma) {
     $res = $turmas->listTurmas($params, $sqlAdicional);
     $titulo = $res[0]['curso'];
     $titulo2 = $res[0]['numero'];
+}
+
+if ($turno) {
+    require CONTROLLER . '/turno.class.php';
+    $turnos = new Turnos();
+
+    $paramsTurno['codigo'] = $turno;
+    $turnoNome = $turnos->listRegistros($paramsTurno);
+    $titulo2 .= ' [' . $turnoNome[0]['nome'] . ']';
 }
 
 $rodape = $SITE_TITLE;

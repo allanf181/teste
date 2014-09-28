@@ -28,7 +28,24 @@ $op = 0;
 
 if ($turma = dcrip($_GET["turma"])) {
     $params['turma'] = $turma;
-    $sqlAdicional = ' AND t.codigo =:turma GROUP BY p.codigo ';
+    $sqlAdicional = ' AND t.codigo =:turma ';
+
+    if (dcrip($_GET["turno"])) {
+        $turno = dcrip($_GET["turno"]);
+        $params['turno'] = $turno;
+        $sqlAdicional .= ' AND a.periodo = :turno ';
+    }
+
+    $sqlAdicional .= ' GROUP BY p.codigo ';
+
+    if ($turno) {
+        require CONTROLLER . '/turno.class.php';
+        $turnos = new Turnos();
+
+        $paramsTurno['codigo'] = $turno;
+        $turnoNome = $turnos->listRegistros($paramsTurno);
+        $titulo2 .= ' [' . $turnoNome[0]['nome'] . ']';
+    }
 
     foreach ($matricula->getMatriculas($params, $sqlAdicional) as $reg) {
         if ($pag > 14 || $pag == 0) {
@@ -40,7 +57,7 @@ if ($turma = dcrip($_GET["turma"])) {
             $pdf->Ln();
             $pdf->Cell(190, 8, utf8_decode('C A R Ô M E T R O'), 0, 0, 'C', 1);
             $pdf->Ln();
-            $pdf->Cell(190, 8, utf8_decode("TURMA: " . $reg['numero']), 1, 0, 'C', 1);
+            $pdf->Cell(190, 8, utf8_decode("TURMA: " . $reg['numero'] . $titulo2), 1, 0, 'C', 1);
             $pdf->Ln();
             $pdf->Ln();
             $pdf->SetFont($fonte, '', 8);
@@ -76,10 +93,10 @@ if ($turma = dcrip($_GET["turma"])) {
         }
         $R = 30 + $i;
         $T = 34 + $j;
-        
+
         $paramsPessoa = array('codigo' => $reg['codPessoa']);
         $res = $pessoa->listRegistros($paramsPessoa);
-    
+
         if ($foto = $res[0]['foto'])
             $pdf->MemImage($foto, $R, $T, 25, 30);
         $i = $i + 61;

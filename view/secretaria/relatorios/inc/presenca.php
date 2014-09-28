@@ -12,28 +12,34 @@ $data = $_GET["data"];
 if (dcrip($_GET["turma"])) {
     $turma = dcrip($_GET["turma"]);
     $params['turma'] = $turma;
-    $sqlAdicional .= ' AND t.codigo = :turma GROUP BY p.codigo ORDER BY p.nome';
+    $sqlAdicional .= ' AND t.codigo = :turma ';
 
-$linha2 = $matricula->getMatriculas($params, $sqlAdicional);
+    if (dcrip($_GET["turno"])) {
+        $turno = dcrip($_GET["turno"]);
+        $params['turno'] = $turno;
+        $sqlAdicional .= ' AND a.periodo = :turno ';
+    }
 
-$titulo = "Lista de Presença [".$linha2[0]['turma']."] - $data";
-$titulo2 = "Assunto:";
-$rodape = $SITE_TITLE;
+    $sqlAdicional .= ' GROUP BY p.codigo ORDER BY p.nome';
 
-$fonte = 'Times';
-$tamanho = 10;
-$alturaLinha = 10;
+    $linha2 = $matricula->getMatriculas($params, $sqlAdicional);
+
+    $titulo = "Lista de Presença [" . $linha2[0]['turma'] . "] - $data";
+    $titulo2 = "Assunto:";
+    $rodape = $SITE_TITLE;
+
+    $fonte = 'Times';
+    $tamanho = 10;
+    $alturaLinha = 10;
 //$orientacao = "L"; //Landscape
-$orientacao = "P"; //Portrait
-$papel = "A4";
-$titulosColunas = array("Prontuário", "Nome", "Assinatura");
-$colunas = array("prontuario", "pessoa", "");
-$largura = array(20, 120, 0);
+    $orientacao = "P"; //Portrait
+    $papel = "A4";
+    $titulosColunas = array("Prontuário", "Nome", "Assinatura");
+    $colunas = array("prontuario", "pessoa", "");
+    $largura = array(20, 120, 0);
 
 // gera o relatório em PDF
-include PATH . LIB . '/relatorio_banco.php';
-
+    include PATH . LIB . '/relatorio_banco.php';
 } else
     print "SELECIONE UMA TURMA.";
-
 ?>

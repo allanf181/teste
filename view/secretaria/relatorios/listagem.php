@@ -54,21 +54,21 @@ if (isset($_GET["bimestre"]))
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
-$tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2);
+$tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2, 'turno' => 1);
 $tipo['atendimento'] = array('nome' => 'Atendimento');
 $tipo['boletim'] = array('nome' => 'Boletim Individual', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
 $tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' => 1, 'fechamento' => 1, 'turno' => 1);
-$tipo['carometro'] = array('nome' => 'Carômetro', 'curso' => 1, 'turma' => 1);
+$tipo['carometro'] = array('nome' => 'Carômetro', 'curso' => 1, 'turma' => 1, 'turno' => 1);
 $tipo['diario'] = array('nome' => 'Diário', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['disciplinas'] = array('nome' => 'Disciplinas do Curso', 'curso' => 2);
 $tipo['docente'] = array('nome' => 'Atribuição Docente', 'curso' => 2, 'turma' => 1);
 $tipo['lancamentos'] = array('nome' => 'Lançamento de Aulas', 'curso' => 2);
 $tipo['chamada'] = array('nome' => 'Lista de Chamada', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
-$tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'data' => 1);
+$tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'turno' => 1, 'data' => 1);
 $tipo['planoEnsino'] = array('nome' => 'Planos de Ensino', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['frequencia'] = array('nome' => 'Relatório de Frequências', 'curso' => 1, 'turma' => 1, 'disciplina' => 2, 'data' => 1);
-$tipo['matriculas'] = array('nome' => 'Lista de Matrículas', 'curso' => 2, 'turma' => 1, 'situacao' => 1);
-$tipo['matriculasTotais'] = array('nome' => 'Totalização de Matrículas', 'curso' => 2, 'turma' => 1, 'situacao' => 1);
+$tipo['matriculas'] = array('nome' => 'Lista de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
+$tipo['matriculasTotais'] = array('nome' => 'Totalização de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
 $tipo['ftdr'] = array('nome' => 'FTD Resumida', 'professor' => 1);
 $tipo['ftdd'] = array('nome' => 'FTD Detalhada', 'professor' => 1);
 
@@ -217,7 +217,7 @@ $rel_data = null;
                         $selected = "";
                         if ($reg['atribuicao'] == $disciplina)
                             $selected = "selected";
-                        print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['disciplina'] . $reg['bimestre'] . $reg['subturma'] ."</option>";
+                        print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['disciplina'] . $reg['bimestre'] . $reg['subturma'] ." [".$reg['turno']."]</option>";
                     }
                     ?>
                 </select>
@@ -391,7 +391,7 @@ $rel_data = null;
                     + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor +
                     '&email=' + email + '&detalhada=' + det, '_blank');
         else
-            window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma, '_blank');
+            window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno, '_blank');
     }
 
 </script>
