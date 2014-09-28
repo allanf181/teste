@@ -155,9 +155,9 @@ require PATH . VIEW . '/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?php print $cdif; ?>>
-            <td><?php print $reg['numero']; ?></td>
+            <td><?= $reg['numero'] ?></td>
             <td>
-                <a title='Abrir Di&aacute;rio' target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= $reg['disciplina'] ?> <?= $reg['bimestre'] ?></a>
+                <a title='Abrir Di&aacute;rio' target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= $reg['disciplina'] ?> <?= $reg['bimestre'] ?> [<?= $reg['turno'] ?>]</a>
             </td>
             <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
             <td align=left><?= $reg['turma'] ?></td>

@@ -188,7 +188,7 @@ if (!empty($curso)) {
                 <tr <?= $cdif ?> style='height: 40px'>
                     <td align='center'><?= $i ?></td>
                     <td>
-                        <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title="<?= $reg['disciplina'] ?><br>Clique aqui para ver o plano."><?= mostraTexto($reg['numero']) ?></a>
+                        <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title="<?= $reg['disciplina'] ?><br>Clique aqui para ver o plano."><?= mostraTexto($reg['numero']) ?> [<?=$reg['turno']?>]</a>
                     </td>
                     <td align='left'>
                         <?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?>

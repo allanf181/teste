@@ -114,7 +114,7 @@ if (dcrip($_GET["nome"])) {
                             $selected = "";
                             if ($reg['atribuicao'] == $atribuicao)
                                 $selected = "selected";
-                            print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['bimestreFormat'] .' '. $reg['disciplina'] . $reg['subturma'] . "</option>";
+                            print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['bimestreFormat'] .' '. $reg['disciplina'] . $reg['subturma'] . " [".$reg['turno']."]</option>";
                         }
                         ?>
                     </select>

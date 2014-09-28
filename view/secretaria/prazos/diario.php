@@ -176,7 +176,7 @@ if (!empty($curso)) {
                 <tr <?= $cdif ?>>
                     <td align='center'><?= $i ?></td>
                     <td>
-                        <a title='Abrir Di&aacute;rio' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= mostraTexto($reg['disciplina']).$reg['bimestre'].$reg['subturma'] ?></a>
+                        <a title='Abrir Di&aacute;rio' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= mostraTexto($reg['disciplina']).$reg['bimestre'].$reg['subturma'] ?> [<?=$reg['turno']?>]</a>
                     </td>
                     <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
                     <td align=left><?= $reg['turma'] ?></td>
