@@ -13,7 +13,7 @@ class Cursos extends Generic {
         $bd = new database();
 
         $sql = "SELECT CONCAT('C:', c.codigo) as id,
-                        CONCAT(IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome), '[', m.nome, ']') as name 
+                        IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as name 
                		FROM Cursos c, Modalidades m, Turmas t 
                		WHERE c.modalidade = m.codigo 
                         AND c.codigo = t.curso
