@@ -150,7 +150,6 @@ require PATH . VIEW . '/paginacao.php';
 
         $('#select-all').click(function(event) {
             if (this.checked) {
-                // Iterate each checkbox
                 $(':checkbox').each(function() {
                     this.checked = true;
                 });

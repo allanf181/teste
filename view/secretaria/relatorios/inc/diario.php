@@ -45,6 +45,7 @@ include PATH . LIB . '/fpdf17/pdfDiario.php';
 $res = $att->getAtribuicao($atribuicao);
 $numeroTurma = $res['numeroDisciplina'] . ' ' . $res['turma'] . ' ' . $res['subturma'];
 $numeroDisciplina = $res['numero'];
+$ano = $res['ano'];
 $semestre = $res['semestre'] . " SEMESTRE";
 $disciplina = $res['disciplina'];
 $bimestre = $res['bimestre'];
@@ -67,13 +68,8 @@ if (!$res) {
 
 $professor = $prof->getProfessor($atribuicao, '', 0, 0);
 
-$CAMPO_ESTATICO = 7;
-
 $avaliacoes = $aval->getQdeAvaliacoes($params, " AND t.tipo <> 'recuperacao' ");
 $qde_avaliacao = $avaliacoes['avalCadastradas'];
-
-$totalDias = 80 - $qde_avaliacao - $CAMPO_ESTATICO;
-$REG2[] = '';
 
 $pdf = new PDF ();
 
@@ -134,11 +130,22 @@ function cabecalho() {
 
     // 3ª LINHA
     global $aula, $qde_avaliacao, $atribuicao, $totalDias, $aulas;
+ 
+    $aulas = $aula->listAulasProfessor($atribuicao, 'ORDER BY data ASC');
+    // imprime o MES
+    foreach ($aulas as $reg) {
+        if ($mes = $reg['mes']) {
+            $quantidade = $reg['quantidade'];
+            if ($quantidade <= 2)
+                $quantidade = 3;
 
-    $quantidadeTotal = $aula->countQdeAulas($atribuicao);
-
-    $totalDias = intval((293 - $quantidadeTotal) / 4);
-    $totalDias -= $qde_avaliacao * 2;
+            $quantidades += $quantidade;
+        }
+    }
+    
+    $quantidadeTotal = $quantidades;
+    $totalDias = intval((295 - $quantidadeTotal) / 4);
+    $totalDias -= $qde_avaliacao * 3;
     $M = ($totalDias * 4) + $quantidadeTotal - 4;
     $N = (12) + ($qde_avaliacao * 4);
 
@@ -159,15 +166,15 @@ function cabecalho() {
 
     $pdf->SetFont($fonte, '', $tamanho - 2);
 
-    $aulas = $aula->listAulasProfessor($atribuicao, 'ORDER BY data ASC');
     // imprime o MES
     foreach ($aulas as $reg) {
-        $mes = $reg['mes'];
-        $quantidade = $reg['quantidade'];
-        if ($quantidade <= 2)
-            $quantidade = 3;
+        if ($mes = $reg['mes']) {
+            $quantidade = $reg['quantidade'];
+            if ($quantidade <= 2)
+                $quantidade = 3;
 
-        $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$mes"), 1, 0, 'C', true);
+            $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$mes"), 1, 0, 'C', true);
+        }
     }
 
     // completa quadros
@@ -193,12 +200,13 @@ function cabecalho() {
     // imprime o dia
     $pdf->SetFont($fonte, '', $tamanho - 2);
     foreach ($aulas as $reg) {
-        $dia = $reg['dia'];
-        $quantidade = $reg['quantidade'];
-        if ($quantidade <= 2)
-            $quantidade = 3;
+        if ($dia = $reg['dia']) {
+            $quantidade = $reg['quantidade'];
+            if ($quantidade <= 2)
+                $quantidade = 3;
 
-        $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$dia"), 1, 0, 'C', true);
+            $pdf->Cell($quantidade, $alturaLinha, utf8_decode("$dia"), 1, 0, 'C', true);
+        }
     }
 
     // completa quadros
@@ -278,7 +286,9 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
             $params = array(':aluno' => $aluno, ':atribuicao' => $atribuicao);
             // Verificar Avalicao do Aluno
             foreach ($aval->listAvaliacoesAluno($params) as $reg) {
-                $pdf->Cell($larguraDia, $alturaLinha, $reg['nota'], 1, 0, 'C', true);
+                if ($reg['nome']) {
+                    $pdf->Cell($larguraDia, $alturaLinha, $reg['nota'], 1, 0, 'C', true);
+                }
             }
 
             for ($t = $j; $t < $qde_avaliacao; $t++)
@@ -348,7 +358,7 @@ $comp = explode("\n", wordwrap($competencias, $limit2));
 
 $k = 0;
 $j = 0;
-foreach($aulas as $reg) {
+foreach ($aulas as $reg) {
     $dias = null;
     $aulasDadas = null;
     $conteudo = $reg['conteudo'];

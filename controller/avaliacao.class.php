@@ -87,7 +87,7 @@ class Avaliacoes extends Generic {
                         FROM Avaliacoes av, TiposAvaliacoes t1 
                         WHERE av.tipo = t1.codigo 
                         AND av.atribuicao = a.codigo 
-                        AND t1.tipo = 'avaliacao') as avalCadastradas,
+                        AND t1.tipo <> 'recuperacao') as avalCadastradas,
     		t.qdeMinima as qdeMinima
 		FROM TiposAvaliacoes t, Modalidades m, Turmas tu, Cursos c, Atribuicoes a
 		WHERE t.modalidade = m.codigo
