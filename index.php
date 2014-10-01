@@ -113,10 +113,8 @@ if ($_SERVER["PHP_SELF"] != LOCATION."/index.php") {
     header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
 }
 
-//VERIFICANDO SE AS BIBLIOTECAS NECESSÁRIAS
-//FORAM INSTALADAS
-$extensions = array ('gd', 'curl', 'ibm_db2');
-foreach ($extensions as $ext) {
+//VERIFICANDO SE AS BIBLIOTECAS NECESSÁRIAS FORAM INSTALADAS
+foreach ($EXTENSIONS as $ext) {
     if (!extension_loaded($ext)) {
 	print "<center><font size=\"2\" color=\"red\">Aten&ccedil;&atilde;o, a biblioteca: $ext (PHP) não foi instalada.</b></font></center>";
     }

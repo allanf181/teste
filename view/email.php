@@ -30,10 +30,10 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
         $headers .= "From: ".$_POST['email']." \n";
         $headers .= "Return-Path: ".$_POST['email']." \n";
         
-        $mensagem = '<br />NOME: '.$_POST['nome'];
-        $mensagem .= '<br />E-MAIL: '.$_POST['email'];
-        $mensagem .= '<br />CAMPUS: '.$SITE_CIDADE;
-        $mensagem .= '<br /><br />MENSAGEM: <br>'.$_POST['conteudo'];
+        $mensagem = '<br />NOME: '.utf8_decode($_POST['nome']);
+        $mensagem .= '<br />E-MAIL: '.utf8_decode($_POST['email']);
+        $mensagem .= '<br />CAMPUS: '.utf8_decode($SITE_CIDADE);
+        $mensagem .= '<br /><br />MENSAGEM: <br>'.utf8_decode($_POST['conteudo']);
        
         $email = array( 'webdiario@ifsp.edu.br', 'naylorgarcia@ifsp.edu.br');
         
@@ -60,7 +60,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
                 <td colspan="2">
                     <strong>Ol&aacute;, utilize esse canal para enviar sugest&otilde;es ou reportar problemas.</strong>
                     <br />
-                    <strong>Tentaremos responder o mais breve poss&iacute;vel.</strong>
+                    <strong>Caso necess&aacute;rio, tentaremos responder o mais breve poss&iacute;vel.</strong>
                 </td>
             </tr>
             <tr><td>&nbsp;</td><td align="right"><a href="javascript:$('#index').load('home.php'); void(0);">VOLTAR</a></td></tr>

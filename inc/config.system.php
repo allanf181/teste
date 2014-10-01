@@ -39,6 +39,13 @@ $_SESSION['CONFIG'] = PATH.INC.'/config.inc.php';
 // ================================= //
 
 //=======================================//
+//        REQUISITOS DO SISTEMA          //
+//=======================================//
+$EXTENSIONS[] = 'gd';
+$EXTENSIONS[] = 'curl';
+$EXTENSIONS[] = 'ibm_db2';
+
+//=======================================//
 //           VARIAVEIS GLOBAIS           //
 //=======================================//
 // Diretório de Views
