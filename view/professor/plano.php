@@ -174,6 +174,7 @@ if ($_GET['pagina'] == "planoEnsino") {
         // consulta no banco
         $res = $planoEnsino->listPlanoEnsino($params, $sqlAdicional);
         extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
+        $rfTitle = $planoEnsino->getTipoRecuperacao(dcrip($_GET["atribuicao"]));
     }
 
     $disabled = '';
@@ -241,7 +242,7 @@ if ($_GET['pagina'] == "planoEnsino") {
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recuperacaoParalela' name='recuperacaoParalela'><?= $recuperacaoParalela; ?></textarea>
                 </tr>  
                 <tr>
-                    <td align="left"><?= $rfTitle ?></td>
+                    <td align="left"><?= $rfTitle ?>:</td>
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='recuperacaoFinal' name='recuperacaoFinal'><?= $recuperacaoFinal; ?></textarea>
                 </tr>
                 <tr>

@@ -9,6 +9,30 @@ class PlanosEnsino extends Generic {
         //
     }
 
+    // USADO POR: PROFESSOR/PLANO.PHP, RELATORIOS/PLANO.PHP
+    public function getTipoRecuperacao($atribuicao) {
+        $bd = new database();
+        $sql = "SELECT IF(m.codigo=1001 OR
+                        m.codigo=1003 OR 
+                        m.codigo < 1001, '7.2 - Reavaliação Final', 
+                        '7.2 - Instrumento Final de Avaliação' )
+                    as rfTitle
+                FROM Atribuicoes a, Modalidades m, Turmas t, Cursos c
+                WHERE a.turma = t.codigo
+                AND t.curso = c.codigo
+                AND c.modalidade = m.codigo
+                AND a.codigo = :cod";
+
+        $params = array(':cod' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res[0]['rfTitle']) {
+            return $res[0]['rfTitle'];
+        } else {
+            return false;
+        }
+    } 
+    
     // USADO POR: ALUNO/PLANOENSINO.PHP, PROFESSOR/PLANO.PHP,
     // HOME.PHP, SECRETARIA/PLANO.PHP
     // LISTA O PLANO DE ENSINO E PLANO DE AULA
@@ -26,10 +50,7 @@ class PlanosEnsino extends Generic {
                 pe.metodologia as metodologia,pe.solicitacao,pe.finalizado,
                 pe.recursoDidatico as recursoDidatico, pe.avaliacao as avaliacao,
                 pe.recuperacaoParalela as recuperacaoParalela, pe.recuperacaoFinal as recuperacaoFinal,
-                IF(m.codigo=1001 OR
-                   m.codigo=1003 OR 
-                   m.codigo < 1001, '7.2 - Reavaliação Final', '7.2 - Instrumento Final de Avaliação' )
-                as rfTitle,IF(LENGTH(a.subturma) > 0,CONCAT(' [',a.subturma,']'),CONCAT(' [',a.eventod,']')) as subturma, 
+                IF(LENGTH(a.subturma) > 0,CONCAT(' [',a.subturma,']'),CONCAT(' [',a.eventod,']')) as subturma, 
 		pe.bibliografiaBasica as bibliografiaBasica,
                 pe.bibliografiaComplementar as bibliografiaComplementar,
                 date_format(pe.valido, '%d/%m/%Y %H:%i') as valido,

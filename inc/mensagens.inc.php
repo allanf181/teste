@@ -28,7 +28,11 @@ $QUESTION_DIARIO2.= "O n&uacute;mero de aulas do di&aacute;rio est&aacute; compl
 $QUESTION_DIARIO2.="<br>Deseja finalizar a digita&ccedil;&atilde;o do di&aacute;rio e efetuar a entrega &agrave; secretaria? <br /> <br />";
 $QUESTION_DIARIO2.="Atenção: o seu diário será bloqueado e somente o coordenador poderá desfazer esta operação.";
 $QUESTION_DIARIO2.="<br /><br />Aten&ccedil;&atilde;o: o di&aacute;rio ser&aacute; finalizado somente se todas as avalia&ccedil;&otilde;es forem aplicadas e todas as notas digitadas.";
-            
+
+$QUESTION_DIARIO3.="<br>Deseja finalizar a digita&ccedil;&atilde;o do di&aacute;rio e efetuar a entrega &agrave; secretaria? <br /> <br />";
+$QUESTION_DIARIO3.="Atenção: o seu diário será bloqueado e somente o coordenador poderá desfazer esta operação.";
+$QUESTION_DIARIO3.="<br /><br />Aten&ccedil;&atilde;o: o di&aacute;rio ser&aacute; finalizado somente se todas as avalia&ccedil;&otilde;es forem aplicadas e todas as notas digitadas.";
+
 function mensagem($TIPO, $MSG, $OPT = null) {
 
     $OK_DELETE = 'Registros deletados: ' . $OPT;

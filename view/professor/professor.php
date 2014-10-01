@@ -224,11 +224,11 @@ if ($_GET["atribuicao"]) {
 ?>
 
 <script>
-<?php if ($pergunta && !$erro) print "pergunta();" ?>
+<?php if ($pergunta && !$erro) print "pergunta('$pergunta');" ?>
 
     $(document).ready(function() {
         $(".finalizar").click(function() {
-            pergunta();
+            pergunta('<?=$QUESTION_DIARIO3?>');
         });
     });
 
@@ -245,8 +245,8 @@ if ($_GET["atribuicao"]) {
         });
     });
 
-    function pergunta() {
-        $.Zebra_Dialog('<strong><?= $pergunta ?></strong>', {
+    function pergunta(texto) {
+        $.Zebra_Dialog('<strong>' + texto + '</strong>', {
             'type': 'question',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],

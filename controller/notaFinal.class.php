@@ -35,7 +35,7 @@ class NotasFinais extends Notas {
                 $params2['ncc'] = $dados['media'];
                 $params2['falta'] = $dados['faltas'];
 
-                if (!$dados['situacao']) {
+                if ($dados['siglaSituacao'] != 'IFA' && $dados['siglaSituacao'] != 'REF' ) {
 
                     $sql1 = "SELECT codigo FROM NotasFinais WHERE atribuicao = :cod 
     			AND matricula = :mat

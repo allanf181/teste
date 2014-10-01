@@ -21,6 +21,8 @@ if (dcrip($_GET["atribuicao"])) {
 
     include PATH . LIB . '/fpdf17/pdfDiario.php';
 
+    $rfTitle = $planoEnsino->getTipoRecuperacao($atribuicao);
+            
     foreach ($planoEnsino->listPlanoEnsino($params, $sqlAdicional) as $reg) {
         $numeroAulaSemanal = $reg['numeroAulaSemanal'];
         $totalHoras = $reg['totalHoras'];
@@ -33,7 +35,7 @@ if (dcrip($_GET["atribuicao"])) {
         $ITEM['6 - RECURSOS DIDÁTICOS'] = $reg['recursoDidatico'];
         $ITEM['7 - AVALIAÇÃO'] = $reg['avaliacao'];
         $ITEM['7.1 - RECUPERAÇÃO PARALELA'] = $reg['recuperacaoParalela'];
-        $ITEM[$reg['rfTitle']] = $reg["recuperacaoFinal"];
+        $ITEM[mb_strtoupper($rfTitle, 'UTF-8')] = $reg["recuperacaoFinal"];
         $ITEM['8 - BIBLIOGRAFIA BÁSICA'] = $reg['bibliografiaBasica'];
         $ITEM['8.1 - BIBLIOGRAFIA COMPLEMENTAR'] = $reg['bibliografiaComplementar'];
         $disciplina = $reg['disciplina'];
