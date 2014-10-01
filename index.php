@@ -333,7 +333,7 @@ if (isset($_SESSION["loginTipo"])) {
 
 <script>
     function time_over() {
-        $.Zebra_Dialog('<strong>Professor, sua sessão vai expirar em <div id="sessaoTimeOver"></div></strong>', {
+        $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, sua sess&atilde;o vai expirar em <div id="sessaoTimeOver"></div></strong>', {
             'type': 'question',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
