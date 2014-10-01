@@ -169,7 +169,7 @@ if ($turma && $fechamento) {
     }
     ?>
     <br />
-    <table id='table'>
+    <table id='table' style="background: #E3F0E6;">
         <colgroup class="noslim"></colgroup>
         <colgroup class="noslim"></colgroup>
         <?php
