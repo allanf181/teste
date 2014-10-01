@@ -1,5 +1,4 @@
 <?php
-
 // SETANDO O ANO E SEMESTRE ATUAL.
 if (empty($_SESSION["ano"]) || empty($_SESSION["semestre"])) {
     $_SESSION["ano"] = date('Y');
@@ -41,8 +40,4 @@ if ($res = $instituicao->listRegistros()) {
     $LDAP_CACHE = $res[0]['ldap_cache'];
     $EMAIL = $res[0]['email_account'];
 }
-
-// PARA MIGRAÃ‡ÃƒO
-//$BD1 = "brtacademico";
-//$BD2 = "academico";
 ?>

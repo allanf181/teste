@@ -113,14 +113,13 @@ if ($_SERVER["PHP_SELF"] != LOCATION."/index.php") {
     header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
 }
 
-// Verifica se a extensão GD está instalada no sistema.
-if (!extension_loaded('gd')) {
-	print "<center><br><br><font size=\"2\" color=\"red\">Aten&ccedil;&atilde;o: a biblioteca GD (PHP) não foi instalada.</b></font></center>";
-}
-
-// Verifica se a extensão do DB2 está instalada no sistema.
-if (!extension_loaded('ibm_db2')) {
-	print "<center><br><br><font size=\"2\" color=\"red\">Aten&ccedil;&atilde;o: a biblioteca IBM_DB2 (PHP) não foi instalada.</b></font></center>";
+//VERIFICANDO SE AS BIBLIOTECAS NECESSÁRIAS
+//FORAM INSTALADAS
+$extensions = array ('gd', 'curl', 'ibm_db2');
+foreach ($extensions as $ext) {
+    if (!extension_loaded($ext)) {
+	print "<center><font size=\"2\" color=\"red\">Aten&ccedil;&atilde;o, a biblioteca: $ext (PHP) não foi instalada.</b></font></center>";
+    }
 }
 
 $prontuario = (isset($_SESSION["loginProntuario"])) ? $_SESSION["loginProntuario"] : null;
