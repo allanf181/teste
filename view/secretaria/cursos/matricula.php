@@ -114,7 +114,7 @@ if (dcrip($_GET["nome"])) {
                             $selected = "";
                             if ($reg['atribuicao'] == $atribuicao)
                                 $selected = "selected";
-                            print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['bimestreFormat'] .' '. $reg['disciplina'] . $reg['subturma'] . " [".$reg['turno']."]</option>";
+                            print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['bimestreFormat'] . ' ' . $reg['disciplina'] . $reg['subturma'] . " [" . $reg['turno'] . "]</option>";
                         }
                         ?>
                     </select>
@@ -197,71 +197,68 @@ if (dcrip($_GET["nome"])) {
 <br />
 
 <?php
+if ($turma) {
 // PAGINACAO
-$itensPorPagina = 20;
-$item = 1;
+    $itensPorPagina = 20;
+    $item = 1;
 
-if (isset($_GET['item']))
-    $item = $_GET["item"];
+    if (isset($_GET['item']))
+        $item = $_GET["item"];
 
-if (!$turma) {
-    $params['ano'] = $ANO;
-    $params['semestre'] = $SEMESTRE;
-    $sqlAdicional .= ' AND  t.ano=:ano AND
-                ( (a.bimestre=0 AND (t.semestre=:semestre OR t.semestre=0)) OR (a.bimestre=:semestre)) ';
-}
+    $sqlAdicional .= ' ORDER BY p.nome ';
+    $res = $matricula->getMatriculas($params, $sqlAdicional, $item, $itensPorPagina);
+    $totalRegistros = count($matricula->getMatriculas($params, $sqlAdicional, null, null));
 
-$sqlAdicional .= ' ORDER BY p.nome ';
-$res = $matricula->getMatriculas($params, $sqlAdicional, $item, $itensPorPagina);
-$totalRegistros = count($matricula->getMatriculas($params, $sqlAdicional, null, null));
+    $params['prontuario'] = crip($params['prontuario']);
+    $params['turma'] = crip($params['turma']);
+    $params['atribuicao'] = crip($params['atribuicao']);
+    $params['nome'] = $_GET['nome'];
+    $SITENAV = $SITE . "?" . mapURL($params);
 
-$params['prontuario'] = crip($params['prontuario']);
-$params['turma'] = crip($params['turma']);
-$params['atribuicao'] = crip($params['atribuicao']);
-$params['nome'] = $_GET['nome'];
-$SITENAV = $SITE . "?" . mapURL($params);
-
-require PATH . VIEW . '/paginacao.php';
-?>
-
-<table id="listagem" border="0" align="center">
-    <tr>
-        <th align="center" width="100">Prontu&aacute;rio</th>
-        <th align="left">Aluno</th>
-        <th>Disciplina</th>
-        <th>Situa&ccedil;&atilde;o</th>
-        <th>Data</th>
-        <th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
-            <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a>
-        </th>    </tr>
-    <?php
-    // efetuando a consulta para listagem
-    foreach ($res as $reg) {
-        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-        if ($reg['dataFim'] && $reg['dataFim'] != '00/00/0000')
-            $reg['dataInicio'] = $reg['dataInicio'] . ' a ' . $reg['dataFim'];
-        ?>
-        <tr <?php print $cdif; ?>>        
-            <td align='left'><?= $reg['prontuario'] ?></td>
-            <td><?= mostraTexto($reg['pessoa']) ?></td>
-            <td align='left'>
-                <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title='<?= $professor->getProfessor($reg['atribuicao'], '', 0, 0) ?>'><?= $reg['bimestreFormat'] . ' ' . $reg['disciplina'] . ' [' . $reg['numero'] . ']' ?></a>
-            </td>
-            <td align='left'><?= mostraTexto($reg['situacao']) ?></td>
-            <td align='left'><?= $reg['data'] ?></td>
-            <td align='center'>
-                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['matricula']) ?>' />
-                <a href='#' class='item-atestado' id='<?= crip($reg['matricula']) ?>' title='Atestado'>
-                    <img class='botao' src='<?= ICONS ?>/icon-printer.gif' />
-                </a>
-            </td>
-        </tr>
-        <?php
-        $i++;
-    }
+    require PATH . VIEW . '/paginacao.php';
     ?>
 
-</table>
+    <table id="listagem" border="0" align="center">
+        <tr>
+            <th align="center" width="100">Prontu&aacute;rio</th>
+            <th align="left">Aluno</th>
+            <th>Disciplina</th>
+            <th>Situa&ccedil;&atilde;o</th>
+            <th>Data</th>
+            <th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
+                <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a>
+            </th>    </tr>
+        <?php
+        // efetuando a consulta para listagem
+        foreach ($res as $reg) {
+            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+            if ($reg['dataFim'] && $reg['dataFim'] != '00/00/0000')
+                $reg['dataInicio'] = $reg['dataInicio'] . ' a ' . $reg['dataFim'];
+            ?>
+            <tr <?php print $cdif; ?>>        
+                <td align='left'><?= $reg['prontuario'] ?></td>
+                <td><?= mostraTexto($reg['pessoa']) ?></td>
+                <td align='left'>
+                    <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title='<?= $professor->getProfessor($reg['atribuicao'], '', 0, 0) ?>'><?= $reg['bimestreFormat'] . ' ' . $reg['disciplina'] . ' [' . $reg['numero'] . ']' ?></a>
+                </td>
+                <td align='left'><?= mostraTexto($reg['situacao']) ?></td>
+                <td align='left'><?= $reg['data'] ?></td>
+                <td align='center'>
+                    <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['matricula']) ?>' />
+                    <a href='#' class='item-atestado' id='<?= crip($reg['matricula']) ?>' title='Atestado'>
+                        <img class='botao' src='<?= ICONS ?>/icon-printer.gif' />
+                    </a>
+                </td>
+            </tr>
+            <?php
+            $i++;
+        }
+        ?>
+
+    </table>
+    <?php
+}
+?>
 
 <script>
     function atualizarMatricula(getLink) {
@@ -276,21 +273,21 @@ require PATH . VIEW . '/paginacao.php';
             return URLS;
     }
 
-    $(document).ready(function() {
-        $(".item-atestado").click(function() {
+    $(document).ready(function () {
+        $(".item-atestado").click(function () {
             var codigo = $(this).attr('id');
             window.open('<?= VIEW ?>/secretaria/relatorios/inc/atestadoMatricula.php?codigo=' + codigo + '&assinatura1=' + $('#campoAssinatura1').val() + '&assinatura2=' + $('#campoAssinatura2').val());
         });
 
-        $(".item-excluir").click(function() {
+        $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
-                'onClose': function(caption) {
+                'onClose': function (caption) {
                     if (caption == 'Sim') {
                         var selected = [];
-                        $('input:checkbox:checked').each(function() {
+                        $('input:checkbox:checked').each(function () {
                             selected.push($(this).val());
                         });
 
@@ -300,22 +297,22 @@ require PATH . VIEW . '/paginacao.php';
             });
         });
 
-        $('#setNome, #setProntuario').click(function() {
+        $('#setNome, #setProntuario').click(function () {
             $('#index').load(atualizarMatricula(1) + '&pesquisa=1');
         });
 
-        $('#atribuicao, #turma').change(function() {
+        $('#atribuicao, #turma').change(function () {
             atualizarMatricula();
         });
 
-        $('#select-all').click(function(event) {
+        $('#select-all').click(function (event) {
             if (this.checked) {
                 // Iterate each checkbox
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = true;
                 });
             } else {
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = false;
                 });
             }

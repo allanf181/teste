@@ -47,13 +47,13 @@ $avaliacao = new Avaliacoes();
         </div>
 
         <table id="tabela_alunos_cabecalho">
-            <tr class='cdif'><th>Turma</th><th>Curso</th>
-                <th style="width: 100px">M&eacute;dia Global</th>
-                <th style="width: 120px">Frequ&ecirc;ncia Global</th>
-
-            <tr><td><?= $res[0]['turma'] ?></td><td><?= $res[0]['curso'] ?></td>
-                <td align="center"><?= $resultadoGlobal['mediaGlobal'] ?></td>
-                <td align="center"><?= arredondar($resultadoGlobal['frequenciaGlobal']) ?>%</td>
+            <tr class='cdif'>
+                <th>Turma</th>
+                <th>Curso</th>
+            </tr>
+            <tr>
+                <td><?= $res[0]['turma'] ?></td>
+                <td><?= $res[0]['curso'] ?></td>
             </tr>
         </table>
         <br />
