@@ -143,7 +143,8 @@ if (isset($nome)) {
     <?php
 
     if (!in_array($ALUNO, $_SESSION["loginTipo"]) &&
-        ( !in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"]) ) ) {
+        ( !in_array($PROFESSOR, $_SESSION["loginTipo"]) ||
+        (in_array($PROFESSOR, $_SESSION["loginTipo"]) && count($_SESSION["loginTipo"]) > 1)  ) ) {
     ?>
         <div id='ano_semestre'>
         <span style="color: white">Ano:<input type="text" maxlength="4" style="width: 50px" value="<?= $_SESSION['ano'] ?>" name="campoAnoIndex" id="campoAnoIndex" /></span>

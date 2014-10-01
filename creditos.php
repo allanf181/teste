@@ -60,6 +60,18 @@ require SESSAO;
 
 <br />
 <br />
+<b>Vers&atilde;o 1.414</b>
+<br>
+<br> - Corre&ccedil;&atilde;o do chamado - #196
+<br> - Corre&ccedil;&atilde;o do chamado - #195
+<br> - Corre&ccedil;&atilde;o do chamado - #194
+<br> - Corre&ccedil;&atilde;o do chamado - #193
+<br> - Corre&ccedil;&atilde;o do chamado - #190
+<br> - Corre&ccedil;&atilde;o do chamado - #189
+<br> - Corre&ccedil;&atilde;o do chamado - #179
+<br> - Adicionado aviso para bibliotecas não instaladas do PHP.
+<hr>
+<br>
 <b>Vers&atilde;o 1.413</b>
 <br>
 <br> - Adicionado recurso conforme chamado - #154
