@@ -23,6 +23,8 @@ if ($semestre == 2) {
     $res = db2_exec($conn, $db2);
     while ($row = db2_fetch_object($res)) {
         $row->NTA_DISC = trim($row->NTA_DISC);
+        $row->NTA_NOTA = str_replace(',', '.', $row->NTA_NOTA);
+        
         $sql = "SELECT p.prontuario as prontuario, a.codigo as atribuicao,
                         m.codigo as matricula, 
                         (SELECT codigo FROM NotasFinais n 

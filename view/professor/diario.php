@@ -38,6 +38,13 @@ extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
     <img src='<?=ICONS?>/icon-printer.gif'><h3>Clique aqui para imprimir o di&aacute;rio.</h3>
 </a>
 <br />
+<?php if (!$status) {
+    ?>
+    <font size='3' color='red'>Aten&ccedil;&atilde;o, finalizar o di&aacute;rio antes de imprimir a vers&atilde;o final.
+    <br />Somente ap&oacute;s a finaliza&ccedil;&atilde;o, a marca d'&aacute;gua deixar&aacute; de ser impressa.</font><br /><br />
+    <?php
+}
+?>
 <span>Professor, utilize os campos abaixo para inserir as compet&ecirc;ncias e observa&ccedil;&otilde;es no di&aacute;rio.</span>
 <script>
     $('#form_padrao').html5form({

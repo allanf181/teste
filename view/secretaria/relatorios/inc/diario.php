@@ -40,7 +40,8 @@ $largura = array(
 );
 $larguraDia = 4; // campos de dias
 
-include PATH . LIB . '/fpdf17/pdfDiario.php';
+
+include PATH . LIB . '/fpdf17/rotation.php';
 
 $res = $att->getAtribuicao($atribuicao);
 $numeroTurma = $res['numeroDisciplina'] . ' ' . $res['turma'] . ' ' . $res['subturma'];
@@ -54,6 +55,7 @@ $bimTexto = ($bimestre) ? " - $bimestre BIMESTRE - " : "";
 $calculo = $res['calculo'];
 $fechamento = $res['fechamento'];
 $curso = $res['curso'];
+$status = $res['status'];
 
 if ($fechamento == 'a')
     $bimestreEsemestre = 'ANUAL';
@@ -72,6 +74,10 @@ $avaliacoes = $aval->getQdeAvaliacoes($params, " AND t.tipo <> 'recuperacao' ");
 $qde_avaliacao = $avaliacoes['avalCadastradas'];
 
 $pdf = new PDF ();
+
+// MARCA D'ÁGUA
+if (!$status)
+    $pdf->setWaterText("ESSE DIARIO NAO FOI FINALIZADO", "DIARIO ABERTO");
 
 function cabecalho() {
     // Cabeçalho
@@ -253,7 +259,7 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
             $quantidadeTotal = 0;
             $resAula = $aula->listAulasAluno($aluno, $atribuicao, 'sigla');
             foreach ($resAula as $reg) {
-                $quantidade = $reg['quantidade'];
+                $quantidade = $reg['auladada'];
                 if ($quantidade <= 2)
                     $quantidade = 3;
                 $quantidadeTotal += $quantidade;
@@ -284,8 +290,9 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
 
 
             $params = array(':aluno' => $aluno, ':atribuicao' => $atribuicao);
+            $sqlAdicional = " AND ti.tipo <> 'recuperacao' ";
             // Verificar Avalicao do Aluno
-            foreach ($aval->listAvaliacoesAluno($params) as $reg) {
+            foreach ($aval->listAvaliacoesAluno($params, $sqlAdicional) as $reg) {
                 if ($reg['nome']) {
                     $pdf->Cell($larguraDia, $alturaLinha, $reg['nota'], 1, 0, 'C', true);
                 }
@@ -294,14 +301,13 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
             for ($t = $j; $t < $qde_avaliacao; $t++)
                 $pdf->Cell($larguraDia, $alturaLinha, '-', 1, 0, 'C', true);
 
-            $i++;
-
             $MEDIAS = $nota->resultado($matricula, $atribuicao);
 
-            // FECHAMENTO DE NOTAS E FALTAS
+            // FECHAMENTO DE NOTAS
             $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['mediaAvaliacao'], 1, 0, 'C', true);
             $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['notaRecuperacao'], 1, 0, 'C', true);
             $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['media'], 1, 0, 'C', true);
+            // FALTAS
             $pdf->Cell(8, $alturaLinha, $MEDIAS['faltas'], 1, 0, 'C', true);
         } else {
             $pdf->Cell((($totalDias * 4) + $quantidadeTotal) - 4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
@@ -309,6 +315,9 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
     } else {
         $pdf->Cell((($totalDias * 4) + $quantidadeTotal) - 4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
     }
+
+    $i++;
+
     // Pular linha
     $pdf->Ln();
 }
