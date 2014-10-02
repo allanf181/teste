@@ -277,6 +277,7 @@ if (!empty($curso)) {
         });
 
         function controle(botao) {
+            curso = $('#curso').val();
             turma = $('#turma').val();
             professor = $('#professor').val();
 
