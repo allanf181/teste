@@ -5,12 +5,6 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //0
 
-require '../inc/config.inc.php';
-require FUNCOES;
-require MENSAGENS;
-require VARIAVEIS;
-require SESSAO;
-
 // verifica se não está sendo chamado diretamente.
 if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
