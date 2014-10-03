@@ -5,13 +5,16 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //0
 
+require '../inc/config.inc.php';
+require FUNCOES;
+require MENSAGENS;
+require VARIAVEIS;
+require SESSAO;
+
 // verifica se não está sendo chamado diretamente.
 if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
 }
-
-// Guardando em sessão a chave randomica gerada para comparação do captcha.
-$_SESSION["cripto"] = genRandomString();
 
 if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
     if (isset($_SESSION['session_textoCaptcha']) && isset($_POST["captcha_r"]) && $_SESSION['session_textoCaptcha'] != $_POST["captcha_r"]) {
@@ -68,7 +71,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
             </tr>
             <tr>
                 <td align="right">Mensagem: </td>
-                <td><textarea maxlength="500" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"><?= $conteudo ?></textarea></td>
+                <td><textarea maxlength="500" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"></textarea></td>
             </tr>
             <tr>
                 <td>&nbsp;</td><td>Digite o c&oacute;digo da figura abaixo:</td>

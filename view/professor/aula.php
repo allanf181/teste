@@ -91,8 +91,8 @@ if ($_GET['opcao'] == 'insert') {
                 <tr><td align="right">Data: </td><td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?php echo $data; ?>" />
                         <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a></td></tr>
                 <tr><td align="right">Quantidade: </td><td><input style="width: 50px" <?php if ($codigo) print 'readonly'; ?> type="text" maxlength="4" id="quantidade" name="quantidade" value="<?php echo $quantidade; ?>" /></td></tr>
-                <tr><td align="right">Bases/Conhecimentos Desenvolvidos: </td><td><textarea maxlength="200" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"><?php echo $conteudo; ?></textarea></td></tr>
-                <tr><td align="right">Atividades: </td><td><textarea maxlength="200" rows="5" cols="80" id="atividade" name="atividade" style="width: 600px; height: 60px"><?php echo $atividade; ?></textarea></td></tr>
+                <tr><td align="right">Bases/Conhecimentos Desenvolvidos: </td><td><textarea maxlength="400" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"><?php echo $conteudo; ?></textarea></td></tr>
+                <tr><td align="right">Atividades: </td><td><textarea maxlength="400" rows="5" cols="80" id="atividade" name="atividade" style="width: 600px; height: 60px"><?php echo $atividade; ?></textarea></td></tr>
                 <tr><td align="right">Anota&ccedil;&atilde;o de Aula: </td><td><textarea maxlength="500" rows="5" cols="80" id="anotacao" name="anotacao" style="width: 600px; height: 60px"><?php echo $anotacao; ?></textarea></td></tr>
                 <tr><td align="right" colspan="2">A anota&ccedil;&atilde;o de aula n&atilde;o entra no di&aacute;rio, apenas o conte&uacute;do.</td></tr>
 
