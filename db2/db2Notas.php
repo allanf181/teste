@@ -1,10 +1,11 @@
 <?php
+
 if (!$LOCATION_CRON) {
-    require("$LOCATION_CRON"."db2Mysql.php");
-    require("$LOCATION_CRON"."db2.php");
-    require("$LOCATION_CRON"."db2Funcoes.php");
-    require("$LOCATION_CRON"."db2Variaveis.inc.php");
-    require("$LOCATION_CRON"."../inc/funcoes.inc.php");
+    require("$LOCATION_CRON" . "db2Mysql.php");
+    require("$LOCATION_CRON" . "db2.php");
+    require("$LOCATION_CRON" . "db2Funcoes.php");
+    require("$LOCATION_CRON" . "db2Variaveis.inc.php");
+    require("$LOCATION_CRON" . "../inc/funcoes.inc.php");
 }
 
 // FAZ UMA BUSCA POR TODOS OS ALUNOS
@@ -14,7 +15,8 @@ if (!$LOCATION_CRON) {
 // A TABELA É MUITO GRANDE.
 // SOMENTE 1 e 2 BIMESTRE DOS CURSOS ANTIGOS
 
-$i=0;
+$i = 0;
+$j = 0;
 if ($semestre == 2) {
     $db2 = "SELECT NTA_DISC, NTA_PRONT, NTA_NOTA, NTA_FALTA, NTA_BIM, NTA_EVENTOD "
             . "FROM ESCOLA.NOTASAL "
@@ -24,10 +26,10 @@ if ($semestre == 2) {
     while ($row = db2_fetch_object($res)) {
         $row->NTA_DISC = trim($row->NTA_DISC);
         $row->NTA_NOTA = str_replace(',', '.', $row->NTA_NOTA);
-        
+
         $sql = "SELECT p.prontuario as prontuario, a.codigo as atribuicao,
                         m.codigo as matricula, 
-                        (SELECT codigo FROM NotasFinais n 
+                        (SELECT CONCAT(codigo,',',mcc,',',rec,',',ncc,',',falta) FROM NotasFinais n 
                             WHERE n.atribuicao = a.codigo 
                             AND n.matricula = m.codigo 
                             AND n.bimestre = a.bimestre) as notas
@@ -60,16 +62,21 @@ if ($semestre == 2) {
                 // ATUALIZACAO A ATRIBUICAO PARA FECHADA, 
                 // ASSIM A FUNCAO RESULTADO BUSCA A NOTA NA TABELA NOTASFINAIS
                 $sql = "UPDATE Atribuicoes SET status = 4 WHERE codigo = $row2->atribuicao";
-                mysql_query($sql);                
-            } else {
-                $sql = "UPDATE NotasFinais SET mcc = '$row->NTA_BIM', "
-                        . "ncc = '$row->NTA_NOTA', "
-                        . "falta = $row->NTA_FALTA "
-                        . "WHERE codigo = $row2->notas";
                 mysql_query($sql);
+            } else {
+                $notas = explode(',', $row2->notas);
+                if ($notas[1] != $row->NTA_NOTA || $notas[3] != $row->NTA_NOTA || $notas[4] != $row->NTA_FALTA) {
+                    $sql = "UPDATE NotasFinais SET mcc = '$row->NTA_NOTA', "
+                            . "ncc = '$row->NTA_NOTA', "
+                            . "falta = $row->NTA_FALTA "
+                            . "WHERE codigo = " . $notas[0];
+                    mysql_query($sql);
+                    $j++;
+                }
             }
         }
     }
-    if ($DEBUG) print "NOTAS IMPORTADAS: $i \n";
+    if ($DEBUG)
+        print "NOTAS IMPORTADAS: $i |ATUALIZADAS: $j \n";
 }
 ?>
