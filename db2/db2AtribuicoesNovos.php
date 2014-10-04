@@ -80,8 +80,8 @@ for ($n = 1; $n <= 2; $n++) {
 	     				AND turma = $turma->codigo
 	     				AND bimestre = 0
 	     				AND eventod = $row->ED_EVENTOD";
-                $att = mysql_query($sql);
-                if (mysql_num_rows($att) == '') {
+                $resultAtt = mysql_query($sql);
+                if (!$att = mysql_fetch_object($resultAtt)) {
                     // IMPORTA A ATRIBUICAO
                     $sql = "insert into Atribuicoes (codigo, disciplina, turma, bimestre, dataInicio, dataFim, aulaPrevista, status, periodo, eventod) "
                             . " values (0, "
@@ -111,12 +111,13 @@ for ($n = 1; $n <= 2; $n++) {
                         }
                     }
                 } else {
-                    $COD = mysql_result($att, 0, "codigo");
-                    $sql = "UPDATE Atribuicoes SET dataInicio='" . $row->ED_DTINICIO . "', dataFim='" . $row->ED_DTFINAL . "', periodo = $turno WHERE codigo = $COD";
-                    if (!$result = mysql_query($sql)) {
-                        if ($DEBUG)
-                            echo "<br>Erro ao atualizar ATRIBUICAO: $sql \n";
-                        mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
+                    $COD = $att->codigo;
+                    if ($row->ED_DTINICIO != $att->dataInicio || $row->ED_DTFINAL != $att->dataFim || $turno != $att->periodo ) {                    
+                        $sql = "UPDATE Atribuicoes SET dataInicio='" . $row->ED_DTINICIO . "', dataFim='" . $row->ED_DTFINAL . "', periodo = $turno WHERE codigo = $COD";
+                        if (!$result = mysql_query($sql)) {
+                            if ($DEBUG) echo "<br>Erro ao atualizar ATRIBUICAO: $sql \n";
+                            mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
+                        }
                     }
 
                     $sql = "SELECT * FROM Professores 

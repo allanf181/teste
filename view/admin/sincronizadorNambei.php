@@ -86,7 +86,7 @@ $log = new Logs();
             <td colspan="3">
                 <?php
                 $sqlAdicional = " AND l.origem = 'CRON_NTDIV' "
-                        . "AND l.data BETWEEN DATE_SUB(NOW(), INTERVAL 5 DAY) AND NOW() "
+                        . "AND l.data BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) AND NOW() "
                         . "GROUP BY l.url "
                         . "ORDER BY l.origem ASC, l.url ASC, l.codigo DESC, l.data DESC ";
                 foreach ($log->listLogs($params, $sqlAdicional, 1, null) as $reg) {
@@ -111,7 +111,7 @@ $log = new Logs();
                         . "GROUP BY l.url "
                         . "ORDER BY l.origem ASC, l.url ASC, l.codigo DESC, l.data DESC ";
                 foreach ($log->listLogs($params, $sqlAdicional, 1, null) as $reg) {
-                    print $reg['data'] . " - " . $reg['url'] . "<br>";
+                    print $reg['data'] . " - " . abreviar($reg['url'], 100) . "<br>";
                 }
                 ?>
             </td>

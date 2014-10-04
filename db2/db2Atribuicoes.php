@@ -103,8 +103,8 @@ for ($n = 1; $n <= 2; $n++) {
 		       					('$subturma' <> 'ABCD' AND subturma = '$subturma')
 		       				)
 		       				AND bimestre = $i";
-                    $att = mysql_query($sql);
-                    if (mysql_num_rows($att) == '') {
+                    $resultAtt = mysql_query($sql);
+                    if (!$att = mysql_fetch_object($resultAtt)) {
                         // IMPORTA A ATRIBUICAO
                         $sql = "insert into Atribuicoes (codigo, disciplina, turma, bimestre, dataInicio, dataFim, status, periodo, subturma, eventod) "
                                 . " values (0, "
@@ -133,13 +133,14 @@ for ($n = 1; $n <= 2; $n++) {
                             }
                         }
                     } else {
-                        $COD = mysql_result($att, 0, "codigo");
+                        $COD = $att->codigo;
                         $G = round( (($disciplina->ch * 6) / 5), 2);
-                        $sql = "UPDATE Atribuicoes SET aulaPrevista='".$G."', dataInicio='" . $B_INI[$i] . "', dataFim='" . $B_FIN[$i] . "', periodo = $turno WHERE codigo = $COD";
-                        if (!$result = mysql_query($sql)) {
-                            if ($DEBUG)
-                                echo "<br>Erro ao atualizar ATRIBUICAO: $sql \n";
-                            mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
+                        if ($G != $att->aulaPrevista || $B_INI[$i] != $att->dataInicio || $B_FIN[$i] != $att->dataFim || $turno != $att->periodo ) {
+                            $sql = "UPDATE Atribuicoes SET aulaPrevista='".$G."', dataInicio='" . $B_INI[$i] . "', dataFim='" . $B_FIN[$i] . "', periodo = $turno WHERE codigo = $COD";
+                            if (!$result = mysql_query($sql)) {
+                                if ($DEBUG) echo "<br>Erro ao atualizar ATRIBUICAO: $sql \n";
+                                mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
+                            }
                         }
 
                         $sql = "SELECT * FROM Professores 
@@ -149,8 +150,7 @@ for ($n = 1; $n <= 2; $n++) {
                         if (mysql_num_rows($prof2) == '') {
                             $sql = "INSERT INTO Professores VALUES (NULL, $professor->codigo, $COD)";
                             if (!$result = mysql_query($sql)) {
-                                if ($DEBUG)
-                                    echo "<br>Erro ao importar ATRIBUICAO/PROFESSOR: $sql \n";
+                                if ($DEBUG) echo "<br>Erro ao importar ATRIBUICAO/PROFESSOR: $sql \n";
                                 mysql_query("insert into Logs values(0, '" . addslashes($sql) . "', now(), 'CRON_ERRO', 1)");
                             }
                         }
