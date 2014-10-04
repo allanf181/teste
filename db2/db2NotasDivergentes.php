@@ -19,7 +19,7 @@ $sql = "SELECT a.eventod, d.numero, a.codigo, a.bimestre
                    AND m.aluno = p.codigo
                    AND t.ano = $ano
                    AND a.status <> 0 AND a.status <> 4
-                   GROUP BY a.codigo ORDER BY t.codigo";
+                   GROUP BY a.codigo ORDER BY t.codigo, d.numero";
 //print $sql;
 $res2 = mysql_query($sql);
 while ($row2 = mysql_fetch_object($res2)) {
