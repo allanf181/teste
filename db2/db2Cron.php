@@ -54,26 +54,10 @@ $result = @mysql_query($sql);
 $cidPr = @mysql_fetch_object($result);
 
 //VERIFICA O USO DO SISTEMA
-$sql = "SELECT p.nome,
-                SUM((SELECT COUNT(*) FROM Aulas au WHERE au.atribuicao = a.codigo)) as aula,
-                SUM((SELECT COUNT(*) FROM Frequencias f, Aulas au WHERE au.codigo = f.aula AND au.atribuicao = a.codigo)) as frequencia,
-                SUM((SELECT COUNT(*) FROM Avaliacoes av WHERE av.atribuicao = a.codigo)) as avaliacao,
-                SUM((SELECT COUNT(*) FROM Avaliacoes av, Notas n WHERE av.codigo = n.avaliacao AND av.atribuicao = a.codigo)) as nota
-                FROM Atribuicoes a, Disciplinas d, Turmas t, Professores pr, Pessoas p
-                WHERE a.disciplina = d.codigo
-                AND t.codigo = a.turma
-                AND pr.atribuicao = a.codigo
-                AND p.codigo = pr.professor        
-                AND (t.semestre=$semestre OR t.semestre=0)
-                AND t.ano = $ano
-                GROUP BY pr.professor ORDER BY aula DESC, frequencia DESC, avaliacao DESC, nota DESC";
-$result = @mysql_query($sql);
-while ($uso = mysql_fetch_object($result)) {
-    if ($uso->aula || $uso->frequencia || $uso->avaliacao || $uso->nota)
-        $usoSistema++;
-    $count++;
-}
-$usoSistema = round(($usoSistema * 100) / $count);
+require CONTROLLER . "/atribuicao.class.php";
+$atribuicao = new Atribuicoes();
+$params = array('ano' => $ano, 'semestre' => $semestre);
+$res = $atribuicao->getDadosUsoSistema($params);
 
 // INSERINDO INFOS VIA WS
 require $LOCATION_CRON . '../lib/nusoap/lib/nusoap.php';
@@ -88,7 +72,7 @@ if ($client) {
         "cidadePredominante" => $cidPr->city,
         "uname" => php_uname(),
         "hostname" => gethostname(),
-        "usoSistema" => $usoSistema));
+        "usoSistema" => $res[0]['uso']));
 }
 
 if ($result)

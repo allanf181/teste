@@ -27,24 +27,15 @@ $atribuicao = new Atribuicoes();
 $params = array('ano' => $ANO, 'semestre' => $SEMESTRE);
 
 $res = $atribuicao->getDadosUsoSistema($params);
-foreach ($res as $reg) {
-    if ($reg['aula'] || $reg['frequencia'] || $reg['avaliacao'] || $reg['nota'])
-        $uso++;
-    $count++;
-}
-
-$uso = round(($uso * 100) / $count);
-$width1 = "$uso";
-$width2 = (100 - $uso);
 ?>
 <div class='fundo_listagem'>
     <table class="listagem" align="center">
         <tr>
             <td>Utilizando: </td>
-            <td><progress max="100" value="<?= $width1 ?>"></progress><?= $width1 ?>%</td>
+            <td><progress max="100" value="<?= $res[0]['uso'] ?>"></progress><?= $res[0]['uso'] ?>%</td>
         </tr>
         <tr>
-            <td>N&atilde;o utilizado: </td><td><progress max="100" value="<?= $width2 ?>"></progress><?= $width2 ?>%</td>
+            <td>N&atilde;o utilizado: </td><td><progress max="100" value="<?= (100 - $res[0]['uso']) ?>"></progress><?= (100 - $res[0]['uso']) ?>%</td>
         </tr>
     </table>
 </div>

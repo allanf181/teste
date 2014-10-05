@@ -30,12 +30,12 @@ class Atribuicoes extends Generic {
     // Pode ser colocado com função no MySQL futuramente
     public function getAtribuicao($codigo, $LIMITE_DIARIO_PROF = 0) {
         $bd = new database();
-               
+
         if ($LIMITE_DIARIO_PROF)
             $inicio = $LIMITE_DIARIO_PROF;
         else
             $inicio = 365;
-                
+
         $sql = "SELECT d.nome as disciplina, t.numero as turma, a.status, a.prazo,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
                 IF(a.bimestre = 0 AND t.semestre <> 0, CONCAT('no ',t.semestre,'º semestre do '),
@@ -206,7 +206,7 @@ class Atribuicoes extends Generic {
                     $reg['numero'] = $reg['numero'] . ' [' . $reg['turma'] . '-' . $reg['subturma'] . ']';
 
                 if ($reg['turno'])
-                $reg['numero'] .= ' [' . $reg['turno'][0] . ']';
+                    $reg['numero'] .= ' [' . $reg['turno'][0] . ']';
 
                 // SE FOR ANUAL
                 if ($reg['semestre'] == 0)
@@ -408,6 +408,13 @@ class Atribuicoes extends Generic {
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
+            foreach ($res as $reg) {
+                if ($reg['aula'] || $reg['frequencia'] || $reg['avaliacao'] || $reg['nota'])
+                    $uso++;
+                $count++;
+            }
+            $uso = round(($uso * 100) / $count);
+            $res[0]['uso'] = $uso;
             return $res;
         } else {
             return false;
@@ -438,7 +445,7 @@ class Atribuicoes extends Generic {
             $sqlAdicionalTurno = " AND a.periodo = :turno ";
             $params['turno'] = $turno;
         }
-        
+
         $sql = "SELECT 	al.codigo as codAluno, al.nome as aluno, 
                         d.codigo as codDiciplina, d.numero as numero, 
                         d.nome as disciplina, m.situacao, a.status,
@@ -547,7 +554,7 @@ class Atribuicoes extends Generic {
             $params['aluno'] = $aluno;
             $sqlAdicional = ' AND al.codigo = :aluno ';
         }
-        
+
         $sql = "SELECT al.codigo as codAluno, al.nome as aluno, d.codigo as codDisciplina, 
                         d.numero as numeroDisciplina, d.nome as disciplina, a.status,
 			m.codigo as matricula, a.codigo as atribuicao, s.listar, s.habilitar, 
@@ -575,7 +582,8 @@ class Atribuicoes extends Generic {
         } else {
             return false;
         }
-    }    
+    }
+
 }
 
 ?>
