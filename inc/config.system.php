@@ -6,7 +6,7 @@
 $TIMEOUT = 20; // MINUTOS;
 $_SESSION_NAME = "IFSP_WD_2014";
 session_name($_SESSION_NAME);
-session_cache_expire($TIMEOUT*36);
+session_cache_expire($TIMEOUT*90);
 if (!isset($_SESSION)) { session_start(); }
 ini_get('register_globals');
 ini_set('max_execution_time', 60);

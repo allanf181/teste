@@ -15,6 +15,7 @@ class DigitaNotasWS {
                                     $faltas,
                                     $nota, //nota de 0 a 10
                                     $turma,
+                                    $dataGravacao,
                                     $flagDigitacaoNota //flag = 5 => nota digitada e fechada
                                     ){
         try {
@@ -34,18 +35,19 @@ class DigitaNotasWS {
             
             $cliente->__setLocation($servicoDigitaNotas);
 
-            $notaAlunoObj = $cliente->digitarNotaAluno($campus,
-                                                        $prontuario,
-                                                        $prontuarioAluno,
-                                                        $codigoDisciplina,
+            $notaAlunoObj = $cliente->digitarNotasAlunos($ano, 
+                                                        $turma,
                                                         $eventod,
                                                         $bimestre,
-                                                        $ano,
+                                                        $codigoDisciplina,
+                                                        $prontuario,
+                                                        $prontuarioAluno,
                                                         $semestre,
-                                                        $faltas,
+                                                        $flagDigitacaoNota,                    
                                                         $nota,
-                                                        $turma,
-                                                        $flagDigitacaoNota);
+                                                        $faltas,
+                                                        $campus,
+                                                        $dataGravacao);
             if (isset($notaAlunoObj) && $notaAlunoObj->sucesso) {
                 return true;
             }

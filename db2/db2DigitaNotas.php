@@ -1,7 +1,6 @@
 <?php
 if (!$LOCATION_CRON) {
     require("$LOCATION_CRON"."db2Mysql.php");
-    require("$LOCATION_CRON"."db2.php");
     require("$LOCATION_CRON"."db2Funcoes.php");
     require("$LOCATION_CRON"."db2Variaveis.inc.php");
     require("$LOCATION_CRON"."../inc/funcoes.inc.php");
@@ -67,7 +66,7 @@ while ($l = mysql_fetch_array($result)) {
         try {
 
             $digitaNotaAlunoWS = new digitaNotasWS();
-            $ret = $digitaNotaAlunoWS->digitarNotaAluno($user, $pass, $campus, $prontuario, $prontuarioAluno, $codigoDisciplina, $eventod, $bimestre, $ano, $semestre, $faltas, $nota, $turma, $flagDigitacaoNota);
+            $ret = $digitaNotaAlunoWS->digitarNotaAluno($user, $pass, $campus, $prontuario, $prontuarioAluno, $codigoDisciplina, $eventod, $bimestre, $ano, $semestre, $faltas, $nota, $turma, date('dmY'), $flagDigitacaoNota );
             $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
 
             if ($ret) {
