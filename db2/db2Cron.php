@@ -56,7 +56,7 @@ $cidPr = @mysql_fetch_object($result);
 //VERIFICA O USO DO SISTEMA
 require CONTROLLER . "/atribuicao.class.php";
 $atribuicao = new Atribuicoes();
-$params = array('ano' => $ano, 'semestre' => $semestre);
+$params = array('ano' => $ANO, 'semestre' => $SEMESTRE);
 $res = $atribuicao->getDadosUsoSistema($params);
 
 // INSERINDO INFOS VIA WS

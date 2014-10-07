@@ -17,6 +17,9 @@ if (isset($_GET["semestre"]))
 $ano = $_SESSION["ano"];
 $semestre = $_SESSION["semestre"];
 
+$ANO = $_SESSION["ano"];
+$SEMESTRE = $_SESSION["semestre"];
+
 // COLETANDO AS DEFINICOES DE PAPEIS DO BANCO
 $resultado = mysql_query("SELECT * FROM Instituicoes");
 $SITE_TITLE = @mysql_result($resultado, 0, "nome");
