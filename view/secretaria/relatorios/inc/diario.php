@@ -365,8 +365,9 @@ $competencias = $aulas[0]['competencias'];
 $obs = explode("\n", wordwrap($observ, $limit2));
 $comp = explode("\n", wordwrap($competencias, $limit2));
 
-$k = 0;
-$j = 0;
+$k=0;
+$j=0;
+$i=0;
 foreach ($aulas as $reg) {
     $dias = null;
     $aulasDadas = null;
