@@ -275,32 +275,34 @@ if (isset($_SESSION["loginTipo"])) {
                 ?></ul></li><?php                    
             } // FIM MENU PROFESSOR/ALUNO
         }
-        require CONTROLLER . "/permissao.class.php";
-        $permissao = new Permissoes();
-        $permissoes = $permissao->listaPermissoes($_SESSION["loginTipo"]);
-        $files = $permissao->listaPermissoes($_SESSION["loginTipo"], 'menu');
+        if ($_SESSION["loginTipo"]) {
+            require CONTROLLER . "/permissao.class.php";
+            $permissao = new Permissoes();
+            $permissoes = $permissao->listaPermissoes($_SESSION["loginTipo"]);
+            $files = $permissao->listaPermissoes($_SESSION["loginTipo"], 'menu');
 
-        function makeMenu($ar){
-            global $files;
-            foreach ($ar as $k => $v ) {
-                if (!is_array($v)) {
-                    ?>
-                    <li><a href="javascript:$('#index').load('<?= $v ?>'); void(0);"><span><?= $files[$v] ?></span></a></li>
-                    <?php
+            function makeMenu($ar){
+                global $files;
+                foreach ($ar as $k => $v ) {
+                    if (!is_array($v)) {
+                        ?>
+                        <li><a href="javascript:$('#index').load('<?= $v ?>'); void(0);"><span><?= $files[$v] ?></span></a></li>
+                        <?php
+                    }
+                    if (is_array($ar[$k])) {
+                        ?>
+                        <li class='active has-sub'><a href='#'><span><?= maiusculo($k) ?></span></a>
+                        <ul>
+                        <?php
+                        makeMenu ($ar[$k]);
+                    }
                 }
-                if (is_array($ar[$k])) {
-                    ?>
-                    <li class='active has-sub'><a href='#'><span><?= maiusculo($k) ?></span></a>
-                    <ul>
-                    <?php
-                    makeMenu ($ar[$k]);
-                }
-            }
-            ?>
-            </ul></li>
-            <?php
-        } 
-        print makeMenu($permissoes['view']);
+                ?>
+                </ul></li>
+                <?php
+            } 
+            print makeMenu($permissoes['view']);
+        }
         ?>
         </ul>
 

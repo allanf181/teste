@@ -116,9 +116,6 @@ class Notas extends Frequencias {
         // MEDIA DAS FREQUENCIAS DO BIMESTRE
         $frequencia = $frequencias / $c;
 
-        // ARMAZENANDO A MEDIA DAS AVALIACOES SEM A RECUPERACAO
-        $dados['mediaAvaliacao'] = $media;
-
         if ($calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec);
         } else {  // ALUNO PRECISA DE REAVALIACAO FINAL
@@ -128,7 +125,7 @@ class Notas extends Frequencias {
         }
 
         // SITUACAO DAS NOTAS
-        $dados['media'] = round($media, 2);
+        $dados['media'] = arredondar($media);
         $dados['frequencia'] = $frequencia;
         $dados['faltas'] = $faltas;
 
@@ -170,8 +167,6 @@ class Notas extends Frequencias {
                 // CALCULANDO A FREQUENCIA
                 $dados = $this->getFrequencia($matricula, $atribuicao);
 
-                $dados['mediaAvaliacao'] = round($reg['mcc'], 2);
-                $dados['notaRecuperacao'] = round($reg['rec'], 2);
                 $dados['recuperacao'] = round($reg['rec'], 2);
                 $dados['media'] = round($reg['ncc'], 2);
                 $dados['faltas'] = round($reg['falta'], 2);
@@ -263,24 +258,16 @@ class Notas extends Frequencias {
         if ($media > 10)
             $media = 10;
 
-        if ($arredondar) {
-            $media = arredondar($media);
-
-            // PARA O DIARIO DO PROFESSOR
-            $dados['mediaAvaliacao'] = arredondar($media);
-            $dados['notaRecuperacao'] = arredondar($rec);
-        } else {
-            // PARA O DIARIO DO PROFESSOR
-            $dados['mediaAvaliacao'] = $media;
-            $dados['notaRecuperacao'] = $rec;
-        }
-
+        // ARMAZENANDO A MEDIA DAS AVALIACOES SEM A RECUPERACAO
+        $dados['mediaAvaliacao'] = arredondar($media);
+        $dados['notaRecuperacao'] = arredondar($rec);
+        
         if ($calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec, $tipo, $formula);
 
             // PARA FECHAMENTO DO BIMESTRE SO INTERESSA ATE AQUI
             if ($bimestre == 4 && $final) {
-                $dados['media'] = round($media, 2);
+                $dados['media'] = $media;
                 $dados['recuperacao'] = $rec;
                 $dados['calculo'] = $calculo;
                 $dados['final'] = $final;
@@ -293,7 +280,7 @@ class Notas extends Frequencias {
         }
 
         // ARREDONDANDO A MEDIA PARA DUAS CASAS
-        $dados['media'] = round($media, 2);
+        $dados['media'] = arredondar($media);
 
         // RETORNANDO OS DADOS
         return $dados;

@@ -234,10 +234,10 @@ function modalidadesCursoNovo() {
         $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Avaliação', 'avaliacao', $cod, '', 1, 0, 0, 'AVA', 0, 0, 2, 10)";
         $res = mysql_query($sql);
 
-        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Ponto Extra', 'pontoExtra', $cod, '', 0, 0, 0, 'PEX', 0, 0, 0, '10')";
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Ponto Extra', 'pontoExtra', $cod, '', 1, 0, 0, 'PEX', 0, 0, 0, '10')";
         $res = mysql_query($sql);
 
-        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Substitutiva', 'substitutiva', $cod, '', 0, 0, 0, 'SUB', 0, 0, 0, '10')";
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Substitutiva', 'substitutiva', $cod, '', 1, 0, 0, 'SUB', 0, 0, 0, '10')";
         $res = mysql_query($sql);
         
         if ($cod == 1004) {
@@ -270,10 +270,10 @@ function modalidadesCursoAntigo() {
         $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Avaliação', 'avaliacao', $r->MD_MODAL, '', 1, 0, 0, 'AVA', 0, 0, 2, 10)";
         $res = mysql_query($sql);
 
-        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Ponto Extra', 'pontoExtra', $r->MD_MODAL, '', 0, 0, 0, 'PEX', 0, 0, 0, '10')";
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Ponto Extra', 'pontoExtra', $r->MD_MODAL, '', 1, 0, 0, 'PEX', 0, 0, 0, '10')";
         $res = mysql_query($sql);
 
-        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Substitutiva', 'substitutiva', $r->MD_MODAL, '', 0, 0, 0, 'SUB', 0, 0, 0, '10')";
+        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Substitutiva', 'substitutiva', $r->MD_MODAL, '', 1, 0, 0, 'SUB', 0, 0, 0, '10')";
         $res = mysql_query($sql);
         
         //INSERIR RECUPERAÇÃO

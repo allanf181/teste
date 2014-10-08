@@ -294,11 +294,11 @@ if ($_GET['opcao'] == '') {
             </script>
             <div id="html5form" class="main">
                 <form id="form_padrao">
-                    <font size="2">M&eacute;dia: </font><input type="text" size="15" maxlength="50" name="formula" value="<?= $formula ?>"/>
-                    <font size="1">" . 'Exemplo: <b>($A1+$A2)/2</b>  --> onde A1 &eacute; a sigla da avalia&ccedil;&atilde;o precedida de $' . "</font>
+                    <font size="2">M&eacute;dia: </font><input type="text" size="25" maxlength="100" name="formula" value="<?= $formula ?>" onchange="validaItem(this)" />
+                    <font size="1">(Exemplo: <b>($A1+$A2)/2</b>  --> onde A1 &eacute; a sigla da avalia&ccedil;&atilde;o precedida de $)</font>
                     <input type="hidden" name="opcao" value="InsertFormula" />
                     <input type="hidden" name="codigo" value=<?= crip($atribuicao) ?> />
-                    <input type="submit" value="Salvar" />
+                    &nbsp;&nbsp;<input type="submit" value="Salvar" />
                 </form>
             </div>
             <?php
@@ -391,6 +391,10 @@ if ($LIMITE_DIARIO_PROF != 0) {
 }
 ?>
 <script>
+    function validaItem(item) {
+        item.value = item.value.replace(",", ".");
+    }
+    
     $(document).ready(function() {
         $(".item-excluir").click(function() {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {

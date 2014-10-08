@@ -67,27 +67,27 @@ while ($row2 = mysql_fetch_object($res2)) {
                 if ($reg2['nota'] && $bim == 'M') {
                     $final = $nota->resultadoBimestral($row3->aluno, $row3->numero, $row2->numero, 1, 1);
 
-                    if (!$final['mediaAvaliacao'])
-                        $final['mediaAvaliacao'] = '0.00';
+                    if (!$final['media'])
+                        $final['media'] = '0.00';
                     
-                    if (!$final['notaRecuperacao'])
-                        $final['notaRecuperacao'] = '0.00';
+                    if (!$final['recuperacao'])
+                        $final['recuperacao'] = '0.00';
                     
-                    if ($final['mediaAvaliacao'] <> $reg2['nota']) {
-                        $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: M  |NOTA WD: ".$final['mediaAvaliacao']." | DN: " . $reg2['nota'] . " \n";
+                    if ($final['media'] <> $reg2['nota']) {
+                        $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: M  |NOTA WD: ".$final['media']." | DN: " . $reg2['nota'] . " \n";
                         mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
                         if ($DEBUG) print "$REG <br>\n";
                     }
 
-                    if ($final['notaRecuperacao'] <> $reg2['rec']) {
-                        $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: R  |NOTA WD: ".$final['notaRecuperacao']." | DN: " . $reg2['rec'] . " \n";
+                    if ($final['recuperacao'] <> $reg2['rec']) {
+                        $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: R  |NOTA WD: ".$final['recuperacao']." | DN: " . $reg2['rec'] . " \n";
                         mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
                         if ($DEBUG) print "$REG <br>\n";
                     }
                 }
 
                 if ($dados['media'] <> $reg2['nota']) {
-                    $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: $bim  |NOTA WD: " . $dados['mediaAvaliacao'] . " | DN: " . $reg2['nota'] . " \n";
+                    $REG = "TURMA: $row3->numero |PRONT: $pront |DISC: $row2->numero |BIM: $bim  |NOTA WD: " . $dados['media'] . " | DN: " . $reg2['nota'] . " \n";
                     mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_NTDIV', 1)");
                     if ($DEBUG)
                         print "$REG <br>\n";

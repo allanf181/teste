@@ -30,8 +30,8 @@ class NotasFinais extends Notas {
                     $params2['bimestre'] = '00';
                 else
                     $params2['bimestre'] = $reg['bimestre'];
-                $params2['mcc'] = $dados['mediaAvaliacao'];
-                $params2['rec'] = $dados['notaRecuperacao'];
+                $params2['mcc'] = $dados['media'];
+                $params2['rec'] = $dados['recuperacao'];
                 $params2['ncc'] = $dados['media'];
                 $params2['falta'] = $dados['faltas'];
 
@@ -75,8 +75,8 @@ class NotasFinais extends Notas {
                         if ($res2)
                             $params2['codigo'] = $res2[0]['codigo'];
 
-                        $params2['mcc'] = $dados['mediaAvaliacao'];
-                        $params2['rec'] = $dados['notaRecuperacao'];
+                        $params2['mcc'] = $dados['media'];
+                        $params2['rec'] = $dados['recuperacao'];
                         $params2['ncc'] = $dados['media'];
 
                         $params2['bimestre'] = 'M';

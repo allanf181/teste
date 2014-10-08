@@ -294,6 +294,7 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
             // Verificar Avalicao do Aluno
             foreach ($aval->listAvaliacoesAluno($params, $sqlAdicional) as $reg) {
                 if ($reg['nome']) {
+                    if ($reg['peso']) $reg['nota'] = round($reg['nota'] * $reg['peso'], 1);
                     $pdf->Cell($larguraDia, $alturaLinha, $reg['nota'], 1, 0, 'C', true);
                 }
             }
