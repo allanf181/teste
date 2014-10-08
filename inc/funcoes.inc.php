@@ -26,11 +26,11 @@ function percentual($parte, $todo) {
 }
 
 function arredondar($valor) {
-    if ($valor - floor($valor) > 0 && $valor - floor($valor) <= .24)
+    if ($valor - floor($valor) > 0 && $valor - floor($valor) <= .249)
         return floor($valor);
-    else if ($valor - floor($valor) >= .25 && $valor - floor($valor) < .5)
+    else if ($valor - floor($valor) >= .25 && $valor - floor($valor) < .59)
         return floor($valor) + .5;
-    else if ($valor - floor($valor) > .5 && $valor - floor($valor) <= .74)
+    else if ($valor - floor($valor) > .5 && $valor - floor($valor) <= .749)
         return floor($valor) + .5;
     else if ($valor - floor($valor) >= .75)
         return ceil($valor);

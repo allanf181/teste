@@ -262,7 +262,7 @@ class Notas extends Frequencias {
         if ($media > 10)
             $media = 10;
 
-        // ARMAZENANDO A MEDIA DAS AVALIACOES SEM A RECUPERACAO
+        // ARMAZENANDO A MEDIA DAS AVALIACOES PARA O DIARIO
         $dados['mediaAvaliacao'] = arredondar($media);
         $dados['notaRecuperacao'] = arredondar($rec);
         
