@@ -167,6 +167,10 @@ class Notas extends Frequencias {
                 // CALCULANDO A FREQUENCIA
                 $dados = $this->getFrequencia($matricula, $atribuicao);
 
+                // PARA O DIARIO E NOTAFINAL
+                $dados['mediaAvaliacao'] = round($reg['mcc'], 2);
+                $dados['notaRecuperacao'] = round($reg['rec'], 2);
+
                 $dados['recuperacao'] = round($reg['rec'], 2);
                 $dados['media'] = round($reg['ncc'], 2);
                 $dados['faltas'] = round($reg['falta'], 2);
