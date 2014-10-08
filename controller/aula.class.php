@@ -21,7 +21,7 @@ class Aulas extends Frequencias {
                         AND f.aula = a.codigo
 			AND m.aluno = :cod
                         AND m.atribuicao = :atr
-                    ) as quantidade, 
+                    LIMIT 1) as quantidade, 
                     quantidade as auladada,a.data,
                     date_format(a.data, '%d/%m/%Y') as dataFormatada,
                     a.conteudo as conteudo

@@ -107,7 +107,7 @@ if ($_GET["atribuicao"]) {
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/ensalamento.php?turma=<?php print crip($turmaCodigo); ?>&subturma=<?php print crip($subturma); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/arquivo.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/arquivo.png' /><br />Material de Aula</a></td>
         </tr>
-        <tr><td colspan="8"><hr></td></tr>
+        <tr><td colspan="9"><hr></td></tr>
     </table>
 
     <div id="professor">

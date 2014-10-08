@@ -30,9 +30,8 @@ class FrequenciasAbonos extends Generic {
                         )
                         OR 
                         ( f.aula =  (SELECT tu2.sigla
-                            FROM Atribuicoes a2, Turmas t2, Turnos tu2
-                            WHERE a2.turma = t2.codigo
-                            AND t2.turno = tu2.codigo
+                            FROM Atribuicoes a2, Turnos tu2
+                            WHERE a2.periodo = tu2.codigo
                             AND a2.codigo=:atr LIMIT 1)
                         ) 
                     )

@@ -184,6 +184,8 @@ require SESSAO;
                     <?php
                 }
 
+
+                
                 // Verificando se há correções para a FTD
                 require CONTROLLER . "/ftdDado.class.php";
                 $ftd = new FTDDados();
