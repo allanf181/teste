@@ -14,10 +14,13 @@ class Ensalamentos extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
-        $sql = "SELECT e.codigo, p.nome as professor, d.numero as discNumero,
-                        t.numero as turma, e.diaSemana, s.nome as sala, 
+        $sql = "SELECT e.codigo, p.nome as professor, d.numero as discNumero, h.nome as horario,
+                        t.numero as turma, e.diaSemana, a.codigo as atribuicao,
+                        IF(LENGTH(a.subturma) > 0,a.subturma,a.eventod) as subturma,
+                        (SELECT nome FROM Turnos WHERE codigo = a.periodo) as turno,
+                        IF(LENGTH(s.localizacao) > 0, CONCAT(s.nome, '-',s.localizacao), s.nome) as sala,
                         h.nome as horario, date_format(h.inicio, '%H:%i') as inicio,
-                        date_format(h.fim, '%H:%i') as fim
+                        date_format(h.fim, '%H:%i') as fim, d.nome as disciplina
 	            	FROM Atribuicoes a, Pessoas p, Turmas t, Disciplinas d, 
                             Ensalamentos e, Horarios h, Salas s, Professores pr
 	                WHERE pr.atribuicao = a.codigo
@@ -33,6 +36,7 @@ class Ensalamentos extends Generic {
         $sql .= " $sqlAdicional ";
 
         $sql .= "$nav";
+        
         $res = $bd->selectDB($sql, $params);
         
         if ($res)
@@ -67,8 +71,10 @@ class Ensalamentos extends Generic {
 
         $sql = "SELECT diaSemana, date_format(h.inicio, '%H:%i') as inicio,
                         date_format(h.fim, '%H:%i') as fim, d.numero as discNumero,
-                        s.nome as sala, d.nome as disciplina, p.nome as professor,
+                        d.nome as disciplina, p.nome as professor,
+                        IF(LENGTH(s.localizacao) > 0, CONCAT(s.nome, '-',s.localizacao), s.nome) as sala,
                         a.codigo as atribuicao, t.numero as turma,
+                        IF(LENGTH(a.subturma) > 0,a.subturma,a.eventod) as subturma,
                         s.localizacao as localizacao, h.nome as horario,
                         h.codigo as horCodigo
 		FROM Ensalamentos e, Disciplinas d, Salas s, Horarios h, 
@@ -130,6 +136,29 @@ class Ensalamentos extends Generic {
             return false;
         }
     }
+    
+    public function getAulasByProfessor($professor, $atribuicao) {
+        $bd = new database();
+
+
+        $sql = "SELECT CONCAT(h.nome, ' [', date_format(h.inicio, '%H:%i'),'-', 
+                    date_format(h.fim, '%H:%i'), ']') as horario, e.diaSemana
+                    FROM Ensalamentos e, Horarios h, Atribuicoes a
+		    WHERE h.codigo = e.horario
+                    AND e.atribuicao = a.codigo
+                    AND a.codigo = :atribuicao
+                    AND e.professor = :professor 
+		    ORDER BY e.diaSemana, h.inicio ASC";
+
+        $params = array(':atribuicao' => $atribuicao, ':professor' => $professor);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }    
 
 }
 

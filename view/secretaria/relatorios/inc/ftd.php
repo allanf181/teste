@@ -77,6 +77,7 @@ if (dcrip($_GET["professor"])) {
                     if (!$first_in[$k])
                         $first_in[$k] = $horario;
                 }
+               
                 if (substr($registro, 3, 1) == 2) { // achando a ultima saida
                     $k = substr($registro, 0, 1) . substr($registro, 2, 1) . substr($registro, 3, 1);
                     $last_out[$k] = $horario;

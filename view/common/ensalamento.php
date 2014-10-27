@@ -16,7 +16,7 @@ $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
 
 foreach ($res as $reg) {
     $reg['horario'] = str_ireplace("[$match[1]]", "", $reg['horario']);
-    $link = $reg['disciplina'] . ' (' . $reg['professor'] . '): ' . $reg['sala'] . ' - ' . $reg['localizacao'];
+    $link = $reg['disciplina'] . '<br>Turma '.$reg['turma'].' ('.$reg['subturma'].') <br>' . $reg['professor'] . '<br>' . $reg['sala'];
     $horas[$reg['diaSemana']][] = "<a href='#' title='$link'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
     $turmaNome = $reg['turma'];
 }

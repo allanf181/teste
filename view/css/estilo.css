@@ -220,6 +220,11 @@ th {
     background: #009540;
 }
 
+.listagem_tr th{
+    background: #70bb84;
+    color: white;
+}
+
 a{
     border: none;
 }
@@ -588,11 +593,6 @@ select{
     font-weight: bold;
 }
 
-.listagem_tr th{
-    background: #70bb84;
-    color: white;
-}
-
 #professores_botao{
     background: #00913d;
     width: 130px;
@@ -872,4 +872,35 @@ div.flash {
 
 .main {
     clear:both;
+}
+
+.parecerAceito {
+    background: #dfffdf;
+}
+
+.parecerNegado {
+    background: #ffe3e3;
+}
+
+.parecerAguardando {
+    background: #FFEBC1;
+}
+
+#listagemTroca {
+    width: 100%;
+    margin-top: -15px;
+    /*background: red;*/
+    padding: -5px;
+    border-collapse:collapse;
+}
+
+#listagemTroca tr th{
+    color: white;
+    text-align: left;
+    background: #70bb84;
+    
+}
+
+#listagemTroca tr:hover{
+    background: #009540;
 }

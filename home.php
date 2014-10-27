@@ -13,18 +13,19 @@ require SESSAO;
             <font size="4"><b>WebDi&aacute;rio</b></font>
             <br><a class="link" title='O que h&aacute; de novo...' href="javascript:$('#index').load('creditos.php'); void(0);">
                 <font size="1">Vers&atilde;o 1.<?php print $VERSAO; ?></font>
-            </a></td>
-            <td>
-                <a title='Clique aqui para enviar sugest&otilde;es ou reportar problemas' href="javascript:$('#index').load('<?=VIEW?>/email.php'); void(0);">
-                    <img src="<?=ICONS?>/email.png">
-                </a>
-            </td>
+            </a>
+        </td>
+        <td align="right    ">
+            <a title='Clique aqui para enviar sugest&otilde;es ou reportar problemas' href="javascript:$('#index').load('<?= VIEW ?>/email.php'); void(0);">
+                <img src="<?= ICONS ?>/email.png">
+            </a>
+        </td>
     </tr>
     <tr>
-        <td>&nbsp;</td>
+        <td colspan="3">&nbsp;</td>
     </tr>
     <tr>
-        <td>
+        <td colspan="2">
             <?php
             $user = $_SESSION["loginCodigo"];
             // Mostra a foto do usuário e informações de senha
@@ -174,7 +175,7 @@ require SESSAO;
 
                 if (!$userDados[0]['lattes']) {
                     ?>
-                    <br><br>Lattes: <input type="text" size="60" maxlength="200" name="lattes" id="lattes" value="" />
+                    <br><br>Lattes: <input type="text" size="50" maxlength="200" name="lattes" id="lattes" value="" />
                     <img src="<?php print ICONS; ?>/accept.png" id="send-lattes" style="width: 20px; height: 20px">
                     <?php
                 } else {
@@ -184,8 +185,20 @@ require SESSAO;
                     <?php
                 }
 
+                // Verificando Troca de Aulas
+                require CONTROLLER . "/aulaTroca.class.php";
+                $aulaTroca = new AulasTrocas();
 
-                
+                $params = array(':professor' => $_SESSION['loginCodigo']);
+                $sqlAdicional = '  WHERE at.professorSubstituto = :professor AND '
+                        . ' (LENGTH(professorSubstitutoParecer) <= 0 OR professorSubstitutoParecer IS NULL) ';
+                foreach ($aulaTroca->hasTrocas($params, $sqlAdicional) as $reg) {
+                    ?>
+                    <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, voc&ecirc; tem uma solicita&ccedil;&atilde;o de troca de aula.</font>
+                    <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php'); void(0);">Clique aqui para analisar</a>
+                    <?php
+                }
+
                 // Verificando se há correções para a FTD
                 require CONTROLLER . "/ftdDado.class.php";
                 $ftd = new FTDDados();
@@ -198,11 +211,11 @@ require SESSAO;
                 }
 
                 // Verificando se há correções para o Plano de Ensino.
-                $sqlAdicional =  "AND pe.valido = '0000-00-00 00:00:00' "
-                                . "AND (pe.solicitacao IS NOT NULL AND pe.solicitacao <> \"\") "
-                                . "AND p.professor = :cod ";
+                $sqlAdicional = "AND pe.valido = '0000-00-00 00:00:00' "
+                        . "AND (pe.solicitacao IS NOT NULL AND pe.solicitacao <> \"\") "
+                        . "AND p.professor = :cod ";
                 $params = array('cod' => $user);
-                $res = $plano->listPlanoEnsino($params, $sqlAdicional);  
+                $res = $plano->listPlanoEnsino($params, $sqlAdicional);
                 if ($res) {
                     foreach ($res as $reg) {
                         ?>
@@ -251,10 +264,96 @@ require SESSAO;
 </table>
 
 <?php
+if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
+    // Verificando se o Professor tem aulas trocadas vigentes
+    $params = array('professor' => $_SESSION['loginCodigo']);
+    $sqlAdicional = " WHERE (professor = :professor OR professorSubstituto = :professor) "
+                    . " AND SUBSTR(coordenadorParecer, 1, 6) = 'Aceito' "
+                    . " AND dataTroca >= NOW() ";
+    $res = $aulaTroca->listTrocas($params, $sqlAdicional);
+    if ($res) {
+        ?>
+        <br><br><table id="listagem">
+            <caption>Solicita&ccedil;&otilde;es de Troca de Aula - Validadas e Vigentes</caption>
+            <tr>
+                <th width='150'>Professor</th>
+                <th align='center' width='80'>Disciplina</th>
+                <th align='center' width='80'>Professor Substituto</th>
+                <th align='center' width='80'>Data da Troca</th>
+            </tr>
+            <?php
+            $i = $item;
+            foreach ($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                ?>
+                <tr <?= $cdif ?>>
+                    <td width='120'><?= $reg['professor'] ?></td>
+                    <td width='120'><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
+                    <td width='120'><?= $reg['professorSubstituto'] ?></td>
+                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php'); void(0);" title='Clique aqui para analisar'>
+                            <?= $reg['dataTrocaFormatada'] ?></a>
+                    </td>                    
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+        </table>
+        <?php
+    }
+}
+
 // INFORMES PARA COORDENADORES
 if (in_array($COORD, $_SESSION["loginTipo"])) {
-    $_SESSION['regAnterior']=null;
-    
+    $_SESSION['regAnterior'] = null;
+
+    // Verificando Troca de Aulas
+    $params = array('coord' => $_SESSION['loginCodigo']);
+    $sqlAdicional = " WHERE atribuicao IN "
+            . "(SELECT a.codigo FROM Cursos c, Atribuicoes a, Turmas t, Coordenadores co "
+            . "WHERE a.turma = t.codigo "
+            . "AND t.curso = c.codigo "
+            . "AND co.curso = c.codigo "
+            . "AND co.coordenador= :coord)"
+            . "AND SUBSTR(professorSubstitutoParecer, 1, 6) = 'Aceito' "
+            . "AND (LENGTH(coordenadorParecer) <= 0 OR coordenadorParecer IS NULL) ";
+    $res = $aulaTroca->listTrocas($params, $sqlAdicional);
+    if ($res) {
+        ?>
+        <br><br><table id="listagem">
+            <caption>Solicita&ccedil;&otilde;es de Troca de Aula</caption>
+            <tr>
+                <th width='150'>Professor</th>
+                <th align='center' width='80'>Disciplina</th>
+                <th align='center' width='80'>Motivo</th>
+                <th align='center' width='80'>Data da Solicita&ccedil;&atilde;o</th>
+                <th align='center' width='80'>Data da Troca</th>
+            </tr>
+            <?php
+            $i = $item;
+            foreach ($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                $title = $reg['motivo'];
+                if (strlen($reg['motivo']) > 70)
+                    $reg['motivo'] = abreviar($reg['motivo'], 70);
+                ?>
+                <tr <?= $cdif ?>>
+                    <td width='120'><?= $reg['professor'] ?></td>
+                    <td width='120'><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
+                    <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
+                    <td><?= $reg['dataPedido'] ?></td>
+                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php'); void(0);" title='Clique aqui para analisar'>
+                            <?= $reg['dataTrocaFormatada'] ?></a>
+                    </td>                    
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+        </table>
+        <?php
+    }
+
     require CONTROLLER . "/prazoDiario.class.php";
     $prazoDiario = new PrazosDiarios();
     $sqlAdicional = " AND pd.dataConcessao IS NULL "
@@ -303,7 +402,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
             . "AND pe.finalizado <> '0000-00-00 00:00:00' "
             . "AND pe.valido = '0000-00-00 00:00:00' "
             . "AND c.codigo IN (SELECT curso FROM Coordenadores WHERE coordenador = :cod) ";
-    $params = array('ano'=>$ANO, 'sem'=>$SEMESTRE, 'cod'=>$user);
+    $params = array('ano' => $ANO, 'sem' => $SEMESTRE, 'cod' => $user);
     $res = $plano->listPlanoEnsino($params, $sqlAdicional);
     if ($res) {
         ?>
@@ -321,7 +420,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 ?>
                 <tr <?= $cdif ?>>
                     <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
-                    <td><?= $reg['disciplina'].$reg['subturma'] ?></td>
+                    <td><?= $reg['disciplina'] . $reg['subturma'] ?></td>
                     <td>
                         <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/plano.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codProfessor']) ?>'); void(0);" title='Clique aqui para validar'>
                             Validar
@@ -339,22 +438,22 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 ?>
 
 <script>
-    $(document).ready(function() {
-        $('#send-lattes').click(function(event) {
+    $(document).ready(function () {
+        $('#send-lattes').click(function (event) {
             var lattes = encodeURIComponent($('#lattes').val());
             $('#index').load('home.php?lattes=' + lattes);
         });
-        $('#send-email').click(function(event) {
+        $('#send-email').click(function (event) {
             var email = encodeURIComponent($('#email').val());
             $('#index').load('home.php?email=' + email);
         });
 
-        $('#remover-foto').click(function(event) {
+        $('#remover-foto').click(function (event) {
             $('#index').load('home.php?removerFoto=<?php print crip($user); ?>');
 
         });
 
-        $('#adiciona-foto').click(function(event) {
+        $('#adiciona-foto').click(function (event) {
             new $.Zebra_Dialog('<strong>Recorte a foto, se desejar.</strong>', {
                 source: {'iframe': {
                         'src': '<?php print VIEW; ?>/trocaFoto.php',
@@ -363,7 +462,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 },
                 width: 500,
                 title: 'Troque a Foto',
-                onClose: function() {
+                onClose: function () {
                     $('#index').load('home.php');
                 }
             });

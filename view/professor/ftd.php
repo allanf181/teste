@@ -23,7 +23,7 @@ if ($_GET["dte"] && $_GET["dts"]) {
     $_GET['semestre'] = $SEMESTRE;
     $_GET['ano'] = $ANO;
     $_GET['professor'] = $_SESSION['loginCodigo'];
-    
+
     $ret = $ftd->insertOrUpdateFTD($_GET);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
@@ -1020,7 +1020,7 @@ if ($res) {
                         i++;
 
                     if ($("#" + p + "TDP" + c).text() != '')
-                        TD[p + c] = p + 'TDP' + c + '-' + $("#" + p + "TDP" + c).text();
+                        TD[p +''+ c] = p + 'TDP' + c + '-' + $("#" + p + "TDP" + c).text();
 
                     if ($("#TD" + c).text() != '')
                         TDT[c] = 'TD' + c + '-' + $("#TD" + c).text();

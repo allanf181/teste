@@ -126,7 +126,7 @@ class FTDDados extends FTDHorarios {
 		WHERE fd.codigo = fh.ftd
 		AND fd.ano = :ano 
 		AND fd.semestre = :sem
-		AND fd.professor = :cod";
+		AND fd.professor = :cod ORDER BY fh.horario";
                 
         $params = array(':cod' => $codigo, ':ano' => $ano, ':sem' => $semestre);
         $res = $bd->selectDB($sql, $params);
