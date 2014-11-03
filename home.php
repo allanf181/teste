@@ -39,6 +39,10 @@ require SESSAO;
                 require CONTROLLER . "/professor.class.php";
                 $prof = new Professores();
 
+                // Verificando Troca de Aulas
+                require CONTROLLER . "/aulaTroca.class.php";
+                $aulaTroca = new AulasTrocas();
+                
                 // REMOVER FOTO
                 if (isset($_GET['removerFoto']))
                     $pessoa->removeFoto($user);
@@ -185,13 +189,9 @@ require SESSAO;
                     <?php
                 }
 
-                // Verificando Troca de Aulas
-                require CONTROLLER . "/aulaTroca.class.php";
-                $aulaTroca = new AulasTrocas();
-
                 $params = array(':professor' => $_SESSION['loginCodigo']);
-                $sqlAdicional = '  WHERE at.professorSubstituto = :professor AND '
-                        . ' (LENGTH(professorSubstitutoParecer) <= 0 OR professorSubstitutoParecer IS NULL) ';
+                $sqlAdicional = "  WHERE at.professorSub = :professor AND "
+                        . " professorSubAceite = '0' AND tipo = 'troca' ";
                 foreach ($aulaTroca->hasTrocas($params, $sqlAdicional) as $reg) {
                     ?>
                     <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, voc&ecirc; tem uma solicita&ccedil;&atilde;o de troca de aula.</font>
@@ -264,18 +264,32 @@ require SESSAO;
 </table>
 
 <?php
-if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
-    // Verificando se o Professor tem aulas trocadas vigentes
-    $params = array('professor' => $_SESSION['loginCodigo']);
-    $sqlAdicional = " WHERE (professor = :professor OR professorSubstituto = :professor) "
-                    . " AND SUBSTR(coordenadorParecer, 1, 6) = 'Aceito' "
+if (in_array($PROFESSOR, $_SESSION["loginTipo"])
+    || in_array($ALUNO, $_SESSION["loginTipo"]) ) {
+    
+    if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
+        // Verificando se o Professor tem aulas trocadas vigentes
+        $params = array('professor' => $_SESSION['loginCodigo']);
+        $sqlAdicional = " AND (professor = :professor OR professorSub = :professor) "
+                    . " AND coordenadorAceite = 'S' "
                     . " AND dataTroca >= NOW() ";
+    }
+
+    if (in_array($ALUNO, $_SESSION["loginTipo"])) {
+        // Verificando se o Professor tem aulas trocadas vigentes
+        $params = array('aluno' => $_SESSION['loginCodigo']);
+        $sqlAdicional = " AND atribuicao IN (SELECT atribuicao FROM Matriculas WHERE aluno = :aluno) "
+                    . " AND coordenadorAceite = 'S' "
+                    . " AND dataTroca >= NOW() ";
+    }
+    
     $res = $aulaTroca->listTrocas($params, $sqlAdicional);
     if ($res) {
         ?>
         <br><br><table id="listagem">
-            <caption>Solicita&ccedil;&otilde;es de Troca de Aula - Validadas e Vigentes</caption>
+            <caption>Trocas de Aulas/Reposi&ccedil;&otilde;es Previstas - Validadas e Vigentes</caption>
             <tr>
+                <th width='80'>Tipo</th>                
                 <th width='150'>Professor</th>
                 <th align='center' width='80'>Disciplina</th>
                 <th align='center' width='80'>Professor Substituto</th>
@@ -287,12 +301,11 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?= $cdif ?>>
+                    <td width='80'><?= $reg['tipo'] ?></td>                    
                     <td width='120'><?= $reg['professor'] ?></td>
                     <td width='120'><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
-                    <td width='120'><?= $reg['professorSubstituto'] ?></td>
-                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php'); void(0);" title='Clique aqui para analisar'>
-                            <?= $reg['dataTrocaFormatada'] ?></a>
-                    </td>                    
+                    <td width='120'><?= $reg['professorSub'] ?></td>
+                    <td><?= $reg['dataTrocaFormatada'] ?></td>
                 </tr>
                 <?php
                 $i++;
@@ -309,22 +322,18 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 
     // Verificando Troca de Aulas
     $params = array('coord' => $_SESSION['loginCodigo']);
-    $sqlAdicional = " WHERE atribuicao IN "
-            . "(SELECT a.codigo FROM Cursos c, Atribuicoes a, Turmas t, Coordenadores co "
-            . "WHERE a.turma = t.codigo "
-            . "AND t.curso = c.codigo "
-            . "AND co.curso = c.codigo "
-            . "AND co.coordenador= :coord)"
-            . "AND SUBSTR(professorSubstitutoParecer, 1, 6) = 'Aceito' "
-            . "AND (LENGTH(coordenadorParecer) <= 0 OR coordenadorParecer IS NULL) ";
+    $sqlAdicional = " AND c.codigo IN (SELECT curso FROM Coordenadores WHERE coordenador= :coord) "
+            . "AND ( (professorSubAceite = 'S' AND coordenadorAceite = '0' AND tipo = 'troca' ) "
+            . "     OR (  coordenadorAceite = '0' AND tipo = 'reposicao' ) )";
     $res = $aulaTroca->listTrocas($params, $sqlAdicional);
     if ($res) {
         ?>
         <br><br><table id="listagem">
-            <caption>Solicita&ccedil;&otilde;es de Troca de Aula</caption>
+            <caption>Solicita&ccedil;&otilde;es de Troca de Aula/Reposi&ccedil;&otilde;es</caption>
             <tr>
+                <th width='50'>Tipo</th>
                 <th width='150'>Professor</th>
-                <th align='center' width='80'>Disciplina</th>
+                <th align='center' width='150'>Disciplina</th>
                 <th align='center' width='80'>Motivo</th>
                 <th align='center' width='80'>Data da Solicita&ccedil;&atilde;o</th>
                 <th align='center' width='80'>Data da Troca</th>
@@ -338,6 +347,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                     $reg['motivo'] = abreviar($reg['motivo'], 70);
                 ?>
                 <tr <?= $cdif ?>>
+                    <td width='120'><?= $reg['tipo'] ?></td>                    
                     <td width='120'><?= $reg['professor'] ?></td>
                     <td width='120'><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>

@@ -45,7 +45,8 @@ class PlanosEnsino extends Generic {
         $sql = "SELECT pe.codigo, pe.numeroAulaSemanal as numeroAulaSemanal,
                 pe.totalHoras as totalHoras, pe.totalAulas as totalAulas,
                 pe.numeroProfessores as numeroProfessores,
-		pe.ementa as ementa, pe.objetivo as objetivo, 
+		pe.ementa as ementa, pe.objetivoGeral as objetivoGeral,
+                pe.objetivoEspecifico as objetivoEspecifico, 
                 pe.conteudoProgramatico as conteudoProgramatico,
                 pe.metodologia as metodologia,pe.solicitacao,pe.finalizado,
                 pe.recursoDidatico as recursoDidatico, pe.avaliacao as avaliacao,
@@ -98,7 +99,8 @@ class PlanosEnsino extends Generic {
         $sql = "INSERT INTO PlanosEnsino 
                     SELECT 
 		    NULL,:cod,p.numeroAulaSemanal,p.totalHoras,p.totalAulas,p.numeroProfessores,
-		    p.ementa,p.objetivo,p.conteudoProgramatico,p.metodologia,p.recursoDidatico,p.avaliacao,
+		    p.ementa,p.objetivoGeral,p.objetivoEspecifico,p.conteudoProgramatico,p.metodologia,
+                    p.recursoDidatico,p.avaliacao,
 		    p.recuperacaoParalela,p.recuperacaoFinal,p.bibliografiaBasica,p.bibliografiaComplementar
 		    ,NULL,NULL,NULL,NULL
                     FROM PlanosEnsino p

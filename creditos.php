@@ -60,6 +60,15 @@ require SESSAO;
 
 <br />
 <br />
+<b>Vers&atilde;o 1.417</b>
+<br>
+<br> - Funcionalidade adicionada de acordo com o chamado - #219 (Ordenação por data, nome)
+<br> - Funcionalidade adicionada de acordo com o chamado - #216
+<br> - Funcionalidade adicionada de acordo com o chamado - #212 (Catanduva)
+<br> - Funcionalidade adicionada de acordo com o chamado - #209 (Novo relat&oacute;rio adicionado)
+<br> - Corre&ccedil;&atilde;o do chamado - #156
+<br />
+<br />
 <b>Vers&atilde;o 1.416</b>
 <br>
 <br> - Funcionalidade adicionada de acordo com o chamado - #205

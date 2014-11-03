@@ -56,21 +56,22 @@ if (isset($_GET["bimestre"]))
 <?php
 $tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2, 'turno' => 1);
 $tipo['atendimento'] = array('nome' => 'Atendimento');
+$tipo['docente'] = array('nome' => 'Atribuição Docente', 'curso' => 2, 'turma' => 1);
 $tipo['boletim'] = array('nome' => 'Boletim Individual', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
 $tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' => 1, 'fechamento' => 1, 'turno' => 1);
 $tipo['carometro'] = array('nome' => 'Carômetro', 'curso' => 1, 'turma' => 1, 'turno' => 1);
 $tipo['diario'] = array('nome' => 'Diário', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['disciplinas'] = array('nome' => 'Disciplinas do Curso', 'curso' => 2);
-$tipo['docente'] = array('nome' => 'Atribuição Docente', 'curso' => 2, 'turma' => 1);
+$tipo['ftdd'] = array('nome' => 'FTD Detalhada', 'professor' => 1);
+$tipo['ftdr'] = array('nome' => 'FTD Resumida', 'professor' => 1);
 $tipo['lancamentos'] = array('nome' => 'Lançamento de Aulas', 'curso' => 2);
 $tipo['chamada'] = array('nome' => 'Lista de Chamada', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
-$tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'turno' => 1, 'data' => 1);
+$tipo['matriculas'] = array('nome' => 'Lista de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
+$tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'turno' => 1, 'data' => 1, 'assunto'=>1);
 $tipo['planoEnsino'] = array('nome' => 'Planos de Ensino', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['frequencia'] = array('nome' => 'Relatório de Frequências', 'curso' => 1, 'turma' => 1, 'disciplina' => 2, 'data' => 1);
-$tipo['matriculas'] = array('nome' => 'Lista de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
 $tipo['matriculasTotais'] = array('nome' => 'Totalização de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
-$tipo['ftdr'] = array('nome' => 'FTD Resumida', 'professor' => 1);
-$tipo['ftdd'] = array('nome' => 'FTD Detalhada', 'professor' => 1);
+$tipo['trocas'] = array('nome' => 'Trocas/Reposições', 'curso' => 2, 'turma' => 1);
 
 $rel_curso = null;
 $rel_turma = null;
@@ -81,6 +82,7 @@ $rel_disciplina = null;
 $rel_professor = null;
 $rel_aluno = null;
 $rel_data = null;
+$rel_assunto = null;
 ?>
 <table border="0" width="100%" id="form" width="100%">
     <tr>
@@ -101,6 +103,7 @@ $rel_data = null;
                         $rel_professor = $v['professor'];
                         $rel_aluno = $v['aluno'];
                         $rel_data = $v['data'];
+                        $rel_assunto = $v['assunto'];
                     }
                     ?>
                     <option <?= $selected ?> value="<?= $k ?>"><?= $v['nome'] ?></option>
@@ -319,7 +322,16 @@ $rel_data = null;
                 <input value="<?= $data ?>" readonly type="text" class="data1" name="data" id="data" />
             </td>
         </tr>
-    <?php } ?>
+    <?php }
+    
+    if ($rel_assunto) { ?>
+        <tr>
+            <td>Assunto: </td>
+            <td>
+                <input value="<?= $assunto ?>" type="text" name="assunto" id="assunto" maxlength="45" />
+            </td>
+        </tr>
+    <?php } ?>        
 </td>
 <?php if ($relatorio) { ?>
     <tr>
@@ -370,6 +382,8 @@ $rel_data = null;
         var situacao = $('#situacao').val();
         var data = $('#data').val();
         var professor = $('#professor').val();
+        var assunto = encodeURIComponent($('#assunto').val());
+        
         var rg = $('#alunos_rg').is(':checked');
         var cpf = $('#alunos_cpf').is(':checked');
         var nasc = $('#alunos_nasc').is(':checked');
@@ -388,7 +402,7 @@ $rel_data = null;
 
         if (impressao == 'pdf')
             window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + '.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
-                    + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor +
+                    + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor + '&assunto=' + assunto +
                     '&email=' + email + '&detalhada=' + det, '_blank');
         else
             window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno, '_blank');

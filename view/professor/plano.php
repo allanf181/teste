@@ -218,8 +218,12 @@ if ($_GET['pagina'] == "planoEnsino") {
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='ementa' name='ementa'><?= $ementa; ?></textarea>
                 </tr>
                 <tr>
-                    <td align="left">3 - Objetivo: </td>
-                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='objetivo' name='objetivo'><?= $objetivo; ?></textarea>
+                    <td align="left">3.1 - Objetivo Geral: </td>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='objetivoGeral' name='objetivoGeral'><?= $objetivoGeral; ?></textarea>
+                </tr>
+                <tr>
+                    <td align="left">3.2 - Objetivo Espec&iacute;fico/Compet&ecirc;ncias: </td>
+                    <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='objetivoEspecifico' name='objetivoEspecifico'><?= $objetivoEspecifico; ?></textarea>
                 </tr>
                 <tr>
                     <td align="left">4 - Conte&uacute;do Program&aacute;tico: </td>
@@ -317,7 +321,7 @@ if ($_GET['pagina'] == "planoAula") {
                 </tr>
                 <tr>
                     <td align="left">Conte&uacute;do: </td>
-                    <td colspan="10"><textarea rows="3" <?= $disabled; ?> cols="80" maxlength='200' id='conteudo' name='conteudo'><?= $conteudo; ?></textarea>
+                    <td colspan="10"><textarea rows="3" <?= $disabled; ?> cols="80" maxlength='400' id='conteudo' name='conteudo'><?= $conteudo; ?></textarea>
                 </tr>
             </table>
             <table width="100%"><tr><td><input type="submit" <?= $disabled; ?> value="Salvar" /></td>
@@ -370,7 +374,7 @@ $atribuicao = $_GET['atribuicao'];
     }
 
     $(document).ready(function() {
-        $('#ementa,#objetivo,#conteudoProgramatico,#metodologia,#recursoDidatico,#avaliacao,#recuperacaoParalela,#recuperacaoFinal,#bibliografiaBasica,#bibliografiaComplementar').maxlength({
+        $('#ementa,#objetivoGeral,#objetivoEspecifico,#conteudoProgramatico,#metodologia,#recursoDidatico,#avaliacao,#recuperacaoParalela,#recuperacaoFinal,#bibliografiaBasica,#bibliografiaComplementar').maxlength({
             events: [], // Array of events to be triggerd    
             maxCharacters: <?= $caracteres ?>, // Characters limit   
             status: true, // True to show status indicator bewlow the element    
@@ -384,7 +388,7 @@ $atribuicao = $_GET['atribuicao'];
 
         $('#conteudo').maxlength({
             events: [], // Array of events to be triggerd    
-            maxCharacters: 200, // Characters limit   
+            maxCharacters: 400, // Characters limit   
             status: true, // True to show status indicator bewlow the element    
             statusClass: "status", // The class on the status div  
             statusText: "caracteres restando", // The status text  

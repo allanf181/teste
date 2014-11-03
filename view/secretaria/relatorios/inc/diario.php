@@ -357,7 +357,7 @@ $pdf->SetFont($fonte, '', $tamanho);
 $pdf->SetFillColor(255, 255, 255);
 $pdf->SetLineWidth(.1);
 
-$limit = 105; // tamanho limite
+$limit = 130; // tamanho limite
 $limit2 = 120;
 
 $observ = $aulas[0]['observacoes'];

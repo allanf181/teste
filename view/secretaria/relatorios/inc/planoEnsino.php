@@ -29,7 +29,8 @@ if (dcrip($_GET["atribuicao"])) {
         $totalAulas = $reg['totalAulas'];
         $numeroProfessores = $reg['numeroProfessores'];
         $ITEM['2 - EMENTA'] = $reg['ementa'];
-        $ITEM['3 - OBJETIVO'] = $reg['objetivo'];
+        $ITEM['3.1 - OBJETIVO GERAL'] = $reg['objetivoGeral'];
+        $ITEM['3.2 - OBJETIVO ESPECÍFICO/COMPETÊNCIAS'] = $reg['objetivoEspecifico'];
         $ITEM['4 - CONTEÚDO PROGRAMÁTICO'] = $reg['conteudoProgramatico'];
         $ITEM['5 - METODOLOGIA'] = $reg['metodologia'];
         $ITEM['6 - RECURSOS DIDÁTICOS'] = $reg['recursoDidatico'];
@@ -138,9 +139,9 @@ if (dcrip($_GET["atribuicao"])) {
                 $pdf->Ln();
             }
         }
-        if (substr($chave, 0, 1) != '7' && substr($chave, 0, 1) != '8')
+        if (substr($chave, 0, 1) != '3' && substr($chave, 0, 1) != '7' && substr($chave, 0, 1) != '8')
             $pdf->Ln();
-        if (substr($chave, 0, 3) == '7.2' || substr($chave, 0, 3) == '8.1')
+        if (substr($chave, 0, 3) == '3.2' || substr($chave, 0, 3) == '7.2' || substr($chave, 0, 3) == '8.1')
             $pdf->Ln();
     }
 

@@ -65,7 +65,7 @@ class FrequenciasAbonos extends Generic {
                     FROM FrequenciasAbonos f, Pessoas p
                     WHERE f.aluno = p.codigo 
                     $sqlAdicional
-                    ORDER BY f.dataInicio DESC $nav";
+                    ORDER BY f.dataInicio DESC, p.nome ASC $nav";
 
         $res = $bd->selectDB($sql, $params);
         if ($res) {

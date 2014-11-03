@@ -25,7 +25,7 @@ if (dcrip($_GET["turma"])) {
     $linha2 = $matricula->getMatriculas($params, $sqlAdicional);
 
     $titulo = "Lista de Presença [" . $linha2[0]['turma'] . "] - $data";
-    $titulo2 = "Assunto:";
+    $titulo2 = "Assunto: ".$_GET['assunto'];
     $rodape = $SITE_TITLE;
 
     $fonte = 'Times';

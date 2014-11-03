@@ -37,7 +37,8 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_POST['data'] = dataMysql($_POST['data']);
     unset($_POST['opcao']);
     unset($_POST['plano']);
-
+    unset($_POST['regAtv']);
+    
     $ret = $aula->insertOrUpdate($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
@@ -79,20 +80,50 @@ if ($_GET['opcao'] == 'insert') {
     <div id="html5form" class="main">
         <form id="form_padrao">
             <table align="center">
-                <tr><td align="right">Semana:</td><td><select name="plano" id="plano"><option></option>;
+                <tr>
+                    <td align="right">Semana:</td>
+                    <td>
+                        <select name="plano" id="plano">
+                            <option></option>;
                             <?php
                             foreach ($res as $reg) {
                                 echo "<option title='".$reg['conteudo']."' $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
                             }
                             if (!$quantidade)
                                 $quantidade = $res[0]['numeroAulaSemanal'];
-                            ?></select></td></tr>
-
+                            ?>
+                        </select>
+                    </td>
+                </tr>
                 <tr><td align="right">Data: </td><td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?php echo $data; ?>" />
                         <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a></td></tr>
                 <tr><td align="right">Quantidade: </td><td><input style="width: 50px" <?php if ($codigo) print 'readonly'; ?> type="text" maxlength="4" id="quantidade" name="quantidade" value="<?php echo $quantidade; ?>" /></td></tr>
                 <tr><td align="right">Bases/Conhecimentos Desenvolvidos: </td><td><textarea maxlength="400" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"><?php echo $conteudo; ?></textarea></td></tr>
-                <tr><td align="right">Atividades: </td><td><textarea maxlength="400" rows="5" cols="80" id="atividade" name="atividade" style="width: 600px; height: 60px"><?php echo $atividade; ?></textarea></td></tr>
+                <tr>
+                    <td align="right">Atividades:</td>
+                    <td>
+                        <select name="regAtv" id="regAtv">
+                            <option></option>;
+                            <?php
+                            $regAtv[] = 'Exercício';
+                            $regAtv[] = 'Trabalho individual';
+                            $regAtv[] = 'Trabalho coletivo';
+                            $regAtv[] = 'Ficha de observações';
+                            $regAtv[] = 'Relatório';
+                            $regAtv[] = 'Autoavaliação';
+                            $regAtv[] = 'Prova escrita';
+                            $regAtv[] = 'Prova prática';
+                            $regAtv[] = 'Prova oral';
+                            $regAtv[] = 'Seminário';
+                            $regAtv[] = 'Projeto interdisciplinar';
+                            foreach ($regAtv as $reg) {
+                                echo "<option value='$reg'>$reg</option>";
+                            }
+                            ?>
+                        </select>
+                        <br /><textarea maxlength="400" rows="5" cols="80" id="atividade" name="atividade" style="width: 600px; height: 60px"><?php echo $atividade; ?></textarea>
+                    </td>
+                </tr>
                 <tr><td align="right">Anota&ccedil;&atilde;o de Aula: </td><td><textarea maxlength="500" rows="5" cols="80" id="anotacao" name="anotacao" style="width: 600px; height: 60px"><?php echo $anotacao; ?></textarea></td></tr>
                 <tr><td align="right" colspan="2">A anota&ccedil;&atilde;o de aula n&atilde;o entra no di&aacute;rio, apenas o conte&uacute;do.</td></tr>
 
@@ -212,6 +243,10 @@ if ($LIMITE_DIARIO_PROF != 0) {
 
         $('#plano').change(function() {
             $('#conteudo').val($('#plano').val());
+        });
+
+        $('#regAtv').change(function() {
+            $('#atividade').val($('#regAtv').val());
         });
 
         $('#conteudo, #atividade').maxlength({

@@ -54,7 +54,7 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $OK_TRUE_UPDATE = 'Registro alterado com sucesso';
     $NOK_FALSE_UPDATE = 'Problema ao alterar registro.';
 
-    $INFO_UPDATE = 'Esse registro já está cadastrado no banco de dados.';
+    $INFO_UPDATE = 'Esse registro já está cadastrado no banco de dados ou nenhum valor foi alterado.';
 
     $INFO_DELETE = 'Problema ao excluir registro! Esse registro possui depend&ecirc;ncias.';
 
