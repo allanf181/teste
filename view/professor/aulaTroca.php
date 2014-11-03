@@ -269,7 +269,7 @@ if ($_GET['opcao'] == 'listTroca') {
         <tr class="listagem_tr">
             <th align="center" width="100">Tipo</th>
             <th align="center" width="170">Data Solicitação</th>
-            <th align='center' width="140">Data Troca/Resposi&ccedil;&atilde;o</th>
+            <th align='center' width="140">Data Troca/Reposi&ccedil;&atilde;o</th>
             <th align='center'>Professor Substituto</th>
             <th align='center'>Parecer</th>
             <th align='center'>Coordenador</th>
