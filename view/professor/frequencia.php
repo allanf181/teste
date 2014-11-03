@@ -67,7 +67,7 @@ $dadosAula = $aulaFreq->getAula($aula);
                 <th align="center" style="width: 100px">Prontuário</th>
                 <th align="center">Aluno</th>
                 <th width="120" align='center'>Faltas<br />
-                    <input type="checkbox" id="select-all" value="">
+                    <input type="checkbox" id="select-all" value="" <?= $disabled ?>>
                 </th>
                 <th width="50" align='center'>Total</th>
                 <th width="85" align='center'>Frequ&ecirc;ncia na Disciplina</th>
@@ -128,15 +128,19 @@ $dadosAula = $aulaFreq->getAula($aula);
             }
             ?>
         </table>
-        <table align="center" style="width: 100%; margin-top: 10px;">
-            <tr><td></td><td align="center">
-                    <input type="hidden" value="<?= $reg['aulaQde']; ?>" name="quantidade" />
-                    <input type="hidden" value="<?= crip($aula); ?>" name="aula" />
-                    <input type="hidden" value="<?= crip($atribuicao); ?>" name="atribuicao" />
-                    <input type="hidden" name="opcao" value="InsertOrUpdate" />
-                    <input id="professores_botao" <?= $disabled ?> type="submit" value="Salvar" />
-                </td></tr>
-        </table>
+        <?php
+        if (!$_SESSION['dataExpirou']) {
+            ?>
+            <table align="center" style="width: 100%; margin-top: 10px;">
+                <tr><td></td><td align="center">
+                        <input type="hidden" value="<?= $reg['aulaQde']; ?>" name="quantidade" />
+                        <input type="hidden" value="<?= crip($aula); ?>" name="aula" />
+                        <input type="hidden" value="<?= crip($atribuicao); ?>" name="atribuicao" />
+                        <input type="hidden" name="opcao" value="InsertOrUpdate" />
+                        <input id="professores_botao" type="submit" value="Salvar" />
+                    </td></tr>
+            </table>
+        <?php } ?>
     </form>
 </div>
 <br>
@@ -152,21 +156,21 @@ $_SESSION['LINK'] = VIEW . "/professor/frequencia.php?atribuicao=" . crip($atrib
 ?>
 
 <script>
-    $(document).ready(function() {
-        $("input:checkbox").click(function() {
+    $(document).ready(function () {
+        $("input:checkbox").click(function () {
             var codigo = $(this).attr('id');
             if ($(this).prop('checked') == true) {
                 $('.' + codigo).prop('checked', true);
             }
         });
-        $('#select-all').click(function(event) {
+        $('#select-all').click(function (event) {
             if (this.checked) {
                 // Iterate each checkbox
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = true;
                 });
             } else {
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = false;
                 });
             }
