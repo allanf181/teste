@@ -278,7 +278,7 @@ if ($turma && $fechamento) {
                                 $dados = $nota->resultado($dMatricula[$c], $dCodigo);
                                 ?>
                                 <td align='center'>
-                                    <a title='<?= $disciplinasNomes2[$dCodigo] ?><br>Faltas: <?= $dados['faltas'] ?><br>Aulas Dadas: <?= $dados['auladada'] ?><br>Frequ&ecirc;ncia: <?= arredondar($dados['frequencia']) ?>%'><font color='<?= $dados['color'] ?>'><?= $dados['media'] ?></font></a>
+                                    <a title='<?= $disciplinasNomes2[$dCodigo] ?><br>Faltas: <?= $dados['faltas'] ?><br>Aulas Dadas: <?= $dados['auladada'] ?><br>Frequ&ecirc;ncia (Aulas Dadas): <?= arredondar($dados['frequencia']) ?>%<br>Frequ&ecirc;ncia (Aulas Previstas): <?= arredondar($dados['frequenciaPrevista']) ?>%'><font color='<?= $dados['color'] ?>'><?= $dados['media'] ?></font></a>
                                 </td>
                                 <?php
                             } else {

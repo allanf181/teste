@@ -117,15 +117,17 @@ class Frequencias extends FrequenciasAbonos {
             if (!$auladada = $res[0]['aulas'])
                 $auladada = $res[0]['CH'];
 
-            if ($faltas)
+            if ($faltas) {
                 $frequencia = 100 - (($faltas * 100) / $auladada);
-            else {
+                $frequenciaPrevista = 100 - (($faltas * 100) / $res[0]['CH']);
+            } else {
                 $frequencia = 100;
                 $faltas = 0;
             }
 
             $dados['CH'] = $res[0]['CH'];
             $dados['frequencia'] = round($frequencia, 1);
+            $dados['frequenciaPrevista'] = round($frequenciaPrevista, 1);
             $dados['faltas'] = $faltas;
             $dados['auladada'] = $auladada;
 
