@@ -29,19 +29,24 @@ class DigitaNotasWS {
 
             $cliente->__setLocation($servicoDigitaNotas);
 
-            $lista = array($ano,
-                $turma,
-                $eventod,
-                $bimestre,
-                $codigoDisciplina,
-                $prontuario,
-                $prontuarioAluno,
-                $semestre,
-                $flagDigitacaoNota,
-                $nota,
-                $faltas,
-                $campus,
-                $dataGravacao);
+            $aluno = array(
+                "ano" => $ano,
+                "turma" => $turma,
+                "eventoTod" => $eventod,
+                "bimestre" => $bimestre,
+                "codigoDisciplina" => $codigoDisciplina,
+                "prontuarioUsuario" => $prontuario,
+                "prontuarioAluno" => $prontuarioAluno,
+                "semestre" => $semestre,
+                "flagDigitacaoNota" => $flagDigitacaoNota,
+                "nota" => $nota,
+                "falta" => $faltas,
+                "campus" => $campus,
+                "dataGravacao" => $dataGravacao);
+            
+            $notas = array( $aluno );
+            $lista = array("notas" => $notas );
+
             $notaAlunoObj = $cliente->digitarNotasAlunos($campus, $lista);
             
             if (isset($notaAlunoObj) && $notaAlunoObj->sucesso) {
