@@ -26,7 +26,6 @@ $db2 = "SELECT DISTINCT ED_DISC, D_NOME, CM_CDCURSO, CN_TPCURSO, CN_NOME, D_CARG
 			left join escola.v_ed_versaoh on (nh_eventod = ed_eventod ) and (nh_disc = ed_disc) 
 			WHERE (ED_EVENTOD < 1900000) 
 				AND (ED_DTINICIO >= '$inicio') 
-				AND (ED_DTFINAL <= '$fim')  
 				AND ( CM_CDCURSO > 0)
         AND CN_HISTORICO = 'N'
         AND CM_CDCURSO IN (SELECT MC_CDCURSO FROM ESCOLA.MATCURSO WHERE MC_DTINGRES > '$dataInicioMat' )
