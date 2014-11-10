@@ -83,7 +83,6 @@ $db2 = "SELECT DISTINCT CM_MODULO, ED_EVENTOD, CM_MODUSEQ, CM_CDCURSO, ED_DTINIC
 			left join escola.v_ed_versaoh on (nh_eventod = ed_eventod ) and (nh_disc = ed_disc) 
 			WHERE (ED_EVENTOD < 1900000) 
 				AND (ED_DTINICIO >= '$dataInicio') 
-				AND (ED_DTFINAL <= '$dataFim')  
 				AND ( CM_CDCURSO > 0)
 				AND CN_HISTORICO = 'N'
         AND CN_TPCURSO not in ('3', '5')
