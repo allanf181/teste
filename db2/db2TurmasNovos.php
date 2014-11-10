@@ -42,7 +42,7 @@ while ($row = db2_fetch_object($res)) {
     if (abs(date('m', strtotime("$row->EM_DTFINAL")) - date('m', strtotime("$row->EM_DTINICIO"))) > 6)
         $semestre = 0;
     else
-        $semestre = date('m', strtotime("$row->EM_DTFINAL")) > 10 ? 2 : 1;
+        $semestre = date('m', strtotime("$row->EM_DTINICIO")) < 6 ? 1 : 2;
 
     $numero = 'N' . $row->EM_MODULO . $row->CM_MODUSEQ;
     $sql = "SELECT * FROM Turmas 
