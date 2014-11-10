@@ -96,7 +96,7 @@ while ($row = db2_fetch_object($res)) {
     if (abs(date('m', strtotime("$row->ED_DTFINAL")) - date('m', strtotime("$row->ED_DTINICIO"))) > 6)
         $semestre = 0;
     else
-        $semestre = date('m', strtotime("$row->EM_DTINICIO")) < 6 ? 1 : 2;
+        $semestre = date('m', strtotime("$row->ED_DTINICIO")) < 6 ? 1 : 2;
 
     $numero = 'N' . $row->CM_MODULO . $row->CM_MODUSEQ;
 
