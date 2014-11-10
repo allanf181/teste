@@ -107,7 +107,7 @@ while ($row = db2_fetch_object($res)) {
     $res2 = mysql_query($sql);
     if (!$turma = mysql_fetch_object($res2)) {// TURMA NÃO EXISTE, ENTÃO IMPORTA
         // IMPORTA A TURMA
-        $ano = date('Y', strtotime($row->ED_DTFINAL));
+        $ano = date('Y', strtotime($row->ED_DTINICIO));
         $sql = "insert into Turmas (codigo, ano, semestre, numero, curso, turno, sequencia) values (0, "
                 . $ano . ", "
                 . $semestre . ", "
