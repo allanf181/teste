@@ -1,9 +1,9 @@
 <?php
 if (!$LOCATION_CRON) {
-    require("$LOCATION_CRON"."db2Mysql.php");
-    require("$LOCATION_CRON"."db2Funcoes.php");
-    require("$LOCATION_CRON"."db2Variaveis.inc.php");
-    require("$LOCATION_CRON"."../inc/funcoes.inc.php");
+    require("$LOCATION_CRON" . "db2Mysql.php");
+    require("$LOCATION_CRON" . "db2Funcoes.php");
+    require("$LOCATION_CRON" . "db2Variaveis.inc.php");
+    require("$LOCATION_CRON" . "../inc/funcoes.inc.php");
 }
 
 require ('lib/digitaNotasWS.php');
@@ -40,7 +40,8 @@ $n = 0;
 $s = 0;
 
 while ($l = mysql_fetch_array($result)) {
-    if ($l[13] > 10) $flagDigitacaoNota = 5;
+    if ($l[13] > 10)
+        $flagDigitacaoNota = 5;
     $prontuario = $l[0];
     $prontuarioAluno = $l[1];
     $codigoDisciplina = $l[2];
@@ -65,7 +66,7 @@ while ($l = mysql_fetch_array($result)) {
 
         try {
             $digitaNotaAlunoWS = new digitaNotasWS();
-            
+
             $aluno = array(
                 "ano" => $ano,
                 "turma" => $turma,
@@ -80,11 +81,11 @@ while ($l = mysql_fetch_array($result)) {
                 "falta" => $faltas,
                 "campus" => $campus,
                 "dataGravacao" => date('dmY'));
-            
-            $notas = array( $aluno );
-            $lista = array("notas" => $notas );
-            
-            $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista );
+
+            $notas = array($aluno);
+            $lista = array("notas" => $notas);
+
+            $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
             $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
 
             if ($ret) {
@@ -135,7 +136,8 @@ if (!$LOCATION_CRON) {
     mysql_query($sql);
 
     $URL = "DIGITA NOTAS: $s NOTAS SINCRONIZADAS";
-    if ($DEBUG) print "$URL \n";
+    if ($DEBUG)
+        print "$URL \n";
     $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
     mysql_query($sql);
 }
