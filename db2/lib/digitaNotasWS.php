@@ -27,16 +27,15 @@ class DigitaNotasWS {
             if (isset($notaAlunoObj) && $notaAlunoObj->sucesso) {
                 return true;
             } else {
-                print_r($lista);
+                print_r($notaAlunoObj);
             }
         } catch (Exception $e) {
             $erro = "Erro DigitaNotas: " . $e->getMessage();
-            if ($DEBUG)
+            if ($DEBUG) {
                 echo "$erro \n";
+                print_r($lista);
+            }
             mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
-
-            error_log("DigitaNotasWS::digitarNotasAlunos service general error: " . $e->getMessage());
-            throw $e;
         }
         return false;
     }
