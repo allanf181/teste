@@ -33,7 +33,6 @@ class DigitaNotasWS {
             $erro = "Erro DigitaNotas: " . $e->getMessage();
             if ($DEBUG) {
                 echo "$erro \n";
-                print_r($lista);
             }
             mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
         }

@@ -155,9 +155,10 @@ class Aulas extends Frequencias {
         $bd = new database();
 
         $sql = "SELECT SUBSTRING(p.nome, 1, 37) as professor, 
-                CONCAT(d.nome,' [',IFNULL(a.subturma, a.eventod),']', IF(a.bimestre>0, CONCAT(' [',a.bimestre,' BIM]'), '') ) as disciplina, d.ch,
+                CONCAT(d.nome,' [',IFNULL(a.subturma, a.eventod),']', 
+                IF(a.bimestre>0, CONCAT(' [',a.bimestre,' BIM]'), '') ) as disciplina, d.ch,
                 (SELECT SUM(quantidade) FROM Aulas au WHERE au.atribuicao = a.codigo) as aulas,
-                t.numero,
+                t.numero, a.aulaPrevista,
                 SUBSTRING(c.nome, 1, 27) as curso
                 FROM Disciplinas d, Cursos c, Atribuicoes a, 
                     Pessoas p, Turmas t, Professores pr

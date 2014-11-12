@@ -28,9 +28,9 @@ $alturaLinha = 10;
 $orientacao = "L"; //Landscape
 //$orientacao = "P"; //Portrait
 $papel = "A4";
-$colunas = array("professor", "disciplina", "ch", "aulas", "numero", "curso");
-$titulosColunas = array("PROFESSOR", "DISCIPLINA", "C. HORÁRIA", "QDE. AULAS", "TURMA", "CURSO");
-$largura = array(70,80,22,23,20,60);
+$colunas = array("professor", "disciplina", "ch", "aulaPrevista", "aulas", "numero", "curso");
+$titulosColunas = array("Professor", "Disciplina", "Carga Hor.", "Aulas Prev.", "Aulas Dadas", "Turma", "Curso");
+$largura = array(60,70,23,23,23,20,50);
 
 // gera o relatÃ³ em PDF
 include PATH.LIB.'/relatorio_banco.php';

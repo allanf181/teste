@@ -69,7 +69,7 @@ $tipo['chamada'] = array('nome' => 'Lista de Chamada', 'curso' => 1, 'turma' => 
 $tipo['matriculas'] = array('nome' => 'Lista de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
 $tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'turno' => 1, 'data' => 1, 'assunto'=>1);
 $tipo['planoEnsino'] = array('nome' => 'Planos de Ensino', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
-$tipo['frequencia'] = array('nome' => 'Relatório de Frequências', 'curso' => 1, 'turma' => 1, 'disciplina' => 2, 'data' => 1);
+$tipo['frequencia'] = array('nome' => 'Relatório de Frequências', 'curso' => 1, 'turma' => 1, 'disciplina' => 1, 'data' => 1);
 $tipo['matriculasTotais'] = array('nome' => 'Totalização de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
 $tipo['trocas'] = array('nome' => 'Trocas/Reposições', 'curso' => 2, 'turma' => 1);
 
