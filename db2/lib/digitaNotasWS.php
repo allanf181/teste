@@ -4,7 +4,7 @@ require_once ('criptografia.php');
 
 class DigitaNotasWS {
 
-    public function digitarNotaAluno($user, $pass, //usuario e senha do WS
+    public function digitarNotasAlunos($user, $pass, //usuario e senha do WS
             $campus, //sigla do campus
             $prontuario, //prontuario do professor
             $prontuarioAluno, //prontuario do aluno

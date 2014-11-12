@@ -66,7 +66,7 @@ while ($l = mysql_fetch_array($result)) {
         try {
 
             $digitaNotaAlunoWS = new digitaNotasWS();
-            $ret = $digitaNotaAlunoWS->digitarNotaAluno($user, $pass, $campus, $prontuario, $prontuarioAluno, $codigoDisciplina, $eventod, $bimestre, $ano, $semestre, $faltas, $nota, $turma, date('dmY'), $flagDigitacaoNota );
+            $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $prontuario, $prontuarioAluno, $codigoDisciplina, $eventod, $bimestre, $ano, $semestre, $faltas, $nota, $turma, date('dmY'), $flagDigitacaoNota );
             $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
 
             if ($ret) {
