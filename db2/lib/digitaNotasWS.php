@@ -60,7 +60,7 @@ class DigitaNotasWS {
                 echo "$erro \n";
             mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
 
-            error_log("DigitaNotasWS::digitarNotaAluno service general error: " . $e->getMessage());
+            error_log("DigitaNotasWS::digitarNotasAlunos service general error: " . $e->getMessage());
             throw $e;
         }
         return false;
