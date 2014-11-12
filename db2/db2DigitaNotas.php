@@ -64,9 +64,27 @@ while ($l = mysql_fetch_array($result)) {
         }
 
         try {
-
             $digitaNotaAlunoWS = new digitaNotasWS();
-            $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $prontuario, $prontuarioAluno, $codigoDisciplina, $eventod, $bimestre, $ano, $semestre, $faltas, $nota, $turma, date('dmY'), $flagDigitacaoNota );
+            
+            $aluno = array(
+                "ano" => $ano,
+                "turma" => $turma,
+                "eventoTod" => $eventod,
+                "bimestre" => $bimestre,
+                "codigoDisciplina" => $codigoDisciplina,
+                "prontuarioUsuario" => $prontuario,
+                "prontuarioAluno" => $prontuarioAluno,
+                "semestre" => $semestre,
+                "flagDigitacaoNota" => $flagDigitacaoNota,
+                "nota" => $nota,
+                "falta" => $faltas,
+                "campus" => $campus,
+                "dataGravacao" => date('dmY'));
+            
+            $notas = array( $aluno );
+            $lista = array("notas" => $notas );
+            
+            $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista );
             $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
 
             if ($ret) {
