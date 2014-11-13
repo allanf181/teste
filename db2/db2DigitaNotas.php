@@ -116,15 +116,16 @@ while ($l = mysql_fetch_array($result)) {
                 $conexao++;
 
                 if ($ret->sucesso == 1) {
-                    $URL = 'Nota registra com sucesso: '.$log;
+                    $URL = 'Nota registra com sucesso';
                 } else {
                     $URL = $ret->motivo;
                 }
 
                 if ($ret->sucesso == 1) {
+                    print $ret->motivo;
                     if ($DEBUG)
                         echo "$URL \n";
-                    mysql_query("insert into Logs values(0, '$URL', now(), 'CRON_NT', 1)");
+                    mysql_query("insert into Logs values(0, '$URL:$log', now(), 'CRON_NT', 1)");
                     mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno=".$ret->motivo." WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Nota registrada.";
