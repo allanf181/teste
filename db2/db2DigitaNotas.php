@@ -42,13 +42,14 @@ $n = 0;
 $s = 0;
 $notas = array();
 $codigos = array();
+$logs = array();
 $count = 1;
-$conexao=0;
+$conexao = 0;
 
 while ($l = mysql_fetch_array($result)) {
     //if ($l[13] > 10)
     //    $flagDigitacaoNota = 5;
-    
+
     $prontuario = $l[0];
     $prontuarioAluno = $l[1];
     $codigoDisciplina = $l[2];
@@ -92,8 +93,11 @@ while ($l = mysql_fetch_array($result)) {
             "nota" => $nota,
             "falta" => $faltas,
             "campus" => $campus,
-            "dataGravacao" => date('dmY'));
+            "dataGravacao" => date('dmY')
+        );
 
+
+        $logs[] = "($prontuario|N:$nota|D:$codigoDisciplina)";
         $codigos[] = $l[12];
         array_push($notas, $aluno);
 
@@ -101,7 +105,8 @@ while ($l = mysql_fetch_array($result)) {
             $count = 0;
 
             $cod = implode(',', $codigos);
-            
+            $log = implode('##', $logs);
+
             try {
                 $digitaNotaAlunoWS = new digitaNotasWS();
 
@@ -111,7 +116,7 @@ while ($l = mysql_fetch_array($result)) {
                 $conexao++;
 
                 if ($ret->sucesso == 1) {
-                    $URL = 'Nota registra com sucesso.';
+                    $URL = 'Nota registra com sucesso: '.$log;
                 } else {
                     $URL = $ret->motivo;
                 }
@@ -120,16 +125,16 @@ while ($l = mysql_fetch_array($result)) {
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '$URL', now(), 'CRON_NT', 1)");
-                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$ret' WHERE codigo IN ($cod)");
+                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno=".$ret->motivo." WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Nota registrada.";
                     $s++;
                 } else {
-                    $URL = "ERRO $URL \n";
+                    $URL = "ERRO: $URL: $log \n";
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_ERRO', 1)");
-                    mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo IN ($cod)");
+                    mysql_query("UPDATE NotasFinais SET retorno=".$ret->motivo." WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Problema ao registrar nota.";
                     $n++;
@@ -141,20 +146,20 @@ while ($l = mysql_fetch_array($result)) {
                 if ($DEBUG)
                     echo "$erro \n";
                 mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
-                mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo IN ($cod)");
+                mysql_query("UPDATE NotasFinais SET retorno=$erro WHERE codigo IN ($cod)");
                 $n++;
             }
 
             $codigos = array();
             $notas = array();
-            
+
             if ($conexao == 6) {
                 //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
                 for ($m = 1; $m <= 10; $m++) {
                     sleep(1);
                     print "Esperando WS Block... $m segundos... \n";
                 }
-                $conexao=0;
+                $conexao = 0;
             }
         }
 

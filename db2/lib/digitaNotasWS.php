@@ -24,11 +24,8 @@ class DigitaNotasWS {
 
             $notaAlunoObj = $cliente->digitarNotasAlunos($campus, $lista);
             
-            if (isset($notaAlunoObj) && $notaAlunoObj->sucesso) {
-                return true;
-            } else {
-                return (object) $notaAlunoObj;
-            }
+            return (object) $notaAlunoObj;
+
         } catch (Exception $e) {
             $erro = "Erro DigitaNotas: " . $e->getMessage();
             if ($DEBUG) {
