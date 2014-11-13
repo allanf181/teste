@@ -26,7 +26,8 @@ $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuico
                     AND pr1.atribuicao = a1.codigo
                     AND a1.codigo = a.codigo LIMIT 1),
         p.prontuario, d.numero, a.eventod, t.ano, t.semestre,
-        n.bimestre, n.falta, n.sincronizado, n.mcc, n.rec, n.ncc, n.codigo, DATEDIFF(NOW(),a.dataFim) as data
+        n.bimestre, n.falta, n.sincronizado, n.mcc, n.rec, n.ncc, n.codigo, 
+        DATEDIFF(NOW(),a.dataFim) as data, t.numero
 	FROM NotasFinais n, Atribuicoes a, Pessoas p, Matriculas m, Disciplinas d, Turmas t
 	WHERE n.atribuicao = a.codigo
 	AND n.matricula = m.codigo
@@ -57,6 +58,8 @@ while ($l = mysql_fetch_array($result)) {
     $bimestre = ($l[6] == 0) ? 'M' : $l[6];
     $ano = $l[4];
     $nota = $l[11];
+    $turmaD = $l[14];
+    
     if ($l[11] < 10)
         $nota = number_format($l[11], 1, '.', ' ');
 
@@ -97,7 +100,7 @@ while ($l = mysql_fetch_array($result)) {
         );
 
 
-        $logs[] = "($prontuario|N:$nota|D:$codigoDisciplina)";
+        $logs[] = "TURMA: $prontuario|NOTA: $nota|DISC: $codigoDisciplina";
         $codigos[] = $l[12];
         array_push($notas, $aluno);
 
@@ -130,7 +133,7 @@ while ($l = mysql_fetch_array($result)) {
                         print "Nota registrada.";
                     $s++;
                 } else {
-                    $URL = "$URL: $log \n";
+                    $URL = "$URL:## $log \n";
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_NTERR', 1)");

@@ -98,7 +98,7 @@ require PATH . VIEW . '/paginacao.php';
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?=$cdif?>>
-                    <td align='left'><?= utf8_decode($reg['url']) ?></td>
+                    <td align='left'><?= utf8_decode(str_replace("##", "<br>", $reg['url'])) ?></td>
                     <td align='left'><?= $reg['data'] ?></td>
                     <td align='left'><?= $reg['pessoa'] ?></td>
                 </tr>
