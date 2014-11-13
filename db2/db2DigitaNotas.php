@@ -122,11 +122,10 @@ while ($l = mysql_fetch_array($result)) {
                 }
 
                 if ($ret->sucesso == 1) {
-                    print $ret->motivo;
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '$URL:$log', now(), 'CRON_NT', 1)");
-                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno=".$ret->motivo." WHERE codigo IN ($cod)");
+                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno=$URL WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Nota registrada.";
                     $s++;
