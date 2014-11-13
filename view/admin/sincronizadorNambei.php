@@ -111,7 +111,7 @@ $log = new Logs();
                         . "GROUP BY l.url "
                         . "ORDER BY l.data DESC, l.origem ASC, l.url ASC, l.codigo DESC ";
                 foreach ($log->listLogs($params, $sqlAdicional, 1, null) as $reg) {
-                    print $reg['data'] . " - " . utf8_decode($reg['url']) . "<br>";
+                    print $reg['data'] . " - " . utf8_decode(str_replace("##", "<br>", $reg['url'])) . "<br>";
                 }
                 ?>
             </td>
