@@ -21,14 +21,16 @@ $campus = $DIGITANOTAS;
 $turma = '0';
 $flagDigitacaoNota = '0';
 
-$sql = "SELECT p.prontuario, p2.prontuario, d.numero, a.eventod, t.ano, t.semestre,
+$sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuicoes a1 
+                    WHERE p1.codigo = pr1.professor
+                    AND pr1.atribuicao = a1.codigo
+                    AND a1.codigo = a.codigo LIMIT 1),
+        p.prontuario, d.numero, a.eventod, t.ano, t.semestre,
         n.bimestre, n.falta, n.sincronizado, n.mcc, n.rec, n.ncc, n.codigo, DATEDIFF(NOW(),a.dataFim) as data
-	FROM NotasFinais n, Atribuicoes a, Pessoas p, Pessoas p2, Professores pr, Matriculas m, Disciplinas d, Turmas t
+	FROM NotasFinais n, Atribuicoes a, Pessoas p, Matriculas m, Disciplinas d, Turmas t
 	WHERE n.atribuicao = a.codigo
-	AND pr.atribuicao = a.codigo
-	AND pr.professor = p.codigo
 	AND n.matricula = m.codigo
-	AND m.aluno = p2.codigo
+	AND m.aluno = p.codigo
 	AND d.codigo = a.disciplina
 	AND m.atribuicao = a.codigo
 	AND t.codigo = a.turma
@@ -38,10 +40,12 @@ $sql = "SELECT p.prontuario, p2.prontuario, d.numero, a.eventod, t.ano, t.semest
 $result = mysql_query($sql);
 $n = 0;
 $s = 0;
+$notas = array();
+$count=1;
 
 while ($l = mysql_fetch_array($result)) {
-    if ($l[13] > 10)
-        $flagDigitacaoNota = 5;
+    //if ($l[13] > 10)
+    //    $flagDigitacaoNota = 5;
     $prontuario = $l[0];
     $prontuarioAluno = $l[1];
     $codigoDisciplina = $l[2];
@@ -54,69 +58,80 @@ while ($l = mysql_fetch_array($result)) {
     $faltas = $l[7];
     $nota = number_format($l[11], 1, '.', ' ');
 
-    $j = ($l[10]) ? 2 : 1;
+    $j = ($bimestre == 'M') ? 2 : 1;
 
     for ($i = 0; $i < $j; $i++) {
 
-        if ($i == 1 && $l[10]) {
-            $bimestre = 'R';
-            $faltas = '0';
-            $nota = number_format($l[10], 1, '.', ' ');
+        if ($i == 1) {
+            if ($l[10]) {
+                $bimestre = 'R';
+                $faltas = '0';
+                $nota = number_format($l[10], 1, '.', ' ');
+            } else {
+                continue;
+            }
         }
 
-        try {
-            $digitaNotaAlunoWS = new digitaNotasWS();
+        $aluno = array(
+            "ano" => $ano,
+            "turma" => $turma,
+            "eventoTod" => $eventod,
+            "bimestre" => $bimestre,
+            "codigoDisciplina" => $codigoDisciplina,
+            "prontuarioUsuario" => $prontuario,
+            "prontuarioAluno" => $prontuarioAluno,
+            "semestre" => $semestre,
+            "flagDigitacaoNota" => $flagDigitacaoNota,
+            "nota" => $nota,
+            "falta" => $faltas,
+            "campus" => $campus,
+            "dataGravacao" => date('dmY'));
 
-            $aluno = array(
-                "ano" => $ano,
-                "turma" => $turma,
-                "eventoTod" => $eventod,
-                "bimestre" => $bimestre,
-                "codigoDisciplina" => $codigoDisciplina,
-                "prontuarioUsuario" => $prontuario,
-                "prontuarioAluno" => $prontuarioAluno,
-                "semestre" => $semestre,
-                "flagDigitacaoNota" => $flagDigitacaoNota,
-                "nota" => $nota,
-                "falta" => $faltas,
-                "campus" => $campus,
-                "dataGravacao" => date('dmY'));
+        array_push($notas, $aluno);
 
-            $notas = array($aluno);
-            $lista = array("notas" => $notas);
+        if ($count == 30 || $codigo) {
+            $count=0;
 
-            $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
-            print $ret;
-            $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
+            try {
+                $digitaNotaAlunoWS = new digitaNotasWS();
 
-            if ($ret) {
-                if ($DEBUG)
-                    echo "$URL \n";
-                mysql_query("insert into Logs values(0, '$URL', now(), 'CRON_NT', 1)");
-                mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$ret' WHERE codigo = " . $l[12]);
+                $lista = array("notas" => $notas);
+
+                $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
+                print $ret;
+                $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
+
+                if ($ret) {
+                    if ($DEBUG)
+                        echo "$URL \n";
+                    mysql_query("insert into Logs values(0, '$URL', now(), 'CRON_NT', 1)");
+                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$ret' WHERE codigo = " . $l[12]);
+                    if ($codigo)
+                        print "Nota registrada.";
+                    $s++;
+                } else {
+                    $URL = "ERRO $URL \n";
+                    if ($DEBUG)
+                        echo "$URL \n";
+                    mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_ERRO', 1)");
+                    mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
+                    if ($codigo)
+                        print "Problema ao registrar nota.";
+                    $n++;
+                }
+            } catch (Exception $ex) {
                 if ($codigo)
-                    print "Nota registrada.";
-                $s++;
-            } else {
-                $URL = "ERRO $URL \n";
+                    print $ex;
+                $erro = "Erro DigitaNotas: $ex";
                 if ($DEBUG)
-                    echo "$URL \n";
-                mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_ERRO', 1)");
+                    echo "$erro \n";
+                mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
                 mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
-                if ($codigo)
-                    print "Problema ao registrar nota.";
                 $n++;
             }
-        } catch (Exception $ex) {
-            if ($codigo)
-                print $ex;
-            $erro = "Erro DigitaNotas: $ex";
-            if ($DEBUG)
-                echo "$erro \n";
-            mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
-            mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
-            $n++;
         }
+        
+        $count++;
     }
 }
 
