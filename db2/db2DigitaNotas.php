@@ -128,8 +128,7 @@ while ($l = mysql_fetch_array($result)) {
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '$URL:## $log', now(), 'CRON_NT', 1)");
-                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno=$URL WHERE codigo IN ($cod)");
-                    print "UPDATE NotasFinais SET sincronizado = NOW(), retorno=$URL WHERE codigo IN ($cod)";
+                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$URL' WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Nota registrada.";
                     $s++;
@@ -138,7 +137,7 @@ while ($l = mysql_fetch_array($result)) {
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_NTERR', 1)");
-                    mysql_query("UPDATE NotasFinais SET retorno=".$ret->motivo." WHERE codigo IN ($cod)");
+                    mysql_query("UPDATE NotasFinais SET retorno='".$ret->motivo."' WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Problema ao registrar nota.";
                     $n++;
@@ -150,7 +149,7 @@ while ($l = mysql_fetch_array($result)) {
                 if ($DEBUG)
                     echo "$erro \n";
                 mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_NTERR', 1)");
-                mysql_query("UPDATE NotasFinais SET retorno=$erro WHERE codigo IN ($cod)");
+                mysql_query("UPDATE NotasFinais SET retorno='$erro' WHERE codigo IN ($cod)");
                 $n++;
             }
 
