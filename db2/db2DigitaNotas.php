@@ -100,7 +100,7 @@ while ($l = mysql_fetch_array($result)) {
         );
 
 
-        $logs[] = "TURMA: $prontuario|NOTA: $nota|DISC: $codigoDisciplina";
+        $logs[] = "TURMA: $turmaD |PRONT: $prontuario |DISC: $codigoDisciplina |NOTA: $nota";
         $codigos[] = $l[12];
         array_push($notas, $aluno);
 
