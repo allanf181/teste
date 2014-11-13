@@ -20,7 +20,12 @@ class Calendarios extends Generic {
                   date_format(c.dataFim, '%d/%m/%Y') as dataFim,
                   IF(c.diaLetivo = 0,'NÃO','SIM') as diaLetivoNome,
                   date_format(dataInicio, '%d') as dia, 
-                  date_format(dataInicio, '%m') as mes
+                  date_format(dataInicio, '%m') as mes,
+                  (SELECT IF(LENGTH(c1.nomeAlternativo) > 0,c1.nomeAlternativo, c1.nome) 
+                    FROM Cursos c1
+                    WHERE c1.codigo = c.curso)
+                  as cursoCal, curso,
+                  (SELECT nome FROM Tipos WHERE codigo = c.tipo) as tipoCal, tipo
                   FROM Calendarios c 
                   WHERE date_format(c.dataInicio, '%Y') = :ano
                   $sqlAdicional

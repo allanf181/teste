@@ -36,8 +36,8 @@ if (dcrip($_GET["turma"])) {
     $situacaoNome['N'] = 'Nota';
     $situacaoNome['F'] = 'Falta';
     $situacaoNome['SIT'] = 'Situação';
-    $situacaoNome['MG'] = 'Média Global';
-    $situacaoNome['FG'] = 'Frequência Global';
+    //$situacaoNome['MG'] = 'Média Global';
+    //$situacaoNome['FG'] = 'Frequência Global';
 
     foreach ($atribuicao->getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento, $turno) as $reg) {
         $turnoNome = $reg['turno'];
@@ -88,7 +88,7 @@ if (dcrip($_GET["turma"])) {
     $pdf->SetFont($fonte, 'B', $tamanho + 2);
 
     $pdf->Cell(20, $alturaLinha, utf8_decode("Prontuário"), 1, 0, 'C', true);
-    $pdf->Cell(65, $alturaLinha, utf8_decode("Nome"), 1, 0, 'C', true);
+    $pdf->Cell(85, $alturaLinha, utf8_decode("Nome"), 1, 0, 'C', true);
 
     foreach ($disciplinasNomes as $ddSigla) {
         $T = 285 / count($disciplinasNomes);
@@ -97,12 +97,12 @@ if (dcrip($_GET["turma"])) {
     }
 
     $pdf->Cell(10, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
-    $pdf->Cell(10, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
-    $pdf->Cell(10, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
+    //$pdf->Cell(10, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
+    //$pdf->Cell(10, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
 
     $pdf->Ln();
     $pdf->Cell(20, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
-    $pdf->Cell(65, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
+    $pdf->Cell(85, $alturaLinha, utf8_decode(""), 1, 0, 'C', true);
 
     foreach ($disciplinasNomes as $ddSigla) {
         $T = 285 / count($disciplinasNomes);
@@ -111,8 +111,8 @@ if (dcrip($_GET["turma"])) {
         $pdf->Cell($T / 2, $alturaLinha, utf8_decode("F"), 1, 0, 'C', true);
     }
 
-    $pdf->Cell(10, $alturaLinha, utf8_decode("MG"), 1, 0, 'C', true);
-    $pdf->Cell(10, $alturaLinha, utf8_decode("FG"), 1, 0, 'C', true);
+    //$pdf->Cell(10, $alturaLinha, utf8_decode("MG"), 1, 0, 'C', true);
+    //$pdf->Cell(10, $alturaLinha, utf8_decode("FG"), 1, 0, 'C', true);
     $pdf->Cell(10, $alturaLinha, utf8_decode("SIT"), 1, 0, 'C', true);
 
     $pdf->Ln();
@@ -122,7 +122,7 @@ if (dcrip($_GET["turma"])) {
             $discMediaAnual = null;
             $discQdePorAluno = null;
             $pdf->Cell(20, $alturaLinha, utf8_decode($alunosProntuario[$c]), 1, 0, 'C', true);
-            $pdf->Cell(65, $alturaLinha, abreviar(utf8_decode(mostraTexto($nome)), 36), 1, 0, 'L', true);
+            $pdf->Cell(85, $alturaLinha, abreviar(utf8_decode(mostraTexto($nome)), 40), 1, 0, 'L', true);
 
             foreach ($disciplinas as $dCodigo => $dMatricula) {
                 if ($situacaoListar[$c][$dCodigo]) {
@@ -137,14 +137,14 @@ if (dcrip($_GET["turma"])) {
                 }
             }
 
-            $dadosGlobal = $nota->resultadoModulo($c, $turma);
-            if (!$media = $dadosGlobal['mediaGlobal'])
-                $media = '-';
-            $frequencia = round($dadosGlobal['frequenciaGlobal'], 1);
-            $frequencia = (!$frequencia) ? '-' : $frequencia . '%';
+            //$dadosGlobal = $nota->resultadoModulo($c, $turma);
+            //if (!$media = $dadosGlobal['mediaGlobal'])
+            //    $media = '-';
+            //$frequencia = round($dadosGlobal['frequenciaGlobal'], 1);
+            //$frequencia = (!$frequencia) ? '-' : $frequencia . '%';
 
-            $pdf->Cell(10, $alturaLinha, $media, 1, 0, 'C', true);
-            $pdf->Cell(10, $alturaLinha, $frequencia, 1, 0, 'C', true);
+            //$pdf->Cell(10, $alturaLinha, $media, 1, 0, 'C', true);
+            //$pdf->Cell(10, $alturaLinha, $frequencia, 1, 0, 'C', true);
             $pdf->Cell(10, $alturaLinha, utf8_decode($situacaoSigla[$c][$dCodigo]), 1, 0, 'C', true);
 
             $pdf->Ln();

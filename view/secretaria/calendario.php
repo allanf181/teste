@@ -23,7 +23,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     if ($_POST['diaLetivo'])
         $_POST['diaLetivo'] = 1;
     else
-        unset($_POST['diaLetivo']);
+        $_POST['diaLetivo'] = 0;
 
     $ret = $calendario->insertOrUpdate($_POST);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
@@ -47,6 +47,17 @@ if ($_GET["opcao"] == 'delete') {
 // inicializando as variáveis do formulário
 $params['ano'] = $ANO;
 $sqlAdicional .= " AND date_format(c.dataInicio, '%Y') = :ano ";
+
+if (dcrip($_GET["tipo"]) != "") {
+    $params['tipo'] = dcrip($_GET["tipo"]);
+    $sqlAdicional .= " AND c.tipo = :tipo ";
+    $tipo = dcrip($_GET["tipo"]);
+}
+if (dcrip($_GET["curso"]) != "") {
+    $params['curso'] = dcrip($_GET["curso"]);
+    $sqlAdicional .= " AND c.curso = :curso ";
+    $curso = dcrip($_GET["curso"]);
+}
 
 $dataInicio = $_GET['dataInicio'];
 $dataFim = $_GET['dataFim'];
@@ -87,6 +98,42 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
             <input type="hidden" value="<?php echo crip($codigo); ?>" name="codigo" id="codigo" />
+            <tr>
+                <td align="right">Curso: </td>
+                <td>
+                    <select name="curso" id="curso" value="<?= $curso ?>">
+                        <option>Todos</option>
+                        <?php
+                        require CONTROLLER . '/curso.class.php';
+                        $cursos = new Cursos();
+                        foreach ($cursos->listCursos(null) as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $curso)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['curso'] . " [" . $reg['codigo'] . "]</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>            
+            <tr><td  style="width: 100px" align="right">Tipo: </td>
+                <td colspan="2" align="left" style="width: 100px"> 
+                    <select name="tipo" id="tipo">
+                        <option>Todos</option>
+                        <?php
+                        require CONTROLLER . '/tipo.class.php';
+                        $tp = new Tipos();
+                        $res = $tp->listRegistros(null, null, null, 'ORDER BY nome');
+                        foreach ($res as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $tipo)
+                                $selected = "selected";
+                            echo "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>            
             <tr><td  style="width: 100px" align="right">Data: </td><td>
                     <input type="text" size="10" value="<?php echo $dataInicio; ?>" name="dataInicio" id="dataInicio" />
                     a <input type="text" size="10" value="<?php echo $dataFim; ?>" name="dataFim" id="dataFim" />
@@ -141,6 +188,8 @@ require PATH . VIEW . '/paginacao.php';
         <th>Data</th>
         <th>Ocorr&ecirc;ncia</th>
         <th>Dia Letivo</th>
+        <th>Curso</th>
+        <th>Tipo</th>
         <th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a>
         </th>
@@ -157,6 +206,8 @@ require PATH . VIEW . '/paginacao.php';
             <td><?= $reg['dataInicio'] ?></td>
             <td><?= mostraTexto($reg['ocorrencia']) ?></td>
             <td><?= $reg['diaLetivoNome'] ?></td>
+            <td><?= $reg['cursoCal'] ?></td>
+            <td><?= $reg['tipoCal'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?php print crip($reg['codigo']); ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?php print crip($reg['codigo']); ?>'>
@@ -172,7 +223,9 @@ require PATH . VIEW . '/paginacao.php';
     function atualizar(getLink) {
         var dataInicio = $('#dataInicio').val();
         var dataFim = $('#dataFim').val();
-        var URLS = '<?php print $SITE; ?>?dataInicio=' + dataInicio + '&dataFim=' + dataFim;
+        var tipo = $('#tipo').val();
+        var curso = $('#curso').val();
+        var URLS = '<?php print $SITE; ?>?dataInicio=' + dataInicio + '&dataFim=' + dataFim + '&tipo=' + tipo + '&curso=' + curso;
         if (!getLink)
             $('#index').load(URLS + '&item=<?php print $item; ?>');
         else
@@ -246,7 +299,7 @@ require PATH . VIEW . '/paginacao.php';
         });
 
 <?php if (!$_GET["codigo"]) { ?>
-            $('#dataInicio, #dataFim').change(function() {
+            $('#dataInicio, #dataFim, #curso, #tipo').change(function() {
                 atualizar();
             });
 <?php } ?>

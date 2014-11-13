@@ -145,8 +145,8 @@ if (!empty($curso)) {
             <th align="center" width="40">#</th>
             <th align="left">Disciplina</th>
             <th align="left">Professor</th>
-            <th align="left">Turma</th>
-            <th align="left">Fechado</th>
+            <th align="left" width="70">Turma</th>
+            <th align="left" width="70">Situa&ccedil;&atilde;o</th>
             <th align="left">Liberado em:</th>            
             <th width="40" align="center">
                 <input type='checkbox' id='select-all' name='select-all' class='campoTodos' value='' />

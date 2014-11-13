@@ -200,12 +200,12 @@ if ($turma && $fechamento) {
                 }
             }
 
-            if ($bimestre != 'final' || $fechamento == 's') {
+            //if ($bimestre != 'final' || $fechamento == 's') {
                 ?>
-                <td>&nbsp</td>
-                <td>&nbsp</td>
+                <!--<td>&nbsp</td>
+                <td>&nbsp</td>--?
                 <?php
-            }
+            //}
 
             if ($fechamento != 'b') {
                 foreach ($bimestres as $bim => $aa) {
@@ -242,12 +242,12 @@ if ($turma && $fechamento) {
                 }
             }
             ?>
-            <td align='center' style='width: 30px'>
+            <!-- <td align='center' style='width: 30px'>
                 <a title='M&eacute;dia Global'>MG</a>
             </td>
             <td align='center' style='width: 30px'>
                 <a title='Frequ&ecirc;ncia Global'>FG</a>
-            </td>
+            </td> -->
         </tr>
         <?php
         $i = 1;
@@ -306,18 +306,18 @@ if ($turma && $fechamento) {
                                 <?php
                             }
                     }
+                    
+                    //$dadosGlobal = $nota->resultadoModulo($c, $turma);
 
-                    $dadosGlobal = $nota->resultadoModulo($c, $turma);
-
-                    if (!$media = $dadosGlobal['mediaGlobal'])
-                        $media = '-';
-                    $frequencia = round($dadosGlobal['frequenciaGlobal'], 1);
-                    $frequencia = (!$frequencia) ? '-' : $frequencia . '%';
+                    //if (!$media = $dadosGlobal['mediaGlobal'])
+                    //    $media = '-';
+                    //$frequencia = round($dadosGlobal['frequenciaGlobal'], 1);
+                    //$frequencia = (!$frequencia) ? '-' : $frequencia . '%';
                     ?>
-                    <td align='center'>
+                    <!--<td align='center'>
                         <font color='<?= $dadosGlobal['color'] ?>'><b><?= $media ?></b></font>
                     </td>
-                    <td align='center'><?= $frequencia ?></td>
+                    <td align='center'><?= $frequencia ?></td> -->
                 </tr>
                 <?php
                 $i++;

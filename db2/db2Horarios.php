@@ -30,7 +30,7 @@ while ($row = db2_fetch_object($res)) {
     $res2 = mysql_query($sql);
     if (!$calendario = mysql_fetch_object($res2)) {// DATA NÃO EXISTE, ENTÃO IMPORTA
         // IMPORTA A DATA
-        $sql = "INSERT INTO Calendarios VALUES (NULL, '" . $row->F_DATA . "', NULL, 0, '$ocorrencia')";
+        $sql = "INSERT INTO Calendarios VALUES (NULL, '" . $row->F_DATA . "', NULL, 0, '$ocorrencia', 0, 0)";
         if (!$result = mysql_query($sql)) {
             if ($DEBUG)
                 echo "<br>Erro ao importar DATA: $sql \n";

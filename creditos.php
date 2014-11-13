@@ -60,6 +60,17 @@ require SESSAO;
 
 <br />
 <br />
+<b>Vers&atilde;o 1.418</b>
+<br>
+<br> - Corre&ccedil;&atilde;o do chamado - #229
+<br> - Alterações na funcionalidade de acordo com o chamado - #223
+<br> - Alterações na funcionalidade de acordo com o chamado - #228
+<br> - Alterações na funcionalidade de acordo com o chamado - #213
+<br> - Alterações na funcionalidade de acordo com o chamado - #209
+<br> - Melhorias no relat&oacute;rio de Lan&ccedil;amento de Aulas
+<br> - Altera&ccedil;&atilde;o no DigitaNotas para enviar um array de alunos
+<br />
+<br />
 <b>Vers&atilde;o 1.417</b>
 <br>
 <br> - Funcionalidade adicionada de acordo com o chamado - #219 (Ordenação por data, nome)

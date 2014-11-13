@@ -22,11 +22,12 @@ class AulasTrocas extends Generic {
                 . "(SELECT nome FROM Disciplinas d, Atribuicoes a WHERE a.disciplina = d.codigo AND a.codigo = atribuicao) as disciplina, "
                 . "IF(coordenadorAceite = '0','aguardando...', IF(coordenadorAceite = 'S', 'SIM', 'NÃO')) as avalCoord,"
                 . "IF(tipo = 'reposicao','Reposição', 'Troca') as tipo,"
-                . "date_format(dataTroca, '%d/%m/%Y') as dataTrocaFormatada,"
+                . "date_format(dataTroca, '%d/%m/%Y') as dataTrocaFormatada,d.numero as discNumero,"
                 . "t.numero as turma, professorSubAceite, professorSubParecer, coordenadorParecer, "
                 . "IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso "
-                . "FROM AulasTrocas at, Atribuicoes a, Turmas t, Cursos c "
+                . "FROM AulasTrocas at, Atribuicoes a, Turmas t, Cursos c, Disciplinas d "
                 . "WHERE at.atribuicao = a.codigo "
+                . "AND a.disciplina = d.codigo "
                 . "AND a.turma = t.codigo "
                 . "AND t.curso = c.codigo ";
 

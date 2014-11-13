@@ -16,7 +16,41 @@ if (!class_exists('Calendarios'))
 
 $calendario = new Calendarios();
 $paramsCal = array('ano' => $ANO);
-$resCal = $calendario->listCalendario($paramsCal);
+
+$user = $_SESSION['loginCodigo'];
+$tipo = implode(',', $_SESSION["loginTipo"]);
+
+$sqlAdicionalCal = " AND (     (c.curso = 0 AND c.tipo = 0) 
+                            OR (c.curso IN (SELECT t.curso 
+                                FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
+                                WHERE t.codigo = a.turma 
+                                AND m.atribuicao = a.codigo 
+                                AND m.aluno = p.codigo 
+                                AND t.codigo = a.turma
+                                AND p.codigo = $user ) AND (c.tipo IN ($tipo)) )
+                            OR (c.curso IN (SELECT t.curso 
+                                FROM Pessoas p, Atribuicoes a, Professores pr, Turmas t
+                                WHERE p.codigo = pr.professor 
+                                AND pr.atribuicao = a.codigo
+                                AND t.codigo = a.turma
+                                AND p.codigo = $user ) AND (c.tipo IN ($tipo)) )
+                            OR (c.curso = 0 AND (c.tipo IN ($tipo)) )
+                            OR (c.curso IN (SELECT t.curso
+                                FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
+                                WHERE t.codigo = a.turma 
+                                AND m.atribuicao = a.codigo 
+                                AND m.aluno = p.codigo 
+                                AND t.codigo = a.turma
+                                AND p.codigo = $user ) AND c.tipo = 0)
+                            OR (c.curso IN (SELECT t.curso 
+                                FROM Pessoas p, Atribuicoes a, Professores pr, Turmas t
+                                WHERE p.codigo = pr.professor 
+                                AND pr.atribuicao = a.codigo
+                                AND t.codigo = a.turma
+                                AND p.codigo = $user ) AND c.tipo = 0)
+                         )";
+
+$resCal = $calendario->listCalendario($paramsCal, $sqlAdicionalCal);
 foreach ($resCal as $reg) {
     if ($reg['dataFim'] && $reg['dataFim'] != '00/00/0000') {
         $end = dataMysql($reg['dataFim']);

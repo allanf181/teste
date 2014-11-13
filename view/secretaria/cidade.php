@@ -121,7 +121,8 @@ if ($params['codigo'])
 $res = $cidade->listCidades($params, $item, $itensPorPagina, $sqlAdicional);
 $totalRegistros = count($cidade->listCidades($params, null, null, $sqlAdicional));
 
-$params['estado'] = crip($params['estado']);
+if ($estado)
+    $params['estado'] = crip($estado);
 $SITENAV = $SITE . '?' . mapURL($params);
 require PATH . VIEW . '/paginacao.php';
 ?>

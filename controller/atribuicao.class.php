@@ -294,6 +294,8 @@ class Atribuicoes extends Generic {
         if ($res) {
             $i = 0;
             foreach ($res as $reg) {
+                $origem = null;
+                
                 //VERIFICANDO SE O PRAZO FOI FINALIZADO E ALTERA NA ATRIBUICAO
                 if ($reg['prazo'] != '0000-00-00 00:00:00' && $reg['prazo'] < 0) {
                     mysql_query("UPDATE Atribuicoes SET status=4,prazo='' WHERE codigo = " . $linha[0]);
