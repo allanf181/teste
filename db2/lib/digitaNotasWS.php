@@ -27,7 +27,7 @@ class DigitaNotasWS {
             if (isset($notaAlunoObj) && $notaAlunoObj->sucesso) {
                 return true;
             } else {
-                return $notaAlunoObj;
+                return (object) $notaAlunoObj;
             }
         } catch (Exception $e) {
             $erro = "Erro DigitaNotas: " . $e->getMessage();

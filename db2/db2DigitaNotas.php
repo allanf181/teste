@@ -109,14 +109,14 @@ while ($l = mysql_fetch_array($result)) {
 
                 $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
                 $conexao++;
-                
-                $URL = "$ret";
-                
-                if ($ret == 1) {
+
+                if ($ret->sucesso == 1) {
                     $URL = 'Nota registra com sucesso.';
+                } else {
+                    $URL = $ret->motivo;
                 }
 
-                if ($ret == 1) {
+                if ($ret->sucesso == 1) {
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '$URL', now(), 'CRON_NT', 1)");
