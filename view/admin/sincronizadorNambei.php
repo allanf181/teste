@@ -79,14 +79,6 @@ $log = new Logs();
         </tr>
         <tr>
             <td colspan="3">
-                <b>DIVERG&Ecirc;NCIAS ENTRE WEBDI&Aacute;RIO(WD) E NAMBEI-DIGITANOTAS(DN)</b>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3"><hr></td>
-        </tr>
-        <tr>
-            <td colspan="3">
                 <b>ERROS OCORRIDOS</b>
             </td>
         </tr>
