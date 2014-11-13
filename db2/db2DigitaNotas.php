@@ -100,9 +100,7 @@ while ($l = mysql_fetch_array($result)) {
                 $lista = array("notas" => $notas);
 
                 $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
-                print $ret;
-                print_r($notas);
-                $URL = "DIGITANOTAS (PROF:$prontuario|AL:$prontuarioAluno|DISC:$codigoDisciplina|N:$nota|F:$faltas|FLAG:$flagDigitacaoNota): $ret \n";
+                $URL = "$ret \n";
 
                 if ($ret) {
                     if ($DEBUG)
