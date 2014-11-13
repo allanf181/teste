@@ -109,7 +109,7 @@ $log = new Logs();
                 $sqlAdicional = " AND l.origem = 'CRON_ERRO' "
                         . "AND l.data BETWEEN DATE_SUB(NOW(), INTERVAL 5 DAY) AND NOW() "
                         . "GROUP BY l.url "
-                        . "ORDER BY l.origem ASC, l.url ASC, l.codigo DESC, l.data DESC ";
+                        . "ORDER BY l.data DESC, l.origem ASC, l.url ASC, l.codigo DESC ";
                 foreach ($log->listLogs($params, $sqlAdicional, 1, null) as $reg) {
                     print $reg['data'] . " - " . abreviar($reg['url'], 100) . "<br>";
                 }
