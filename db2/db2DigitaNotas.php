@@ -131,6 +131,11 @@ while ($l = mysql_fetch_array($result)) {
                 $n++;
             }
             
+            //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
+            for($m=0; $m < 10; $m++) {
+                sleep(1);
+                print "Esperando WS Block... $m segundos...";
+            }
             $notas = array();
         }
         
