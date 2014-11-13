@@ -115,7 +115,7 @@ while ($l = mysql_fetch_array($result)) {
                     $URL = 'Nota registra com sucesso.';
                 }
 
-                if ($ret) {
+                if ($ret == 1) {
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '$URL', now(), 'CRON_NT', 1)");
