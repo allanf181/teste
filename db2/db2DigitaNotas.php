@@ -52,11 +52,12 @@ while ($l = mysql_fetch_array($result)) {
     $eventod = $l[3];
     $bimestre = ($l[6] == 0) ? 'M' : $l[6];
     $ano = $l[4];
+    $nota = $l[11];
+    if ($l[11] < 10) $nota = number_format($l[11], 1, '.', ' ');
 
     $semestre = ($l[5]) ? $l[5] : $semestre;
     $semestre = str_pad($semestre, 2, "0", STR_PAD_LEFT);
     $faltas = $l[7];
-    $nota = number_format($l[11], 1, '.', ' ');
 
     $j = ($bimestre == 'M') ? 2 : 1;
 
@@ -66,7 +67,8 @@ while ($l = mysql_fetch_array($result)) {
             if ($l[10]) {
                 $bimestre = 'R';
                 $faltas = '0';
-                $nota = number_format($l[10], 1, '.', ' ');
+                $nota = $l[10];
+                if ($l[10] < 10) $nota = number_format($l[10], 1, '.', ' ');
             } else {
                 continue;
             }
