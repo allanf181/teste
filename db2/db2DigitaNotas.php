@@ -41,6 +41,7 @@ $result = mysql_query($sql);
 $n = 0;
 $s = 0;
 $notas = array();
+$codigos = array();
 $count = 1;
 $conexao=0;
 
@@ -92,11 +93,14 @@ while ($l = mysql_fetch_array($result)) {
             "campus" => $campus,
             "dataGravacao" => date('dmY'));
 
+        $codigos[] = $l[12];
         array_push($notas, $aluno);
 
         if ($count == 10 || $codigo) {
             $count = 0;
 
+            $cod = implode(',', $codigos);
+            
             try {
                 $digitaNotaAlunoWS = new digitaNotasWS();
 
@@ -115,7 +119,7 @@ while ($l = mysql_fetch_array($result)) {
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '$URL', now(), 'CRON_NT', 1)");
-                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$ret' WHERE codigo = " . $l[12]);
+                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$ret' WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Nota registrada.";
                     $s++;
@@ -124,7 +128,7 @@ while ($l = mysql_fetch_array($result)) {
                     if ($DEBUG)
                         echo "$URL \n";
                     mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_ERRO', 1)");
-                    mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
+                    mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Problema ao registrar nota.";
                     $n++;
@@ -136,7 +140,7 @@ while ($l = mysql_fetch_array($result)) {
                 if ($DEBUG)
                     echo "$erro \n";
                 mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
-                mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
+                mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo IN ($cod)");
                 $n++;
             }
 
