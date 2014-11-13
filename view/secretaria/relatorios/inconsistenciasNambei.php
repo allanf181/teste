@@ -71,7 +71,7 @@ $ordem = '';
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$sqlAdicional .= " AND l.origem = 'CRON_NTDIV'  ORDER BY data DESC ";
+$sqlAdicional .= " AND (l.origem = 'CRON_NTDIV' OR l.origem = 'CRON_NTERR') ORDER BY data DESC ";
 
 $res = $log->listLogs($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($log->listLogs($params, $sqlAdicional));
