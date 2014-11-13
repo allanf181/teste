@@ -89,9 +89,9 @@ require PATH . VIEW . '/paginacao.php';
 <table id="listagem" border="0" align="center">
     <tr>
         <th align="center">URL</th>
-        <th width="50">Data</th>
-        <th width="50">Origem</th>
-        <th width="50">Pessoa</th>
+        <th width="100">Data</th>
+        <th width="100">Origem</th>
+        <th width="100">Pessoa</th>
     </tr>
             <?php
             $i = 0;
