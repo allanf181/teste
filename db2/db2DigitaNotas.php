@@ -42,6 +42,7 @@ $n = 0;
 $s = 0;
 $notas = array();
 $count = 1;
+$conexao=0;
 
 while ($l = mysql_fetch_array($result)) {
     //if ($l[13] > 10)
@@ -102,6 +103,8 @@ while ($l = mysql_fetch_array($result)) {
                 $lista = array("notas" => $notas);
 
                 $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
+                $conexao++;
+                
                 $URL = "$ret \n";
 
                 if ($ret) {
@@ -135,11 +138,14 @@ while ($l = mysql_fetch_array($result)) {
 
             $notas = array();
             
-            //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
-            for ($m = 0; $m < 10; $m++) {
-                sleep(1);
-                print "Esperando WS Block... $m segundos... \n";
-            }            
+            if ($conexao == 6) {
+                //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
+                for ($m = 0; $m < 10; $m++) {
+                    sleep(1);
+                    print "Esperando WS Block... $m segundos... \n";
+                }
+                $conexao=0;
+            }
         }
 
         $count++;
