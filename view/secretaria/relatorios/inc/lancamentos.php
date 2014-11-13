@@ -12,6 +12,12 @@ if (dcrip($_GET["curso"])) {
     $sqlAdicional .= ' AND c.codigo = :curso ';
 }
 
+if (dcrip($_GET["turma"])) {
+    $turma = dcrip($_GET["turma"]);
+    $params['turma'] = $turma;
+    $sqlAdicional .= ' AND t.codigo = :turma ';
+}
+
 $params['ano'] = $ANO;
 $params['semestre'] = $SEMESTRE;
 $sqlAdicional.= ' AND t.ano=:ano AND (t.semestre=:semestre OR t.semestre=0) GROUP BY a.codigo ORDER BY p.nome ';

@@ -64,7 +64,7 @@ $tipo['diario'] = array('nome' => 'Diário', 'curso' => 1, 'turma' => 1, 'discip
 $tipo['disciplinas'] = array('nome' => 'Disciplinas do Curso', 'curso' => 2);
 $tipo['ftdd'] = array('nome' => 'FTD Detalhada', 'professor' => 1);
 $tipo['ftdr'] = array('nome' => 'FTD Resumida', 'professor' => 1);
-$tipo['lancamentos'] = array('nome' => 'Lançamento de Aulas', 'curso' => 2);
+$tipo['lancamentos'] = array('nome' => 'Lançamento de Aulas', 'curso' => 2, 'turma' => 1);
 $tipo['chamada'] = array('nome' => 'Lista de Chamada', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['matriculas'] = array('nome' => 'Lista de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
 $tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'turno' => 1, 'data' => 1, 'assunto'=>1);
