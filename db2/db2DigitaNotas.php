@@ -41,7 +41,7 @@ $result = mysql_query($sql);
 $n = 0;
 $s = 0;
 $notas = array();
-$count=1;
+$count = 1;
 
 while ($l = mysql_fetch_array($result)) {
     //if ($l[13] > 10)
@@ -53,7 +53,8 @@ while ($l = mysql_fetch_array($result)) {
     $bimestre = ($l[6] == 0) ? 'M' : $l[6];
     $ano = $l[4];
     $nota = $l[11];
-    if ($l[11] < 10) $nota = number_format($l[11], 1, '.', ' ');
+    if ($l[11] < 10)
+        $nota = number_format($l[11], 1, '.', ' ');
 
     $semestre = ($l[5]) ? $l[5] : $semestre;
     $semestre = str_pad($semestre, 2, "0", STR_PAD_LEFT);
@@ -68,7 +69,8 @@ while ($l = mysql_fetch_array($result)) {
                 $bimestre = 'R';
                 $faltas = '0';
                 $nota = $l[10];
-                if ($l[10] < 10) $nota = number_format($l[10], 1, '.', ' ');
+                if ($l[10] < 10)
+                    $nota = number_format($l[10], 1, '.', ' ');
             } else {
                 continue;
             }
@@ -92,7 +94,7 @@ while ($l = mysql_fetch_array($result)) {
         array_push($notas, $aluno);
 
         if ($count == 10 || $codigo) {
-            $count=0;
+            $count = 0;
 
             try {
                 $digitaNotaAlunoWS = new digitaNotasWS();
@@ -130,18 +132,18 @@ while ($l = mysql_fetch_array($result)) {
                 mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
                 $n++;
             }
-            
-            if (!$count) {
-                //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
-                for($m=0; $m < 10; $m++) {
-                    sleep(1);
-                    print "Esperando WS Block... $m segundos... \n";
-                }
-            }
-            
+
             $notas = array();
         }
-        
+
+        if (!$count) {
+            //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
+            for ($m = 0; $m < 10; $m++) {
+                sleep(1);
+                print "Esperando WS Block... $m segundos... \n";
+            }
+        }
+
         $count++;
     }
 }
