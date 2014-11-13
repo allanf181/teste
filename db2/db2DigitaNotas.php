@@ -152,6 +152,7 @@ while ($l = mysql_fetch_array($result)) {
 
             $codigos = array();
             $notas = array();
+            $logs = array();
 
             if ($conexao == 6) {
                 //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
