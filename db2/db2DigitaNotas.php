@@ -91,7 +91,7 @@ while ($l = mysql_fetch_array($result)) {
 
         array_push($notas, $aluno);
 
-        if ($count == 30 || $codigo) {
+        if ($count == 10 || $codigo) {
             $count=0;
 
             try {
@@ -132,6 +132,8 @@ while ($l = mysql_fetch_array($result)) {
                 mysql_query("UPDATE NotasFinais SET retorno='$ret' WHERE codigo = " . $l[12]);
                 $n++;
             }
+            
+            $notas = array();
         }
         
         $count++;
