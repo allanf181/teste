@@ -130,10 +130,10 @@ while ($l = mysql_fetch_array($result)) {
                         print "Nota registrada.";
                     $s++;
                 } else {
-                    $URL = "ERRO: $URL: $log \n";
+                    $URL = "$URL: $log \n";
                     if ($DEBUG)
                         echo "$URL \n";
-                    mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_ERRO', 1)");
+                    mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_NTERR', 1)");
                     mysql_query("UPDATE NotasFinais SET retorno=".$ret->motivo." WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Problema ao registrar nota.";
@@ -145,7 +145,7 @@ while ($l = mysql_fetch_array($result)) {
                 $erro = "Erro DigitaNotas: $ex";
                 if ($DEBUG)
                     echo "$erro \n";
-                mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_ERRO', 1)");
+                mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_NTERR', 1)");
                 mysql_query("UPDATE NotasFinais SET retorno=$erro WHERE codigo IN ($cod)");
                 $n++;
             }
