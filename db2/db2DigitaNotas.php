@@ -144,6 +144,7 @@ while ($l = mysql_fetch_array($result)) {
                 $n++;
             }
 
+            $codigos = array();
             $notas = array();
             
             if ($conexao == 6) {
