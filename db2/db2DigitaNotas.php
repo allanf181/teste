@@ -105,7 +105,11 @@ while ($l = mysql_fetch_array($result)) {
                 $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
                 $conexao++;
                 
-                $URL = "$ret \n";
+                $URL = "$ret";
+                
+                if ($ret == 1) {
+                    $URL = 'Nota registra com sucesso.';
+                }
 
                 if ($ret) {
                     if ($DEBUG)
