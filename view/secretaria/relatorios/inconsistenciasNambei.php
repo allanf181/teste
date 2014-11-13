@@ -71,7 +71,7 @@ $ordem = '';
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$sqlAdicional .= " AND (l.origem = 'CRON_NTDIV' OR l.origem = 'CRON_NTERR') ORDER BY data DESC ";
+$sqlAdicional .= " AND (l.origem = 'CRON_NTDIV' OR l.origem = 'CRON_NTERR') ORDER BY data DESC, url ASC ";
 
 $res = $log->listLogs($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($log->listLogs($params, $sqlAdicional));
@@ -98,7 +98,7 @@ require PATH . VIEW . '/paginacao.php';
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?=$cdif?>>
-                    <td align='left'><?= $reg['url'] ?></td>
+                    <td align='left'><?= utf8_decode($reg['url']) ?></td>
                     <td align='left'><?= $reg['data'] ?></td>
                     <td align='left'><?= $reg['pessoa'] ?></td>
                 </tr>
