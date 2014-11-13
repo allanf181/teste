@@ -48,6 +48,7 @@ $conexao=0;
 while ($l = mysql_fetch_array($result)) {
     //if ($l[13] > 10)
     //    $flagDigitacaoNota = 5;
+    
     $prontuario = $l[0];
     $prontuarioAluno = $l[1];
     $codigoDisciplina = $l[2];
