@@ -90,7 +90,7 @@ require PATH . VIEW . '/paginacao.php';
     <tr>
         <th align="center">URL</th>
         <th style="width: 20%">Data</th>
-        <th width="100" style="width: 20%">Origem</th>
+        <th width="50" style="width: 20%">Origem</th>
         <th width="100" style="width: 20%">Pessoa</th>
     </tr>
             <?php
@@ -99,7 +99,7 @@ require PATH . VIEW . '/paginacao.php';
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?=$cdif?>>
-                    <td align='left'><?= $reg['url'] ?></td>
+                    <td align='left'><?= utf8_decode(str_replace("##", "<br>", $reg['url'])) ?></td>
                     <td align='left'><?= $reg['data'] ?></td>
                     <td align='left'><?= $reg['origem'] ?></td>
                     <td align='left'><?= $reg['pessoa'] ?></td>
