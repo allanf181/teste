@@ -141,16 +141,21 @@ img {
 	border:0px;
 }
 
+.footer-hr {
+    display: block; height: 1px;
+    border: 0; border-top: 1px solid #ccc;
+    margin: 1em 0; padding: 0;
+}
 .footer {
 	text-align: center;
 	font-size: 11px;
 	color: #aaa;
 	/*margin-top: 40px;*/
-	border-top: 1px dotted #aaa;
+	/*border-top: 1px dotted #aaa;*/
 	padding-top: 10px;
-	float: right;
-        margin-right: 25px;
-	width: 980px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 980px;
 	/*background: pink;*/
 }
 

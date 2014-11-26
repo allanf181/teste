@@ -322,7 +322,9 @@ if (isset($_SESSION["loginTipo"])) {
 <div id="index"></div>
 </div>
 </div>
-<div class="footer" <?php if (!$_SESSION['loginCodigo']) print 'style="margin-right: 195px; "'; ?> >
+<div class="footer">
+    &nbsp;
+    <hr class="footer-hr">
     <a class="link" href="javascript:$('#index').load('creditos.php');void(0);">Grupo de Trabalho WebDi&aacute;rio IFSP</a>
     <br />
     <span>Resolu&ccedil;&atilde;o m&iacute;nima 1024x768</span>
