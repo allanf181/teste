@@ -221,6 +221,8 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                     <tr><td colspan="2"><hr></td></tr>
                     <tr><td><b>Cache</b> <br>(Quantidade de dias que o sistema armazena em cache a autenti&ccedil;&atilde;o do usu&aacute;rio, evitando m&uacute;ltiplos acessos ao LDAP) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_cache" id="ldap_cache" value="<?php echo $ldap_cache; ?>" /></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
+                    <tr><td><b>LDAP DROP LEFT</b> <br>(Quantidade de caracteres que dever&atilde;o ser ignorados no momento da autentica&ccedil;&atilde;o, contando a partir da esquerda) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_drop_left" id="ldap_drop_left" value="<?php echo $ldap_drop_left; ?>" /></td></tr>
+                    <tr><td colspan="2"><hr></td></tr>
 
                 </table>
                 <tr><td colspan="2">&nbsp;</td></tr>

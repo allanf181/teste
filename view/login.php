@@ -38,7 +38,7 @@ if ($prontuario && $senha) {
     }
 
     if (!isset($erro_cap)) {
-        if ($login->autentica($prontuario, $senha, $LDAP_ATIVADO)) {
+        if ($login->autentica($prontuario, $senha, $LDAP_ATIVADO, $LDAP_DROP_LEFT, $LDAP_CACHE)) {
             print "Aguarde... redirecionando...";
             print "<script type=\"text/javascript\">\n";
             print "  location.reload(); \n";

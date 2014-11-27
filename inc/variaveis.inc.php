@@ -38,6 +38,7 @@ if ($res = $instituicao->listRegistros()) {
     $DIGITANOTAS = $res[0]['campiDigitaNotas'];
     $LDAP_ATIVADO = $res[0]['ldap_ativado'];
     $LDAP_CACHE = $res[0]['ldap_cache'];
+    $LDAP_DROP_LEFT = $res[0]['ldap_drop_left'];
     $EMAIL = $res[0]['email_account'];
 }
 ?>

@@ -60,6 +60,12 @@ require SESSAO;
 
 <br />
 <br />
+<b>Vers&atilde;o 1.419</b>
+<br>
+<br> - Corre&ccedil;&atilde;o do chamado - #231
+<br> - Altera&ccedil;&atilde;o no modo de autentica&ccedil;&atilde;o do LDAP
+<br />
+<br />
 <b>Vers&atilde;o 1.418</b>
 <br>
 <br> - Corre&ccedil;&atilde;o do chamado - #229

@@ -17,11 +17,17 @@ class login extends Generic {
 
     // MÉTODO PARA AUTENTICAÇÃO
     // USADO POR: VIEW/LOGIN.PHP
-    public function autentica($prontuario, $senha, $LDAP_ATIVADO) {
+    public function autentica($prontuario, $senha, $LDAP_ATIVADO, $LDAP_DROP_LEFT, $LDAP_CACHE) {
         $bd = new database();
 
         $rs = null;
+        $prontuarioBD = $prontuario;                
+
         if ($LDAP_ATIVADO) {
+            //REMOVENDO CARACETERES ADICIONAIS PARA AUTENTICACAO DO LDAP
+            if ($LDAP_DROP_LEFT)
+                $prontuarioBD = substr($prontuario, $LDAP_DROP_LEFT);
+
             if ($LDAP_CACHE) { // SE CACHE
                 $sql = "SELECT prontuario, senha "
                         . "FROM schema_ldap_cache "
@@ -40,8 +46,8 @@ class login extends Generic {
 
         if (!$rs) { // SE NAO AUTENTICOU PELO LDAP, TENTA PELO BANCO.
             // SE ADMIN QUE ESTA USANDO OUTRO LOGIN
-            if (strpos($prontuario, '#ADMIN') !== false) {
-                $pront = explode('#', $prontuario);
+            if (strpos($prontuarioBD, '#ADMIN') !== false) {
+                $pront = explode('#', $prontuarioBD);
                 $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
                         . " FROM Pessoas"
                         . " WHERE prontuario=:pront1"
@@ -53,13 +59,13 @@ class login extends Generic {
                         . " FROM Pessoas"
                         . " WHERE prontuario=:prontuario"
                         . " AND senha=PASSWORD(:senha)";
-                $params = array(':prontuario' => $prontuario, ':senha' => $senha);
+                $params = array(':prontuario' => $prontuarioBD, ':senha' => $senha);
             }
         } else { // SE AUTENTICOU PELO LDAP, PEGA OS DADOS PARA A SESSAO.
             $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
                     . " FROM Pessoas"
                     . " WHERE prontuario=:prontuario";
-            $params = array(':prontuario' => $prontuario);
+            $params = array(':prontuario' => $prontuarioBD);
         }
         $res = $bd->selectDB($sql, $params);
 

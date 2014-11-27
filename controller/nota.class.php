@@ -255,6 +255,9 @@ class Notas extends Frequencias {
             $media = $this->doFormula($formula, $medias);
         }
 
+        if ($arredondar)
+            $media = arredondar($media);
+        
         // CALCULANDO A FREQUENCIA
         $dados = $this->getFrequencia($matricula, $atribuicao);
 
@@ -284,7 +287,7 @@ class Notas extends Frequencias {
         }
 
         // ARREDONDANDO A MEDIA PARA DUAS CASAS
-        $dados['media'] = arredondar($media);
+        $dados['media'] = $media;
 
         // RETORNANDO OS DADOS
         return $dados;
