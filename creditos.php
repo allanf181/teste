@@ -62,6 +62,8 @@ require SESSAO;
 <br />
 <b>Vers&atilde;o 1.419</b>
 <br>
+<br> - Corre&ccedil;&atilde;o do chamado - #241
+<br> - Adicionada impress&atilde;o XLS em Relat&oacute;rios -&gt; Alunos
 <br> - Corre&ccedil;&atilde;o do chamado - #234
 <br> - Corre&ccedil;&atilde;o do chamado - #231
 <br> - Altera&ccedil;&atilde;o no modo de autentica&ccedil;&atilde;o do LDAP

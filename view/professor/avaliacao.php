@@ -107,7 +107,7 @@ if ($_GET['opcao'] == 'insert') {
         valida();
         $(document).ready(function() {
     <?php
-    if ($calculo == 'peso' || $calculo == 'soma' || $tipoAval == 'pontoExtra') {
+    if ($calculo == 'peso' || $calculo == 'soma' || $tipoAval == 'pontoextra') {
         ?>
                 $("#valor").mask("99.99");
                 $("#valor").change(function() {
@@ -214,7 +214,7 @@ if ($_GET['opcao'] == 'insert') {
                             </select>
                         </td></tr>
                     <?php
-                    if (($calculo == 'peso' || $calculo == 'soma') && ($tipoAval != 'substitutiva' && $tipoAvalRec != 'recuperacao')) {
+                    if (($calculo == 'peso' || $calculo == 'soma' || $tipoAval=='pontoextra') && ($tipoAval != 'substitutiva' && $tipoAvalRec != 'recuperacao')) {
                         if ($maxPontos <= 0)
                             $enabled = 'disabled';
 
@@ -308,7 +308,19 @@ if ($_GET['opcao'] == '') {
     <hr><br>
     <?php if ($res[0]['nome']) { ?>
         <table id="listagem" border="0" align="center">
-            <tr><th width="40">#</th><th width="100">Data</th><th>Avalia&ccedil;&atilde;o</th><th>Sigla</th><th>Tipo</th><th width="150">Valor</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+            <tr>
+                <th width="40">#</th>
+                <th width="100">Data</th>
+                <th>Avalia&ccedil;&atilde;o</th>
+                <th>Sigla</th>
+                <th>Tipo</th>
+                <th width="150">Valor</th>
+                <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
+                    <a href="#" class='item-excluir'>
+                        <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                    </a>
+                </th>
+            </tr>
             <?php
             $i = count($res);
             foreach ($res as $reg) {
@@ -318,7 +330,7 @@ if ($_GET['opcao'] == '') {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
 
                 $totalPesoOrPonto = $reg['totalPeso'];
-                if ($calculo == 'media' || $calculo == 'formula')
+                if (($calculo == 'media' || $calculo == 'formula') && $reg['tipo'] != 'pontoExtra')
                     $reg['peso'] = '';
 
                 if ($reg['recuperacao'])
