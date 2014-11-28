@@ -55,7 +55,7 @@ if ($_GET["filtro"]) {
                 <td align="right">Filtro: </td>
                 <td>
                     <input value="<?php echo $filtro; ?>" type="text" value="<?php echo $filtro; ?>" name=filtro" id=filtro" onblur="$('#index').load('<?php print $SITE; ?>?data=<?php echo $data; ?>&filtro=' + encodeURIComponent(this.value));" />
-                    <a href="#" title="Buscar"><img class="botao" style="width:15px;height:15px;" src='<?php print ICONS; ?>/sync.png' id="atualizaData" /></a>
+                    <a href="#" title="Buscar"><img class="botao" style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' id="atualizaData" /></a>
                     &nbsp;&nbsp;<a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a>
                 </td>
             </tr>

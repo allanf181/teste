@@ -247,12 +247,12 @@ if (dcrip($_GET["nome"])) {
                     <tr>
                         <td align="right">Nome: </td>
                         <td><input type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 250pt" id="nome" name="nome" maxlength="45" value="<?= $nome ?>"/>
-                            <a href="#" id="setNome" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/sync.png' /></a>
+                            <a href="#" id="setNome" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
                     </tr>
                     <tr>
                         <td align="right">Prontuario: </td>
                         <td><input type="text" <?php if ($codigo) print "readonly"; ?> id="prontuario" autocomplete="off" name="prontuario" maxlength="45" value="<?= $prontuario ?>"/>
-                            <a href="#" id="setProntuario" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/sync.png' /></a>
+                            <a href="#" id="setProntuario" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
                     </tr>
                     <tr>
                         <td align="right">Senha: </td>

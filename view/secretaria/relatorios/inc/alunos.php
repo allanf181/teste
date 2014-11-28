@@ -10,6 +10,11 @@ $aluno = new Alunos();
 require CONTROLLER . '/turma.class.php';
 $turmas = new Turmas();
 
+if ($_GET["tipoImpressao"] == 'xls')
+    $tipoRelatorio = 'relatorio_planilha.php';
+else
+    $tipoRelatorio = 'relatorio_banco.php';
+
 if (dcrip($_GET["curso"])) {
     $curso = dcrip($_GET["curso"]);
     $params['curso'] = $curso;
@@ -140,5 +145,5 @@ $orientacao = "L"; //Landscape
 $papel = "A4";
 
 // gera o relatório em PDF
-include(PATH . LIB . '/relatorio_banco.php');
+include(PATH . LIB . '/' . $tipoRelatorio);
 ?>

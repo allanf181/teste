@@ -338,14 +338,17 @@ $rel_assunto = null;
         <td colspan="3">&nbsp;</td>
     </tr>
     <tr>
-    <td width="60">
-        <a href="#" onclick="relatorio('pdf', '<?= $relatorio ?>')">
-            <img style="width: 30px" src="<?= ICONS ?>/icon-printer.gif" title="Imprimir em PDF" />
+    <td width="120">
+        <a href="#" title="Imprimir em PDF" onclick="relatorio('pdf', '<?= $relatorio ?>')">
+            <img style="width: 30px" src="<?= ICONS ?>/files/pdf.png" />
         </a>
         <?php if ($relatorio == 'alunos') { ?>
-            <a href="#" onclick="relatorio('html', '<?= $relatorio ?>')">
-                <img style="width: 23px" src="<?= ICONS ?>/info.png" title="Imprimir em HTML" />
+            <a href="#" title="Imprimir em HTML" onclick="relatorio('html', '<?= $relatorio ?>')">
+                <img style="width: 30px" src="<?= ICONS ?>/files/htm.png" />
             </a>
+            <a href="#" title="Imprimir em XLS" onclick="relatorio('xls', '<?= $relatorio ?>')">
+                <img style="width: 30px" src="<?= ICONS ?>/files/xls.png" />
+            </a>        
         <?php } ?>
     </td>
     </tr>
@@ -400,10 +403,10 @@ $rel_assunto = null;
         if (tipo == 'ftdr' || tipo == 'ftdd')
             tipo = 'ftd';
 
-        if (impressao == 'pdf')
+        if (impressao == 'pdf' || impressao == 'xls')
             window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + '.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
                     + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor + '&assunto=' + assunto +
-                    '&email=' + email + '&detalhada=' + det, '_blank');
+                    '&email=' + email + '&detalhada=' + det + '&tipoImpressao=' + impressao, '_blank');
         else
             window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno, '_blank');
     }

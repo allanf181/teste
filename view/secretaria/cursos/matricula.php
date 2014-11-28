@@ -124,14 +124,14 @@ if (dcrip($_GET["nome"])) {
                 <td align="right">Prontu&aacute;rio: </td>
                 <td>
                     <input type="text" size="5" value="<?php echo $prontuario; ?>" name="prontuario" id="prontuario" />
-                    <a href="#" title="Buscar" id="setProntuario"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/sync.png' /></a>
+                    <a href="#" title="Buscar" id="setProntuario"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
                 </td>
             </tr>
             <tr>
                 <td align="right">Nome: </td>
                 <td>   
                     <input type="text" size="25" value="<?php echo $nome; ?>" name="nome" id="nome" />
-                    <a href="#" title="Buscar" id="setNome"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/sync.png' /></a>
+                    <a href="#" title="Buscar" id="setNome"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
                 </td>
             </tr>
             <tr>
