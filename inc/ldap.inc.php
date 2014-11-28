@@ -40,13 +40,7 @@ Class ldap {
         if ($this->ldap_conn) {
             $ldapbind = ldap_bind($this->ldap_conn, $this->user, $this->password);
         } else {
-            print "Sem conexao com o LDAP: host/port " . ldap_error($this->ldap_conn);
-        }
-
-        if ($ldapbind) {
-            return $this->ldap_conn;
-        } else {
-            print "Sem conexao com o LDAP: bind " . ldap_error($this->ldap_conn);
+            print "Sem conex&atilde;o com o LDAP: host/port " . ldap_error($this->ldap_conn);
         }
         return false;
     }
@@ -64,9 +58,9 @@ Class ldap {
         $error = ldap_error($this->ldap_conn);
 
         if (preg_match('/Invalid DN syntax/', $error))
-            return "Login nao encontrado";
+            return "Login n&atilde;o encontrado!!!";
         if (preg_match('/Server is unwilling to perform/', $error))
-            return "Senha nao atende aos requisitos do windows";
+            return "Senha n&atilde;o atende aos requisitos do windows!!!";
         if (preg_match('/Success/', $error))
             return 1;
         else
@@ -122,7 +116,7 @@ Class ldap {
         $r = ldap_bind($this->ldap_conn, $userDn, $password);
 
         if ($r === -1) {
-            echo "Error: " . ldap_error($ds);
+            echo "Error LDAP: " . ldap_error($ds);
         } elseif ($r === true) {
             $this->setCache($user, $password);
             return true;
