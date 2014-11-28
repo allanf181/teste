@@ -46,6 +46,7 @@ $_SESSION['CONFIG'] = PATH.INC.'/config.inc.php';
 $EXTENSIONS[] = 'gd';
 $EXTENSIONS[] = 'curl';
 $EXTENSIONS[] = 'ibm_db2';
+$EXTENSIONS[] = 'ldap';
 
 //=======================================//
 //           VARIAVEIS GLOBAIS           //
