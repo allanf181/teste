@@ -23,8 +23,8 @@ for ($n=1; $n <= 2; $n++) {
 	$db2 = "SELECT * 
 			FROM ESCOLA.PROFESS 
 			WHERE PR_PRONTP IN (SELECT DISTINCT NH_PROFESSOR 
-													 FROM ESCOLA.NHORARIO 
-				 									WHERE NH_VERSAOH=$ano$nS)
+						 FROM ESCOLA.NHORARIO 
+					WHERE NH_VERSAOH=$ano$nS)
 			ORDER BY PR_NOME";
 	$res = db2_exec($conn, $db2);
 

@@ -13,10 +13,10 @@ require SESSAO;
 
 <table border="0" id="form" width="100%">
 <tr>
-	<td colspan="3"><h2>Pró-reitoria de Desenvolvimento Institucional</h2></td>
+	<td colspan="4"><h2>Pró-reitoria de Desenvolvimento Institucional</h2></td>
 </tr>
 <tr>
-<td colspan="3" valign="top" align="center">Eduardo Leal (Assessor)
+<td colspan="4" valign="top" align="center">Eduardo Leal (Assessor)
 	<br>Brunno Alves (Diretor de Sistemas de Informação)
 </td>
 </tr>
@@ -24,10 +24,10 @@ require SESSAO;
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-	<td colspan="3"><h2>Gerente de Projeto</h2></td>
+	<td colspan="4"><h2>Gerente de Projeto</h2></td>
 </tr>
 <tr>
-<td colspan="3" valign="top" align="center">João Paulo Lemos Escola (Barretos)
+<td colspan="4" valign="top" align="center">João Paulo Lemos Escola (Barretos)
 </td>
 </tr>
 
@@ -36,7 +36,8 @@ require SESSAO;
 <tr>
 	<td width="300"><h2>Analistas</h2></td>
 	<td width="300"><h2>Desenvolvedores</h2></td>
-	<td width="300"><h2>Testes de Software</h2></td>	
+        <td width="300"><h2>Testes de Software</h2></td>
+        <td width="300"><h2>Suporte</h2></td>
 </tr>
 <tr>
 <td valign="top" align="center">Anne Domenici (Sert&atilde;ozinho)
@@ -48,10 +49,14 @@ require SESSAO;
 	<br>Carlos Eduardo Alves da Silva (Votuporanga)
         <br>Fernando Parreira (Votuporanga)
         <br>Ricardo Crivelli (Avar&eacute;)
+        <br>Rodolfo Esteves
 </td>
 <td valign="top" align="center">
 	Lucas de Araujo Oliveira (Barretos)
         <br>Ricardo Takazu (S&atilde;o Paulo)
+</td>
+<td valign="top" align="center">
+	Josiane Rosa de Oliveira Gaia
 </td>
 </tr>
 </table>
