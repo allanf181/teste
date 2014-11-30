@@ -27,7 +27,7 @@ if ($_GET["opcao"] == 'delete') {
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 // PAGINACAO
-$itensPorPagina = 20;
+$itensPorPagina = 50;
 $item = 1;
 
 if (isset($_GET['item']))
@@ -40,12 +40,18 @@ $SITENAV = $SITE . '?';
 require PATH . VIEW . '/paginacao.php';
 ?>
 
-<table id="listagem" border="0" align="center">
+<table id="listagem" border="1" align="center">
     <tr>
         <th align="center" width="40">#</th>
         <th align="left">Nome</th>
         <th>Tipo</th>
         <th>Modalidade</th>
+        <th>Arredondar</th>
+        <th>C&aacute;lculo</th>
+        <th>Mostrar Avalia&ccedil;&atilde;o se</th>
+        <th>Nota &Uacute;ltimo Bimestre</th>
+        <th>Qde. M&iacute;nima</th>
+        <th>Nota M&aacute;xima</th>
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
@@ -61,9 +67,15 @@ require PATH . VIEW . '/paginacao.php';
         ?>
         <tr <?= $cdif ?>>
             <td align='left'><?= $i ?></td>
-            <td><?= mostraTexto($reg['nome']) ?></td>
+            <td><?= abreviar(mostraTexto($reg['nome']),20) ?></td>
             <td align='left'><?= $reg['tipo'] ?> <?= $reg['final'] ?></td>
             <td align='left'><?= mostraTexto($reg['modalidade']) ?></td>
+            <td align='left'><?= $reg['arredondar'] ?></td>
+            <td align='left'><a href="#" title="<?= $$reg['calculo'] ?>"><?= $reg['calculo'] ?></a></td>
+            <td align='left'><?= $reg['notaMaior'] ?> < Nota > <?= $reg['notaMenor'] ?></td>
+            <td align='left'><?= $reg['notaUltimBimestre'] ?></td>
+            <td align='left'><?= $reg['qdeMinima'] ?></td>
+            <td align='left'><?= $reg['notaMaxima'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
             </td>

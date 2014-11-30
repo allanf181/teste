@@ -97,7 +97,7 @@ class Notas extends Frequencias {
             $atribuicao = $reg['atribuicao'];
             if ($reg['habilitado']) {
                 //BUSCANDO AS MEDIAS DOS BIMESTRES DE CADA ALUNO
-                $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], $final, $fechamento);
+                $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], 0, $fechamento);
                 $medias += $dados['media'];
                 $faltas += $dados['faltas'];
                 $frequencias += $dados['frequencia'];

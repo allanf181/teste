@@ -87,7 +87,10 @@ class TiposAvaliacoes extends Generic {
                 WHEN 'recuperacao' THEN 'Recupera&ccedil;&atilde;o'
                 WHEN 'pontoExtra' THEN 'Ponto Extra'
                 WHEN 'substitutiva' THEN 'Substitutiva' END as tipo,
-                IF(t.final = 1, 'Final', '') as final
+                IF(t.final = 1, 'Final', '') as final,
+                IF(t.arredondar = 1, 'Sim', 'Não') as arredondar,
+                UPPER(t.calculo) as calculo, notaMaior, notaMenor,
+                notaMaxima, notaUltimBimestre, qdeMinima
                 FROM TiposAvaliacoes t, Modalidades m
     		WHERE t.modalidade = m.codigo";
 

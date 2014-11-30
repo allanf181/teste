@@ -15,11 +15,11 @@ if (isset($_GET["codigo"])) {
     $sqlCodigo = "AND (n.sincronizado IS NULL OR n.sincronizado = '0000-00-00 00:00:00')";
 
 
-$user = 'BT000001';
+$user = 'BA000022';
 $pass = '4(HC&m3KbT';
 $campus = $DIGITANOTAS;
 $turma = '0';
-$flagDigitacaoNota = '0';
+$flagDigitacaoNota = '5';
 
 $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuicoes a1 
                     WHERE p1.codigo = pr1.professor
@@ -36,6 +36,7 @@ $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuico
 	AND m.atribuicao = a.codigo
 	AND t.codigo = a.turma
         AND flag <> 5
+        AND DATEDIFF(NOW(),a.dataFim) > 10
 	$sqlCodigo";
 
 $result = mysql_query($sql);
@@ -49,7 +50,7 @@ $conexao = 0;
 
 while ($l = mysql_fetch_array($result)) {
     //if ($l[13] > 10)
-    //    $flagDigitacaoNota = 5;
+    //$flagDigitacaoNota = 5;
 
     $prontuario = $l[0];
     $prontuarioAluno = $l[1];

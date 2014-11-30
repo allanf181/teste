@@ -164,7 +164,7 @@ if ($_SESSION['dataExpirou'])
                                     $trava=null;
                                     if ( $travaFinal && !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                         ?>
-                                        <script> $('#<?= $i ?>').attr('disabled','disabled'); </script>
+                                        <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
                                         <?php
                                     }
                                 }
@@ -173,7 +173,7 @@ if ($_SESSION['dataExpirou'])
                                 <?php //TRAVANDO PARA RECUPERACAO
                                 if ( !$travaFinal && !$situacao[$reg['codAluno']] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                     ?>
-                                    <script> $('#<?= $i ?>').attr('disabled','disabled'); </script>
+                                    <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
                                     <?php
                                 }
                             } else {

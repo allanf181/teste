@@ -9,7 +9,7 @@ class DigitaNotasWS {
 
             $pass = Criptografia::codificar($pass);
 
-            $servicoDigitaNotas = 'http://ws.ifsp.edu.br/teste_servicoDigitaNotas';
+            $servicoDigitaNotas = 'http://ws.ifsp.edu.br/servicoDigitaNotas';
             $cliente = new SoapClient($servicoDigitaNotas . "?wsdl", array(
                 "trace" => 1,
                 "exception" => 1,

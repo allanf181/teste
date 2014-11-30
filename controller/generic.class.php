@@ -76,6 +76,8 @@ Abstract class Generic {
         $bd = new database();
         $table = get_called_class();
 
+        $nav = null;
+        
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina ";
 
