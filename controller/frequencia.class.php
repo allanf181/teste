@@ -107,6 +107,15 @@ class Frequencias extends FrequenciasAbonos {
         $params = array('matricula' => $matricula, 'atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
 
+        if (!$res) {
+            $sql = "SELECT falta
+                            FROM NotasFinais
+                            WHERE matricula = :matricula 
+                            AND atribuicao= :atr";
+            $params = array('matricula' => $matricula, 'atr' => $atribuicao);
+            $res = $bd->selectDB($sql, $params);            
+        }
+        
         if ($res) {
             $faltas = 0;
             foreach ($res as $reg) {

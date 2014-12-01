@@ -65,6 +65,10 @@ require SESSAO;
 
 <br />
 <br />
+<b>Vers&atilde;o 1.420</b>
+<br> - Corre&ccedil;&atilde;o no sistema de Notas
+<br />
+<br />
 <b>Vers&atilde;o 1.419</b>
 <br>
 <br> - Corre&ccedil;&atilde;o do chamado - #241
