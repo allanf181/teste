@@ -19,13 +19,24 @@ class TDDados extends Generic {
         $pessoa['telefone'] = $params["telefone"];
         $pessoa['celular'] = $params["celular"];
         $pessoa['email'] = $params["email"];
-        $pessoa['codigo'] = $params["professor"];
+        $pessoa['codigo'] = $params["pessoa"];
 
         unset($params["_"]);
         unset($params["telefone"]);
         unset($params["celular"]);
         unset($params["email"]);
 
+        $params["horario"] = implode(',', $params["horario"]);
+        if (!$params["dedicarEnsino"]) $params["dedicarEnsino"] = '0';
+        if (!$params["subHorario"]) $params["subHorario"] = '0';
+
+        for ($i = 1; $i <= 3; $i++) {
+            $params['horario'.$i] = $params["Intervalo".$i].','.$params["Periodo".$i].','.$params["IniIntervalo".$i];
+            unset($params["Intervalo".$i]);
+            unset($params["Periodo".$i]);
+            unset($params["IniIntervalo".$i]);
+        }
+                
         //PEGANDO OS COMPONENTES
         for ($i = 0; $i <= 9; $i++) {
             if ($params['S' . $i] && $params['N' . $i] && $params['A' . $i]) {
@@ -43,7 +54,6 @@ class TDDados extends Generic {
         }
 
         //PEGANDO AS ATIVIDADES
-        print_r($params);
         for ($i = 0; $i <= 6; $i++) {
             if ($params['AtvD' . $i] && $params['AtvA' . $i]) {
                 $paramsAtv[$i]['descricao'] = $params['AtvD' . $i];
