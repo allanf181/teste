@@ -63,6 +63,13 @@ $avaliacao = new Avaliacoes();
         $professor = new Professores();
         
         foreach ($res as $reg) {
+            if ($reg['modalidade'] == 1004 || $reg['modalidade'] == 1006 || $reg['modalidade'] == 1007) {
+                $mostraMedia = 1;
+                $col = '';
+            } else {
+                $mostraMedia = 0;
+                $col = 'colspan="2"';
+            }
             ?>
             <br><table id='tabela_boletim' align='center'>
                 <tr class='cdif'>
@@ -77,17 +84,18 @@ $avaliacao = new Avaliacoes();
                     <th>Situa&ccedil;&atilde;o</th>
                     <th style='width: 100px'>Aulas Dadas</th>
                     <th style='width:100px'>Carga Hor.</th>
-                    <th style='width:50px'>Faltas</th>
+                    <th <?= $col ?> style='width:50px'>Faltas</th>
                     <th style='width: 100px'>Frequ&ecirc;ncia</th>
-                    <th style='width: 100px'>M&eacute;dia</th>
+                    <?php if ($mostraMedia) print "<th style='width: 100px'>M&eacute;dia</th>"; ?>
                 </tr>
                 <tr>
                     <td align='center'><?= $reg['situacao'] ?></td>
                     <td align='center'><?= $dados['auladada'] ?></td>
                     <td align='center'><?= intval($dados['CH']) ?></td>
-                    <td align='center'><?= $dados['faltas'] ?></td>
+                    <td <?= $col ?> align='center'><?= $dados['faltas'] ?></td>
                     <td align='center'><?= arredondar($dados['frequencia']) ?>%</td>
-                    <td align='center'><?= $dados['media'] ?></td></tr>
+                    <?php if ($mostraMedia) print "<td align='center'>".$dados['media']."</td>"; ?>
+                </tr>
                 <tr class='cdif'>
                     <th colspan='3'>Avalia&ccedil;&atilde;o</th>
                     <th>Data</th>

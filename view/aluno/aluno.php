@@ -1,4 +1,4 @@
-<?php 
+<?php
 //Esse arquivo é fixo para o aluno.
 //Tela principal de acesso do aluno.
 //Link visível no menu: PADRÃO NÃO, pois este arquivo tem uma visualização diferente, ele aparece como ícone.
@@ -11,68 +11,67 @@ require MENSAGENS;
 require FUNCOES;
 require SESSAO;
 require PERMISSAO;
-
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 
 <table width="100%" align="center" border="0">
-<?php
-if ($_GET["atribuicao"]) {
-    $atribuicao=dcrip($_GET["atribuicao"]);
-    $aluno = $_SESSION["loginCodigo"];
-
-    require CONTROLLER . "/atribuicao.class.php";
-    $att = new Atribuicoes();
-    $res = $att->getAtribuicao($atribuicao);
-
-    $bimestre="SEMESTRAL";
-    $fechamento=$res['fechamento'];
-    $_SESSION['semestre']=$res['semestre'];
-    $_SESSION['ano']=$res['ano'];
-
-    if ($fechamento == 'a') $bimestre="ANUAL";
-
-    $numeroBimestre=null;
-    if ($res['bimestre']!="" && $res['bimestre']>0){
-        $numeroBimestre=$res['bimestre'];
-        $bimestre=abreviar($res['bimestre']."&ordm; BIMESTRE", 100);
-    }
-
-    ?>
-    <h2><?=abreviar($res['disciplina'].": ".$res['turma']."/".$res['curso'], 150)?></h2>
-    <h2 id='titulo_disciplina_modalidade'><?=$bimestre?><br></h2><br />
-    <tr align='center'>
-    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/aula.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/aulas.png' /><br />Aulas</a></td>
-    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/avaliacao.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/arquivo.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/arquivo.png' /><br />Material de Aula</a></td>    
-    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/ensalamento.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
-    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/aviso?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/aviso.png' /><br />Avisos</a></td>
-    <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/boletim.php?turma=<?=crip($res['turmaCodigo'])?>&aluno=<?=crip($aluno)?>&bimestre=<?=crip($numeroBimestre)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/boletim.png' /><br />Boletim Escolar</a></td>
     <?php
-    if ($bimestre=="ANUAL" || $bimestre=="SEMESTRAL" || $bimestre=="1&ordm; BIMESTRE") {
+    if ($_GET["atribuicao"]) {
+        $atribuicao = dcrip($_GET["atribuicao"]);
+        $aluno = $_SESSION["loginCodigo"];
+
+        require CONTROLLER . "/atribuicao.class.php";
+        $att = new Atribuicoes();
+        $res = $att->getAtribuicao($atribuicao);
+
+        $bimestre = "SEMESTRAL";
+        $fechamento = $res['fechamento'];
+        $_SESSION['semestre'] = $res['semestre'];
+        $_SESSION['ano'] = $res['ano'];
+
+        if ($fechamento == 'a')
+            $bimestre = "ANUAL";
+
+        $numeroBimestre = null;
+        if ($res['bimestre'] != "" && $res['bimestre'] > 0) {
+            $numeroBimestre = $res['bimestre'];
+            $bimestre = abreviar($res['bimestre'] . "&ordm; BIMESTRE", 100);
+        }
         ?>
-    	<td><a class='nav professores_item' href="javascript:$('#aluno').load('<?=VIEW?>/aluno/planoEnsino.php?atribuicao=<?=crip($atribuicao)?>'); void(0);"><img style='width: 100px' src='<?=IMAGES?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
-        <?php } ?>
-    </tr>
-    <tr><td colspan=10 align='center'>
-    <hr>
-    PROFESSOR(ES): <br />
-    <?php
-    require CONTROLLER . "/professor.class.php";
-    $professor = new Professores();
-                
-    print $professor->getProfessor($atribuicao,'<br>', 1, 1);
-       
-    ?>
-    <hr>
-    </tr></tr>
+        <h2><?= abreviar($res['disciplina'] . ": " . $res['turma'] . "/" . $res['curso'], 150) ?></h2>
+        <h2 id='titulo_disciplina_modalidade'><?= $bimestre ?><br></h2><br />
+        <tr align='center'>
+            <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aula.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 100px' src='<?= IMAGES ?>/aulas.png' /><br />Aulas</a></td>
+            <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 100px' src='<?= IMAGES ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
+            <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/arquivo.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 100px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>    
+            <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/ensalamento.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 100px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
+            <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aviso?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 100px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos</a></td>
+            <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/boletim.php?turma=<?= crip($res['turmaCodigo']) ?>&aluno=<?= crip($aluno) ?>&bimestre=<?= crip($numeroBimestre) ?>'); void(0);"><img style='width: 100px' src='<?= IMAGES ?>/boletim.png' /><br />Boletim Escolar</a></td>
+            <?php
+            if ($bimestre == "ANUAL" || $bimestre == "SEMESTRAL" || $bimestre == "1&ordm; BIMESTRE") {
+                ?>
+                <td><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/planoEnsino.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 100px' src='<?= IMAGES ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
+            <?php } ?>
+        </tr>
+        <tr><td colspan=10 align='center'>
+                <hr>
+                PROFESSOR(ES): <br />
+                <?php
+                require CONTROLLER . "/professor.class.php";
+                $professor = new Professores();
+
+                print $professor->getProfessor($atribuicao, '<br>', 1, 1);
+                ?>
+                <hr>
+        </tr></tr>
     </table>
     <?php
+    if ($codModalidade != 1004 && $codModalidade != 1006 && $codModalidade != 1007 && ($bimestre == 4 || $bimestre == 0))
+        print "<font color=\"red\">A Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o ser&aacute; realizada pelo Nambei e n&atilde;o estar&aacute; dispon&iacute;vel no Webdi&aacute;rio.</font>";
 }
-
 ?>
 <div id="aluno"></div>
 <script>
-    $('#aluno').load('<?php print VIEW."/aluno/aviso?atribuicao=".crip($atribuicao); ?>');
+    $('#aluno').load('<?php print VIEW . "/aluno/aviso?atribuicao=" . crip($atribuicao); ?>');
 </script>

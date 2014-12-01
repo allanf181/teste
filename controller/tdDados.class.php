@@ -27,7 +27,7 @@ class TDDados extends Generic {
         unset($params["email"]);
 
         //PEGANDO OS COMPONENTES
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 0; $i <= 9; $i++) {
             if ($params['S' . $i] && $params['N' . $i] && $params['A' . $i]) {
                 $paramsC[$i]['sigla'] = $params['S' . $i];
                 $paramsC[$i]['nome'] = $params['N' . $i];
@@ -41,16 +41,59 @@ class TDDados extends Generic {
             unset($params['P' . $i]);
             unset($params['A' . $i]);
         }
+
+        //PEGANDO AS ATIVIDADES
         print_r($params);
+        for ($i = 0; $i <= 6; $i++) {
+            if ($params['AtvD' . $i] && $params['AtvA' . $i]) {
+                $paramsAtv[$i]['descricao'] = $params['AtvD' . $i];
+                $paramsAtv[$i]['aulas'] = $params['AtvA' . $i];
+            }
+            unset($params['AtvD' . $i]);
+            unset($params['AtvA' . $i]);
+        }
+
+        //PEGANDO AS COMPLEMENTACOES
+        for ($i = 0; $i <= 6; $i++) {
+            if ($params['CompD' . $i] && $params['CompA' . $i]) {
+                $paramsCmp[$i]['descricao'] = $params['CompD' . $i];
+                $paramsCmp[$i]['aulas'] = $params['CompA' . $i];
+            }
+            unset($params['CompD' . $i]);
+            unset($params['CompA' . $i]);
+        }
+        
         $res1 = $this->insertOrUpdate($params);
-        print_r($res1);
 
         //INSERINDO COMPONENTES
         $componente = new TDFPAComponente();
-
-
-
-
+        $componente->deleteComponentes($params['codigo']);
+        foreach ($paramsC as $c) {
+            if ($c['sigla'] && $c['nome'] && $c['aulas']) {
+                $c['TD'] = $params['codigo'];
+                $resC = $componente->insertOrUpdate($c);
+            }
+        }
+        
+        //INSERINDO ATIVIDADES
+        $atvECmt = new TDFPAAtvECmt();
+        $atvECmt->deleteAtvECmt($params['codigo']);
+        foreach ($paramsAtv as $c) {
+            if ($c['descricao'] && $c['aulas']) {
+                $c['TD'] = $params['codigo'];
+                $c['tipo'] = 'atv';
+                $resAtv = $atvECmt->insertOrUpdate($c);
+            }
+        }        
+        //INSERINDO COMPLEMENTACOES
+        foreach ($paramsCmp as $c) {
+            if ($c['descricao'] && $c['aulas']) {
+                $c['TD'] = $params['codigo'];
+                $c['tipo'] = 'cmp';
+                $resCmp = $atvECmt->insertOrUpdate($c);
+            }
+        } 
+        
         if (!$params["codigo"])
             $params["codigo"] = $res['RESULTADO'];
 
@@ -61,7 +104,10 @@ class TDDados extends Generic {
         $res['STATUS'] = 'OK';
         $res['RESULTADO'] = '1';
 
-        return $res1;
+        if ($resC['STATUS'] == 'OK')
+            return $resC;
+        if ($res1['STATUS'] == 'OK')
+            return $res1;
     }
 
 }

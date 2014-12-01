@@ -34,7 +34,13 @@ if ($_GET["duracaoAula"]) {
 $params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $semestre);
 $res = $dados->listRegistros($params);
 extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
-    
+
+//LISTA COMPONENTES
+$resC = $componente->listComponentes($codigo);
+//LISTA ATIVIDADES
+$resAtv = $atvECmt->listAtvECmt($codigo, 'atv');
+//LISTA COMPLEMENTACAO
+$resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
@@ -288,19 +294,14 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                     <th>Aulas</th>
                 </tr>
                 <?php
-                for ($t = 1; $t <= 10; $t++) {
-                    $S = 'S' . $t;
-                    $N = 'N' . $t;
-                    $C = 'C' . $t;
-                    $P = 'P' . $t;
-                    $A = 'A' . $t;
+                for ($t = 0; $t <= 9; $t++) {
                     ?>
                     <tr>
-                        <th><input class="compAula" type="text" size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $$S ?>"/></th>
-                        <th><input class="compAula" type="text" size="45" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $$N ?>"/></th>
-                        <th><input class="compAula" type="text" size="45" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $$C ?>"/></th>
-                        <th><input class="compAula" type="text" size="1" maxlength="1" id="P<?= $t ?>" name="P<?= $t ?>" value="<?= $$P ?>"/></th>
-                        <th><input class="compAula" type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $$A ?>"/></th>
+                        <th><input class="componente" type="text" size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
+                        <th><input class="componente" type="text" size="45" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
+                        <th><input class="componente" type="text" size="45" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
+                        <th><input class="componente" type="text" size="1" maxlength="1" id="P<?= $t ?>" name="P<?= $t ?>" value="<?= $resC[$t]['periodo'] ?>"/></th>
+                        <th><input class="componente" type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
                     </tr>
                     <?php
                 }
@@ -328,12 +329,11 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                 <th>
             <table style="width: 100%" id="tabela_boletim">
                 <?php
-                for ($t = 1; $t <= 7; $t++) {
-                    $A = 'ATV' . $t;
+                for ($t = 0; $t <= 6; $t++) {
                     ?>
                     <tr>
-                        <th><input class="compAtv" type="text" size="60" maxlength="200" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $$A ?>"/></th>
-                        <th><input class="compAtv" type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $$A ?>"/></th>
+                        <th><input class="atividade" type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
+                        <th><input class="atividade" type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                     </tr>
                     <?php
                 }
@@ -366,12 +366,11 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                 <th>
             <table style="width: 100%" id="tabela_boletim">
                 <?php
-                for ($t = 1; $t <= 7; $t++) {
-                    $A = 'COMP' . $t;
+                for ($t = 0; $t <= 6; $t++) {
                     ?>
                     <tr>
-                        <th><input class="compAtv" type="text" size="60" maxlength="200" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $$A ?>"/></th>
-                        <th><input class="compAtv" type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $$A ?>"/></th>
+                        <th><input class="complementacao" type="text" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
+                        <th><input class="complementacao" type="text" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
                     </tr>
                     <?php
                 }
@@ -405,21 +404,40 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
     calcAulas();
     callPeriodo();
     calcComponente();
+    calcAtividade();
+    calcComplementacao();
     
     function calcComponente() {
         total = 0;
-        for (i = 1; i <= 10; i++) {
+        for (i = 0; i <= 9; i++) {
             if ($("#A" + i).val())
                 total += parseInt($("#A" + i).val());
         }
-        totalAulas = '00:00';
-        for (i = 1; i <= total; i++) {
-            totalAulas = addtime(totalAulas, $("input[id=duracaoAula]:radio:checked").val());
-        }
+        if ($("input[id=duracaoAula]:radio:checked").val())
+            totalAulas = (total * $("input[id=duracaoAula]:radio:checked").val().substring(5, 3)) / 60;
 
-        $("#regencia").html(totalAulas);
+        $("#regencia").html(Math.ceil(totalAulas));
+        $("#ensino").html(Math.ceil(totalAulas));
     }
 
+    function calcAtividade() {
+        total = 0;
+        for (i = 0; i <= 6; i++) {
+            if ($("#AtvA" + i).val())
+                total += parseInt($("#AtvA" + i).val());
+        }
+        $("#atvEnsino").html(Math.ceil(total));
+    }
+
+    function calcComplementacao() {
+        total = 0;
+        for (i = 0; i <= 6; i++) {
+            if ($("#CompA" + i).val())
+                total += parseInt($("#CompA" + i).val());
+        }
+        $("#compAtv").html(Math.ceil(total));
+    }
+    
     function checkCelulas() {
         celulasSel = 0;
         k=0;
@@ -497,9 +515,16 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
         }
     }
 
-    $(".compAula").keyup(function () {
-        calcComponente();
+    $(".complementacao").keyup(function () {
+        calcComplementacao();        
     });
+    $(".atividade").keyup(function () {
+        calcAtividade();        
+    });
+    $(".componente").keyup(function () {
+        calcComponente();        
+    });
+
     $("input:checkbox").click(function () {
         checkCelulas();
     });
@@ -573,7 +598,9 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
     function salvar() {
         checkCelulas();
         //getComponente();
-        componente = $( ".compAula" ).serialize();
+        componente = $( ".componente" ).serialize();
+        atividade = $( ".atividade" ).serialize();
+        complementacao = $( ".complementacao" ).serialize();
         
         var horario1 = $("#Intervalo1").val() + ',' + $("#Periodo1").val() + ',' + $("#IniIntervalo1").val();
         var horario2 = $("#Intervalo2").val() + ',' + $("#Periodo2").val() + ',' + $("#IniIntervalo2").val();
@@ -588,6 +615,6 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
         var area = encodeURIComponent($("#area").val());
         var regime = encodeURIComponent($("input[id=regime]:radio:checked").val());
         var apelido = encodeURIComponent($("#apelido").val());
-        $('#index').load('<?= $SITE ?>?' + componente + '&telefone=' + telefone + '&celular=' + celular + '&email=' + email + '&area=' + area + '&regime=' + regime + '&apelido=' + apelido + '&subHorario=' + subHorario + '&dedicarEnsino=' + dedicarEnsino + '&duracaoAula=' + duracaoAula + '&horario=' + horario + '&horario1=' + horario1 + '&horario2=' + horario2 + '&horario3=' + horario3 <?php if ($codigo) print "+ '&codigo=$codigo'";?>);
+        $('#index').load('<?= $SITE ?>?' + componente + atividade + complementacao + '&telefone=' + telefone + '&celular=' + celular + '&email=' + email + '&area=' + area + '&regime=' + regime + '&apelido=' + apelido + '&subHorario=' + subHorario + '&dedicarEnsino=' + dedicarEnsino + '&duracaoAula=' + duracaoAula + '&horario=' + horario + '&horario1=' + horario1 + '&horario2=' + horario2 + '&horario3=' + horario3 <?php if ($codigo) print "+ '&codigo=$codigo'";?>);
     }
 </script>

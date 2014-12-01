@@ -90,7 +90,12 @@ if ($_GET["atribuicao"]) {
         <div>
             <h2 id='titulo_disciplina_modalidade'><?= $bimestreNome ?></h2>
         </div>
-        <br />
+        <?php
+            if ($codModalidade != 1004 && $codModalidade != 1006 && $codModalidade != 1007 && ($bimestre == 4 || $bimestre==0) )
+                print "<tr><td colspan=\"8\"><font color=\"red\">A Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o ser&aacute; realizada pelo Nambei e n&atilde;o estar&aacute; dispon&iacute;vel no Webdi&aacute;rio.</font></td></tr>\n";
+            print "<tr><td colspan=\"8\">&nbsp;</td></tr>\n";
+        ?>
+        
         <tr valign="top" align='center'>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aula.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/aulas.png' /><br />Aulas</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/avaliacao.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
