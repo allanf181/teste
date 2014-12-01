@@ -61,6 +61,7 @@ require SESSAO;
 </center>
 <br>
 <b>Vers&atilde;o 1.421</b>
+<br> - Funcionalidade adicionada de acordo com o chamado - #248
 <br> - Funcionalidade adicionada de acordo com o chamado - #247
 <br> - Corre&ccedil;&atilde;o do chamado - #244
 <br> - Corre&ccedil;&atilde;o do chamado - #245
