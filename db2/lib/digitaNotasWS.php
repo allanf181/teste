@@ -23,7 +23,6 @@ class DigitaNotasWS {
             $cliente->__setLocation($servicoDigitaNotas);
 
             $notaAlunoObj = $cliente->digitarNotasAlunos($campus, $lista);
-            
             return (object) $notaAlunoObj;
 
         } catch (Exception $e) {

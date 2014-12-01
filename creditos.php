@@ -36,8 +36,7 @@ require SESSAO;
 <tr>
 	<td width="300"><h2>Analistas</h2></td>
 	<td width="300"><h2>Desenvolvedores</h2></td>
-        <td width="300"><h2>Testes de Software</h2></td>
-        <td width="300"><h2>Suporte</h2></td>
+        <td width="300"><h2>Testes de Software e Suporte</h2></td>
 </tr>
 <tr>
 <td valign="top" align="center">Anne Domenici (Sert&atilde;ozinho)
@@ -49,20 +48,24 @@ require SESSAO;
 	<br>Carlos Eduardo Alves da Silva (Votuporanga)
         <br>Fernando Parreira (Votuporanga)
         <br>Ricardo Crivelli (Avar&eacute;)
-        <br>Rodolfo Esteves
+        <br>Rodolfo Esteves (Hortol&acirc;ndia)
 </td>
 <td valign="top" align="center">
 	Lucas de Araujo Oliveira (Barretos)
         <br>Ricardo Takazu (S&atilde;o Paulo)
-</td>
-<td valign="top" align="center">
-	Josiane Rosa de Oliveira Gaia
+        <br>Josiane Rosa de Oliveira Gaia (Hortol&acirc;ndia)
 </td>
 </tr>
 </table>
 
 </center>
-
+<br>
+<b>Vers&atilde;o 1.421</b>
+<br> - Funcionalidade adicionada de acordo com o chamado - #247
+<br> - Corre&ccedil;&atilde;o do chamado - #244
+<br> - Corre&ccedil;&atilde;o do chamado - #245
+<br> - Corre&ccedil;&atilde;o do chamado - #246
+<br> - Corre&ccedil;&atilde;o do chamado - #240
 <br />
 <br />
 <b>Vers&atilde;o 1.420</b>

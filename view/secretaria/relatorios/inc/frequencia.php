@@ -48,17 +48,19 @@ if ($turma) {
 // Cabeçalho
     $pdf->SetFont($fonte, 'B', $tamanho + 5);
     $pdf->Image(PATH . IMAGES . "/logo.png", 12, 12, 80);
-    $pdf->Cell(85, 27, "", 1, 0, 'C', false);
-    $pdf->Cell(230, 27, utf8_decode("R E L A T Ó R I O   D E   F R E Q U Ê N C I A"), 1, 0, 'C', false);
+    $pdf->Cell(85, 28, "", 1, 0, 'C', false);
+    $pdf->Cell(200, 28, utf8_decode("R E L A T Ó R I O   D E   F R E Q U Ê N C I A"), 1, 0, 'C', false);
 
     $i = 0;
 
     foreach ($frequencia->getListaFrequencias($params, $sqlAdicional) as $reg) {
 
         if (!$i) {
-            $pdf->Cell(85, 13.5, utf8_decode("TURMA: $l[7]"), 1, 2, 'C', false);
-            $pdf->Cell(85, 13.5, utf8_decode("$data"), 1, 2, 'C', false);
-
+            $pdf->Cell(115, 7, utf8_decode($reg['disciplina']), 1, 2, 'C', false);
+            $pdf->Cell(115, 7, utf8_decode("Turma ".$reg['turma'].' ('.$reg['subturma'].') - '.$reg['bimestreFormat']), 1, 2, 'C', false);
+            $pdf->Cell(115, 7, utf8_decode("TURMA: ".$reg['turma']), 1, 2, 'C', false);
+            $pdf->Cell(115, 7, utf8_decode("$data"), 1, 0, 'C', false);
+            $pdf->Ln();
             $pdf->Ln();
 
             $pdf->Cell(30, $alturaLinha, utf8_decode("PRONTUÁRIO"), 1, 0, 'C', true);
@@ -76,12 +78,11 @@ if ($turma) {
         $pdf->Ln();
 
         $dados = $frequencia->getFrequencia($reg['codMatricula'], $reg['atribuicao']);
-
         $pdf->Cell(30, $alturaLinha, utf8_decode($reg['prontuario']), 1, 0, 'C', true);
         $pdf->Cell(70, $alturaLinha, utf8_decode($reg['situacao']), 1, 0, 'C', true);
         $pdf->Cell(160, $alturaLinha, utf8_decode($reg['aluno']), 1, 0, 'L', true);
         $pdf->Cell(50, $alturaLinha, utf8_decode($reg['rg']), 1, 0, 'C', true);
-        $pdf->Cell(30, $alturaLinha, utf8_decode($reg['aulas']), 1, 0, 'C', true);
+        $pdf->Cell(30, $alturaLinha, utf8_decode($dados['auladada']), 1, 0, 'C', true);
         $pdf->Cell(30, $alturaLinha, utf8_decode($dados['faltas']), 1, 0, 'C', true);
         $pdf->Cell(30, $alturaLinha, utf8_decode($dados['frequencia'] . "%"), 1, 0, 'C', true);
     }

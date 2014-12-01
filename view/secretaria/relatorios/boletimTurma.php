@@ -169,6 +169,8 @@ if ($turma && $fechamento) {
     }
     ?>
     <br />
+    <p><font color="red">Aten&ccedil;&atilde;o, a MG (M&eacute;dia Global) e a FG(Frequ&ecirc;ncia Global) podem divergir do Nambei, utilize apenas para refer&ecirc;ncia.</font></p>
+    <br />
     <table id='table' style="background: #E3F0E6;">
         <colgroup class="noslim"></colgroup>
         <colgroup class="noslim"></colgroup>

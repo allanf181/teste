@@ -133,7 +133,6 @@ class Frequencias extends FrequenciasAbonos {
                 $frequencia = 100;
                 $faltas = 0;
             }
-
             $dados['CH'] = $res[0]['CH'];
             $dados['frequencia'] = round($frequencia, 1);
             $dados['frequenciaPrevista'] = round($frequenciaPrevista, 1);
@@ -156,7 +155,10 @@ class Frequencias extends FrequenciasAbonos {
                         au.codigo as codAula, d.nome as disciplina, sum(au.quantidade) as aulas,
         		at.codigo as atribuicao, au.data as data, m.aluno as matricula,
                         au.quantidade, s.nome as situacao, p.prontuario, m.codigo as codMatricula,
-                        p.rg
+                        p.rg,t.numero as turma,
+                        IF(at.bimestre = 0 AND t.semestre <> 0, CONCAT(t.semestre,'º semestre'),
+                            CONCAT(at.bimestre,'º bimestre')) as bimestreFormat,
+                        IF(LENGTH(at.subturma) > 0,at.subturma,at.eventod) as subturma                            
                 FROM Atribuicoes at
                 join Disciplinas d on at.disciplina=d.codigo
                 join Aulas au on au.atribuicao=at.codigo
