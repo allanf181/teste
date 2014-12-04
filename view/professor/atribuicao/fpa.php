@@ -1,6 +1,6 @@
 <?php
 //Esse arquivo é fixo para o professor.
-//Permite o registro da Folha de Trabalho Docente.
+//Permite o registro da FPA do Docente.
 //Link visível no menu: PADRÃO SIM.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -282,7 +282,7 @@ if ($VALIDO)
                                         ?>
                                         <tr>
                                             <td>
-                                                <font size="1">Duração do intervalo no per&iacute;odo <?= $periodo[$p] ?>:</font>
+                                                <font size="1">Dura&ccedil;&atilde;o do intervalo no per&iacute;odo <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
                                                 <select id="Intervalo<?= $p ?>" <?=$disabled?> name="Intervalo<?= $p ?>">
@@ -300,7 +300,7 @@ if ($VALIDO)
                                         </tr>
                                         <tr>
                                             <td>
-                                                <font size="1">Que horas representa o número 1 no período <?= $periodo[$p] ?>:</font>
+                                                <font size="1">Que horas representa o n&uacute;mero 1 no per&iacute;odo <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
                                                 <input type="text" id="Periodo<?= $p ?>" <?=$disabled?> name="Periodo<?= $p ?>" size="3" value="<?= $hor[1] ?>" />
@@ -308,7 +308,7 @@ if ($VALIDO)
                                         </tr>
                                         <tr>
                                             <td>
-                                                <font size="1">Que horas começa o intervalo neste período <?= $periodo[$p] ?>:</font>
+                                                <font size="1">Que horas come&ccedil;a o intervalo neste per&iacute;odo <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
                                                 <select id="IniIntervalo<?= $p ?>" <?=$disabled?> name="IniIntervalo<?= $p ?>" value="<?= $hor[2] ?>"></select>
@@ -373,11 +373,11 @@ if ($VALIDO)
                         }
                         ?>
                         <tr>
-                            <th colspan="4" align="right">Regência de Aulas (em horas)</th>
+                            <th colspan="4" align="right">Reg&ecirc;ncia de Aulas (em horas)</th>
                             <th id="regencia">&nbsp;</th>
                         </tr>
                         <tr>
-                            <th colspan="4" align="right">Organização do Ensino (em horas)</th>
+                            <th colspan="4" align="right">Organiza&ccedil;&atilde;o do Ensino (em horas)</th>
                             <th id="ensino">&nbsp;</th>
                         </tr>
                     </table>
@@ -413,11 +413,11 @@ if ($VALIDO)
                     <th>&nbsp;</th>
                     <th align="left"><font size="1">Como exemplos de atividades que podem ser realizadas e descritas nos campos da tabela de Apoio ao Ensino, tem-se:
                         <br />
-                        <br />- Atendimento ao aluno (mínimo 1h);
-                        <br />- Reuniões (De área, de cursos, Pedagógicas, NDE, etc) - Mínimo 2h;
-                        <br />- Recuperação paralela;
-                        <br />- Supervisão ou orientação de estágio ou de trabalhos acadêmicos;
-                        <br />- Outras atividades com descrição semanal.</font>
+                        <br />- Atendimento ao aluno (m&iacute;nimo 1h);
+                        <br />- Reuni&otilde;es (De &aacute;rea, de cursos, Pedag&oacute;gicas, NDE, etc) - M&iacute;nimo 2h;
+                        <br />- Recupera&ccedil;&atilde;o paralela;
+                        <br />- Supervis&atilde;o ou orienta&ccedil;&atilde;o de est&aacute;gio ou de trabalhos acad&ecirc;micos;
+                        <br />- Outras atividades com descri&ccedil;&atilde;o semanal.</font>
                     </th>
                     </tr>
                 </table>
@@ -448,14 +448,14 @@ if ($VALIDO)
                     </table>
                     </th>
                     <th>&nbsp;</th>
-                    <th align="left"><font size="1">Como exemplos de atividades que podem ser realizadas e descritas nos campos da tabela de Complementação de atividades, tem-se:
+                    <th align="left"><font size="1">Como exemplos de atividades que podem ser realizadas e descritas nos campos da tabela de Complementa&ccedil;&atilde;o de atividades, tem-se:
                         <br />
                         <br />- Projetos de pesquisa;
-                        <br />- Projetos de extensão;
-                        <br />- Coordenações, gerências ou direções;
-                        <br />- Participação em comissões e comitês;
-                        <br />- Cursos de capacitação;
-                        <br />- Outras atividades com descrição semanal;
+                        <br />- Projetos de extens&atilde;o;
+                        <br />- Coordena&ccedil;&otilde;es, ger&ecirc;ncias ou dire&ccedil;&otilde;es;
+                        <br />- Participa&ccedil;&atilde;o em comiss&otilde;es e comit&ecirc;s;
+                        <br />- Cursos de capacita&ccedil;&atilde;o;
+                        <br />- Outras atividades com descri&ccedil;&atilde;o semanal;
                         </font>
                     </th>
                     </tr>

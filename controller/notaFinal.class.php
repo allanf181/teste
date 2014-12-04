@@ -60,7 +60,7 @@ class NotasFinais extends Notas {
                     $erro = 2;
 
                 // FECHAMENTO ANUAL BIMESTRAL
-                if ($reg['bimestre'] == 4) {
+                /*if ($reg['bimestre'] == 4) {
                     $dados = $this->resultadoBimestral($reg['aluno'], $reg['turma'], $reg['numero'], 1, 1);
                     if (!$dados['situacao']) {
                         $sql = "SELECT * FROM NotasFinais 
@@ -84,7 +84,7 @@ class NotasFinais extends Notas {
                         if (!$this->insertOrUpdate($params2))
                             $erro = 1;
                     }
-                }
+                } */
             }
             return $erro;
         }

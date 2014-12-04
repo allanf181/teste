@@ -1,6 +1,6 @@
 <?php
 //Esse arquivo é fixo para o professor.
-//Permite o registro da Folha de Trabalho Docente.
+//Permite o registro do PIT do Docente.
 //Link visível no menu: PADRÃO SIM.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -21,8 +21,14 @@ $atvECmt = new TDFPAAtvECmt();
 require CONTROLLER . "/tdFpaComponente.class.php";
 $componente = new TDFPAComponente();
 
+require CONTROLLER . "/tdVars.class.php";
+$tdVars = new TDVars();
+
+require CONTROLLER . "/logSolicitacao.class.php";
+$log = new LogSolicitacoes();
+
 if ($_POST) {
-    $_POST['modelo'] = 'FPA';
+    $_POST['modelo'] = 'PIT';
     $_POST['semestre'] = $SEMESTRE;
     $_POST['ano'] = $ANO;
     $_POST['pessoa'] = $_SESSION['loginCodigo'];
@@ -51,62 +57,64 @@ $resC = $componente->listComponentes($codigo);
 $resAtv = $atvECmt->listAtvECmt($codigo, 'atv');
 //LISTA COMPLEMENTACAO
 $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
+
+//VERIFICA SE ESTA FINALIZADO OU VALIDADO
+$resVars = $tdVars->listVars($codigo, 'PIT');
+if ($resVars[0]['finalizado'] && $resVars[0]['finalizado'] != '0000-00-00 00:00:00')
+    $disabled = 'disabled';
+
+if ($resVars[0]['valido'] && $resVars[0]['valido'] != '00/00/0000 00:00')
+    $VALIDO = 1;
+
+$paramsLog['codigoTabela'] = $codigo;
+$paramsLog['nomeTabela'] = 'PIT';
+$l = $log->listSolicitacoes($paramsLog, " AND ( l.dataConcessao = '0000-00-00 00:00:00' OR l.dataConcessao IS NULL) ");
+if ($l[0]['solicitacao']) {
+    $OPT[0] = $l[0]['solicitante'];
+    $OPT[1] = $l[0]['solicitacao'];
+    mensagem('INFO', 'INVALID_FORM', $OPT);
+    $disabled = '';
+}
+
+if (!$VALIDO && $disabled)
+    mensagem('OK', 'FINISH_FORM');
+
+if ($VALIDO)
+    mensagem('OK', 'VALID_FORM', $solicitante);
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <br />
 <center>
-    <script>
-        $('#form_padrao').html5form({
-            method: 'POST',
-            action: '<?php print $SITE; ?>',
-            responseDiv: '#index',
-            colorOn: '#000',
-            colorOff: '#999',
-            messages: 'br'
-        })
-    </script>
-
     <div id="html5form" class="main">
         <form id="form_padrao">
             <input type="hidden" value="<?php echo $codigo; ?>" name="codigo" id="codigo" />
-            <font size="3"><b>FPA - FORMUL&Aacute;RIO DE PREFER&Ecirc;NCIA DE ATIVIDADES <br> <?= $SEMESTRE ?>&ordm; semestre <?= $ANO ?> </b></font>
+            <font size="3"><b>PIT - PLANO INDIVIDUAL DE TRABALHO DOCENTE <br> <?= $SEMESTRE ?>&ordm; semestre <?= $ANO ?> </b></font>
             <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <thead>
                     <tr>
                         <th>Professor: </th>
-                        <th><input type="text" disabled style="width: 264pt" id="nome"ampoN name="nome" maxlength="45" value="<?= $_SESSION["loginNome"] ?>" /></th>
+                        <th><?= $_SESSION["loginNome"] ?></th>
                         <th>&Aacute;rea: </th>
-                        <th><input type="text" <?= $disabled ?> style="width: 264pt" id="area" name="area" maxlength="45" value="<?= $area ?>"/></th>
+                        <th><?= $area ?></th>
                     </tr>
                     <tr>
                         <th>Prontu&aacute;rio: </th>
-                        <th><input type="text" disabled style="width: 264pt" id="prontuario" name="prontuario" maxlength="45" value="<?= $_SESSION["loginProntuario"] ?>" /></th>
+                        <th><?= $_SESSION["loginProntuario"] ?></th>
                         <th>Email: </th>
-                        <th><input type="text" <?= $disabled ?> style="width: 264pt" id="email" name="email" maxlength="100" value="<?= $email ?>" /></th>
+                        <th><?= $email ?></th>
                     </tr>
                     <tr>
-                        <th>Telefone: </th><th><input type="text" <?= $disabled ?> style="width: 264pt" id="telefone" name="telefone" maxlength="45" value="<?= $telefone ?>" /></th>
-                        <th>Celular: </th><th><input type="text" <?= $disabled ?> style="width: 264pt" id="celular" name="celular" maxlength="45" value="<?= $celular ?>" /></th>
+                        <th>Telefone: </th><th><?= $telefone ?></th>
+                        <th>Celular: </th><th><?= $celular ?></th>
                     </tr>
                     <tr>
                         <th>Apelido: </th>
-                        <th><input type="text" <?= $disabled ?> style="width: 264pt" id="apelido" name="apelido" maxlength="100" value="<?= $apelido ?>"/></th>
+                        <th><?= $apelido ?></th>
 
                         <th>Regime: </th>
-                        <th>
-                            <?php
-                            $regimes = Array('20H', '40H', 'RDE', 'Substituto', 'Temporario');
-                            foreach ($regimes as $r) {
-                                $checked = '';
-                                if ($regime == $r)
-                                    $checked = 'checked';
-                                ?>
-                                |<input type="radio" <?= $disabled ?> id="regime" <?= $checked ?> name="regime" value="<?= $r ?>" /><font size="1"><?= $r ?></font>
-                                <?php
-                            }
-                            ?>
+                        <th><?= $regime ?>
                         </th>
                     </tr>
             </table>
@@ -114,8 +122,11 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
             <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <thead>
                     <tr align="right">
-                        <th colspan="10">
+                        <th align="left">
                             <img style="width: 30px" src="<?= ICONS ?>/icon-printer.gif" title="Imprimir em PDF" />
+                            <a href="<?= VIEW ?>/secretaria/relatorios/inc/fpa.php?professor=<?= crip($_SESSION['loginCodigo']) ?>" target="_blank">
+                                <span style='font-weight: bold; color: white'>Imprimir</span>
+                            </a>
                         </th>
                         <th colspan="4" align="center">
                             <input type="submit" <?= $disabled ?> style="width: 50px;" value="Salvar" id="salvar">
@@ -142,174 +153,77 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
             </table>
 
             <div class="cont_tab" id="Dados1">
-                <font size="2"><b>Disponibilidade de hor&aacute;rio para atribui&ccedil;&atilde;o de componentes curriculares</b></font>
+                <font size="2"><b>Hor&aacute;rio Consolidado<br>(preencher com a sigla da componente curricular)</b></font>
                 <br />
                 <br />
-                <table style="width: 865px" border="0" summary="FTD" >
+                <table style="width: 865px" border="0" id="tabela_boletim" >
+
+                    <?php
+                    $dias = diasDaSemana();
+                    $dias[0] = 'Aula';
+                    unset($dias[1]);
+
+                    $aula[1] = '1';
+                    $aula[7] = '2';
+                    $aula[13] = '3';
+                    $aula[19] = '4';
+                    $aula[25] = '5';
+                    $aula[31] = '6';
+
+                    ksort($dias);
+                    ?>
                     <tr>
-                        <th align="left">
-                            Células selecionadas: <span id="celulasSel"></span><br />
-                    <table style='width:400px' border="0" id="tabela_boletim">
                         <?php
-                        $dias = diasDaSemana();
-                        $dias[0] = 'Aula';
-                        unset($dias[1]);
-
-                        $aula[1] = '1';
-                        $aula[7] = '2';
-                        $aula[13] = '3';
-                        $aula[19] = '4';
-                        $aula[25] = '5';
-                        $aula[31] = '6';
-
-                        ksort($dias);
-                        ?>
-                        <tr>
+                        //IMPRIME O DIA DA SEMANA
+                        foreach ($dias as $dCodigo => $dNome) {
+                            ?>
+                            <th>
+                                <span style='font-weight: bold; color: white'><?= $dNome ?></span>
+                            </th>
                             <?php
-                            //IMPRIME O DIA DA SEMANA
-                            foreach ($dias as $dCodigo => $dNome) {
+                        }
+                        ?>
+                    </tr>
+                    <?php
+                    $periodo[1] = 'Matutino';
+                    $periodo[2] = 'Vespertino';
+                    $periodo[3] = 'Noturno';
+
+                    for ($p = 1; $p <= 3; $p++) {
+                        ?>
+                        <th colspan="7">
+                            <span style='font-weight: bold; color: white'><?= $periodo[$p] ?></span>
+                        </th>
+                        <tr align="center">
+                            <?php
+                            $c = 7;
+                            $l = 0;
+                            $horarios = explode(',', $horario);
+                            for ($i = 1; $i <= 36; $i++) { // LINHAS DA TABELA
+                                if ($c >= 7) {
+                                    ?>
+                                <tr align="center">
+                                    <th id="A<?= $p . $i ?>"><?= $aula[$i] ?></th>
+                                    <?php
+                                    $c = 1;
+                                    $l++;
+                                }
+                                $IS = $p . $l . $c;
                                 ?>
-                                <th>
-                                    <span style='font-weight: bold; color: white'><?= $dNome ?></span>
-                                </th>
+                                    <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[]" value="<?= $IS ?>" type="text" size="10" maxlength="10"  /></td>
                                 <?php
+                                $c++;
                             }
                             ?>
                         </tr>
                         <?php
-                        $periodo[1] = 'Matutino';
-                        $periodo[2] = 'Vespertino';
-                        $periodo[3] = 'Noturno';
-
-                        for ($p = 1; $p <= 3; $p++) {
-                            ?>
-                            <th colspan="7">
-                                <span style='font-weight: bold; color: white'><?= $periodo[$p] ?></span>
-                            </th>
-                            <tr align="center">
-                                <?php
-                                $c = 7;
-                                $l = 0;
-                                $horarios = explode(',', $horario);
-                                for ($i = 1; $i <= 36; $i++) { // LINHAS DA TABELA
-                                    if ($c >= 7) {
-                                        ?>
-                                    <tr align="center">
-                                        <th id="A<?= $p . $i ?>"><?= $aula[$i] ?></th>
-                                        <?php
-                                        $c = 1;
-                                        $l++;
-                                    }
-                                    $IS = $p . $l . $c;
-                                    ?>
-                                    <td><input id="CE<?= $IS ?>" name="horario[]" value="<?= $IS ?>" type="checkbox" <?php if (in_array($IS, $horarios)) print 'checked'; ?> /></td>
-                                    <?php
-                                    $c++;
-                                }
-                                ?>
-                            </tr>
-                            <?php
-                        }
-                        ?>
-                    </table>
-                    </th>
-                    <th>&nbsp;&nbsp;</th>
-                    <th align="left" valign='top'>
-                    <table border='0'>
-                        <tr>
-                            <td>
-                                Dura&ccedil;&atilde;o da Aula no Campus:<br />
-                                <input type="radio" <?= $disabled ?> id="duracaoAula" <?php if ($duracaoAula == '00:45') print 'checked'; ?> name="duracaoAula" value="00:45" /><font size="1">45min</font><br />
-                                <input type="radio" <?= $disabled ?> id="duracaoAula" <?php if ($duracaoAula == '00:50') print 'checked'; ?> name="duracaoAula" value="00:50" /><font size="1">50min</font>
-                            </td>
-                        </tr>
-                        <tr><td><hr /></td></tr>
-                        <tr>
-                            <td>
-                                <input type="checkbox" <?= $disabled ?> id="dedicarEnsino" <?php if ($dedicarEnsino) print 'checked'; ?> name="dedicarEnsino" value="1" />
-                                <font size="1">Sim, desejo dedicar-me prioritariamente a atividades de ensino.</font>
-                            </td>
-                        </tr>
-                        <tr><td><hr /></td></tr>
-                        <tr>
-                            <td><font size="1">Pelo regime de trabalho selecionado e pela dura&ccedil;&atilde;o da hora-aula o docente poder&aacute;:<br /></font>
-                                <br />
-                                <font style='font-weight: bold; color: red'>Ministrar at&eacute; <span id="ministrar"></span> aulas.
-                                <br />Selecionar <span id="celulas"></span> c&eacute;lulas.
-                                </font>
-                            </td>
-                        </tr>
-                        <tr><td><hr /></td></tr>
-                        <tr>
-                            <td>
-                                <font size="1">Caso o docente deseje substituir a numera&ccedil;&atilde;o das aulas nos turnos pelos hor&aacute;rios das mesmas no campus, e se os cursos onde o docente tem aulas obedecem &agrave; mesma distribui&ccedil;&atilde;o de hor&aacute;rio, complete as informa&ccedil;&otilde;es abaixo:</font>
-                                <br /><input type="checkbox" <?= $disabled ?> id="subHorario" <?= $checked ?> name="subHorario" <?php if ($subHorario) print 'checked'; ?> value="1" />
-                                <font size="1">Sim, desejo substituir a numera&ccedil;&atilde;o pelos hor&aacute;rios.</font>
-                            </td>
-                        </tr>
-                        <tr><td><hr /></td></tr>
-                        <tr>
-                            <td>
-                                <table border="0">
-                                    <?php
-                                    for ($p = 1; $p <= 3; $p++) {
-                                        $var = 'horario' . $p;
-                                        $hor = explode(',', $$var);
-                                        $t = 'h' . $p;
-                                        $$t = $hor[2];
-                                        ?>
-                                        <tr>
-                                            <td>
-                                                <font size="1">Duração do intervalo no per&iacute;odo <?= $periodo[$p] ?>:</font>
-                                            </td>
-                                            <td>
-                                                <select id="Intervalo<?= $p ?>" name="Intervalo<?= $p ?>">
-                                                    <?php
-                                                    for ($i = 5; $i <= 30; $i++) {
-                                                        $n = str_pad($i, 2, "0", STR_PAD_LEFT);
-                                                        ?>
-                                                        <option <?php if ($hor[0] == "00:$n") print 'selected'; ?> value="00:<?= $n ?>">00:<?= $n ?></option>
-                                                        <?php
-                                                        $i+=4;
-                                                    }
-                                                    ?>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <font size="1">Que horas representa o número 1 no período <?= $periodo[$p] ?>:</font>
-                                            </td>
-                                            <td>
-                                                <input type="text" id="Periodo<?= $p ?>"  name="Periodo<?= $p ?>" size="3" value="<?= $hor[1] ?>" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <font size="1">Que horas começa o intervalo neste período <?= $periodo[$p] ?>:</font>
-                                            </td>
-                                            <td>
-                                                <select id="IniIntervalo<?= $p ?>" name="IniIntervalo<?= $p ?>" value="<?= $hor[2] ?>"></select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><hr>
-                                            </td>
-                                        </tr>                                        
-                                        <?php
-                                    }
-                                    ?>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                    </th>
-                    </tr>
+                    }
+                    ?>
                 </table>
             </div>
 
             <div class="cont_tab" id="Dados2">
-                <font size="2"><b>Componentes curriculares de interesse do docente (por ordem de prioridade)</b></font>
+                <font size="2"><b>Atividades de Ensino<br>Reg&ecirc;ncia de Aulas</b></font>
                 <br />
                 <br />
                 <table style="width: 865px" border="0" summary="FTD" >
@@ -327,37 +241,41 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                         for ($t = 0; $t <= 9; $t++) {
                             ?>
                             <tr>
-                                <th><input class="componente" type="text" size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
-                                <th><input class="componente" type="text" size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
-                                <th><input class="componente" type="text" size="40" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
+                                <th><input class="componente" type="text" <?= $disabled ?> size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
+                                <th><input class="componente" type="text" <?= $disabled ?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
+                                <th><input class="componente" type="text" <?= $disabled ?> size="40" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
                                 <th>
-                                    <select class="componente" id="P<?= $t ?>" name="P<?= $t ?>" >
-                                    <?php
-                                    for ($p = 1; $p <= 3; $p++) {
-                                        if ($resC[$t]['periodo'] == $periodo[$p][0])
-                                            $selected = 'selected';
-                                        else
-                                            $selected = '';
-                                        ?>
-                                        <option <?=$selected?> value="<?=$periodo[$p][0]?>"><?=$periodo[$p][0]?></option>
+                                    <select class="componente" id="P<?= $t ?>" <?= $disabled ?> name="P<?= $t ?>" >
                                         <?php
-                                    }
-                                    ?>
+                                        for ($p = 1; $p <= 3; $p++) {
+                                            if ($resC[$t]['periodo'] == $periodo[$p][0])
+                                                $selected = 'selected';
+                                            else
+                                                $selected = '';
+                                            ?>
+                                            <option <?= $selected ?> <?= $disabled ?> value="<?= $periodo[$p][0] ?>"><?= $periodo[$p][0] ?></option>
+                                            <?php
+                                        }
+                                        ?>
                                     </select>
                                 </th>
-                                <th><input class="componente" type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
+                                <th><input class="componente" <?= $disabled ?> type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
                         ?>
                         <tr>
-                            <th colspan="4" align="right">Regência de Aulas (em horas)</th>
+                            <th colspan="4" align="right">Reg&ecirc;ncia de Aulas (em horas)</th>
                             <th id="regencia">&nbsp;</th>
                         </tr>
                         <tr>
-                            <th colspan="4" align="right">Organização do Ensino (em horas)</th>
+                            <th colspan="4" align="right">Tempo Organiza&ccedil;&atilde;o do Ensino (em horas)</th>
                             <th id="ensino">&nbsp;</th>
                         </tr>
+                        <tr>
+                            <th colspan="4" align="right">Tempo total dedicado &agrave; Aulas e Organiza&ccedil;&atilde;o de Ensino (em horas)</th>
+                            <th id="totalRegEns">&nbsp;</th>
+                        </tr>                        
                     </table>
                     </th>
                     </tr>
@@ -376,8 +294,8 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="atividade" type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
-                                <th><input class="atividade" type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -391,11 +309,11 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                     <th>&nbsp;</th>
                     <th align="left"><font size="1">Como exemplos de atividades que podem ser realizadas e descritas nos campos da tabela de Apoio ao Ensino, tem-se:
                         <br />
-                        <br />- Atendimento ao aluno (mínimo 1h);
-                        <br />- Reuniões (De área, de cursos, Pedagógicas, NDE, etc) - Mínimo 2h;
-                        <br />- Recuperação paralela;
-                        <br />- Supervisão ou orientação de estágio ou de trabalhos acadêmicos;
-                        <br />- Outras atividades com descrição semanal.</font>
+                        <br />- Atendimento ao aluno (m&iacute;nimo 1h);
+                        <br />- Reuni&otilde;es (De &aacute;rea, de cursos, Pedag&oacute;gicas, NDE, etc) - M&iacute;nimo 2h;
+                        <br />- Recupera&ccedil;&atilde;o paralela;
+                        <br />- Supervis&atilde;o ou orienta&ccedil;&atilde;o de est&aacute;gio ou de trabalhos acad&ecirc;micos;
+                        <br />- Outras atividades com descri&ccedil;&atilde;o semanal.</font>
                     </th>
                     </tr>
                 </table>
@@ -413,8 +331,8 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="complementacao" type="text" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
-                                <th><input class="complementacao" type="text" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> type="text" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> type="text" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -426,14 +344,14 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                     </table>
                     </th>
                     <th>&nbsp;</th>
-                    <th align="left"><font size="1">Como exemplos de atividades que podem ser realizadas e descritas nos campos da tabela de Complementação de atividades, tem-se:
+                    <th align="left"><font size="1">Como exemplos de atividades que podem ser realizadas e descritas nos campos da tabela de Complementa&ccedil;&atilde;o de atividades, tem-se:
                         <br />
                         <br />- Projetos de pesquisa;
-                        <br />- Projetos de extensão;
-                        <br />- Coordenações, gerências ou direções;
-                        <br />- Participação em comissões e comitês;
-                        <br />- Cursos de capacitação;
-                        <br />- Outras atividades com descrição semanal;
+                        <br />- Projetos de extens&atilde;o;
+                        <br />- Coordena&ccedil;&otilde;es, ger&ecirc;ncias ou dire&ccedil;&otilde;es;
+                        <br />- Participa&ccedil;&atilde;o em comiss&otilde;es e comit&ecirc;s;
+                        <br />- Cursos de capacita&ccedil;&atilde;o;
+                        <br />- Outras atividades com descri&ccedil;&atilde;o semanal;
                         </font>
                     </th>
                     </tr>
@@ -452,227 +370,198 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
     <br />
     <span id="obsCELL" style="color: red;">&nbsp;</span>
 </center >
+<?php
+$hor1 = explode(',', $horario1);
+$hor2 = explode(',', $horario2);
+$hor3 = explode(',', $horario3);
+?>
 <script>
-        var totalCelulas = 0;
-        var totalHoras = 0;
-        calcIntervalo();
-        callFunction();
+    var totalCelulas = 0;
+    var totalHoras = 0;
+    callFunction();
 
-        function calcComponente() {
-            total = 0;
-            if ($("input[id=duracaoAula]:radio:checked").val()) {
-                for (i = 0; i <= 9; i++) {
-                    if ($("#A" + i).val())
-                        total += parseInt($("#A" + i).val());
-                }
-                totalAulas = (total * $("input[id=duracaoAula]:radio:checked").val().substring(5, 3)) / 60;
-
-                $("#regencia").html(Math.round(totalAulas));
-                $("#ensino").html(Math.round(totalAulas));
-
-                totalHoras += Math.round(totalAulas) * 2;
-                $("#TH").html(totalHoras);
+    function calcComponente() {
+        total = 0;
+        if ('<?= $duracaoAula ?>') {
+            for (i = 0; i <= 9; i++) {
+                if ($("#A" + i).val())
+                    total += parseInt($("#A" + i).val());
             }
-        }
+            totalAulas = (total * '<?= substr($duracaoAula, 3, 2) ?>') / 60;
 
-        function calcAtividade() {
-            total = 0;
-            for (i = 0; i <= 6; i++) {
-                if ($("#AtvA" + i).val())
-                    total += parseInt($("#AtvA" + i).val());
-            }
-            $("#atvEnsino").html(Math.round(total));
-
-            totalHoras += Math.round(total);
+            $("#regencia").html(Math.round(totalAulas));
+            $("#ensino").html(Math.round(totalAulas));
+            totalHoras += Math.round(totalAulas) * 2;
+            $("#totalRegEns").html(totalHoras);
+            
             $("#TH").html(totalHoras);
         }
+    }
 
-        function calcComplementacao() {
-            total = 0;
-            for (i = 0; i <= 6; i++) {
-                if ($("#CompA" + i).val())
-                    total += parseInt($("#CompA" + i).val());
-            }
-            $("#compAtv").html(Math.round(total));
+    function calcAtividade() {
+        total = 0;
+        for (i = 0; i <= 6; i++) {
+            if ($("#AtvA" + i).val())
+                total += parseInt($("#AtvA" + i).val());
+        }
+        $("#atvEnsino").html(Math.round(total));
 
-            totalHoras += Math.round(total);
-            $("#TH").html(totalHoras);
+        totalHoras += Math.round(total);
+        $("#TH").html(totalHoras);
+    }
+
+    function calcComplementacao() {
+        total = 0;
+        for (i = 0; i <= 6; i++) {
+            if ($("#CompA" + i).val())
+                total += parseInt($("#CompA" + i).val());
+        }
+        $("#compAtv").html(Math.round(total));
+
+        totalHoras += Math.round(total);
+        $("#TH").html(totalHoras);
+    }
+
+    function calcAulas() {
+        var maxCH = 40;
+
+        var ministrar = 16;
+        var celulas = 32;
+        if ('<?= $duracaoAula ?>' == '00:50'
+                && '<?= $regime ?>' != '20H') {
+            ministrar = ministrar - 2;
+            celulas = celulas - 3;
         }
 
-        function checkCelulas() {
-            celulasSel = 0;
-            for (p = 1; p <= 3; p++) {
-                c = 7;
-                l = 0;
-                for (i = 1; i <= 36; i++) {
-                    if (c >= 7) {
-                        c = 1;
-                        l++;
-                    }
-                    IS = p + '' + l + '' + c;
-                    if ($("#CE" + IS).is(':checked')) {
-                        $("#obsCELL").html('');
-                        if (celulasSel >= totalCelulas) {
-                            $("#obsCELL").html('Número máximo de células ultrapassado!');
-                        }
-                        if (((totalCelulas - celulasSel) - 1) > 0) {
-                            $("#obsCELL").html('Falta selecionar ' + ((totalCelulas - celulasSel) - 1) + ' células!');
-                        }
-                        celulasSel++;
-                        $("#celulasSel").html(celulasSel);
-                    }
-                    c++;
-                }
-            }
+        if ('<?= $regime ?>' == '00:50'
+                && '<?= $regime ?>' == '20H') {
+            ministrar = ministrar - 1;
+            celulas = celulas - 2;
         }
 
-        function calcAulas() {
-            var maxCH = 40;
-            if (!$("input[id=regime]:radio:checked").val()) {
-                mensagem('Selecione um Regime de Trabalho primeiro!!!');
-                return false;
-            }
-            var ministrar = 16;
-            var celulas = 32;
-            if ($("input[id=duracaoAula]:radio:checked").val() == '00:50'
-                    && $("input[id=regime]:radio:checked").val() != '20H') {
-                ministrar = ministrar - 2;
-                celulas = celulas - 3;
-            }
-
-            if ($("input[id=duracaoAula]:radio:checked").val() == '00:50'
-                    && $("input[id=regime]:radio:checked").val() == '20H') {
-                ministrar = ministrar - 1;
-                celulas = celulas - 2;
-            }
-
-            if ($("#dedicarEnsino").is(':checked')
-                    && $("input[id=regime]:radio:checked").val() != '20H') {
-                ministrar += 5;
-            }
-
-            if ($("input[id=regime]:radio:checked").val() == '20H') {
-                ministrar = ministrar - 5;
-                celulas = celulas - 12;
-                maxCH = 20;
-            }
-
-            if (totalHoras != maxCH)
-                $("#obsCH").html('Carga horária final incompatível com a jornada de trabalho de ' + maxCH + 'h indicada, favor corrigir!');
-            else
-                $("#obsCH").html('');
-
-            $("#ministrar").html(ministrar);
-            $("#celulas").html(celulas);
-            totalCelulas = celulas;
+        if ('<?= $dedicarEnsino ?>'
+                && '<?= $regime ?>' != '20H') {
+            ministrar += 5;
         }
 
-        function calcIntervalo() {
-            for (p = 1; p <= 3; p++) {
-                ini = $("#Periodo" + p).val();
-                vl = ini;
-                for (l = 1; l <= 6; l++) {
-                    vl = addtime(vl, $("input[id=duracaoAula]:radio:checked").val());
-                    if (vl == '<?= $h1 ?>' || vl == '<?= $h2 ?>' || vl == '<?= $h3 ?>')
-                        sel = true;
-                    else
-                        sel = false;
-                    $('#IniIntervalo' + p).append($('<option>', {selected: sel, value: vl, text: vl}));
-                }
-            }
+        if ('<?= $regime ?>' == '20H') {
+            ministrar = ministrar - 5;
+            celulas = celulas - 12;
+            maxCH = 20;
         }
 
-        function calcPeriodo(tipo) {
-            for (p = 1; p <= 3; p++) {
-                ini = $("#Periodo" + p).val();
-                j = 1;
-                for (l = 1; l <= 31; l++) {
-                    if (tipo == true) {
-                        if (l != 1) {
-                            ini = addtime(ini, $("input[id=duracaoAula]:radio:checked").val());
-                        } else {
-                            ini = ini;
-                        }
+        if (totalHoras != maxCH)
+            $("#obsCH").html('Carga horária final incompatível com a jornada de trabalho de ' + maxCH + 'h indicada, favor corrigir!');
+        else
+            $("#obsCH").html('');
 
-                        if ($('#IniIntervalo' + p).val() == ini)
-                            ini = addtime(ini, $('#Intervalo' + p).val());
+        $("#ministrar").html(ministrar);
+        $("#celulas").html(celulas);
+        totalCelulas = celulas;
+    }
 
-                        fim = addtime(ini, $("input[id=duracaoAula]:radio:checked").val());
+    function calcPeriodo(tipo) {
+        var hor = [];
+        hor[1] = '<?= $hor1[1] ?>';
+        hor[2] = '<?= $hor2[1] ?>';
+        hor[3] = '<?= $hor3[1] ?>';
 
-                        $("#A" + p + '' + l).text(ini + ' - ' + fim);
+        var interIni = [];
+        interIni[1] = '<?= $hor1[2] ?>';
+        interIni[2] = '<?= $hor2[2] ?>';
+        interIni[3] = '<?= $hor3[2] ?>';
+
+        var interval = [];
+        interval[1] = '<?= $hor1[0] ?>';
+        interval[2] = '<?= $hor2[0] ?>';
+        interval[3] = '<?= $hor3[0] ?>';
+        
+        for (p = 1; p <= 3; p++) {
+            ini = hor[p];
+            j = 1;
+            for (l = 1; l <= 31; l++) {
+                if (tipo == true) {
+                    if (l != 1) {
+                        ini = addtime(ini, '<?= $duracaoAula ?>');
                     } else {
-                        $("#A" + p + '' + l).text(j);
-                        j++;
+                        ini = ini;
                     }
-                    l = l + 5;
+
+                    if (interIni[p] == ini)
+                        ini = addtime(ini, interval[p]);
+
+                    fim = addtime(ini, '<?= $duracaoAula ?>');
+
+                    $("#A" + p + '' + l).text(ini + ' - ' + fim);
+                } else {
+                    $("#A" + p + '' + l).text(j);
+                    j++;
                 }
+                l = l + 5;
             }
         }
+    }
 
-        function callFunction() {
-            totalHoras = 0;
-            callPeriodo();
-            calcComponente();
-            calcAtividade();
-            calcComplementacao();
-            calcAulas();
-            checkCelulas();
-        }
+    function callFunction() {
+        totalHoras = 0;
+        calcPeriodo('<?= $subHorario ?>');
+        calcComponente();
+        calcAtividade();
+        calcComplementacao();
+        calcAulas();
+    }
 
-        $(".componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
-            callFunction();
-        });
+    $(".componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
+        callFunction();
+    });
 
-        $("#IniIntervalo1,#IniIntervalo2,#IniIntervalo3,#Intervalo1,#Intervalo2,#Intervalo3").change(function () {
-            callFunction();
-        });
+    $("#IniIntervalo1,#IniIntervalo2,#IniIntervalo3,#Intervalo1,#Intervalo2,#Intervalo3").change(function () {
+        callFunction();
+    });
 
-        $("input:checkbox,input:radio,#dedicarEnsino").click(function () {
-            $('#IniIntervalo1').find('option').remove();    
-            calcIntervalo();
-            callFunction();
-        });
+    $("input:checkbox,input:radio,#dedicarEnsino").click(function () {
+        callFunction();
+    });
 
-        $("#subHorario").click(function () {
-            callPeriodo('Favor preencher todos os campos com os horários!');
-        });
+    var enviar = 0;
+    $('#form_padrao').submit(function () {
+        var options = {
+            target: '#index',
+            url: '<?php print $SITE; ?>',
+            type: 'POST',
+            data: {enviar: enviar},
+        };
 
-        function callPeriodo(message) {
-            for (i = 1; i <= 3; i++) {
-                if ($("#Periodo" + i).val().indexOf("_") >= 0 || $("#Periodo" + i).val() == '' || $("#IniIntervalo" + i).val() == '') {
-                    if (message) {
-                        $("#subHorario").attr('checked', false);
-                        mensagem('Favor preencher todos os campos com os horários!');
-                    }
-                    return false;
+        $(this).ajaxSubmit(options);
+        return false;
+    });
+
+    $("#enviar").click(function () {
+        event.preventDefault();
+        $.Zebra_Dialog('<strong>Deseja salvar sua FPA e enviar para seu coordenador? <br><br> A FPA ser&aacute; bloqueada, podendo ser desbloqueada somente pelo coordenador.</strong>', {
+            'type': 'question',
+            'title': '<?= $TITLE ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function (caption) {
+                if (caption == 'Sim') {
+                    enviar = 1;
+                    $("#form_padrao").submit();
                 }
             }
-            calcPeriodo($("#subHorario").is(':checked'));
-        }
+        });
+    });
 
-        $("#Periodo1,#Periodo2,#Periodo3").mask("99:99");
-
-        function mensagem(mensagem) {
-            $.Zebra_Dialog('<strong>' + mensagem + '</strong>', {
-                'type': 'question',
-                'title': '<?= $TITLE ?>',
-                'buttons': ['Ok'],
-                'onClose': function (caption) {
-                }
-            });
+    function addtime(start, end) {
+        if (start)
+            start = start.split(":");
+        if (end)
+            end = end.split(":");
+        var hours = parseInt(start[0]) + parseInt(end[0]);
+        var minutes = parseInt(start[1]) + parseInt(end[1]);
+        if (minutes >= 60) {
+            hours++;
+            minutes -= 60;
         }
-
-        function addtime(start, end) {
-            if (start)
-                start = start.split(":");
-            if (end)
-                end = end.split(":");
-            var hours = parseInt(start[0]) + parseInt(end[0]);
-            var minutes = parseInt(start[1]) + parseInt(end[1]);
-            if (minutes >= 60) {
-                hours++;
-                minutes -= 60;
-            }
-            return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
-        }
+        return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
+    }
 </script>
