@@ -92,6 +92,10 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $INFO_INVALID_FTD = $OPT[0] . ', solicitou corre&ccedil;&atilde;o em seu FTD: <br>' . $OPT[1];
     $OK_NOT_SAVE_FTD = "Ol&aacute; Professor, como ainda n&atilde;o salvou sua FTD, o sistema tentou buscar seus hor&aacute;rios para facilitar.";
 
+    $OK_VALID_FORM = $OPT . ' validou seu formul&aacute;rio.';
+    $OK_FINISH_FORM = 'Formul&aacute;rio finalizado, aguardando valiada&ccedil;&atilde;o do coordenador.';
+    $INFO_INVALID_FORM = $OPT[0] . ', solicitou corre&ccedil;&atilde;o em seu formul&aacute;rio: <br>' . $OPT[1];
+
     $ERRO_ARQUIVO = $OPT;
     $INFO_ARQUIVO = $OPT;
 

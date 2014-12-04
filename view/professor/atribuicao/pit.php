@@ -22,6 +22,7 @@ require CONTROLLER . "/tdFpaComponente.class.php";
 $componente = new TDFPAComponente();
 
 if ($_POST) {
+    $_POST['modelo'] = 'FPA';
     $_POST['semestre'] = $SEMESTRE;
     $_POST['ano'] = $ANO;
     $_POST['pessoa'] = $_SESSION['loginCodigo'];
@@ -71,7 +72,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
         <form id="form_padrao">
             <input type="hidden" value="<?php echo $codigo; ?>" name="codigo" id="codigo" />
             <font size="3"><b>FPA - FORMUL&Aacute;RIO DE PREFER&Ecirc;NCIA DE ATIVIDADES <br> <?= $SEMESTRE ?>&ordm; semestre <?= $ANO ?> </b></font>
-            <table style="width: 90%" border="0" summary="FTD" id="tabela_boletim">
+            <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <thead>
                     <tr>
                         <th>Professor: </th>
@@ -110,7 +111,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                     </tr>
             </table>
 
-            <table style="width: 90%" border="0" summary="FTD" id="tabela_boletim">
+            <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <thead>
                     <tr align="right">
                         <th colspan="10">
@@ -127,7 +128,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
             <link rel="stylesheet" type="text/css" href="view/css/aba.css" media="screen" />
             <script src="view/js/aba.js"></script>
 
-            <table style="width: 90%" border="0" summary="FTD">
+            <table style="width: 865px" border="0" summary="FTD">
                 <tr>
                     <th>
                 <ul class="tabs">
@@ -144,7 +145,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                 <font size="2"><b>Disponibilidade de hor&aacute;rio para atribui&ccedil;&atilde;o de componentes curriculares</b></font>
                 <br />
                 <br />
-                <table style="width: 91%" border="0" summary="FTD" >
+                <table style="width: 865px" border="0" summary="FTD" >
                     <tr>
                         <th align="left">
                             Células selecionadas: <span id="celulasSel"></span><br />
@@ -189,7 +190,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                                 <?php
                                 $c = 7;
                                 $l = 0;
-                                $horario = explode(',', $horario);
+                                $horarios = explode(',', $horario);
                                 for ($i = 1; $i <= 36; $i++) { // LINHAS DA TABELA
                                     if ($c >= 7) {
                                         ?>
@@ -201,7 +202,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                                     }
                                     $IS = $p . $l . $c;
                                     ?>
-                                    <td><input id="CE<?= $IS ?>" name="horario[]" value="<?= $IS ?>" type="checkbox" <?php if (in_array($IS, $horario)) print 'checked'; ?> /></td>
+                                    <td><input id="CE<?= $IS ?>" name="horario[]" value="<?= $IS ?>" type="checkbox" <?php if (in_array($IS, $horarios)) print 'checked'; ?> /></td>
                                     <?php
                                     $c++;
                                 }
@@ -254,6 +255,8 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                                     for ($p = 1; $p <= 3; $p++) {
                                         $var = 'horario' . $p;
                                         $hor = explode(',', $$var);
+                                        $t = 'h' . $p;
+                                        $$t = $hor[2];
                                         ?>
                                         <tr>
                                             <td>
@@ -283,12 +286,16 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                                         </tr>
                                         <tr>
                                             <td>
-                                                <font size="1">Que horas começa o intervalo neste período<?= $periodo[$p] ?>:</font>
+                                                <font size="1">Que horas começa o intervalo neste período <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
-                                                <input type="text" id="IniIntervalo<?= $p ?>" name="IniIntervalo<?= $p ?>" size="3" value="<?= $hor[2] ?>" />
+                                                <select id="IniIntervalo<?= $p ?>" name="IniIntervalo<?= $p ?>" value="<?= $hor[2] ?>"></select>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td><hr>
+                                            </td>
+                                        </tr>                                        
                                         <?php
                                     }
                                     ?>
@@ -305,7 +312,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                 <font size="2"><b>Componentes curriculares de interesse do docente (por ordem de prioridade)</b></font>
                 <br />
                 <br />
-                <table style="width: 91%" border="0" summary="FTD" >
+                <table style="width: 865px" border="0" summary="FTD" >
                     <tr align="right" valign="top">
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
@@ -321,9 +328,23 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                             ?>
                             <tr>
                                 <th><input class="componente" type="text" size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
-                                <th><input class="componente" type="text" size="45" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
-                                <th><input class="componente" type="text" size="45" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
-                                <th><input class="componente" type="text" size="1" maxlength="1" id="P<?= $t ?>" name="P<?= $t ?>" value="<?= $resC[$t]['periodo'] ?>"/></th>
+                                <th><input class="componente" type="text" size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
+                                <th><input class="componente" type="text" size="40" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
+                                <th>
+                                    <select class="componente" id="P<?= $t ?>" name="P<?= $t ?>" >
+                                    <?php
+                                    for ($p = 1; $p <= 3; $p++) {
+                                        if ($resC[$t]['periodo'] == $periodo[$p][0])
+                                            $selected = 'selected';
+                                        else
+                                            $selected = '';
+                                        ?>
+                                        <option <?=$selected?> value="<?=$periodo[$p][0]?>"><?=$periodo[$p][0]?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                    </select>
+                                </th>
                                 <th><input class="componente" type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
@@ -347,7 +368,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                 <font size="2"><b>Atividades de Apoio ao Ensino</b></font>
                 <br />
                 <br />
-                <table style="width: 91%" border="0" summary="FTD" >
+                <table style="width: 865px" border="0" summary="FTD" >
                     <tr align="right" valign="top">
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
@@ -384,7 +405,7 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
                 <font size="2"><b>Complementa&ccedil;&atilde;o de Atividades</b></font>
                 <br />
                 <br />
-                <table style="width: 91%" border="0" summary="FTD" >
+                <table style="width: 865px" border="0" summary="FTD" >
                     <tr align="right" valign="top">
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
@@ -420,195 +441,238 @@ $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
             </div>
         </form>
     </div>
+    <table style="width: 865px" id="tabela_boletim">
+        <tr>
+            <th align="right">Total de horas semanais (obrigatoriamente 20h ou 40h, dependendo do regime de trabalho)</th>
+            <th id="TH">&nbsp;</th>
+        </tr>
+    </table>    
+
+    <span id="obsCH" style="color: red;">&nbsp;</span>
+    <br />
+    <span id="obsCELL" style="color: red;">&nbsp;</span>
 </center >
 <script>
-    var totalCelulas = 0;
-    calcAulas();
-    callPeriodo();
-    calcComponente();
-    calcAtividade();
-    calcComplementacao();
-    checkCelulas();
+        var totalCelulas = 0;
+        var totalHoras = 0;
+        calcIntervalo();
+        callFunction();
 
-    function calcComponente() {
-        total = 0;
-        if ($("input[id=duracaoAula]:radio:checked").val()) {
-            for (i = 0; i <= 9; i++) {
-                if ($("#A" + i).val())
-                    total += parseInt($("#A" + i).val());
-            }
-            totalAulas = (total * $("input[id=duracaoAula]:radio:checked").val().substring(5, 3)) / 60;
-
-            $("#regencia").html(Math.ceil(totalAulas));
-            $("#ensino").html(Math.ceil(totalAulas));
-        }
-    }
-
-    function calcAtividade() {
-        total = 0;
-        for (i = 0; i <= 6; i++) {
-            if ($("#AtvA" + i).val())
-                total += parseInt($("#AtvA" + i).val());
-        }
-        $("#atvEnsino").html(Math.ceil(total));
-    }
-
-    function calcComplementacao() {
-        total = 0;
-        for (i = 0; i <= 6; i++) {
-            if ($("#CompA" + i).val())
-                total += parseInt($("#CompA" + i).val());
-        }
-        $("#compAtv").html(Math.ceil(total));
-    }
-
-    function checkCelulas(valor) {
-        celulasSel = 0;
-        for (p = 1; p <= 3; p++) {
-            c = 7;
-            l = 0;
-            for (i = 1; i <= 36; i++) {
-                if (c >= 7) {
-                    c = 1;
-                    l++;
+        function calcComponente() {
+            total = 0;
+            if ($("input[id=duracaoAula]:radio:checked").val()) {
+                for (i = 0; i <= 9; i++) {
+                    if ($("#A" + i).val())
+                        total += parseInt($("#A" + i).val());
                 }
-                IS = p + '' + l + '' + c;
-                if ($("#CE" + IS).is(':checked')) {
-                    if (celulasSel >= totalCelulas) {
-                        $("#CE" + valor).removeAttr('checked');
-                    } else {
+                totalAulas = (total * $("input[id=duracaoAula]:radio:checked").val().substring(5, 3)) / 60;
+
+                $("#regencia").html(Math.round(totalAulas));
+                $("#ensino").html(Math.round(totalAulas));
+
+                totalHoras += Math.round(totalAulas) * 2;
+                $("#TH").html(totalHoras);
+            }
+        }
+
+        function calcAtividade() {
+            total = 0;
+            for (i = 0; i <= 6; i++) {
+                if ($("#AtvA" + i).val())
+                    total += parseInt($("#AtvA" + i).val());
+            }
+            $("#atvEnsino").html(Math.round(total));
+
+            totalHoras += Math.round(total);
+            $("#TH").html(totalHoras);
+        }
+
+        function calcComplementacao() {
+            total = 0;
+            for (i = 0; i <= 6; i++) {
+                if ($("#CompA" + i).val())
+                    total += parseInt($("#CompA" + i).val());
+            }
+            $("#compAtv").html(Math.round(total));
+
+            totalHoras += Math.round(total);
+            $("#TH").html(totalHoras);
+        }
+
+        function checkCelulas() {
+            celulasSel = 0;
+            for (p = 1; p <= 3; p++) {
+                c = 7;
+                l = 0;
+                for (i = 1; i <= 36; i++) {
+                    if (c >= 7) {
+                        c = 1;
+                        l++;
+                    }
+                    IS = p + '' + l + '' + c;
+                    if ($("#CE" + IS).is(':checked')) {
+                        $("#obsCELL").html('');
+                        if (celulasSel >= totalCelulas) {
+                            $("#obsCELL").html('Número máximo de células ultrapassado!');
+                        }
+                        if (((totalCelulas - celulasSel) - 1) > 0) {
+                            $("#obsCELL").html('Falta selecionar ' + ((totalCelulas - celulasSel) - 1) + ' células!');
+                        }
                         celulasSel++;
                         $("#celulasSel").html(celulasSel);
                     }
+                    c++;
                 }
-                c++;
             }
         }
-    }
 
-    function calcAulas() {
-        if (!$("input[id=regime]:radio:checked").val()) {
-            mensagem('Selecione um Regime de Trabalho primeiro!!!');
-            return false;
-        }
-        var ministrar = 16;
-        var celulas = 32;
-        if ($("input[id=duracaoAula]:radio:checked").val() == '00:50'
-                && $("input[id=regime]:radio:checked").val() != '20H') {
-            ministrar = ministrar - 2;
-            celulas = celulas - 3;
-        }
-
-        if ($("input[id=duracaoAula]:radio:checked").val() == '00:50'
-                && $("input[id=regime]:radio:checked").val() == '20H') {
-            ministrar = ministrar - 1;
-            celulas = celulas - 2;
-        }
-
-        if ($("#dedicarEnsino").is(':checked')
-                && $("input[id=regime]:radio:checked").val() != '20H') {
-            ministrar += 5;
-        }
-
-        if ($("input[id=regime]:radio:checked").val() == '20H') {
-            ministrar = ministrar - 5;
-            celulas = celulas - 12;
-        }
-
-        $("#ministrar").html(ministrar);
-        $("#celulas").html(celulas);
-        totalCelulas = celulas;
-    }
-
-    function calcPeriodo(tipo) {
-        for (p = 1; p <= 3; p++) {
-            ini = $("#Periodo" + p).val();
-            j = 1;
-            for (l = 1; l <= 31; l++) {
-                if (tipo == true) {
-                    if (l != 1) {
-                        ini = addtime(ini, $("input[id=duracaoAula]:radio:checked").val());
-                    } else {
-                        ini = ini;
-                    }
-                    fim = addtime(ini, $("input[id=duracaoAula]:radio:checked").val());
-                    $("#A" + p + '' + l).text(ini + ' - ' + fim);
-                } else {
-                    $("#A" + p + '' + l).text(j);
-                    j++;
-                }
-                l = l + 5;
-            }
-        }
-    }
-
-    $(".complementacao").keyup(function () {
-        calcComplementacao();
-    });
-    $(".atividade").keyup(function () {
-        calcAtividade();
-    });
-    $(".componente").keyup(function () {
-        calcComponente();
-    });
-
-    $("input:checkbox").click(function () {
-        checkCelulas($(this).attr("value"));
-    });
-    $("input:radio").click(function () {
-        calcAulas();
-    });
-    $("#dedicarEnsino").click(function () {
-        calcAulas();
-    });
-
-    $("#Periodo1,#Periodo2,#Periodo3").keyup(function () {
-        callPeriodo();
-    });
-
-    $("#subHorario").click(function () {
-        callPeriodo('Favor preencher todos os campos com os horários!');
-    });
-
-    function callPeriodo(message) {
-        for (i = 1; i <= 3; i++) {
-            if ($("#Periodo" + i).val().indexOf("_") >= 0 || $("#Periodo" + i).val() == '' || $("#IniIntervalo" + i).val() == '') {
-                if (message) {
-                    $("#subHorario").attr('checked', false);
-                    mensagem('Favor preencher todos os campos com os horários!');
-                }
+        function calcAulas() {
+            var maxCH = 40;
+            if (!$("input[id=regime]:radio:checked").val()) {
+                mensagem('Selecione um Regime de Trabalho primeiro!!!');
                 return false;
             }
-        }
-        calcPeriodo($("#subHorario").is(':checked'));
-    }
-
-    for (i = 1; i <= 3; i++) {
-        $("#Periodo" + i).mask("99:99");
-        $("#IniIntervalo" + i).mask("99:99");
-    }
-
-    function mensagem(mensagem) {
-        $.Zebra_Dialog('<strong>' + mensagem + '</strong>', {
-            'type': 'question',
-            'title': '<?= $TITLE ?>',
-            'buttons': ['Ok'],
-            'onClose': function (caption) {
+            var ministrar = 16;
+            var celulas = 32;
+            if ($("input[id=duracaoAula]:radio:checked").val() == '00:50'
+                    && $("input[id=regime]:radio:checked").val() != '20H') {
+                ministrar = ministrar - 2;
+                celulas = celulas - 3;
             }
-        });
-    }
 
-    function addtime(start, end) {
-        if (start)
-            start = start.split(":");
-        if (end)
-            end = end.split(":");
-        var hours = parseInt(start[0]) + parseInt(end[0]);
-        var minutes = parseInt(start[1]) + parseInt(end[1]);
-        if (minutes >= 60) {
-            hours++;
-            minutes -= 60;
+            if ($("input[id=duracaoAula]:radio:checked").val() == '00:50'
+                    && $("input[id=regime]:radio:checked").val() == '20H') {
+                ministrar = ministrar - 1;
+                celulas = celulas - 2;
+            }
+
+            if ($("#dedicarEnsino").is(':checked')
+                    && $("input[id=regime]:radio:checked").val() != '20H') {
+                ministrar += 5;
+            }
+
+            if ($("input[id=regime]:radio:checked").val() == '20H') {
+                ministrar = ministrar - 5;
+                celulas = celulas - 12;
+                maxCH = 20;
+            }
+
+            if (totalHoras != maxCH)
+                $("#obsCH").html('Carga horária final incompatível com a jornada de trabalho de ' + maxCH + 'h indicada, favor corrigir!');
+            else
+                $("#obsCH").html('');
+
+            $("#ministrar").html(ministrar);
+            $("#celulas").html(celulas);
+            totalCelulas = celulas;
         }
-        return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
-    }
+
+        function calcIntervalo() {
+            for (p = 1; p <= 3; p++) {
+                ini = $("#Periodo" + p).val();
+                vl = ini;
+                for (l = 1; l <= 6; l++) {
+                    vl = addtime(vl, $("input[id=duracaoAula]:radio:checked").val());
+                    if (vl == '<?= $h1 ?>' || vl == '<?= $h2 ?>' || vl == '<?= $h3 ?>')
+                        sel = true;
+                    else
+                        sel = false;
+                    $('#IniIntervalo' + p).append($('<option>', {selected: sel, value: vl, text: vl}));
+                }
+            }
+        }
+
+        function calcPeriodo(tipo) {
+            for (p = 1; p <= 3; p++) {
+                ini = $("#Periodo" + p).val();
+                j = 1;
+                for (l = 1; l <= 31; l++) {
+                    if (tipo == true) {
+                        if (l != 1) {
+                            ini = addtime(ini, $("input[id=duracaoAula]:radio:checked").val());
+                        } else {
+                            ini = ini;
+                        }
+
+                        if ($('#IniIntervalo' + p).val() == ini)
+                            ini = addtime(ini, $('#Intervalo' + p).val());
+
+                        fim = addtime(ini, $("input[id=duracaoAula]:radio:checked").val());
+
+                        $("#A" + p + '' + l).text(ini + ' - ' + fim);
+                    } else {
+                        $("#A" + p + '' + l).text(j);
+                        j++;
+                    }
+                    l = l + 5;
+                }
+            }
+        }
+
+        function callFunction() {
+            totalHoras = 0;
+            callPeriodo();
+            calcComponente();
+            calcAtividade();
+            calcComplementacao();
+            calcAulas();
+            checkCelulas();
+        }
+
+        $(".componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
+            callFunction();
+        });
+
+        $("#IniIntervalo1,#IniIntervalo2,#IniIntervalo3,#Intervalo1,#Intervalo2,#Intervalo3").change(function () {
+            callFunction();
+        });
+
+        $("input:checkbox,input:radio,#dedicarEnsino").click(function () {
+            $('#IniIntervalo1').find('option').remove();    
+            calcIntervalo();
+            callFunction();
+        });
+
+        $("#subHorario").click(function () {
+            callPeriodo('Favor preencher todos os campos com os horários!');
+        });
+
+        function callPeriodo(message) {
+            for (i = 1; i <= 3; i++) {
+                if ($("#Periodo" + i).val().indexOf("_") >= 0 || $("#Periodo" + i).val() == '' || $("#IniIntervalo" + i).val() == '') {
+                    if (message) {
+                        $("#subHorario").attr('checked', false);
+                        mensagem('Favor preencher todos os campos com os horários!');
+                    }
+                    return false;
+                }
+            }
+            calcPeriodo($("#subHorario").is(':checked'));
+        }
+
+        $("#Periodo1,#Periodo2,#Periodo3").mask("99:99");
+
+        function mensagem(mensagem) {
+            $.Zebra_Dialog('<strong>' + mensagem + '</strong>', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Ok'],
+                'onClose': function (caption) {
+                }
+            });
+        }
+
+        function addtime(start, end) {
+            if (start)
+                start = start.split(":");
+            if (end)
+                end = end.split(":");
+            var hours = parseInt(start[0]) + parseInt(end[0]);
+            var minutes = parseInt(start[1]) + parseInt(end[1]);
+            if (minutes >= 60) {
+                hours++;
+                minutes -= 60;
+            }
+            return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
+        }
 </script>
