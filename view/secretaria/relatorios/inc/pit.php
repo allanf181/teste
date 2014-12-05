@@ -32,7 +32,7 @@ if (dcrip($_GET["professor"])) {
     $params['ano'] = $ANO;
     $params['semestre'] = $SEMESTRE;
 
-    $sqlAdicional .= " AND modelo = 'FPA' ";
+    $sqlAdicional .= " AND modelo = 'PIT' ";
 
     $res = $dados->listModelo($params, null, null, $sqlAdicional);
     if ($res) {
@@ -47,8 +47,7 @@ if (dcrip($_GET["professor"])) {
             $email = $reg['email'];
             $area = $reg['area'];
             $regime = $reg['regime'];
-            if ($apelido = $reg['apelido'])
-                $nome = "$nome ($apelido)";
+            $apelido = ($reg['apelido']) ? "$nome (".$reg['apelido'].")" : $nome;
             $horario = $reg['horario'];
             $horario1 = $reg['horario1'];
             $horario2 = $reg['horario2'];
@@ -82,21 +81,21 @@ if (dcrip($_GET["professor"])) {
             $pdf->SetFont($fonte, 'B', $tamanho + 2);
             $pdf->Image(PATH . IMAGES . "/logo.png", 11, 11, 45);
             $pdf->Cell(46, 15, "", 1, 0, 'C', false);
-            $pdf->Cell(86, 15, utf8_decode("Formulário de Preferência de Atividades - FPA "), 1, 0, 'C', false);
+            $pdf->Cell(86, 15, utf8_decode("Plano Individual de Trabalho Docente - PIT"), 1, 0, 'C', false);
             $pdf->SetFont($fonte, 'B', $tamanho + 2);
             $pdf->Cell(60, 5, abreviar(utf8_decode($SITE_TITLE), 33), 1, 2, 'C', false);
             $pdf->Cell(60, 5, abreviar(utf8_decode($SITE_CIDADE), 33), 1, 2, 'C', false);
             $pdf->Cell(60, 5, abreviar(utf8_decode("Semestre/Ano: $SEMESTRE/$ANO"), 33), 1, 0, 'C', false);
             $pdf->Ln();
             $pdf->SetFont($fonte, 'B', $tamanho);
-            $pdf->Cell(65, 5, utf8_decode("(Anexo I - Resolução nº 112 de 7 outubro de 2014)"), 0, 0, 'C', false);
+            $pdf->Cell(65, 5, utf8_decode("(Anexo II - Resolução nº 112 de 7 outubro de 2014)"), 0, 0, 'C', false);
             $pdf->Ln();
             $pdf->Ln();
 
             $pdf->SetFont($fonte, 'B', $tamanho);
 
             $pdf->Cell(20, $alturaLinha - 2, utf8_decode("Docente:"), 0, 0, 'L', true);
-            $pdf->Cell(80, $alturaLinha - 2, utf8_decode("$nome"), 0, 0, 'L', true);
+            $pdf->Cell(80, $alturaLinha - 2, utf8_decode("$apelido"), 0, 0, 'L', true);
             $pdf->Cell(15, $alturaLinha - 2, utf8_decode("Área:"), 0, 0, 'L', true);
             $pdf->Cell(77, $alturaLinha - 2, utf8_decode("$area"), 0, 0, 'L', true);
             $pdf->Ln();
@@ -153,7 +152,7 @@ if (dcrip($_GET["professor"])) {
 
             //IMPRIME O DIA DA SEMANA
             foreach ($dias as $dCodigo => $dNome) {
-                $pdf->Cell(25.7, 4, utf8_decode("$dNome"), 1, 0, 'C', true);
+                $pdf->Cell(25.7, 5, utf8_decode("$dNome"), 1, 0, 'C', true);
             }
             $pdf->Ln();
 
@@ -161,28 +160,23 @@ if (dcrip($_GET["professor"])) {
             $periodo[2] = 'Vespertino';
             $periodo[3] = 'Noturno';
 
-            $pdf->SetFont($fonte, 'B', $tamanho - 1);
-
+            $pdf->SetFont($fonte, 'B', $tamanho);
+            $n=0;
             for ($p = 1; $p <= 3; $p++) {
-                $pdf->Cell(25.7, 3, utf8_decode($periodo[$p]), 1, 0, 'C', true);
-
+                $pdf->Cell(25.7, 5, utf8_decode($periodo[$p]), 1, 0, 'C', true);
                 $c = 7;
                 $l = 0;
                 $horarios = explode(',', $horario);
                 for ($i = 1; $i <= 36; $i++) { // LINHAS DA TABELA
                     if ($c >= 7) {
                         $pdf->Ln();
-                        $pdf->Cell(25.7, 2.5, utf8_decode($aula[$p . $i]), 1, 0, 'C', true);
+                        $pdf->Cell(25.7, 5, utf8_decode($aula[$p . $i]), 1, 0, 'C', true);
                         $c = 1;
                         $l++;
                     }
-                    $IS = $p . $l . $c;
-                    if (in_array($IS, $horarios))
-                        $check = 'X';
-                    else
-                        $check = null;
-                    $pdf->Cell(25.7, 2.5, utf8_decode($check), 1, 0, 'C', true);
+                    $pdf->Cell(25.7, 5, utf8_decode($horarios[$n]), 1, 0, 'C', true);
                     $c++;
+                    $n++;
                 }
                 $pdf->Ln();
                 $pdf->Ln();
@@ -196,7 +190,7 @@ if (dcrip($_GET["professor"])) {
             $pdf->Ln();
             $pdf->SetFont($fonte, 'B', $tamanho);
 
-            $pdf->Cell(180, 5, utf8_decode("Componentes curriculares de interesse do docente (por ordem de prioridade)"), 1, 0, 'C', true);
+            $pdf->Cell(180, 5, utf8_decode("Atividades de Ensino (Regência de Aulas)"), 1, 0, 'C', true);
             $pdf->Ln();
             $pdf->Cell(20, 5, utf8_decode("Sigla"), 1, 0, 'C', true);
             $pdf->Cell(60, 5, utf8_decode("Nome"), 1, 0, 'C', true);
@@ -223,6 +217,9 @@ if (dcrip($_GET["professor"])) {
             $pdf->Ln();
             $pdf->Cell(160, 5, utf8_decode("Organização do Ensino (em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tAulas, 1, 0, 'C', true);
+            $pdf->Ln();
+            $pdf->Cell(160, 5, utf8_decode("Tempo total dedicado à Aulas e Organização de Ensino (em horas)"), 1, 0, 'R', true);
+            $pdf->Cell(20, 5, $tAulas*2, 1, 0, 'C', true);            
             $pdf->Ln();
             $pdf->Ln();
 
@@ -275,9 +272,23 @@ if (dcrip($_GET["professor"])) {
             $pdf->Cell(140, $alturaLinha, utf8_decode("$nome"), 0, 0, 'C', true);
             $pdf->Cell(1, $alturaLinha, utf8_decode("Presidente CAAD"), 0, 0, 'C', true);
             $pdf->SetFont($fonte, '', $tamanho);
+            
+            $pdf->Ln();
+            $pdf->Ln();
+            $pdf->Ln();
+            $pdf->Ln();
+
+            $pdf->SetFont($fonte, 'B', $tamanho+2);
+            $pdf->Cell(180, 10, utf8_decode("Parecer da Comissão de Área para Atividade Docente"), 1, 0, 'C', true);
+            $pdf->Ln();           
+            $pdf->Cell(180, 50, "", 1, 0, 'L', true);
+            $pdf->Ln();
+            $pdf->SetFont($fonte, '', $tamanho);
+            $pdf->Cell(180, 10, utf8_decode("Resultado:  [  ] Homologado  [  ] Devolução para ajustes no preenchimento em ____/_____/______           Ass.: ______________________ (Presidente da CAAD)"), 1, 0, 'L', true);
+
         }
     } else {
-        print utf8_decode("FPA está em processo de correção ou não foi finalizada pelo Docente!");
+        print utf8_decode("PIT está em processo de correção ou não foi finalizado pelo Docente!");
         die;
     }
 }

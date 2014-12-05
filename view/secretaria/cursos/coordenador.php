@@ -115,6 +115,24 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     </select>
                 </td>
             </tr>
+            <tr>
+                <td align="right">Área: </td>
+                <td>
+                    <select name="area" id="area" value="<?= $area ?>">
+                        <option></option>
+                        <?php
+                        require CONTROLLER . "/area.class.php";
+                        $area = new Areas();
+                        foreach ($area->listRegistros() as $reg) {
+                            $selected = "";
+                            if ($reg['codigo'] == $area)
+                                $selected = "selected";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>            
             <tr><td>&nbsp;</td>
                 <td>
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />    
@@ -156,6 +174,7 @@ require PATH . VIEW . '/paginacao.php';
         <th align="left" width="60">C&oacute;digo</th>
         <th align="left">Curso</th>
         <th align="left">Coordenador</th>
+        <th align="left">Área</th>
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
@@ -172,6 +191,7 @@ require PATH . VIEW . '/paginacao.php';
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
             <td><?= mostraTexto($reg['curso']) ?>
             <td><?= mostraTexto($reg['coordenador']) ?>
+            <td><?= mostraTexto($reg['area']) ?>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>

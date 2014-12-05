@@ -80,4 +80,10 @@ if ($result)
 
 // DELETANDO LOGS ANTIGOS
 mysql_query("DELETE FROM Logs WHERE datediff(now(), data) > 30");
+
+//ENVIA OS BOLETINS DIÁRIOS
+require CONTROLLER . "/logEmail.class.php";
+$logEmail = new LogEmails();
+$logEmail->send();
+
 ?>

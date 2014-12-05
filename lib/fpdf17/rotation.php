@@ -100,10 +100,12 @@ class PDF extends PDF_Rotate {
 
     protected $_outerText1; // dynamic text
     protected $_outerText2;
+    protected $_outerText3;
 
-    function setWaterText($txt1 = "", $txt2 = "") {
+    function setWaterText($txt1 = "", $txt2 = "", $txt3 = "") {
         $this->_outerText1 = $txt1;
         $this->_outerText2 = $txt2;
+        $this->_outerText3 = $txt3;
     }
 
     function Header() {
@@ -114,6 +116,7 @@ class PDF extends PDF_Rotate {
         $this->SetAlpha(0.8);
         $this->RotatedText(70, 290, $this->_outerText1, 45);
         $this->RotatedText(120, 190, $this->_outerText2, 45);
+        $this->RotatedText(20, 180, $this->_outerText3, 45);
     }
 
     function RotatedText($x, $y, $txt, $angle) {

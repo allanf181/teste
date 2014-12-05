@@ -36,9 +36,9 @@ class Instituicoes extends Generic {
                 $mail->addAddress($email, $email);
             }
 
-            $mail->WordWrap = 50;
+            //$mail->WordWrap = 50;
+            $mail->isHTML(true);            
             $mail->AddEmbeddedImage(PATH.VIEW."/css/images/logo.png", 'IFSP', 'IFSP.jpg');
-            $mail->isHTML(true);
 
             $mail->Subject = $assunto;
             $mail->Body = $mensagem . '<br /><br /><img src="cid:IFSP" />';
@@ -46,8 +46,8 @@ class Instituicoes extends Generic {
 
             if (!$mail->send()) {
                 echo 'Problema na configura&ccedil;&atilde;o de E-mail.';
-                echo '<br />Mailer Error: ' . $mail->ErrorInfo;
-                die;
+                echo '<br />Erro: ' . $mail->ErrorInfo;
+                return false;
             } else {
                 return true;
             }

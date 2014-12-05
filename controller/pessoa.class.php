@@ -206,7 +206,7 @@ class Pessoas extends Generic {
             $sqlAdicional = ",bloqueioFoto=(SELECT i.bloqueioFoto FROM Instituicoes i)";
 
         $sql = "UPDATE Pessoas SET foto=(\"" . $image . "\") $sqlAdicional ";
-        
+
         if ($params['codigo']) {
             $sql .= " WHERE codigo = :codigo";
         }
@@ -221,6 +221,43 @@ class Pessoas extends Generic {
         } else {
             return false;
         }
+    }
+
+    public function getEmailFromPessoa($pessoa) {
+        $bd = new database();
+
+        $sql = "SELECT email "
+                . "FROM Pessoas "
+                . "WHERE codigo = :codigo";
+
+        $params = array(':codigo' => $pessoa);
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res[0]['email'])
+            return $res[0]['email'];
+
+        return false;
+    }
+
+    public function getEmailFromAtribuicao($atribuicao) {
+        $bd = new database();
+
+        $sql = "SELECT p.email "
+                . "FROM Pessoas p, Professores pr "
+                . "WHERE p.codigo = pr.professor "
+                . "AND pr.atribuicao = :atribuicao";
+
+        $params = array(':atribuicao' => $atribuicao);
+
+        $res = $bd->selectDB($sql, $params);
+
+        foreach ($res as $reg) {
+            $email[] = $reg['email'];
+        }
+        return implode(',', $email);
+
+        return false;
     }
 
 }

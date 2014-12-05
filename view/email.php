@@ -55,7 +55,9 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
         <table width="100%" id="form">
             <tr>
                 <td colspan="2">
-                    <strong>Ol&aacute;, utilize esse canal para enviar sugest&otilde;es ou reportar problemas.</strong>
+                    <strong>Ol&aacute;, utilize esse canal para enviar sugest&otilde;es ou reportar problemas no sistema.</strong>
+                    <br />
+                    <strong style="color: red">Para problemas com disciplinas ou d&uacute;vidas de utiliza&ccedil;&atilde;o, procure a TI do seu campus.</strong>
                     <br />
                     <strong>Caso necess&aacute;rio, tentaremos responder o mais breve poss&iacute;vel.</strong>
                 </td>

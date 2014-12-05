@@ -5,7 +5,7 @@ if (!class_exists('Generic'))
 
 class Professores extends Generic {
 
-    public function getProfessor($atribuicao, $separador = null, $lattes = null, $foto = null) {
+    public function getProfessor($atribuicao, $separador = null, $lattes = null, $foto = null, $abreviar = null) {
         $bd = new database();
         $sql = "SELECT p.codigo, p.nome, p.lattes "
                 . "FROM Professores pr, Pessoas p "
@@ -17,6 +17,9 @@ class Professores extends Generic {
         $res = $bd->selectDB($sql, $params);
         if ($res) {
             foreach ($res as $reg) {
+                if ($abreviar)
+                    $reg['nome'] = abreviar ($reg['nome'], $abreviar);
+                
                 $r = null;
                 if ($foto)
                     $r .= "<a href='#' rel='" . INC . "/file.inc.php?type=pic&id=<?=crip(" . $reg['codigo'] . ")?>&timestamp=<?=time()?>' class='screenshot' title=''>

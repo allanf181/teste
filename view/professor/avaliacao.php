@@ -18,14 +18,17 @@ $avaliacao = new Avaliacoes();
 require CONTROLLER . "/atribuicao.class.php";
 $att = new Atribuicoes();
 
-require CONTROLLER . "/prazoDiario.class.php";
-$prazoDiario = new PrazosDiarios();
+require CONTROLLER . "/logSolicitacao.class.php";
+$log = new LogSolicitacoes();
 
 // PEDIDO DE LIBERAÇÃO DO DIÁRIO
 if ($_GET["motivo"]) {
-    $_GET['data'] = date('Y-m-d h:i:s');
-    unset($_GET['_']);
-    $ret = $prazoDiario->insertOrUpdate($_GET);
+    $paramsLog['dataSolicitacao'] = date('Y-m-d h:i:s');
+    $paramsLog['solicitacao'] = 'Docente solicitou abertura do diário, motivo: '.$_GET['motivo'];
+    $paramsLog['codigoTabela'] = $_GET['atribuicao'];
+    $paramsLog['nomeTabela'] = 'DIARIO';
+    $paramsLog['solicitante'] = $_SESSION['loginCodigo'];
+    $ret = $log->insertOrUpdate($paramsLog);
     mensagem($ret['STATUS'], 'PRAZO_DIARIO');
 }
 
@@ -403,9 +406,27 @@ if ($_GET['opcao'] == '') {
 if ($LIMITE_DIARIO_PROF != 0) {
     // DATA DE INICIO E FIM DA ATRIBUICAO PARA RESTRINGIR O CALENDARIO
     $res = $att->getAtribuicao($atribuicao, $LIMITE_DIARIO_PROF);
+    
+    require CONTROLLER . "/calendario.class.php";
+    $cal = new Calendarios();
+    print "<script>\n";
+    print "var disabledDates = []; \n";
+    foreach($cal->getFeriados() as $f) {
+        print "disabledDates.push( \"$f\" ); \n";
+    }
+    print "</script>\n";    
 }
 ?>
 <script>
+    function editDays(date) {
+        for (var i = 0; i < disabledDates.length; i++) {
+            if (new Date(disabledDates[i]).toString() == date.toString()) {             
+                 return [false];
+            }
+        }
+        return [true];
+    }
+     
     function validaItem(item) {
         item.value = item.value.replace(",", ".");
     }
@@ -437,7 +458,8 @@ if ($LIMITE_DIARIO_PROF != 0) {
             nextText: 'Próximo',
             prevText: 'Anterior',
             minDate: '<?= $res['inicioCalendar'] ?>',
-            maxDate: '<?= $res['fimCalendar'] ?>'
+            maxDate: '<?= $res['fimCalendar'] ?>',
+            beforeShowDay: editDays
         });
         $('#select-all').click(function(event) {
             if (this.checked) {

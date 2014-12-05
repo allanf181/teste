@@ -27,7 +27,7 @@ class NotasFinais extends Notas {
                 $params2['atribuicao'] = $atribuicao;
                 $params2['matricula'] = $reg['matricula'];
                 if ($reg['bimestre'] == 0)
-                    $params2['bimestre'] = '00';
+                    $params2['bimestre'] = '1';
                 else
                     $params2['bimestre'] = $reg['bimestre'];
                 $params2['mcc'] = $dados['mediaAvaliacao'];

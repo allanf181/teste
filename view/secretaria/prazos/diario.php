@@ -18,30 +18,42 @@ $prof = new Professores();
 require CONTROLLER . "/atribuicao.class.php";
 $att = new Atribuicoes();
 
-require CONTROLLER . "/prazoDiario.class.php";
-$prazo = new PrazosDiarios();
+require CONTROLLER . "/logSolicitacao.class.php";
+$log = new LogSolicitacoes();
+
+require CONTROLLER . "/pessoa.class.php";
+$pessoa = new Pessoas();
+
+require CONTROLLER . "/logEmail.class.php";
+$logEmail = new LogEmails();
+
+if ($_GET["opcao"] == 'historico') {
+    $_GET['tabela'] = 'DIARIO';
+    // COPIA DE:
+    require PATH.VIEW.'/common/logSolicitacao.php';
+    die;
+}
 
 if ($_GET["opcao"] == 'controleDiario') {
     $_GET['pessoa'] = $_SESSION['loginNome'];
-
-    $GET = $_GET;
-
-    unset($_GET['opcao']);
-    unset($_GET['turma']);
-    unset($_GET['curso']);
-    unset($_GET['professor']);
-    unset($_GET['_']);
+    $_GET['codPessoa'] = $_SESSION['loginCodigo'];
 
     $ret = $att->changePrazo($_GET);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-
-    $_GET = $GET;
+    
+    //ENVIANDO EMAIL
+    if ($ret['STATUS'] == 'OK' && $_GET['botao'] == 'liberou' ) {
+        $resAtt = $att->listRegistros(array('codigo' => $_GET['codigo']));
+        if ($email = $pessoa->getEmailFromAtribuicao($resAtt[0]['codigo']))
+            $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Seu di&aacute;rio foi aberto pelo coordenador.', $email);
+    }    
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
+$params = array();
 if (dcrip($_GET["curso"])) {
     $curso = dcrip($_GET["curso"]);
     $params['curso'] = $curso;
@@ -142,13 +154,13 @@ if (!empty($curso)) {
     ?>
     <br /><table id="listagem" border="0" align="center">
         <tr>
-            <th align="center" width="40">#</th>
+            <th align="left" width="40">#</th>
             <th align="left">Disciplina</th>
             <th align="left">Professor</th>
-            <th align="left" width="70">Turma</th>
             <th align="left" width="70">Situa&ccedil;&atilde;o</th>
             <th align="left">Liberado em:</th>            
-            <th width="40" align="center">
+            <th align="left">Hist&oacute;rico</th>
+            <th width="20" align="center">
                 <input type='checkbox' id='select-all' name='select-all' class='campoTodos' value='' />
             </th>
         </tr>
@@ -158,34 +170,40 @@ if (!empty($curso)) {
         $res = $att->getAllAtribuicoes($params, $sqlAdicional);
         $i = 1;
         if ($res) {
-            $paramsPrazo['ano'] = $ANO;
-            $paramsPrazo['semestre'] = $SEMESTRE;
-            $sqlAdicionalPrazo = ' AND pd.atribuicao = :atribuicao ';
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-                $paramsPrazo['atribuicao'] = $reg['atribuicao'];
-                $concessao=null;
-                $motivo=null;
-                if ($attPrazo = $prazo->listPrazos($paramsPrazo, $sqlAdicionalPrazo)) {
-                    $concessao = abreviar($attPrazo[0]['dataConcessao'], 22);
-                    $motivo = $attPrazo[0]['motivo'];
-                    if (!$attPrazo[0]['dConcessao'])
-                        $cdif="style='background-color: red;'";
+                if (!$reg['status']) {
+                    $origem = 'unlock';
+                } else {
+                    $origem = 'lock';
+                }
+                $sqlAdicionalLog = " AND (dataConcessao IS NULL OR dataConcessao = '0000-00-00 00:00:00') ";
+                $paramsLog['nomeTabela'] = 'DIARIO';
+                $paramsLog['codigoTabela'] = $reg['atribuicao'];
+                if ($attLog = $log->listSolicitacoes($paramsLog, $sqlAdicionalLog)) {
+                    $cdif="style='background-color: red;'";
                 }
                 ?>
                 <tr <?= $cdif ?>>
-                    <td align='center'><?= $i ?></td>
+                    <td align='left'><?= $i ?></td>
                     <td>
-                        <a title='Abrir Di&aacute;rio' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= mostraTexto($reg['disciplina']).$reg['bimestre'].$reg['subturma'] ?> [<?=$reg['turno']?>]</a>
+                        <a title='Clique aqui para visualizar o di&aacute;rio de <br><?=$reg['disciplina']?>' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= abreviar(mostraTexto($reg['disciplina']),20).$reg['bimestre'].$reg['subturma'] ?> [<?= $reg['turma'] ?>] [<?=$reg['turno']?>]</a>
                     </td>
-                    <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
-                    <td align=left><?= $reg['turma'] ?></td>
-                    <td align='left'><?= $reg['origem'] ?></td>
+                    <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1, 20) ?></td>
+                    <td align='left'>
+                        <a href='#' title='<?=$reg['origem']?>'>
+                            <img class='botao' src='<?= ICONS.'/'.$origem ?>.png' />
+                        </a>
+                    </td>
                     <td align='left'><a href='#' title='<?=$motivo?>'><?= $concessao ?></a></td>
-
+                    <td align='center'>
+                        <a href='#' title='Ver hist&oacute;rico de solicita&ccedil;&otilde;es'>
+                            <img class='botao search' id='<?= crip($reg['atribuicao']) ?>' src='<?= ICONS ?>/search.png' />
+                        </a>
+                    </td>
                     <td align='center'>
                         <input type='checkbox' id='campoPrazo' name='campoPrazo[]' value='<?= $reg['atribuicao'] ?>' />
-                    </td>
+                    </td>                    
                 </tr>
                 <?php
                 $i++;
@@ -194,55 +212,22 @@ if (!empty($curso)) {
         ?>
     </table>
     <?php
-    // LISTAGEM DE PRAZOS PRORROGADOS NO SEMESTRE
-    $itensPorPagina = 10;
-    $item = 1;
-
-    if (isset($_GET['item']))
-        $item = $_GET["item"];
-
-    $res = $prazo->listPrazos($params, $sqlAdicional, $item, $itensPorPagina);
-    $totalRegistros = count($prazo->listPrazos($params, $sqlAdicional, null, null));
-
-    $params['curso'] = crip($params['curso']);
-    $params['turma'] = crip($params['turma']);
-    $params['professor'] = crip($params['professor']);
-    $SITENAV = $SITE . '?' . mapURL($params);
-    require PATH . VIEW . '/paginacao.php';
-    ?>
-
-    <table id="listagem" border="0" align="center">
-        <tr>
-            <th align="center" width="40">#</th>
-            <th align="left">Data</th>
-            <th align="left">Disciplina</th>
-            <th>Professor</th>
-            <th width="150">Motivo</th>
-        </tr>
-        <?php
-        $i = $item;
-        foreach ($res as $reg) {
-            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            ?>
-            <tr <?= $cdif ?>>
-                <td align='center'><?= $i ?></td>
-                <td><?= $reg['data'] ?></td>
-                <td><?= $reg['disciplina'] ?></td>
-                <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
-                <td>
-                    <a href='#' title='<?= $reg['motivo'] ?>'><?= abreviar($reg['motivo'], 25) ?></a>
-                </td>
-            </tr>
-            <?php
-            $i++;
-        }
-        ?>
-    </table>
-    <?php
 }
 ?>
 <br /><br />
 <script>
+    $(".search").click(function (event) {
+        var codigo = $(this).attr('id');
+        new $.Zebra_Dialog('<strong>Hist&oacute;rico de Solicita&ccedil;&otilde;es</strong>', {
+            source: {'iframe': {
+                    'src': 'view/secretaria/prazos/diario.php?opcao=historico&codigo=' + codigo,
+                    'height': 300
+                }},
+            width: 600,
+            title: 'DIÁRIO'
+        });
+    });
+    
     $('#select-all').click(function(event) {
         if (this.checked) {
             // Iterate each checkbox

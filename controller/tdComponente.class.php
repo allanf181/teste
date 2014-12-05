@@ -2,18 +2,18 @@
 if (!class_exists('Generic'))
     require_once CONTROLLER . '/generic.class.php';
 
-class TDVars extends Generic {
+class TDComponente extends Generic {
 
     public function __construct() {
         //
     }
 
-    public function listVars($codigo, $modelo) {
+    public function listComponentes($codigo) {
         $bd = new database();
 
-        $sql = "SELECT finalizado,valido FROM TDVars WHERE TD = :codigo AND modelo = :modelo ";
+        $sql = "SELECT sigla,nome,curso,periodo,aulas FROM TDComponente WHERE TD = :codigo ";
         
-        $params = array('codigo' => $codigo, 'modelo' => $modelo);
+        $params = array('codigo' => $codigo);
         
         $res = $bd->selectDB($sql, $params);
         
@@ -24,10 +24,10 @@ class TDVars extends Generic {
         }
     }
     
-    public function deleteVars($codigo) {
+    public function deleteComponentes($codigo) {
         $bd = new database();
 
-        $sql = "DELETE FROM TDVars WHERE TD = :codigo ";
+        $sql = "DELETE FROM TDComponente WHERE TD = :codigo ";
         
         $params = array('codigo' => $codigo);
         
@@ -38,7 +38,7 @@ class TDVars extends Generic {
         } else {
             return false;
         }
-    }    
+    }
 }
 
 ?>

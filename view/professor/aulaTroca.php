@@ -60,6 +60,15 @@ if ((!$_GET['opcao'] && !$_POST["opcao"]) || $_GET["menu"]) {
 require CONTROLLER . "/aulaTroca.class.php";
 $aulaTroca = new AulasTrocas();
 
+require CONTROLLER . "/logEmail.class.php";
+$logEmail = new LogEmails();
+
+require CONTROLLER . "/pessoa.class.php";
+$pessoa = new Pessoas();
+
+require CONTROLLER . "/coordenador.class.php";
+$coordenador = new Coordenadores();
+
 // PARECER
 if ($_GET["opcao"] == 'parecer') {
     unset($_GET['_']);
@@ -67,6 +76,35 @@ if ($_GET["opcao"] == 'parecer') {
 
     $ret = $aulaTroca->insertOrUpdate($_GET);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    
+    //ENVIANDO EMAIL
+    if ($ret['STATUS'] == 'OK') {
+        $params['codigo'] = $_GET['codigo'];
+        $res = $aulaTroca->listRegistros($params);
+        
+        if ($res[0]['tipo'] == 'troca' && $res[0]['professorSubAceite'] == 'S' && !$res[0]['coordenadorAceite']) {
+            if ($coodEmail = $coordenador->getEmailCoordFromAtribuicao($res[0]['atribuicao']))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente Substituto aceitou um troca de aula. Necessita da sua valida&ccedil;&atilde;o.', $coodEmail);
+        }
+        if ($res[0]['tipo'] == 'troca' && $res[0]['professorSubAceite'] == 'N' && !$res[0]['coordenadorAceite']) {
+            if ($email = $pessoa->getEmailFromPessoa($res[0]['professor']))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente Substituto n&atilde;o aceitou uma troca de aula solicitada por voc&ecirc;.', $email);
+        }
+        if ($res[0]['tipo'] == 'troca' && $res[0]['professorSubAceite'] == 'S' && $res[0]['coordenadorAceite']) {
+            if ($res[0]['coordenadorAceite'] == 'N') $valido = ' n&atilde;o';
+            if ($email = $pessoa->getEmailFromPessoa($res[0]['professor']))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'O Coordenador'.$valido.' validou uma troca de aula solicitada por voc&ecirc;.', $email);
+
+            if ($email = $pessoa->getEmailFromPessoa($res[0]['professorSub']))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'O Coordenador'.$valido.' validou uma troca de aula solicitada para voc&ecirc;.', $email);
+        }
+
+        if ($res[0]['tipo'] == 'reposicao' && $res[0]['coordenadorAceite']) {
+            if ($res[0]['coordenadorAceite'] == 'N') $valido = ' n&atilde;o';
+            if ($email = $pessoa->getEmailFromPessoa($res[0]['professor']))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'O Coordenador'.$valido.' validou uma reposi&ccedil;&atilde;o solicitada por voc&ecirc;.', $email);
+        }
+    }
 }
 
 // INSERT E UPDATE
@@ -79,9 +117,20 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_POST['aula'] = implode(',', $_POST['aula']);
 
     $ret = $aulaTroca->insertOrUpdate($_POST);
-
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET['opcao'] = 'listTroca';
+
+    //ENVIANDO EMAIL
+    if ($ret['STATUS'] == 'OK') {
+        if ($_POST['tipo'] == 'troca') {
+            if ($email = $pessoa->getEmailFromPessoa(dcrip($_POST['professorSub'])))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente solicitou uma troca de aula.', $email);
+        }
+        if ($_POST['tipo'] == 'reposicao') {
+            if ($coodEmail = $coordenador->getEmailCoordFromAtribuicao(dcrip($_POST['atribuicao'])))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente solicitou uma reposi&ccedil;&atilde;o de aula.', $coodEmail);
+        }
+    }
 }
 
 
@@ -96,11 +145,10 @@ if ($_GET['opcao'] == 'getTroca') {
 
     if ($_GET['tipo'])
         $tipo = ($_GET['tipo']);
-    
+
     //PEGANDO O ENSALAMENTO PARA RESTRINGIR O CALENDARIO
     require CONTROLLER . "/ensalamento.class.php";
     $ensalamento = new Ensalamentos();
-
     ?>
     <script>
         $('#form_padrao').html5form({
@@ -124,21 +172,21 @@ if ($_GET['opcao'] == 'getTroca') {
                 <tr>
                     <td align="right">Disciplina: </td>
                     <td> 
-                        <?php
-                        $params = array('ano' => $ANO, 'semestre' => $SEMESTRE, 'professor' => $_SESSION['loginCodigo']);
-                        $sqlAdicional = ' AND p.codigo = :professor GROUP BY d.numero, t.numero, a.subturma, a.eventod';
-                        $aa = $ensalamento->listEnsalamentos($params, $sqlAdicional);
-                        ?>
+    <?php
+    $params = array('ano' => $ANO, 'semestre' => $SEMESTRE, 'professor' => $_SESSION['loginCodigo']);
+    $sqlAdicional = ' AND p.codigo = :professor GROUP BY d.numero, t.numero, a.subturma, a.eventod';
+    $aa = $ensalamento->listEnsalamentos($params, $sqlAdicional);
+    ?>
                         <select name="atribuicao" id="atribuicao" style="width: 350px">
                             <option></option>
-                            <?php
-                            foreach ($aa as $reg) {
-                                $selected = "";
-                                if ($reg['atribuicao'] == $atribuicao)
-                                    $selected = "selected";
-                                print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['disciplina'] . ' [' . $reg['turma'] . '] ' . $reg['subturma'] . ' [' . $reg['turno'] . ']' . "</option>";
-                            }
-                            ?>
+    <?php
+    foreach ($aa as $reg) {
+        $selected = "";
+        if ($reg['atribuicao'] == $atribuicao)
+            $selected = "selected";
+        print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['disciplina'] . ' [' . $reg['turma'] . '] ' . $reg['subturma'] . ' [' . $reg['turno'] . ']' . "</option>";
+    }
+    ?>
                         </select>
                     </td>
                 </tr>
@@ -158,12 +206,12 @@ if ($_GET['opcao'] == 'getTroca') {
                 <tr>
                     <td align="right">Aula: </td>
                     <td> 
-                        <?php
-                        $aula = $ensalamento->getAulasByProfessor($_SESSION['loginCodigo'], $atribuicao);
-                        foreach ($aula as $reg) {
-                            print "<input type=\"checkbox\" name=\"aula[]\" value=\"" . $reg['horario'] . "\"> " . $reg['horario'] . "<br>";
-                        }
-                        ?>
+    <?php
+    $aula = $ensalamento->getAulasByProfessor($_SESSION['loginCodigo'], $atribuicao);
+    foreach ($aula as $reg) {
+        print "<input type=\"checkbox\" name=\"aula[]\" value=\"" . $reg['horario'] . "\"> " . $reg['horario'] . "<br>";
+    }
+    ?>
                     </td>
                 </tr>                
                 <tr>
@@ -176,18 +224,18 @@ if ($_GET['opcao'] == 'getTroca') {
                     <td>
                         <select name="professorSub" id="professorSub" style="width: 350px">
                             <option></option>
-                            <?php
-                            require CONTROLLER . "/professor.class.php";
-                            $prof = new Professores();
-                            $paramsProf['tipo'] = $PROFESSOR;
+    <?php
+    require CONTROLLER . "/professor.class.php";
+    $prof = new Professores();
+    $paramsProf['tipo'] = $PROFESSOR;
 
-                            foreach ($prof->listProfessores($paramsProf) as $reg) {
-                                $selected = "";
-                                if ($reg['codigo'] == $professorSub)
-                                    $selected = "selected";
-                                print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
-                            }
-                            ?>
+    foreach ($prof->listProfessores($paramsProf) as $reg) {
+        $selected = "";
+        if ($reg['codigo'] == $professorSub)
+            $selected = "selected";
+        print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+    }
+    ?>
                         </select>
                     </td>
                 </tr>
@@ -212,34 +260,34 @@ if ($_GET['opcao'] == 'pendente') {
             <th align='center' width="100">Data Troca</th>
             <th align='center'>Status</th>
         </tr>
-        <?php
-        $i = 0;
+    <?php
+    $i = 0;
 
-        $params = array(':professor' => $_SESSION['loginCodigo']);
-        $sqlAdicional = " WHERE at.professorSub = :professor AND tipo = 'troca' ";
-        foreach ($aulaTroca->hasTrocas($params, $sqlAdicional) as $reg) {
-            $i++;
-            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+    $params = array(':professor' => $_SESSION['loginCodigo']);
+    $sqlAdicional = " WHERE at.professorSub = :professor AND tipo = 'troca' ";
+    foreach ($aulaTroca->hasTrocas($params, $sqlAdicional) as $reg) {
+        $i++;
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
 
-            if (substr($reg['professorParecer'], 0, 6) == 'Aceito') {
-                $cdif = "class='parecerAceito'";
-            }
-            if (substr($reg['professorParecer'], 0, 6) == 'Negado') {
-                $cdif = "class='parecerNegado'";
-            }
-            ?>
+        if (substr($reg['professorParecer'], 0, 6) == 'Aceito') {
+            $cdif = "class='parecerAceito'";
+        }
+        if (substr($reg['professorParecer'], 0, 6) == 'Negado') {
+            $cdif = "class='parecerNegado'";
+        }
+        ?>
             <tr <?= $cdif ?>>
                 <td><?= $reg['dataPedido'] ?></td>
                 <td><?= $reg['professorNome'] ?></td>
                 <td>
-                    <?php
-                    $dados = $reg['disciplina'] . '<br><br>Data: ' . $reg['dataTrocaFormatada'] . '<br><br>' . str_replace(',', '<br>', $reg['aula']) . '<br><br>Motivo: ' . $reg['motivo'];
-                    ?>
+        <?php
+        $dados = $reg['disciplina'] . '<br><br>Data: ' . $reg['dataTrocaFormatada'] . '<br><br>' . str_replace(',', '<br>', $reg['aula']) . '<br><br>Motivo: ' . $reg['motivo'];
+        ?>
                     <a href='#' class='show' title='Detalhes da Solicita&ccedil;&atilde;o' id='<?= $dados ?>'><?= $reg['dataTrocaFormatada'] ?></a>
                 </td>
                 <td>
-                    <?php if (!$reg['professorSubAceite']) {
-                        ?>
+        <?php if (!$reg['professorSubAceite']) {
+            ?>
                         <a href='#' onclick="parecer('professorSub', 'S', <?= $reg['codigo'] ?>, 'Aceito')">
                             <img class="botao" src='<?= ICONS ?>/accept.png'>
                         </a>
@@ -247,23 +295,23 @@ if ($_GET['opcao'] == 'pendente') {
                         <a href='#'onclick="parecer('professorSub', 'N', <?= $reg['codigo'] ?>, 'Negado')">
                             <img class="botao" src='<?= ICONS ?>/cancel.png'>
                         </a>
-                        <?php
-                    } else if ($reg['professorSubAceite'] == '1' && !$reg['coordenadorAceite']) {
-                        print "Aceito. Aguardando validação do coordenador.";
-                    } else {
-                        print $reg['professorParecer'];
-                    }
-                    ?>
+            <?php
+        } else if ($reg['professorSubAceite'] == '1' && !$reg['coordenadorAceite']) {
+            print "Aceito. Aguardando validação do coordenador.";
+        } else {
+            print $reg['professorParecer'];
+        }
+        ?>
                 </td>
             </tr>
-        <?php }
-        ?>
-    </table>
-    <?php
-}
-
-if ($_GET['opcao'] == 'listTroca') {
+    <?php }
     ?>
+    </table>
+        <?php
+    }
+
+    if ($_GET['opcao'] == 'listTroca') {
+        ?>
     <br />    
     <table id="listagem" border="0" align="center">
         <tr class="listagem_tr">
@@ -275,29 +323,33 @@ if ($_GET['opcao'] == 'listTroca') {
             <th align='center'>Coordenador</th>
             <th align='center'>Parecer</th>
         </tr>
-        <?php
-        $i = 0;
-        $params = array(':professor' => $_SESSION['loginCodigo']);
-        $sqlAdicional = ' AND professor = :professor ';
-        foreach ($aulaTroca->listTrocas($params, $sqlAdicional) as $reg) {
-            $i++;
-            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            ?>
+    <?php
+    $i = 0;
+    $params = array(':professor' => $_SESSION['loginCodigo']);
+    $sqlAdicional = ' AND professor = :professor ';
+    foreach ($aulaTroca->listTrocas($params, $sqlAdicional) as $reg) {
+        $i++;
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        ?>
             <tr <?= $cdif ?>>
                 <td><?= $reg['tipo'] ?></td>                
                 <td><?= $reg['dataPedido'] ?></td>
                 <td>
-                    <?php
-                    $dados = $reg['disciplina'] . '<br><br>Data: ' . $reg['dataTrocaFormatada'] . '<br><br>' . str_replace(',', '<br>', $reg['aula']) . '<br><br>Motivo: ' . $reg['motivo'];
-                    ?>
+        <?php
+        $dados = $reg['disciplina'] . '<br><br>Data: ' . $reg['dataTrocaFormatada'] . '<br><br>' . str_replace(',', '<br>', $reg['aula']) . '<br><br>Motivo: ' . $reg['motivo'];
+        ?>
                     <a href='#' class='show' title='Detalhes da Solicita&ccedil;&atilde;o' id='<?= $dados ?>'><?= $reg['dataTrocaFormatada'] ?></a>
                 </td>                
-                <td><?php if ($reg['tipo'] == 'Troca') print $reg['professorSub']; else print '---'; ?></td>
-                <td><?php if ($reg['tipo'] == 'Troca') print "<a href='#' title='".$reg['professorSubParecer']."'>".$reg['avalProfSub']."</a>"; else print '---'; ?></td>
-                <td><?php if ($reg['professorSubAceite'] == 'N') print '---'; else print $reg['coordenador']; ?></td>
-                <td><?php if ($reg['professorSubAceite'] == 'N') print '---'; else print "<a href='#' title='".$reg['coordenadorParecer']."'>".$reg['avalCoord']."</a>"; ?></td>
+                <td><?php if ($reg['tipo'] == 'Troca') print $reg['professorSub'];
+            else print '---'; ?></td>
+                <td><?php if ($reg['tipo'] == 'Troca') print "<a href='#' title='" . $reg['professorSubParecer'] . "'>" . $reg['avalProfSub'] . "</a>";
+            else print '---'; ?></td>
+                <td><?php if ($reg['professorSubAceite'] == 'N') print '---';
+            else print $reg['coordenador']; ?></td>
+                <td><?php if ($reg['professorSubAceite'] == 'N') print '---';
+            else print "<a href='#' title='" . $reg['coordenadorParecer'] . "'>" . $reg['avalCoord'] . "</a>"; ?></td>
             </tr>
-        <?php } ?>
+    <?php } ?>
     </table>
     <?php
 }
@@ -357,8 +409,7 @@ if ($_GET['opcao'] == 'validacao') {
                 </td>
                 <td>
                     <?php
-                    if (($reg['tipo'] == 'Troca' && $reg['professorSubAceite'] && !$reg['coordenadorParecer'])
-                        || ($reg['tipo'] != 'Troca' && !$reg['coordenadorParecer']) ) {
+                    if (($reg['tipo'] == 'Troca' && $reg['professorSubAceite'] && !$reg['coordenadorParecer']) || ($reg['tipo'] != 'Troca' && !$reg['coordenadorParecer'])) {
                         ?>
                         <a href='#' onclick="parecer('coordenador', 'S', <?= $reg['codigo'] ?>, 'Aceito')">
                             <img class="botao" src='<?= ICONS ?>/accept.png'>

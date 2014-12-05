@@ -60,6 +60,19 @@ require SESSAO;
 
 </center>
 <br>
+<b>Vers&atilde;o 1.422</b>
+<br> - Adicionado FPA (Formul&aacute;rio de Prefer&ecirc;ncia de Atividades)
+<br> - Adicionado PIT (Plano Individual de Trabalho)
+<br> - Adicionado RIT (Relat&oacute;rio Individual de Trabalho)
+<br> - Adicionada função que envia e-mail quando ocorre ações nos Planos de Ensino, FPA, RIT, PIT e Diário (chamado #208)
+<br> - Corre&ccedil;&atilde;o do chamado - #240
+<br> - Corre&ccedil;&atilde;o do chamado - #251
+<br> - Corre&ccedil;&atilde;o do chamado - #252
+<br> - Funcionalidade adicionada de acordo com o chamado - #254
+<br />
+<br />
+
+<br>
 <b>Vers&atilde;o 1.421</b>
 <br> - Corre&ccedil;&atilde;o do chamado - #250
 <br> - Funcionalidade adicionada de acordo com o chamado - #248

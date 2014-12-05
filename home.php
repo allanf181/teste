@@ -199,23 +199,22 @@ require SESSAO;
                     <?php
                 }
 
-                // Verificando se há correções para a FTD
-                require CONTROLLER . "/ftdDado.class.php";
-                $ftd = new FTDDados();
-                $res = $ftd->hasChangeFtd($user, $ANO, $SEMESTRE);
-                if ($res['ftdSolicitacao']) {
+                // Verificando se há correções para a FPA, PIT e RIT
+                require CONTROLLER . "/tdDado.class.php";
+                $tdDados = new TDDados();
+                $sqlAdicional = ' AND f.pessoa = :cod ';
+                $params = array(':cod' => $user, ':ano' => $ANO, ':sem' => $SEMESTRE);
+                foreach($tdDados->hasChangeTD($params, $sqlAdicional) as $reg) {
                     ?>
-                    <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?php print $res['ftdSolicitante']; ?>, solicitou corre&ccedil;&atilde;o em sua FTD: <br><?php print $res['ftdSolicitacao']; ?></font>
-                    <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/professor/ftd.php'); void(0);">Clique aqui para corrigir</a>
+                    <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em sua <?= $reg['modelo'] ?>: <br><?= $reg['solicitacao'] ?></font>
+                    <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/<?= strtolower($reg['modelo']) ?>.php'); void(0);">Clique aqui para corrigir</a>
                     <?php
                 }
 
                 // Verificando se há correções para o Plano de Ensino.
-                $sqlAdicional = "AND pe.valido = '0000-00-00 00:00:00' "
-                        . "AND (pe.solicitacao IS NOT NULL AND pe.solicitacao <> \"\") "
-                        . "AND p.professor = :cod ";
+                $sqlAdicional = "AND pr.professor = :cod ";
                 $params = array('cod' => $user);
-                $res = $plano->listPlanoEnsino($params, $sqlAdicional);
+                $res = $plano->hasChangePE($params, $sqlAdicional);
                 if ($res) {
                     foreach ($res as $reg) {
                         ?>
@@ -364,13 +363,12 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         <?php
     }
 
-    require CONTROLLER . "/prazoDiario.class.php";
-    $prazoDiario = new PrazosDiarios();
-    $sqlAdicional = " AND pd.dataConcessao IS NULL "
-            . "AND c.codigo IN (SELECT curso "
+    require CONTROLLER . "/atribuicao.class.php";
+    $att = new Atribuicoes();
+    $sqlAdicional = " AND c.codigo IN (SELECT curso "
             . "FROM Coordenadores WHERE coordenador = :coordenador)";
     $params = array('coordenador' => $user, 'ano' => $ANO, 'semestre' => $SEMESTRE);
-    $res = $prazoDiario->listPrazos($params, $sqlAdicional);
+    $res = $att->listSolicitacoesDiarios($params, null, null, $sqlAdicional);
     if ($res) {
         ?>
         <br><br><table id="listagem">
@@ -386,16 +384,16 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
             $i = $item;
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-                $title = $reg['motivo'];
-                if (strlen($reg['motivo']) > 70)
-                    $reg['motivo'] = abreviar($reg['motivo'], 70);
+                $title = $reg['solicitacao'];
+                if (strlen($reg['solicitacao']) > 30)
+                    $reg['solicitacao'] = abreviar($reg['solicitacao'], 30);
                 ?>
                 <tr <?= $cdif ?>>
                     <td width='120'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
                     <td width='120'><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
-                    <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
-                    <td><?= $reg['data'] ?></td>
-                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['turma']) ?>&professor=<?= crip($reg['codProfessor']) ?>'); void(0);" title='Clique aqui para liberar'>
+                    <td><a href='#' title='<?= $title ?>'><?= $reg['solicitacao'] ?></a></td>
+                    <td><?= $reg['dataSolicitacao'] ?></td>
+                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codPessoa']) ?>'); void(0);" title='Clique aqui para liberar'>
                             Liberar</a>
                     </td>                    
                 </tr>
@@ -444,6 +442,42 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         </table>
         <?php
     }
+
+    $sqlAdicional = "AND ((f.finalizado <> '0000-00-00 00:00:00') "
+            . "AND (f.valido = '0000-00-00 00:00:00' OR f.valido IS NULL)) "
+            . "AND f.area IN (SELECT area FROM Coordenadores WHERE coordenador = :cod) ";
+    $params = array(':cod' => $user, ':ano' => $ANO, ':semestre' => $SEMESTRE);
+    $res = $tdDados->listTDs($params, null, null, $sqlAdicional);
+    if ($res) {
+        ?>
+        <br><br><table id="listagem">
+            <caption>Lista de Professores que aguardam por valida&ccedil;&atilde;o do FPA, PIT e RIT.</caption>
+            <tr>
+                <th width='120'>Nome</th>
+                <th align='center' width='120'>Modelo</th>
+                <th align='center' width='10'>&nbsp;</th>
+            </tr>
+            <?php
+            $i = $item;
+            foreach ($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                ?>
+                <tr <?= $cdif ?>>
+                    <td><?= $reg['nome'] ?></td>
+                    <td><?= $reg['modelo'] ?></td>
+                    <td>
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?=crip($reg['pessoa'])?>'); void(0);">
+                            Validar
+                        </a>
+                    </td>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+        </table>
+        <?php
+    }    
 }
 ?>
 

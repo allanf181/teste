@@ -15,15 +15,30 @@ require SESSAO;
 require CONTROLLER . "/atribuicao.class.php";
 $att = new Atribuicoes();
 
-require CONTROLLER . "/prazoDiario.class.php";
-$prazoDiario = new PrazosDiarios();
+require CONTROLLER . "/logSolicitacao.class.php";
+$log = new LogSolicitacoes();
+
+require CONTROLLER . "/coordenador.class.php";
+$coordenador = new Coordenadores();
+
+require CONTROLLER . "/logEmail.class.php";
+$logEmail = new LogEmails();
 
 // PEDIDO DE LIBERAÇÃO DO DIÁRIO
 if ($_GET["motivo"]) {
-    $_GET['data'] = date('Y-m-d h:i:s');
-    unset($_GET['_']);
-    $ret = $prazoDiario->insertOrUpdate($_GET);
+    $paramsLog['dataSolicitacao'] = date('Y-m-d h:i:s');
+    $paramsLog['solicitacao'] = 'Docente solicitou abertura do diário, motivo: '.$_GET['motivo'];
+    $paramsLog['codigoTabela'] = $_GET['atribuicao'];
+    $paramsLog['nomeTabela'] = 'DIARIO';
+    $paramsLog['solicitante'] = $_SESSION['loginCodigo'];
+    $ret = $log->insertOrUpdate($paramsLog);
     mensagem($ret['STATUS'], 'PRAZO_DIARIO');
+    
+    if ($ret['STATUS'] == 'OK') {
+        if ($coodEmail = $coordenador->getEmailCoordFromAtribuicao(dcrip($_GET['atribuicao']))) {
+            $logEmail->sendEmailLogger($_SESSION['loginNome'], $paramsLog['solicitacao'], $coodEmail);
+        }
+    }
 }
 
 if ($_GET["opcao"] == 'controleDiario') {
@@ -72,7 +87,7 @@ if ($_GET["atribuicao"]) {
         $avaliacao = new Avaliacoes();
         $params = array('atribuicao' => $atribuicao);
         $qdeAvaliacoes = $avaliacao->getQdeAvaliacoes($params, " AND t.tipo = 'avaliacao' ");
-        
+
         if ($status == 4) {
             $pergunta = $QUESTION_DIARIO1;
         }
@@ -91,11 +106,11 @@ if ($_GET["atribuicao"]) {
             <h2 id='titulo_disciplina_modalidade'><?= $bimestreNome ?></h2>
         </div>
         <?php
-            if ($codModalidade != 1004 && $codModalidade != 1006 && $codModalidade != 1007 && ($bimestre == 4 || $bimestre==0) )
-                print "<tr><td colspan=\"8\"><font color=\"red\">A Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o ser&aacute; realizada pelo Nambei e n&atilde;o estar&aacute; dispon&iacute;vel no Webdi&aacute;rio.</font></td></tr>\n";
-            print "<tr><td colspan=\"8\">&nbsp;</td></tr>\n";
+        if ($codModalidade != 1004 && $codModalidade != 1006 && $codModalidade != 1007 && ($bimestre == 4 || $bimestre == 0))
+            print "<tr><td colspan=\"8\"><font color=\"red\">A Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o ser&aacute; realizada pelo Nambei e n&atilde;o estar&aacute; dispon&iacute;vel no Webdi&aacute;rio.</font></td></tr>\n";
+        print "<tr><td colspan=\"8\">&nbsp;</td></tr>\n";
         ?>
-        
+
         <tr valign="top" align='center'>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aula.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/aulas.png' /><br />Aulas</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/avaliacao.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
@@ -170,45 +185,51 @@ if ($_GET["atribuicao"]) {
             </tr>
             <tr>
                 <td colspan="2">
-                    <h2>Prazos do Di&aacute;rio</h2>
-                    <div>
-                        <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'>
-                            <img src="<?= ICONS ?>/unlock.png">
-                        </a>
-                    </div>
-                    <div>
-                        <font size="1">Professor, se o diário foi finalizado pelo sistema e ainda tem pendências ou perdeu o prazo para digitação de aulas, clique no cadeado e informe o motivo para seu coordenador analisar sua solicitação. Ap&oacute;s liberado, voc&ecirc; ter&aacute; 24 horas para regularizar o di&aacute;rio.</font>
-                    </div>
-                </td>
-            </tr>            
+                    <table>
+                        <tr>
+                            <td width="50px" align="center">
+                                <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'>
+                                    <img src="<?= ICONS ?>/unlock.png">
+                                </a>
+                            </td>
+                            <td>
+                                <font size="1">Professor, se o diário foi finalizado pelo sistema e ainda tem pendências ou perdeu o prazo para digitação de aulas, clique no cadeado e informe o motivo para seu coordenador analisar sua solicitação. Ap&oacute;s liberado, voc&ecirc; ter&aacute; 24 horas para regularizar o di&aacute;rio.</font>
+                            </td>
+                        </tr>
+                    </table>
+            </tr>
             <?php
-            $sqlAdicional = ' AND a.codigo = :atribuicao ';
-            $params = array('atribuicao' => $atribuicao, 'ano' => $ANO, 'semestre' => $SEMESTRE);
-            $res = $prazoDiario->listPrazos($params, $sqlAdicional);
+            $params = array('nomeTabela' => 'DIARIO', 'codigoTabela' => $atribuicao);
+            $res = $log->listSolicitacoes($params, ' ORDER BY l.codigo DESC ');
             if ($res) {
                 ?>
+                <tr>
+                    <td colspan="2">
+                        <h2>Hist&oacute;rico de Solicita&ccedil;&otilde;es</h2>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2"><br />
                         <table id="listagem" border="0" align="center">
                             <tr>
-                                <th align="center" width="40">#</th>
-                                <th width="100">Data</th>
-                                <th width="250">Motivo</th>
-                                <th width="150">Concessão</th>
+                                <th width="70">Data</th>
+                                <th width="150">Solicitante</th>
+                                <th width="150">Solicita&ccedil;&atilde;o</th>
+                                <th width="70">Concess&atilde;o</th>
                             </tr>
                             <?php
                             $i = count($res);
                             foreach ($res as $reg) {
-                                $title = $reg['motivo'];
+                                $title = $reg['solicitacao'];
 
-                                if (strlen($reg['motivo']) > 70)
-                                    $reg['motivo'] = abreviar($reg['motivo'], 70);
+                                if (strlen($reg['solicitacao']) > 70)
+                                    $reg['solicitacao'] = abreviar($reg['solicitacao'], 70);
                                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                                 ?>
                                 <tr <?= $cdif ?>>
-                                    <td align='center'><?= $i ?></td>
-                                    <td><?= $reg['data'] ?></td>
-                                    <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
+                                    <td><?= $reg['dataSolicitacao'] ?></td>
+                                    <td><?= $reg['solicitante'] ?></td>
+                                    <td><a href='#' title='<?= $title ?>'><?= $reg['solicitacao'] ?></a></td>
                                     <td><?= $reg['dataConcessao'] ?></td>
                                     <?php
                                     $i--;
@@ -231,18 +252,18 @@ if ($_GET["atribuicao"]) {
 <script>
 <?php if ($pergunta && !$erro) print "pergunta('$pergunta');" ?>
 
-    $(document).ready(function() {
-        $(".finalizar").click(function() {
-            pergunta('<?=$QUESTION_DIARIO3?>');
+    $(document).ready(function () {
+        $(".finalizar").click(function () {
+            pergunta('<?= $QUESTION_DIARIO3 ?>');
         });
     });
 
-    $("#unlock").click(function() {
+    $("#unlock").click(function () {
         $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
             'type': 'prompt',
             'title': '<?php print $TITLE; ?>',
             'buttons': ['Sim', 'Não'],
-            'onClose': function(caption, valor) {
+            'onClose': function (caption, valor) {
                 if (caption == 'Sim') {
                     $('#index').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
                 }
@@ -255,7 +276,7 @@ if ($_GET["atribuicao"]) {
             'type': 'question',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
-            'onClose': function(caption) {
+            'onClose': function (caption) {
                 if (caption == 'Sim') {
                     $('#index').load('<?= $SITE ?>?opcao=controleDiario&status=2&atribuicao=' + '<?= crip($atribuicao) ?>');
                 }

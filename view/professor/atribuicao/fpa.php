@@ -12,20 +12,23 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-require CONTROLLER . "/tdDados.class.php";
+require CONTROLLER . "/tdDado.class.php";
 $dados = new TDDados();
 
-require CONTROLLER . "/tdFpaAtvECmt.class.php";
-$atvECmt = new TDFPAAtvECmt();
+require CONTROLLER . "/tdAtvECmt.class.php";
+$atvECmt = new TDAtvECmt();
 
-require CONTROLLER . "/tdFpaComponente.class.php";
-$componente = new TDFPAComponente();
-
-require CONTROLLER . "/tdVars.class.php";
-$tdVars = new TDVars();
+require CONTROLLER . "/tdComponente.class.php";
+$componente = new TDComponente();
 
 require CONTROLLER . "/logSolicitacao.class.php";
 $log = new LogSolicitacoes();
+
+require CONTROLLER . "/coordenador.class.php";
+$coordenador = new Coordenadores();
+
+require CONTROLLER . "/logEmail.class.php";
+$logEmail = new LogEmails();
 
 if ($_POST) {
     $_POST['modelo'] = 'FPA';
@@ -34,22 +37,28 @@ if ($_POST) {
     $_POST['pessoa'] = $_SESSION['loginCodigo'];
 
     $ret = $dados->insertOrUpdateFPA($_POST);
-
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+
+    //ENVIANDO EMAIL
+    if ($ret['STATUS'] == 'OK' && $_POST['enviar']) {
+        if ($coodEmail = $coordenador->getEmailCoordFromArea(dcrip($_POST['area'])))
+            $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente enviou FPA para valida&ccedil;&atilde;o.', $coodEmail);
+    }
 }
 
 //LISTA OS REGISTROS DA FPA
-$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $semestre);
-$res = $dados->listRegistros($params);
+$sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ';
+$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $SEMESTRE, 'modelo' => 'FPA');
+$res = $dados->listModelo($params, null, null, $sqlAdicional);
 extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
-//LISTA OS DADOS DA PESSOA
-$pessoa = new Pessoas();
-$paramsP = array('codigo' => $_SESSION['loginCodigo']);
-$resP = $pessoa->listRegistros($paramsP);
-$email = $resP[0]['email'];
-$telefone = $resP[0]['telefone'];
-$celular = $resP[0]['celular'];
+if (!$res) {
+    $pessoa = new Pessoas();
+    $resPessoa = $pessoa->listRegistros(array('codigo' => $_SESSION['loginCodigo']));
+    $email = $resPessoa[0]['email'];
+    $telefone = $resPessoa[0]['telefone'];
+    $celular = $resPessoa[0]['celular'];
+}
 
 //LISTA COMPONENTES
 $resC = $componente->listComponentes($codigo);
@@ -59,16 +68,16 @@ $resAtv = $atvECmt->listAtvECmt($codigo, 'atv');
 $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
 
 //VERIFICA SE ESTA FINALIZADO OU VALIDADO
-$resVars = $tdVars->listVars($codigo, 'FPA');
-if ($resVars[0]['finalizado'] && $resVars[0]['finalizado'] != '0000-00-00 00:00:00')
+if ($res[0]['finalizado'] && $res[0]['finalizado'] != '0000-00-00 00:00:00')
     $disabled = 'disabled';
 
-if ($resVars[0]['valido'] && $resVars[0]['valido'] != '00/00/0000 00:00')
+if ($res[0]['valido'] && $res[0]['valido'] != '0000-00-00 00:00:00')
     $VALIDO = 1;
 
 $paramsLog['codigoTabela'] = $codigo;
 $paramsLog['nomeTabela'] = 'FPA';
-$l = $log->listSolicitacoes($paramsLog, " AND ( l.dataConcessao = '0000-00-00 00:00:00' OR l.dataConcessao IS NULL) " );
+$l = $log->listSolicitacoes($paramsLog, " AND ( l.dataConcessao = '0000-00-00 00:00:00' OR l.dataConcessao IS NULL) ");
+
 if ($l[0]['solicitacao']) {
     $OPT[0] = $l[0]['solicitante'];
     $OPT[1] = $l[0]['solicitacao'];
@@ -80,7 +89,7 @@ if (!$VALIDO && $disabled)
     mensagem('OK', 'FINISH_FORM');
 
 if ($VALIDO)
-    mensagem('OK', 'VALID_FORM', $solicitante);
+    mensagem('OK', 'VALID_FORM');
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
@@ -97,7 +106,21 @@ if ($VALIDO)
                         <th>Professor: </th>
                         <th><input type="text" disabled style="width: 264pt" id="nome"ampoN name="nome" maxlength="45" value="<?= $_SESSION["loginNome"] ?>" /></th>
                         <th>&Aacute;rea: </th>
-                        <th><input type="text" <?= $disabled ?> style="width: 264pt" id="area" name="area" maxlength="45" value="<?= $area ?>"/></th>
+                        <th>
+                            <select name="area" id="area" value="<?= $area ?>" <?= $disabled ?> style="width: 264pt">
+                                <option></option>
+                                <?php
+                                require CONTROLLER . "/area.class.php";
+                                $areas = new Areas();
+                                foreach ($areas->listRegistros(null, null, null, ' ORDER BY nome ') as $reg) {
+                                    $selected = "";
+                                    if ($reg['codigo'] == $codArea)
+                                        $selected = "selected";
+                                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </th>
                     </tr>
                     <tr>
                         <th>Prontu&aacute;rio: </th>
@@ -224,7 +247,7 @@ if ($VALIDO)
                                     }
                                     $IS = $p . $l . $c;
                                     ?>
-                                    <td><input id="CE<?= $IS ?>" <?=$disabled?> name="horario[]" value="<?= $IS ?>" type="checkbox" <?php if (in_array($IS, $horarios)) print 'checked'; ?> /></td>
+                                    <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[]" value="<?= $IS ?>" type="checkbox" <?php if (in_array($IS, $horarios)) print 'checked'; ?> /></td>
                                     <?php
                                     $c++;
                                 }
@@ -285,7 +308,7 @@ if ($VALIDO)
                                                 <font size="1">Dura&ccedil;&atilde;o do intervalo no per&iacute;odo <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
-                                                <select id="Intervalo<?= $p ?>" <?=$disabled?> name="Intervalo<?= $p ?>">
+                                                <select id="Intervalo<?= $p ?>" <?= $disabled ?> name="Intervalo<?= $p ?>">
                                                     <?php
                                                     for ($i = 5; $i <= 30; $i++) {
                                                         $n = str_pad($i, 2, "0", STR_PAD_LEFT);
@@ -303,7 +326,7 @@ if ($VALIDO)
                                                 <font size="1">Que horas representa o n&uacute;mero 1 no per&iacute;odo <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
-                                                <input type="text" id="Periodo<?= $p ?>" <?=$disabled?> name="Periodo<?= $p ?>" size="3" value="<?= $hor[1] ?>" />
+                                                <input type="text" id="Periodo<?= $p ?>" <?= $disabled ?> name="Periodo<?= $p ?>" size="3" value="<?= $hor[1] ?>" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -311,7 +334,7 @@ if ($VALIDO)
                                                 <font size="1">Que horas come&ccedil;a o intervalo neste per&iacute;odo <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
-                                                <select id="IniIntervalo<?= $p ?>" <?=$disabled?> name="IniIntervalo<?= $p ?>" value="<?= $hor[2] ?>"></select>
+                                                <select id="IniIntervalo<?= $p ?>" <?= $disabled ?> name="IniIntervalo<?= $p ?>" value="<?= $hor[2] ?>"></select>
                                             </td>
                                         </tr>
                                         <tr>
@@ -349,11 +372,11 @@ if ($VALIDO)
                         for ($t = 0; $t <= 9; $t++) {
                             ?>
                             <tr>
-                                <th><input class="componente" type="text" <?=$disabled?> size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
-                                <th><input class="componente" type="text" <?=$disabled?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
-                                <th><input class="componente" type="text" <?=$disabled?> size="40" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
+                                <th><input class="componente" type="text" <?= $disabled ?> size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
+                                <th><input class="componente" type="text" <?= $disabled ?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
+                                <th><input class="componente" type="text" <?= $disabled ?> size="40" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
                                 <th>
-                                    <select class="componente" id="P<?= $t ?>" <?=$disabled?> name="P<?= $t ?>" >
+                                    <select class="componente" id="P<?= $t ?>" <?= $disabled ?> name="P<?= $t ?>" >
                                         <?php
                                         for ($p = 1; $p <= 3; $p++) {
                                             if ($resC[$t]['periodo'] == $periodo[$p][0])
@@ -361,13 +384,13 @@ if ($VALIDO)
                                             else
                                                 $selected = '';
                                             ?>
-                                            <option <?= $selected ?> <?=$disabled?> value="<?= $periodo[$p][0] ?>"><?= $periodo[$p][0] ?></option>
+                                            <option <?= $selected ?> <?= $disabled ?> value="<?= $periodo[$p][0] ?>"><?= $periodo[$p][0] ?></option>
                                             <?php
                                         }
                                         ?>
                                     </select>
                                 </th>
-                                <th><input class="componente" <?=$disabled?> type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
+                                <th><input class="componente" <?= $disabled ?> type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -398,8 +421,8 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="atividade" <?=$disabled?> type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
-                                <th><input class="atividade" <?=$disabled?> type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -435,8 +458,8 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="complementacao" <?=$disabled?> type="text" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
-                                <th><input class="complementacao" <?=$disabled?> type="text" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> type="text" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> type="text" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -477,7 +500,6 @@ if ($VALIDO)
 <script>
     var totalCelulas = 0;
     var totalHoras = 0;
-    calcIntervalo();
     callFunction();
 
     function calcComponente() {
@@ -593,13 +615,15 @@ if ($VALIDO)
         for (p = 1; p <= 3; p++) {
             ini = $("#Periodo" + p).val();
             vl = ini;
-            for (l = 1; l <= 6; l++) {
-                vl = addtime(vl, $("input[id=duracaoAula]:radio:checked").val());
-                if (vl == '<?= $h1 ?>' || vl == '<?= $h2 ?>' || vl == '<?= $h3 ?>')
-                    sel = true;
-                else
-                    sel = false;
-                $('#IniIntervalo' + p).append($('<option>', {selected: sel, value: vl, text: vl}));
+            if ($("input[id=duracaoAula]:radio:checked").val() && ini) {
+                for (l = 1; l <= 6; l++) {
+                    vl = addtime(vl, $("input[id=duracaoAula]:radio:checked").val());
+                    if (vl == '<?= $h1 ?>' || vl == '<?= $h2 ?>' || vl == '<?= $h3 ?>')
+                        sel = true;
+                    else
+                        sel = false;
+                    $('#IniIntervalo' + p).append($('<option>', {selected: sel, value: vl, text: vl}));
+                }
             }
         }
     }
@@ -639,9 +663,40 @@ if ($VALIDO)
         calcComplementacao();
         calcAulas();
         checkCelulas();
+        calcIntervalo()
     }
 
-    $(".componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
+    $("input:text,.componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
+        callFunction();
+    });
+
+    $("#Intervalo1").click(function () {
+        $('#IniIntervalo1').find('option').remove();
+        callFunction();
+    });
+
+    $("#Intervalo2").click(function () {
+        $('#IniIntervalo2').find('option').remove();
+        callFunction();
+    });
+
+    $("#Intervalo3").click(function () {
+        $('#IniIntervalo3').find('option').remove();
+        callFunction();
+    });
+
+    $("#IniIntervalo1").keyup(function () {
+        $('#IniIntervalo1').find('option').remove();
+        callFunction();
+    });
+
+    $("#IniIntervalo2").keyup(function () {
+        $('#IniIntervalo2').find('option').remove();
+        callFunction();
+    });
+
+    $("#IniIntervalo3").keyup(function () {
+        $('#IniIntervalo3').find('option').remove();
         callFunction();
     });
 
@@ -650,8 +705,6 @@ if ($VALIDO)
     });
 
     $("input:checkbox,input:radio,#dedicarEnsino").click(function () {
-        $('#IniIntervalo1').find('option').remove();
-        calcIntervalo();
         callFunction();
     });
 
@@ -689,7 +742,7 @@ if ($VALIDO)
         return false;
     });
 
-    $("#enviar").click(function () {
+    $("#enviar").click(function (event) {
         event.preventDefault();
         $.Zebra_Dialog('<strong>Deseja salvar sua FPA e enviar para seu coordenador? <br><br> A FPA ser&aacute; bloqueada, podendo ser desbloqueada somente pelo coordenador.</strong>', {
             'type': 'question',

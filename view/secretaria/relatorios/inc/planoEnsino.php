@@ -14,15 +14,16 @@ require CONTROLLER . "/planoAula.class.php";
 $planoAula = new PlanosAula();
 
 
+include PATH . LIB . '/fpdf17/rotation.php';
+$pdf = new PDF ();
+
 if (dcrip($_GET["atribuicao"])) {
     $atribuicao = dcrip($_GET["atribuicao"]);
     $params['atribuicao'] = $atribuicao;
     $sqlAdicional .= ' AND a.codigo = :atribuicao ';
 
-    include PATH . LIB . '/fpdf17/pdfDiario.php';
-
     $rfTitle = $planoEnsino->getTipoRecuperacao($atribuicao);
-            
+
     foreach ($planoEnsino->listPlanoEnsino($params, $sqlAdicional) as $reg) {
         $numeroAulaSemanal = $reg['numeroAulaSemanal'];
         $totalHoras = $reg['totalHoras'];
@@ -44,6 +45,12 @@ if (dcrip($_GET["atribuicao"])) {
         $CH = $reg['ch'];
         $curso = $reg['curso'];
         $modalidade = $reg['modalidade'];
+
+        //VERIFICA SE ESTA FINALIZADO OU VALIDADO
+        if (!$reg['finalizado'] || $reg['finalizado'] == '00/00/0000 00:00')
+            $pdf->setWaterText(null, null, "NAO FOI FINALIZADO");
+        else if (!$reg['valido'] || $reg['valido'] == '00/00/0000 00:00')
+            $pdf->setWaterText(null, null, "NAO FOI VALIDADO");
     }
 
     if (!$ITEM)
@@ -51,7 +58,6 @@ if (dcrip($_GET["atribuicao"])) {
 
     $professores = $professor->getProfessor($atribuicao, '', 0, 0);
 
-    $pdf = new PDF ();
     $fonte = 'Arial';
     $tamanho = 7;
     $alturaLinha = 7;
@@ -114,7 +120,7 @@ if (dcrip($_GET["atribuicao"])) {
         $pdf->Cell(39, 15, utf8_decode(""), 1, 0, 'L', true);
         $pdf->Cell(100, 15, utf8_decode(""), 1, 0, 'L', true);
     }
-    
+
     cabecalho('P L A N O   D E   E N S I N O');
 
     foreach ($ITEM as $chave => $valor) {
@@ -177,7 +183,7 @@ if (dcrip($_GET["atribuicao"])) {
     }
 
     rodape();
-    
+
     $pdf->Output();
 }
 ?>

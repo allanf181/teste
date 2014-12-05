@@ -17,12 +17,20 @@ if ($_POST['pagina'])
 if (!$_GET['pagina'])
     $_GET['pagina'] = "entregarPlano";
 
-
 require CONTROLLER . "/planoEnsino.class.php";
 $planoEnsino = new PlanosEnsino();
 
 require CONTROLLER . "/planoAula.class.php";
 $planoAula = new PlanosAula();
+
+require CONTROLLER . "/logSolicitacao.class.php";
+$log = new LogSolicitacoes();
+
+require CONTROLLER . "/coordenador.class.php";
+$coordenador = new Coordenadores();
+
+require CONTROLLER . "/logEmail.class.php";
+$logEmail = new LogEmails();
 
 $caracteres = 3000; // total do textarea
 
@@ -70,27 +78,35 @@ if ($_GET['pagina']) {
         if ($_GET["entregar"]) {
             $ret = $planoEnsino->entregarPlano(dcrip($atribuicao));
             mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+            
+            if ($ret['STATUS'] == 'OK') {
+                if ($coodEmail = $coordenador->getEmailCoordFromAtribuicao(dcrip($atribuicao)))
+                    $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente realizou entrega de Plano de Ensino. Necessita valida&ccedil;&atilde;o.', $coodEmail);
+            }
         }
 
         $res = $planoEnsino->listPlanoEnsino($params, $sqlAdicional);
         $BLOQ = 0;
         $VALIDO = 0;
 
-        if ($res[0]['finalizado'] && $res[0]['finalizado'] != '0000-00-00 00:00:00')
+        if ($res[0]['finalizado'] && $res[0]['finalizado'] != '00/00/0000 00:00')
             $BLOQ = 1;
 
         if ($res[0]['valido'] && $res[0]['valido'] != '00/00/0000 00:00')
             $VALIDO = 1;
 
-        if ($res[0]['solicitacao']) {
-            $OPT[0] = $res[0]['solicitante'];
-            $OPT[1] = $res[0]['solicitacao'];
+        $paramsLog['codigoTabela'] = dcrip($atribuicao);
+        $paramsLog['nomeTabela'] = 'PlanoEnsino';
+        $l = $log->listSolicitacoes($paramsLog, " AND ( l.dataConcessao = '0000-00-00 00:00:00' OR l.dataConcessao IS NULL) ");
+
+        if ($l[0]['solicitacao']) {
+            $OPT[0] = $l[0]['solicitante'];
+            $OPT[1] = $l[0]['solicitacao'];
             mensagem('ERRO', 'SOLICITACAO_PLANO', $OPT);
             $BLOQ = 0;
         }
         if ($VALIDO) {
-            $OPT = $res[0]['solicitante'];
-            mensagem('OK', 'PLANO_VALIDO', $OPT);
+            mensagem('OK', 'PLANO_VALIDO');
         }
 
         $pd = ($res) ? 'SIM' : 'N&Atilde;O';
@@ -123,7 +139,7 @@ if ($_GET['pagina']) {
         // VERIFICANDO SE O PLANO FOI FINALIZADO
         $pe = $planoEnsino->listPlanoEnsino($params, $sqlAdicional);
         $disabled = '';
-        if ($pe[0]['finalizado'] && $pe[0]['finalizado'] != '0000-00-00 00:00:00')
+        if ($pe[0]['finalizado'] && $pe[0]['finalizado'] != '00/00/0000 00:00')
             $disabled = 'disabled';
         ?>
 
@@ -178,7 +194,7 @@ if ($_GET['pagina'] == "planoEnsino") {
     }
 
     $disabled = '';
-    if ($finalizado && $finalizado != '0000-00-00 00:00:00')
+    if ($finalizado && $finalizado != '00/00/0000 00:00')
         $disabled = 'disabled';
     ?>
 
@@ -276,7 +292,7 @@ if ($_GET['pagina'] == "planoAula") {
     // VERIFICANDO SE O PLANO FOI FINALIZADO
     $pe = $planoEnsino->listPlanoEnsino($params, $sqlAdicional);
     $disabled = '';
-    if ($pe[0]['finalizado'] && $pe[0]['finalizado'] != '0000-00-00 00:00:00')
+    if ($pe[0]['finalizado'] && $pe[0]['finalizado'] != '00/00/0000 00:00')
         $disabled = 'disabled';
 
     if (!$pe[0]) {

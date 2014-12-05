@@ -306,16 +306,16 @@ class Atribuicoes extends Generic {
                     $origem = ($reg['prazoDiff'] * 24) . "h";
                 } else {
                     if ($reg['status'] == 1)
-                        $origem = "Coord";
+                        $origem = "Fechado pela Coordenador.";
                     if ($reg['status'] == 2)
-                        $origem = "Prof";
+                        $origem = "Fechado pelo Professor.";
                     if ($reg['status'] == 3)
-                        $origem = "Secre";
+                        $origem = "Fechado pela Secretaria.";
                     if ($reg['status'] == 4)
-                        $origem = "SYS";
+                        $origem = "Fechado automaticamente pelo Sistema por atingir o prazo.";
                 }
                 if (!$origem)
-                    $origem = 'Aberto';
+                    $origem = 'Di&aacute;rio aberto para altera&ccedil;&otilde;es.';
 
                 $res[$i]['prazo'] = $reg['prazo'];
                 $res[$i]['origem'] = $origem;
@@ -358,19 +358,29 @@ class Atribuicoes extends Generic {
                     $ok++;
             }
 
-            //REGISTRANDO NA TABELA PRAZOSDIARIO O MOTIVO
+            //REGISTRANDO NA TABELA LogSolicitacoes O MOTIVO
             $params_pd = array('atribuicao' => $atribuicao);
-            $sql = 'SELECT codigo,motivo FROM PrazosDiarios WHERE atribuicao = :atribuicao AND dataConcessao IS NULL';
-            if ($res = $bd->selectDB($sql, $params_pd)) {
-                $params_pd['codigo'] = $res[0]['codigo'];
-                $params_pd['motivo'] = $params['pessoa'] . ', ' . $params['botao'] . ' o diário. Motivo: ' . $params['motivo'] . '<br>Motivo do Professor: ' . $res[0]['motivo'];
-            } else {
-                $params_pd['data'] = date('Y-m-d H:i:s');
-                $params_pd['motivo'] = $params['pessoa'] . ', ' . $params['botao'] . ' o diário. Motivo: ' . $params['motivo'];
-            }
+            $sql = "SELECT codigo,solicitacao FROM LogSolicitacoes WHERE nomeTabela = 'DIARIO' AND codigoTabela = :atribuicao AND (dataConcessao IS NULL OR dataConcessao = '0000-00-00 00:00:00')";
+            $res = $bd->selectDB($sql, $params_pd);
+
+            $params_pd = array();
+            $params_pd['nomeTabela'] = 'DIARIO';
+            $params_pd['codigoTabela'] = $atribuicao;
             $params_pd['dataConcessao'] = date('Y-m-d H:i:s');
-            $ret = $this->insertOrUpdate($params_pd, 'PrazosDiarios');
-        }
+            
+            if ($res) {
+                foreach ($res as $reg) {
+                    $params_pd['codigo'] = $reg['codigo'];
+                    $params_pd['solicitacao'] = $params['pessoa'] . ', ' . $params['botao'] . ' o diário. Motivo: ' . $params['motivo'] . '<br>Motivo do Professor: ' . $res[0]['solicitacao'];
+                    $ret = $this->insertOrUpdate($params_pd, 'LogSolicitacoes');
+                }
+            } else {
+                $params_pd['solicitante'] = $params['codPessoa'];
+                $params_pd['dataSolicitacao'] = date('Y-m-d H:i:s');
+                $params_pd['solicitacao'] = $params['pessoa'] . ', ' . $params['botao'] . ' o diário. Motivo: ' . $params['motivo'];
+                $ret = $this->insertOrUpdate($params_pd, 'LogSolicitacoes');
+            }
+         }
 
         $rs['TIPO'] = 'UPDATE';
         $rs['RESULTADO'] = $ok;
@@ -586,6 +596,37 @@ class Atribuicoes extends Generic {
         }
     }
 
+    public function listSolicitacoesDiarios($params = null, $item = null, $itensPorPagina = null, $sqlAdicional = null) {
+        $bd = new database();
+
+        if ($item && $itensPorPagina)
+            $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina ";
+
+        $sql = "SELECT l.solicitacao, p.nome, d.nome as disciplina, a.codigo as atribuicao, c.nome as curso, "
+                . "c.codigo as codCurso, t.codigo as codTurma, p.codigo as codPessoa,"
+                . "date_format(l.dataSolicitacao, '%d/%m/%Y %H:%i') as dataSolicitacao "
+                . "FROM LogSolicitacoes l, Atribuicoes a, Pessoas p, Turmas t, Disciplinas d, Cursos c "
+                . "WHERE l.codigoTabela = a.codigo "
+                . "AND l.nomeTabela = 'DIARIO' "
+                . "AND a.turma = t.codigo "
+                . "AND p.codigo = l.solicitante "
+                . "AND a.disciplina = d.codigo "
+                . "AND t.curso = c.codigo "
+                . "AND t.ano = :ano "
+                . "AND (t.semestre = 0 OR t.semestre = :semestre) "
+                . "AND (dataConcessao IS NULL OR dataConcessao = '0000-00-00 00:00:00')";
+
+        $sql .= " $sqlAdicional ";
+        $sql .= " ORDER BY l.codigo DESC LIMIT 1 ";
+        $sql .= " $nav ";
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res)
+            return $res;
+
+        return false;
+    }    
 }
 
 ?>

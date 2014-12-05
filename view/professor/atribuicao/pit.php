@@ -12,20 +12,23 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-require CONTROLLER . "/tdDados.class.php";
+require CONTROLLER . "/tdDado.class.php";
 $dados = new TDDados();
 
-require CONTROLLER . "/tdFpaAtvECmt.class.php";
-$atvECmt = new TDFPAAtvECmt();
+require CONTROLLER . "/tdAtvECmt.class.php";
+$atvECmt = new TDAtvECmt();
 
-require CONTROLLER . "/tdFpaComponente.class.php";
-$componente = new TDFPAComponente();
-
-require CONTROLLER . "/tdVars.class.php";
-$tdVars = new TDVars();
+require CONTROLLER . "/tdComponente.class.php";
+$componente = new TDComponente();
 
 require CONTROLLER . "/logSolicitacao.class.php";
 $log = new LogSolicitacoes();
+
+require CONTROLLER . "/coordenador.class.php";
+$coordenador = new Coordenadores();
+
+require CONTROLLER . "/logEmail.class.php";
+$logEmail = new LogEmails();
 
 if ($_POST) {
     $_POST['modelo'] = 'PIT';
@@ -34,22 +37,29 @@ if ($_POST) {
     $_POST['pessoa'] = $_SESSION['loginCodigo'];
 
     $ret = $dados->insertOrUpdateFPA($_POST);
-
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+
+   //ENVIANDO EMAIL
+    if ($ret['STATUS'] == 'OK' && $_POST['enviar']) {
+        if ($coodEmail = $coordenador->getEmailCoordFromArea(dcrip($_POST['area'])))
+            $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente enviou PIT para valida&ccedil;&atilde;o.', $coodEmail);
+    }
 }
 
 //LISTA OS REGISTROS DA FPA
-$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $semestre);
-$res = $dados->listRegistros($params);
+$sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ';
+$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $SEMESTRE, 'modelo' => 'PIT');
+$res = $dados->listModelo($params, null, null, $sqlAdicional);
 extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
-//LISTA OS DADOS DA PESSOA
-$pessoa = new Pessoas();
-$paramsP = array('codigo' => $_SESSION['loginCodigo']);
-$resP = $pessoa->listRegistros($paramsP);
-$email = $resP[0]['email'];
-$telefone = $resP[0]['telefone'];
-$celular = $resP[0]['celular'];
+//SE NAO ENCONTROU PIT, IMPORTA DA FPA
+if (!$res) {
+    $sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ';
+    $params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $SEMESTRE, 'modelo' => 'FPA');
+    $resFPA = $dados->listModelo($params, null, null, $sqlAdicional);
+    extract(array_map("htmlspecialchars", $resFPA[0]), EXTR_OVERWRITE);
+    $horario = "";
+}
 
 //LISTA COMPONENTES
 $resC = $componente->listComponentes($codigo);
@@ -58,12 +68,16 @@ $resAtv = $atvECmt->listAtvECmt($codigo, 'atv');
 //LISTA COMPLEMENTACAO
 $resComp = $atvECmt->listAtvECmt($codigo, 'cmp');
 
+//PARA CRIAR UM NOVO REGISTRO
+if (!$res) {
+    $codigo = "";
+}
+
 //VERIFICA SE ESTA FINALIZADO OU VALIDADO
-$resVars = $tdVars->listVars($codigo, 'PIT');
-if ($resVars[0]['finalizado'] && $resVars[0]['finalizado'] != '0000-00-00 00:00:00')
+if ($res[0]['finalizado'] && $res[0]['finalizado'] != '0000-00-00 00:00:00')
     $disabled = 'disabled';
 
-if ($resVars[0]['valido'] && $resVars[0]['valido'] != '00/00/0000 00:00')
+if ($res[0]['valido'] && $res[0]['valido'] != '0000-00-00 00:00:00')
     $VALIDO = 1;
 
 $paramsLog['codigoTabela'] = $codigo;
@@ -89,7 +103,17 @@ if ($VALIDO)
 <center>
     <div id="html5form" class="main">
         <form id="form_padrao">
-            <input type="hidden" value="<?php echo $codigo; ?>" name="codigo" id="codigo" />
+            <input type="hidden" value="<?= crip($codigo) ?>" name="codigo" id="codigo" />
+            <input type="hidden" value="<?= crip($apelido) ?>" name="apelido" id="apelido" />
+            <input type="hidden" value="<?= crip($codArea) ?>" name="area" id="area" />
+            <input type="hidden" value="<?= crip($regime) ?>" name="regime" id="regime" />
+            <input type="hidden" value="<?= crip($dedicarEnsino) ?>" name="dedicarEnsino" id="dedicarEnsino" />
+            <input type="hidden" value="<?= crip($duracaoAula) ?>" name="duracaoAula" id="duracaoAula" />
+            <input type="hidden" value="<?= crip($subHorario) ?>" name="subHorario" id="subHorario" />
+            <input type="hidden" value="<?= crip($horario1) ?>" name="horario1" id="horario1" />
+            <input type="hidden" value="<?= crip($horario2) ?>" name="horario2" id="horario2" />
+            <input type="hidden" value="<?= crip($horario3) ?>" name="horario3" id="horario3" />
+            
             <font size="3"><b>PIT - PLANO INDIVIDUAL DE TRABALHO DOCENTE <br> <?= $SEMESTRE ?>&ordm; semestre <?= $ANO ?> </b></font>
             <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <thead>
@@ -124,7 +148,7 @@ if ($VALIDO)
                     <tr align="right">
                         <th align="left">
                             <img style="width: 30px" src="<?= ICONS ?>/icon-printer.gif" title="Imprimir em PDF" />
-                            <a href="<?= VIEW ?>/secretaria/relatorios/inc/fpa.php?professor=<?= crip($_SESSION['loginCodigo']) ?>" target="_blank">
+                            <a href="<?= VIEW ?>/secretaria/relatorios/inc/pit.php?professor=<?= crip($_SESSION['loginCodigo']) ?>" target="_blank">
                                 <span style='font-weight: bold; color: white'>Imprimir</span>
                             </a>
                         </th>
@@ -143,10 +167,10 @@ if ($VALIDO)
                 <tr>
                     <th>
                 <ul class="tabs">
-                    <li><a href="#Dados1">Disponibilidade</a></li>
-                    <li><a href="#Dados2">Componentes</a></li>
-                    <li><a href="#Dados3">Atividades</a></li>
-                    <li><a href="#Dados4">Complementação</a></li>
+                    <li><a href="#Dados1">Hor&aacute;rio Consolidado</a></li>
+                    <li><a href="#Dados2">Atividades de Ensino</a></li>
+                    <li><a href="#Dados3">Atividades de Apoio</a></li>
+                    <li><a href="#Dados4">Complementa&ccedil;&atilde;o</a></li>
                 </ul>
                 </th>
                 </tr>
@@ -189,6 +213,7 @@ if ($VALIDO)
                     $periodo[2] = 'Vespertino';
                     $periodo[3] = 'Noturno';
 
+                    $n=0;
                     for ($p = 1; $p <= 3; $p++) {
                         ?>
                         <th colspan="7">
@@ -210,9 +235,10 @@ if ($VALIDO)
                                 }
                                 $IS = $p . $l . $c;
                                 ?>
-                                    <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[]" value="<?= $IS ?>" type="text" size="10" maxlength="10"  /></td>
+                                <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[<?= $IS ?>]" value="<?=$horarios[$n]?>" type="text" size="10" maxlength="10"  /></td>
                                 <?php
                                 $c++;
+                                $n++;
                             }
                             ?>
                         </tr>
@@ -393,7 +419,7 @@ $hor3 = explode(',', $horario3);
             $("#ensino").html(Math.round(totalAulas));
             totalHoras += Math.round(totalAulas) * 2;
             $("#totalRegEns").html(totalHoras);
-            
+
             $("#TH").html(totalHoras);
         }
     }
@@ -475,7 +501,7 @@ $hor3 = explode(',', $horario3);
         interval[1] = '<?= $hor1[0] ?>';
         interval[2] = '<?= $hor2[0] ?>';
         interval[3] = '<?= $hor3[0] ?>';
-        
+
         for (p = 1; p <= 3; p++) {
             ini = hor[p];
             j = 1;
@@ -536,9 +562,9 @@ $hor3 = explode(',', $horario3);
         return false;
     });
 
-    $("#enviar").click(function () {
+    $("#enviar").click(function (event) {
         event.preventDefault();
-        $.Zebra_Dialog('<strong>Deseja salvar sua FPA e enviar para seu coordenador? <br><br> A FPA ser&aacute; bloqueada, podendo ser desbloqueada somente pelo coordenador.</strong>', {
+        $.Zebra_Dialog('<strong>Deseja salvar sua PIT e enviar para seu coordenador? <br><br> A PIT ser&aacute; bloqueada, podendo ser desbloqueada somente pelo coordenador.</strong>', {
             'type': 'question',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],

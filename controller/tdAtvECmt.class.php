@@ -2,7 +2,7 @@
 if (!class_exists('Generic'))
     require_once CONTROLLER . '/generic.class.php';
 
-class TDFPAAtvECmt extends Generic {
+class TDAtvECmt extends Generic {
 
     public function __construct() {
         //
@@ -11,7 +11,7 @@ class TDFPAAtvECmt extends Generic {
     public function listAtvECmt($codigo, $tipo) {
         $bd = new database();
 
-        $sql = "SELECT descricao,aulas FROM TDFPAAtvECmt WHERE TD = :codigo AND tipo = :tipo ";
+        $sql = "SELECT descricao,aulas FROM TDAtvECmt WHERE TD = :codigo AND tipo = :tipo ";
         
         $params = array('codigo' => $codigo, 'tipo' => $tipo);
         
@@ -27,7 +27,7 @@ class TDFPAAtvECmt extends Generic {
     public function deleteAtvECmt($codigo) {
         $bd = new database();
 
-        $sql = "DELETE FROM TDFPAAtvECmt WHERE TD = :codigo ";
+        $sql = "DELETE FROM TDAtvECmt WHERE TD = :codigo ";
         
         $params = array('codigo' => $codigo);
         

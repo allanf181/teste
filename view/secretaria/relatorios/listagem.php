@@ -62,8 +62,9 @@ $tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' =
 $tipo['carometro'] = array('nome' => 'Carômetro', 'curso' => 1, 'turma' => 1, 'turno' => 1);
 $tipo['diario'] = array('nome' => 'Diário', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['disciplinas'] = array('nome' => 'Disciplinas do Curso', 'curso' => 2);
-$tipo['fpa'] = array('nome' => 'FPA', 'professor' => 1);
-
+$tipo['fpa'] = array('nome' => 'FPA (Folha P. Atividades)', 'professor' => 1);
+$tipo['pit'] = array('nome' => 'PIT (Plano I. Trabalho)', 'professor' => 1);
+$tipo['rit'] = array('nome' => 'RIT (Relat&oacute;rio I. Trabalho)', 'professor' => 1);
 $tipo['ftdd'] = array('nome' => 'FTD Detalhada', 'professor' => 1);
 $tipo['ftdr'] = array('nome' => 'FTD Resumida', 'professor' => 1);
 $tipo['lancamentos'] = array('nome' => 'Lançamento de Aulas', 'curso' => 2, 'turma' => 1);

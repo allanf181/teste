@@ -38,6 +38,34 @@ class Calendarios extends Generic {
             return false;
         }
     }
+    
+    public function getFeriados() {
+        $bd = new database();
+
+        $sql = "SELECT dataInicio, dataFim, date_format(dataInicio, '%m/%d/%Y') as data "
+                . "FROM Calendarios "
+                . "WHERE diaLetivo = 0";
+
+        $res = $bd->selectDB($sql);
+        
+        if ($res) {
+            foreach($res as $reg) {
+                if ($reg['dataFim'] && $reg['dataFim']) {
+                    $end = $reg['dataFim'];
+                    $start = $reg['dataInicio'];
+                    $datediff = strtotime($end) - strtotime($start);
+                    $datediff = floor($datediff / (60 * 60 * 24));
+                    for ($i = 0; $i < $datediff + 1; $i++) {
+                        $dias[] = date("m/d/Y", strtotime($start . ' + ' . $i . 'day'));
+                    }
+                }
+                $dias[] = $reg['data'];
+            }
+            return $dias;
+        } else {
+            return false;
+        }
+    }    
 }
 
 ?>

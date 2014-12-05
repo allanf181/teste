@@ -281,7 +281,18 @@ if (isset($_SESSION["loginTipo"])) {
             $permissoes = $permissao->listaPermissoes($_SESSION["loginTipo"]);
             $files = $permissao->listaPermissoes($_SESSION["loginTipo"], 'menu');
 
+            function menuMapa($k){
+                $mapa['atribuicao_docente'] = 'atribuição docente';
+                $mapa['atribuicao'] = 'atribuição';
+                $mapa['relatorios'] = 'relatórios';
+                if ($mapa[$k])
+                    return $mapa[$k];
+                
+                return $k;
+            }
+            
             function makeMenu($ar){
+                ksort($ar, ksort($ar));
                 global $files;
                 foreach ($ar as $k => $v ) {
                     if (!is_array($v)) {
@@ -290,8 +301,9 @@ if (isset($_SESSION["loginTipo"])) {
                         <?php
                     }
                     if (is_array($ar[$k])) {
+                        $n = menuMapa($k);
                         ?>
-                        <li class='active has-sub'><a href='#'><span><?= maiusculo($k) ?></span></a>
+                        <li class='active has-sub'><a href='#'><span><?= maiusculo($n) ?></span></a>
                         <ul>
                         <?php
                         makeMenu ($ar[$k]);

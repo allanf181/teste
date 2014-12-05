@@ -38,7 +38,7 @@ if ($_POST["opcao"] == 'Salvar') {
     $ret['RESULTADO'] = '1';
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 
-    if (in_array(dcrip($_POST["codigo"]), $_SESSION["loginTipo"])) {
+    if (in_array(dcrip($_POST["tipo"]), $_SESSION["loginTipo"])) {
         print "<script> reload(); </script>\n";
     }
 

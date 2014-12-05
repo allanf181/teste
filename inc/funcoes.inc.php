@@ -105,9 +105,13 @@ function mysql_matched_rows() {
 }
 
 function abreviar($texto, $tamanho) {
-    if (strlen($texto) > $tamanho)
-        return substr_replace($texto, '...', $tamanho);
-    else
+    if (strlen($texto) > $tamanho) {
+        $regExp = "[áàâãäªÁÀÂÃÄéèêëÉÈÊËíìîïÍÌÎÏóòôõöºÓÒÔÕÖúùûüÚÙÛÜçÇÑñ.]";
+        $texto2 = substr_replace($texto, '...', $tamanho);
+        if ( ereg($regExp,$texto2[strlen($texto2)-4]) )
+            return substr_replace($texto, '...', $tamanho-5);
+        return $texto2;
+    } else
         return $texto;
 }
 

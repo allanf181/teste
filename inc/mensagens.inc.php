@@ -73,7 +73,7 @@ function mensagem($TIPO, $MSG, $OPT = null) {
 
     $INFO_EMPTY_PLANO_ENSINO = 'Necess&aacute;rio cadastrar o Plano de Ensino primeiro.';
     $ERRO_SOLICITACAO_PLANO = $OPT[0] . ", solicitou corre&ccedil;&atilde;o em seu Plano: <br>" . $OPT[1];
-    $OK_PLANO_VALIDO = $OPT . " validou seu plano!";
+    $OK_PLANO_VALIDO = "Este Plano de Ensino foi validado!";
 
     $OK_TRUE_COPY_MODALIDADE = 'Modalidade copiada com sucesso.';
     $NOK_FALSE_COPY_MODALIDADE = 'Problema ao copiar a modalidade.';
@@ -92,8 +92,8 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $INFO_INVALID_FTD = $OPT[0] . ', solicitou corre&ccedil;&atilde;o em seu FTD: <br>' . $OPT[1];
     $OK_NOT_SAVE_FTD = "Ol&aacute; Professor, como ainda n&atilde;o salvou sua FTD, o sistema tentou buscar seus hor&aacute;rios para facilitar.";
 
-    $OK_VALID_FORM = $OPT . ' validou seu formul&aacute;rio.';
-    $OK_FINISH_FORM = 'Formul&aacute;rio finalizado, aguardando valiada&ccedil;&atilde;o do coordenador.';
+    $OK_VALID_FORM = ' Este formul&aacute;rio foi validado!';
+    $OK_FINISH_FORM = 'Formul&aacute;rio finalizado, aguardando valiada&ccedil;&atilde;o do respons&aacute;vel.';
     $INFO_INVALID_FORM = $OPT[0] . ', solicitou corre&ccedil;&atilde;o em seu formul&aacute;rio: <br>' . $OPT[1];
 
     $ERRO_ARQUIVO = $OPT;

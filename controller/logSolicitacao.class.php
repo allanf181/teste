@@ -16,7 +16,7 @@ class LogSolicitacoes extends Generic {
         $sql = "UPDATE LogSolicitacoes SET dataConcessao = :data "
                 . "WHERE nomeTabela = :nome AND codigoTabela = :codigo "
                 . "AND ( dataConcessao = '0000-00-00 00:00:00' OR dataConcessao IS NULL)";
-        
+
         $res = $bd->updateDB($sql, $params);
 
         if ($res) {
@@ -26,10 +26,13 @@ class LogSolicitacoes extends Generic {
         }
     }
 
-    public function listSolicitacoes($params, $sqlAdicional) {
+    public function listSolicitacoes($params, $sqlAdicional = null) {
         $bd = new database();
 
-        $sql = "SELECT l.solicitacao,l.solicitante,l.dataSolicitacao,l.dataConcessao, p.nome as solicitante "
+        $sql = "SELECT l.solicitacao,l.solicitante,"
+                . "date_format(l.dataSolicitacao, '%d/%m/%Y %H:%i') as dataSolicitacao,"
+                . "date_format(l.dataConcessao, '%d/%m/%Y %H:%i') as dataConcessao, "
+                . "p.nome as solicitante "
                 . "FROM LogSolicitacoes l, Pessoas p "
                 . "WHERE l.solicitante = p.codigo "
                 . "AND codigoTabela = :codigoTabela "
