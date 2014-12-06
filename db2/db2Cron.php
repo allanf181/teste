@@ -17,30 +17,33 @@ if (isset($argv[1]))
     $DEBUG = 1;
 
 require("$LOCATION_CRON" . "db2Mysql.php");
-require("$LOCATION_CRON" . "db2.php");
-require("$LOCATION_CRON" . "db2Funcoes.php");
-require("$LOCATION_CRON" . "db2Variaveis.inc.php");
 require("$LOCATION_CRON" . "../inc/funcoes.inc.php");
+require("$LOCATION_CRON" . "db2Variaveis.inc.php");
+require("$LOCATION_CRON" . "db2.php");
 
-include ("$LOCATION_CRON" . "db2Alunos.php");
-include ("$LOCATION_CRON" . "db2Professores.php");
-include ("$LOCATION_CRON" . "db2Horarios.php");
+if (!$DB2_FAIL) {
+    require("$LOCATION_CRON" . "db2Funcoes.php");
 
-include ("$LOCATION_CRON" . "db2CursosDisciplinasNovos.php");
-include ("$LOCATION_CRON" . "db2TurmasNovos.php");
-include ("$LOCATION_CRON" . "db2AtribuicoesNovos.php");
-include ("$LOCATION_CRON" . "db2MatriculasNovos.php");
+    include ("$LOCATION_CRON" . "db2Alunos.php");
+    include ("$LOCATION_CRON" . "db2Professores.php");
+    include ("$LOCATION_CRON" . "db2Horarios.php");
 
-include ("$LOCATION_CRON" . "db2CursosDisciplinas.php");
-include ("$LOCATION_CRON" . "db2Turmas.php");
-include ("$LOCATION_CRON" . "db2Atribuicoes.php");
-include ("$LOCATION_CRON" . "db2Matriculas.php");
+    include ("$LOCATION_CRON" . "db2CursosDisciplinasNovos.php");
+    include ("$LOCATION_CRON" . "db2TurmasNovos.php");
+    include ("$LOCATION_CRON" . "db2AtribuicoesNovos.php");
+    include ("$LOCATION_CRON" . "db2MatriculasNovos.php");
 
-include ("$LOCATION_CRON" . "db2DigitaNotas.php");
-include ("$LOCATION_CRON" . "db2Notas.php");
-include ("$LOCATION_CRON" . "db2Dispensas.php");
+    include ("$LOCATION_CRON" . "db2CursosDisciplinas.php");
+    include ("$LOCATION_CRON" . "db2Turmas.php");
+    include ("$LOCATION_CRON" . "db2Atribuicoes.php");
+    include ("$LOCATION_CRON" . "db2Matriculas.php");
 
-include ("$LOCATION_CRON" . "db2NotasDivergentes.php");
+    include ("$LOCATION_CRON" . "db2DigitaNotas.php");
+    include ("$LOCATION_CRON" . "db2Notas.php");
+    include ("$LOCATION_CRON" . "db2Dispensas.php");
+
+    include ("$LOCATION_CRON" . "db2NotasDivergentes.php");
+}
 
 //METRICAS DO SISTEMA
 mysql_set_charset('utf8');
@@ -85,5 +88,4 @@ mysql_query("DELETE FROM Logs WHERE datediff(now(), data) > 30");
 require CONTROLLER . "/logEmail.class.php";
 $logEmail = new LogEmails();
 $logEmail->send();
-
 ?>

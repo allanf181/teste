@@ -21,9 +21,9 @@ var DEFAULT_SETTINGS = {
     jsonContainer: null,
 
 	// Display settings
-    //hintText: "Digite algo para procurar",
-    noResultsText: "Sem resultados.",
-    searchingText: "Procurando...",
+    //hintText: "Type in a search term",
+    noResultsText: "No results",
+    searchingText: "Searching...",
     deleteText: "&times;",
     animateDropdown: true,
 

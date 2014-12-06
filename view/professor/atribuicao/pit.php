@@ -590,4 +590,20 @@ $hor3 = explode(',', $horario3);
         }
         return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
     }
+    
+    $(function () {
+        var availableTags = [
+            "Atendimento ao aluno",
+            "Atendimento do NDE",
+            "Atendimento pedagógicas",
+            "Reunião de área",
+            "Reunião de curso",
+            "Recuperação paralela",
+            "Supervisão ou orientação de estágio",
+            "Supervisão ou orientação de trabalhos acadêmicos"
+        ];
+        $("input:[id^=AtvD]").autocomplete({
+            source: availableTags
+        });
+    });    
 </script>

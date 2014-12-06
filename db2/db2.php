@@ -9,8 +9,9 @@ $conn = db2_connect($conn_string, '', '');
 if (!$conn){
     $REG =  "Falha ao tentar acessar o banco de dados DB2.";
     print $REG;
+    $DB2_FAIL = '1';
     mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_ERRO', 1)");
-    exit;
+    print "\nContinuando o script mesmo sem acesso ao DB2... \n\n";
 }
 
 ?>

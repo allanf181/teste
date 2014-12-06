@@ -421,7 +421,7 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
+                                <th><input class="atividade ui-widget" <?= $disabled ?> type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
                                 <th><input class="atividade" <?= $disabled ?> type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
@@ -780,4 +780,20 @@ if ($VALIDO)
         }
         return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
     }
+
+    $(function () {
+        var availableTags = [
+            "Atendimento ao aluno",
+            "Atendimento do NDE",
+            "Atendimento pedagógicas",
+            "Reunião de área",
+            "Reunião de curso",
+            "Recuperação paralela",
+            "Supervisão ou orientação de estágio",
+            "Supervisão ou orientação de trabalhos acadêmicos"
+        ];
+        $("input:[id^=AtvD]").autocomplete({
+            source: availableTags
+        });
+    });
 </script>
