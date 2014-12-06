@@ -285,7 +285,7 @@ if (isset($_SESSION["loginTipo"])) {
                 $mapa['atribuicao_docente'] = 'atribuição docente';
                 $mapa['atribuicao'] = 'atribuição';
                 $mapa['relatorios'] = 'relatórios';
-                if ($mapa[$k])
+                if (@$mapa[$k])
                     return $mapa[$k];
                 
                 return $k;

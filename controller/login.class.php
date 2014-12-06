@@ -173,7 +173,7 @@ class login extends Generic {
             ':dt2' => $res[0]['dt2']);
         $res = $bd->selectDB($sql, $params);
 
-        if ($res[0]) {
+        if ($res && $res[0]) {
             return true;
         } else {
             return false;

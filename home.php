@@ -4,6 +4,22 @@ include_once "inc/config.inc.php";
 require VARIAVEIS;
 require FUNCOES;
 require SESSAO;
+
+// verifica se não está sendo chamado diretamente.
+if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
+    header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
+}
+
+require CONTROLLER . "/planoEnsino.class.php";
+require CONTROLLER . "/pessoa.class.php";
+require CONTROLLER . "/professor.class.php";
+require CONTROLLER . "/aulaTroca.class.php";
+require CONTROLLER . "/aluno.class.php";
+require CONTROLLER . "/log.class.php";
+require CONTROLLER . "/tdDado.class.php";
+require CONTROLLER . "/aviso.class.php";
+
+$user = $_SESSION["loginCodigo"];
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
@@ -27,261 +43,339 @@ require SESSAO;
     <tr>
         <td colspan="2">
             <?php
-            $user = $_SESSION["loginCodigo"];
-            // Mostra a foto do usuário e informações de senha
-            if ($user) {
-                require CONTROLLER . "/pessoa.class.php";
-                $pessoa = new Pessoas();
-
-                require CONTROLLER . "/planoEnsino.class.php";
-                $plano = new PlanosEnsino();
-
-                require CONTROLLER . "/professor.class.php";
-                $prof = new Professores();
-
-                // Verificando Troca de Aulas
-                require CONTROLLER . "/aulaTroca.class.php";
-                $aulaTroca = new AulasTrocas();
-                
-                // REMOVER FOTO
-                if (isset($_GET['removerFoto']))
-                    $pessoa->removeFoto($user);
-
-                // ALTERACAO DE EMAIL
-                if (isset($_GET['email'])) {
-                    if ($_GET['email'] == 'undefined')
-                        $_GET['email'] = null;
-                    $params = array('codigo' => crip($user), 'email' => $_GET['email']);
-                    $pessoa->insertOrUpdate($params);
-                }
-
-                // ALTERACAO DO LATTES
-                if (isset($_GET['lattes'])) {
-                    if ($_GET['lattes'] == 'undefined')
-                        $_GET['lattes'] = null;
-                    $params = array('codigo' => crip($user), 'lattes' => $_GET['lattes']);
-                    $pessoa->insertOrUpdate($params);
-                }
-
-                $addFoto = "id='adiciona-foto' title='Alterar Foto'";
-                if (!$ENVIOFOTO && in_array($ALUNO, $_SESSION["loginTipo"]))
-                    $addFoto = '';
-                ?>
-                <a href='#' <?php print $addFoto; ?>><img alt="foto" style="width: 150px; height: 150px" src="<?php print INC; ?>/file.inc.php?type=pic&time=<?php print time(); ?>&id=<?php print crip($user); ?>" /></a>
-                <?php
-                $params = array('codigo' => $user);
-                $userDados = $pessoa->listRegistros($params);
-
-                if ($userDados[0]['foto'] && $addFoto) {
-                    ?>
-                    <br><img src="<?php print ICONS; ?>/remove.png" id="remover-foto" title='Remover Foto' style="width: 15px; height: 15px">
-                    <?php
-                }
-
-                if (!$userDados[0]['email']) {
-                    ?>
-                    <br><br>Email: <input type="text" size="60" maxlength="100" name="email" id="email" value="" />
-                    <img src="<?php print ICONS; ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
-                    <?php
-                } else {
-                    ?>
-                    <br><br>Email: <?php print $userDados[0]['email']; ?></a>
-                    &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="send-email" title='Remover Email' style="width: 15px; height: 15px">
-                    <?php
-                }
-                ?>
-                <br><font size="1">Mantenha seu email sempre atualizado para avisos e recupera&ccedil;&atilde;o de senha.</font>
-                <?php
-                // INFOS DE SENHA
-                $res = $pessoa->infoPassword($user);
-                if ($res['dataSenha']) {
-                    ?>
-                    <br><br><a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);" title='Clique aqui para alterar sua senha!'>&Uacute;ltima altera&ccedil;&atilde;o da senha: <?php print formata($res['dataSenha']); ?></a>
-                    <?php
-                }
-
-                if ($res['dias']) {
-                    if (($res['data'] >= $res['dias'])) {
-                        ?>
-                        <br><br><p>Aten&ccedil;&atilde;o, sua sua est&aacute; expirada. <a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);">Clique aqui</a> e efetue a troca.
-                            <?php
-                        } else {
-                            $diaAlteracao = $res['dias'] - $res['data'];
-                            if ($diaAlteracao <= 5)
-                                $diaAlteracao = "<span class='texto_alerta'>$diaAlteracao</span>";
-                            ?>
-                        <br><br><p>Voc&ecirc; ter&aacute; que mudar a senha em: <?php print $diaAlteracao; ?> dia(s).</p><br />
-                        <?php
-                    }
-                }
-            }
+            // Mostra e altera a foto do usuário
+            defineFoto();
+            // Mostra e altera o Email
+            defineEmail();
+            // Informações de Senha
+            senhaInfo();
 
             // Verifica se o aluno preencheu o sócioEconômico
             if (in_array($ALUNO, $_SESSION["loginTipo"])) {
-                require CONTROLLER . "/aluno.class.php";
-                $aluno = new Alunos();
-                if ($nome = $aluno->hasSocioEconomico($user)) {
-                    ?>
-                    <br><br><font size="2" color="red">Ol&aacute; <?php print $nome; ?>, seu question&aacute;rio Socioecon&ocirc;mico est&aacute; incompleto.</font>
-                    <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/aluno/socioEconomico.php'); void(0);" title='Socioencon&ocirc;mico'>Clique aqui para responder</a>
-                    <?php
-                }
+                socioEconomico();
             }
 
+            // Verifica a Versão do Sistema
             if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"])) {
-                // Checa a versão atual.
-                if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
-                    if (updateDataBase()) {
-                        ?>
-                        <br><br><font size="4" color="green">Sua vers&atilde;o foi atualizada: 1.<?php print $VERSAOAT; ?></font>
-                        <br>O sistema atualizou automaticamente o banco de dados.
-                        <br>Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
-                        <?php
-                    } else {
-                        ?>
-                        <br><br><font size="3" color="red">Problema para atualizar a vers&atilde;o: 1.<?php print $VERSAOAT; ?></font>
-                        <br>- Verifique as permiss&otilde;es em <?php print dirname(__FILE__); ?>
-                        <?php
-                        if (getenv('APACHE_RUN_USER') != get_current_user()) {
-                            ?>
-                            <br>- Permiss&otilde;es divergentes, deveria ser: <?php print getenv('APACHE_RUN_USER'); ?>
-                            <?php
-                        }
-                        ?>
-                        <br>- Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
-                        <br>- Execute o migrate manualmente: "php lib/migration/ruckus.php db:migrate"
-                        <?php
-                    }
-                }
-
-                // Verifica se o CRON está sendo executado.
-                require CONTROLLER . "/log.class.php";
-                $log = new Logs();
-                if ($log->hasCronActive()) {
-                    ?>
-                    <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: o script de sincroniza&ccedil;&atilde;o nunca foi executado ou n&atilde;o est&aacute; sendo executado diariamente.</font>
-                    <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/admin/sincronizadorNambei.php'); void(0);">Clique aqui para verificar</a>
-                    <?php
-                }
-
-                // Verifica se o nome e cidade no sistema estão preenchidos.
-                if (!$SITE_TITLE || !$SITE_CIDADE) {
-                    ?>
-                    <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: nome da institui&ccedil;&atilde;o e a cidade devem ser preenchidos.</font>
-                    <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/admin/instituicao.php'); void(0);">Clique aqui para preencher</a>
-                    <?php
-                }
+                checaSistema();
             }
 
-
-            // AVISOS PARA PROFESSOR
             if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
-
-                if (!$userDados[0]['lattes']) {
-                    ?>
-                    <br><br>Lattes: <input type="text" size="50" maxlength="200" name="lattes" id="lattes" value="" />
-                    <img src="<?php print ICONS; ?>/accept.png" id="send-lattes" style="width: 20px; height: 20px">
-                    <?php
-                } else {
-                    ?>
-                    <br><br>Lattes: <a href="<?php print $userDados[0]['lattes']; ?>" target="_blank"><?php print $userDados[0]['lattes']; ?></a>
-                    &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="send-lattes" title='Remover Lattes' style="width: 15px; height: 15px">
-                    <?php
-                }
-
-                $params = array(':professor' => $_SESSION['loginCodigo']);
-                $sqlAdicional = "  WHERE at.professorSub = :professor AND "
-                        . " professorSubAceite = '0' AND tipo = 'troca' ";
-                foreach ($aulaTroca->hasTrocas($params, $sqlAdicional) as $reg) {
-                    ?>
-                    <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, voc&ecirc; tem uma solicita&ccedil;&atilde;o de troca de aula.</font>
-                    <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php'); void(0);">Clique aqui para analisar</a>
-                    <?php
-                }
-
-                // Verificando se há correções para a FPA, PIT e RIT
-                require CONTROLLER . "/tdDado.class.php";
-                $tdDados = new TDDados();
-                $sqlAdicional = ' AND f.pessoa = :cod ';
-                $params = array(':cod' => $user, ':ano' => $ANO, ':sem' => $SEMESTRE);
-                foreach($tdDados->hasChangeTD($params, $sqlAdicional) as $reg) {
-                    ?>
-                    <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em sua <?= $reg['modelo'] ?>: <br><?= $reg['solicitacao'] ?></font>
-                    <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/<?= strtolower($reg['modelo']) ?>.php'); void(0);">Clique aqui para corrigir</a>
-                    <?php
-                }
-
-                // Verificando se há correções para o Plano de Ensino.
-                $sqlAdicional = "AND pr.professor = :cod ";
-                $params = array('cod' => $user);
-                $res = $plano->hasChangePE($params, $sqlAdicional);
-                if ($res) {
-                    foreach ($res as $reg) {
-                        ?>
-                        <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?php print $reg['solicitante']; ?>, solicitou corre&ccedil;&atilde;o em seu Plano de Ensino de <?php print $reg['disciplina']; ?>: <br><?php print $reg['solicitacao']; ?></font>
-                        <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/professor/professor.php?atribuicao=<?php print crip($reg['atribuicao']); ?>'); void(0);">Clique aqui para corrigir</a>
-                        <?php
-                    }
-                }
+                // Mostra e define o lattes
+                defineLattes();
+                // Verifica se tem troca de aula para aceitar
+                checaTrocaAula();
+                // Verifica se há correções na FPA, PIT e RIT
+                checaTD();
+                // Verifica se há correções no Plano de Ensino
+                checaPlanoEnsino();
             }
             ?>
         </td>
-
         <?php
-        // SISTEMA DE AVISOS
-        require CONTROLLER . "/aviso.class.php";
-        $aviso = new Avisos();
-        $res = $aviso->getAvisoGeral($user);
-        if ($res) {
-            ?>
-            <td width="300" valign="top">
-                <div style="width: 400px; height: 400px; overflow-y: scroll;">
-                    <table border="0" id="form" width="100%">
-                        <tr><td colspan="2">Avisos Gerais</td></tr>
-                        <?php
-                        foreach ($res as $reg) {
-                            list($codigo, $nome) = @explode('#', $reg['Pessoa']);
-                            $disc = ($reg['disciplina']) ? " - " . $reg['disciplina'] : "";
-                            ?>
-                            <tr><td colspan="2"><h2><?= $nome ?></h2></td></tr>
-                            <tr><td valign="top" width="50">
-                                    <img alt="foto" style="width: 50px; height: 50px" src="<?php print INC; ?>/file.inc.php?type=pic&id=<?php print crip($codigo); ?>" />
-                                </td>
-                                <td valign="top"><font size='1'><?= $reg['Data'] . $disc ?></font><br><?php print $reg['Conteudo']; ?></a>
-                                </td>
-                            </tr>
-                            <?php
-                        }
-                        ?>
-                    </table>
-                </div>
-            </td>
-            <?php
-        }
+        // Mostra avisos para usuários
+        avisos();
         ?>
     </tr>
 </table>
 
 <?php
-if (in_array($PROFESSOR, $_SESSION["loginTipo"])
-    || in_array($ALUNO, $_SESSION["loginTipo"]) ) {
-    
+if (in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
+    // Listra Trocas de Aulas validadas para os Alunos e Professores
+    listaTrocaAula();
+}
+
+// INFORMES PARA COORDENADORES
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    // Verifica se o coordenador tem trocas para validar
+    listaTrocaCoord();
+    // Verificar se há diários para liberar
+    checaLibDiario();
+    // Verifica se há Planos de Ensino para validar
+    checaLibPlanoEnsino();
+    // Verifica se há FPA, PIT e RIT para validar.
+    checaLibTD();
+}
+
+///////////////////////// FUNCOES ////////////////////////////////////
+function senhaInfo() {
+    global $user;
+
+    $pessoa = new Pessoas();
+    // INFOS DE SENHA
+    $res = $pessoa->infoPassword($user);
+    if ($res['dataSenha']) {
+        ?>
+        <br><br><a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);" title='Clique aqui para alterar sua senha!'>&Uacute;ltima altera&ccedil;&atilde;o da senha: <?php print formata($res['dataSenha']); ?></a>
+        <?php
+    }
+
+    if ($res['dias']) {
+        if (($res['data'] >= $res['dias'])) {
+            ?>
+            <br><br><p>Aten&ccedil;&atilde;o, sua sua est&aacute; expirada. <a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);">Clique aqui</a> e efetue a troca.
+                <?php
+            } else {
+                $diaAlteracao = $res['dias'] - $res['data'];
+                if ($diaAlteracao <= 5)
+                    $diaAlteracao = "<span class='texto_alerta'>$diaAlteracao</span>";
+                ?>
+            <br><br><p>Voc&ecirc; ter&aacute; que mudar a senha em: <?= $diaAlteracao ?> dia(s).</p><br />
+            <?php
+        }
+    }
+}
+
+function defineFoto() {
+    global $_GET, $ALUNO, $user, $_SESSION, $ENVIOFOTO;
+
+    $pessoa = new Pessoas();
+
+    // REMOVER FOTO
+    if (isset($_GET['removerFoto']))
+        $pessoa->removeFoto($user);
+
+    $addFoto = "id='adiciona-foto' title='Alterar Foto'";
+    if (!$ENVIOFOTO && in_array($ALUNO, $_SESSION["loginTipo"]))
+        $addFoto = '';
+    ?>
+    <a href='#' <?= $addFoto ?>>
+        <img alt="foto" style="width: 150px; height: 150px" src="<?= INC ?>/file.inc.php?type=pic&time=<?= time() ?>&id=<?= crip($user) ?>" />
+    </a>
+    <?php
+    $params = array('codigo' => $user);
+    $userDados = $pessoa->listRegistros($params);
+    if ($userDados[0]['foto'] && $addFoto) {
+        ?>
+        <br><img src="<?= ICONS ?>/remove.png" id="remover-foto" title='Remover Foto' style="width: 15px; height: 15px">
+        <?php
+    }
+}
+
+function defineEmail() {
+    global $user, $_GET;
+
+    $pessoa = new Pessoas();
+    // ALTERACAO DE EMAIL
+    if (isset($_GET['email'])) {
+        if ($_GET['email'] == 'undefined')
+            $_GET['email'] = null;
+
+        $params = array('codigo' => crip($user), 'email' => $_GET['email']);
+        $pessoa->insertOrUpdate($params);
+    }
+
+    $params = array('codigo' => $user);
+    $userDados = $pessoa->listRegistros($params);
+    if (!$userDados[0]['email']) {
+        ?>
+        <br><br>Email: <input type="text" size="60" maxlength="100" name="email" id="email" value="" />
+        <img src="<?php print ICONS; ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
+        <?php
+    } else {
+        ?>
+        <br><br>Email: <?php print $userDados[0]['email']; ?></a>
+        &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="send-email" title='Remover Email' style="width: 15px; height: 15px">
+        <?php
+    }
+    ?>
+    <br><font size="1">Mantenha seu email sempre atualizado para avisos e recupera&ccedil;&atilde;o de senha.</font>
+    <?php
+}
+
+function socioEconomico() {
+    global $user;
+
+    $aluno = new Alunos();
+    if ($nome = $aluno->hasSocioEconomico($user)) {
+        ?>
+        <br><br><font size="2" color="red">Ol&aacute; <?php print $nome; ?>, seu question&aacute;rio Socioecon&ocirc;mico est&aacute; incompleto.</font>
+        <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/aluno/socioEconomico.php'); void(0);" title='Socioencon&ocirc;mico'>Clique aqui para responder</a>
+        <?php
+    }
+}
+
+function checaSistema() {
+    global $VERSAOAT, $VERSAO, $SITE_TITLE, $SITE_CIDADE;
+    // Checa a versão atual.
+    if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
+        if (updateDataBase()) {
+            ?>
+            <br><br><font size="4" color="green">Sua vers&atilde;o foi atualizada: 1.<?= $VERSAOAT ?></font>
+            <br>O sistema atualizou automaticamente o banco de dados.
+            <br>Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
+            <?php
+        } else {
+            ?>
+            <br><br><font size="3" color="red">Problema para atualizar a vers&atilde;o: 1.<?= $VERSAOAT ?></font>
+            <br>- Verifique as permiss&otilde;es em <?= dirname(__FILE__) ?>
+            <?php
+            if (getenv('APACHE_RUN_USER') != get_current_user()) {
+                ?>
+                <br>- Permiss&otilde;es divergentes, deveria ser: <?= getenv('APACHE_RUN_USER') ?>
+                <?php
+            }
+            ?>
+            <br>- Verifique se o "git pull" est&aacute; sendo executado automaticamente pelo CRON.
+            <br>- Execute o migrate manualmente: "php lib/migration/ruckus.php db:migrate"
+            <?php
+        }
+    }
+
+    // Verifica se o CRON está sendo executado.
+    $log = new Logs();
+    if ($log->hasCronActive()) {
+        ?>
+        <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: o script de sincroniza&ccedil;&atilde;o nunca foi executado ou n&atilde;o est&aacute; sendo executado diariamente.</font>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/sincronizadorNambei.php'); void(0);">Clique aqui para verificar</a>
+        <?php
+    }
+
+    // Verifica se o nome e cidade no sistema estão preenchidos.
+    if (!$SITE_TITLE || !$SITE_CIDADE) {
+        ?>
+        <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: nome da institui&ccedil;&atilde;o e a cidade devem ser preenchidos.</font>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php'); void(0);">Clique aqui para preencher</a>
+        <?php
+    }
+}
+
+function defineLattes() {
+    global $_GET, $user;
+
+    $pessoa = new Pessoas();
+    // ALTERACAO DO LATTES
+    if (isset($_GET['lattes'])) {
+        if ($_GET['lattes'] == 'undefined')
+            $_GET['lattes'] = null;
+        $params = array('codigo' => crip($user), 'lattes' => $_GET['lattes']);
+        $pessoa->insertOrUpdate($params);
+    }
+
+    $params = array('codigo' => $user);
+    $userDados = $pessoa->listRegistros($params);
+    if (!$userDados[0]['lattes']) {
+        ?>
+        <br><br>Lattes: <input type="text" size="50" maxlength="200" name="lattes" id="lattes" value="" />
+        <img src="<?= ICONS ?>/accept.png" id="send-lattes" style="width: 20px; height: 20px">
+        <?php
+    } else {
+        ?>
+        <br><br>Lattes: <a href="<?= $userDados[0]['lattes'] ?>" target="_blank"><?= $userDados[0]['lattes'] ?></a>
+        &nbsp;<img src="<?= ICONS ?>/remove.png" id="send-lattes" title='Remover Lattes' style="width: 15px; height: 15px">
+        <?php
+    }
+}
+
+function checaTrocaAula() {
+    global $aulaTroca;
+
+    $aulaTroca = new AulasTrocas();
+
+    $params = array(':professor' => $_SESSION['loginCodigo']);
+    $sqlAdicional = "  WHERE at.professorSub = :professor AND "
+            . " professorSubAceite = '0' AND tipo = 'troca' ";
+    $res = $aulaTroca->hasTrocas($params, $sqlAdicional);
+    if ($res) {
+        foreach ($res as $reg) {
+            ?>
+            <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, voc&ecirc; tem uma solicita&ccedil;&atilde;o de troca de aula.</font>
+            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php'); void(0);">Clique aqui para analisar</a>
+            <?php
+        }
+    }
+}
+
+function checaTD() {
+    global $user, $ANO, $SEMESTRE;
+
+    // Verificando se há correções para a FPA, PIT e RIT
+    $tdDados = new TDDados();
+    $sqlAdicional = ' AND f.pessoa = :cod ';
+    $params = array(':cod' => $user, ':ano' => $ANO, ':sem' => $SEMESTRE);
+    $res = $tdDados->hasChangeTD($params, $sqlAdicional);
+    if ($res) {
+        foreach ($res as $reg) {
+            ?>
+            <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em sua <?= $reg['modelo'] ?>: <br><?= $reg['solicitacao'] ?></font>
+            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/<?= strtolower($reg['modelo']) ?>.php'); void(0);">Clique aqui para corrigir</a>
+            <?php
+        }
+    }
+}
+
+function checaPlanoEnsino() {
+    global $user;
+
+    $plano = new PlanosEnsino();
+    // Verificando se há correções para o Plano de Ensino.
+    $sqlAdicional = "AND pr.professor = :cod ";
+    $params = array('cod' => $user);
+    $res = $plano->hasChangePE($params, $sqlAdicional);
+    if ($res) {
+        foreach ($res as $reg) {
+            ?>
+            <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em seu Plano de Ensino de <?= $reg['disciplina'] ?>: <br><?= $reg['solicitacao'] ?></font>
+            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/professor.php?atribuicao=<?= crip($reg['atribuicao']) ?>'); void(0);">Clique aqui para corrigir</a>
+            <?php
+        }
+    }
+}
+
+function avisos() {
+    global $user;
+
+    // SISTEMA DE AVISOS
+    $aviso = new Avisos();
+    $res = $aviso->getAvisoGeral($user);
+    if ($res) {
+        ?>
+        <td width="300" valign="top">
+            <div style="width: 400px; height: 400px; overflow-y: scroll;">
+                <table border="0" id="form" width="100%">
+                    <tr><td colspan="2">Avisos Gerais</td></tr>
+                    <?php
+                    foreach ($res as $reg) {
+                        list($codigo, $nome) = @explode('#', $reg['Pessoa']);
+                        $disc = ($reg['disciplina']) ? " - " . $reg['disciplina'] : "";
+                        ?>
+                        <tr><td colspan="2"><h2><?= $nome ?></h2></td></tr>
+                        <tr><td valign="top" width="50">
+                                <img alt="foto" style="width: 50px; height: 50px" src="<?php print INC; ?>/file.inc.php?type=pic&id=<?php print crip($codigo); ?>" />
+                            </td>
+                            <td valign="top"><font size='1'><?= $reg['Data'] . $disc ?></font><br><?php print $reg['Conteudo']; ?></a>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                </table>
+            </div>
+        </td>
+        <?php
+    }
+}
+
+function listaTrocaAula() {
+    global $PROFESSOR, $ALUNO, $_SESSION;
+
     if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
         // Verificando se o Professor tem aulas trocadas vigentes
         $params = array('professor' => $_SESSION['loginCodigo']);
         $sqlAdicional = " AND (professor = :professor OR professorSub = :professor) "
-                    . " AND coordenadorAceite = 'S' "
-                    . " AND dataTroca >= NOW() ";
+                . " AND coordenadorAceite = 'S' "
+                . " AND dataTroca >= NOW() ";
     }
 
     if (in_array($ALUNO, $_SESSION["loginTipo"])) {
-        // Verificando se o Professor tem aulas trocadas vigentes
+        // Verificando se o Aluno tem aulas trocadas vigentes
         $params = array('aluno' => $_SESSION['loginCodigo']);
         $sqlAdicional = " AND atribuicao IN (SELECT atribuicao FROM Matriculas WHERE aluno = :aluno) "
-                    . " AND coordenadorAceite = 'S' "
-                    . " AND dataTroca >= NOW() ";
+                . " AND coordenadorAceite = 'S' "
+                . " AND dataTroca >= NOW() ";
     }
-    
+
+    $aulaTroca = new AulasTrocas();
     $res = $aulaTroca->listTrocas($params, $sqlAdicional);
     if ($res) {
         ?>
@@ -315,11 +409,14 @@ if (in_array($PROFESSOR, $_SESSION["loginTipo"])
     }
 }
 
-// INFORMES PARA COORDENADORES
-if (in_array($COORD, $_SESSION["loginTipo"])) {
+function listaTrocaCoord() {
+    global $_SESSION;
+
     $_SESSION['regAnterior'] = null;
 
     // Verificando Troca de Aulas
+    $aulaTroca = new AulasTrocas();
+
     $params = array('coord' => $_SESSION['loginCodigo']);
     $sqlAdicional = " AND c.codigo IN (SELECT curso FROM Coordenadores WHERE coordenador= :coord) "
             . "AND ( (professorSubAceite = 'S' AND coordenadorAceite = '0' AND tipo = 'troca' ) "
@@ -362,6 +459,12 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         </table>
         <?php
     }
+}
+
+function checaLibDiario() {
+    global $user, $ANO, $SEMESTRE;
+
+    $prof = new Professores();
 
     require CONTROLLER . "/atribuicao.class.php";
     $att = new Atribuicoes();
@@ -404,7 +507,14 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         </table>
         <?php
     }
+}
 
+function checaLibPlanoEnsino() {
+    global $user, $ANO, $SEMESTRE;
+
+    $plano = new PlanosEnsino();
+    $prof = new Professores();
+    
     $sqlAdicional = "AND t.ano = :ano "
             . "AND (t.semestre=:sem OR t.semestre=0)"
             . "AND pe.finalizado <> '0000-00-00 00:00:00' "
@@ -422,7 +532,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 <th align='center' width='10'>&nbsp;</th>
             </tr>
             <?php
-            $i = $item;
+            $i = 0;
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
@@ -442,7 +552,12 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         </table>
         <?php
     }
+}
 
+function checaLibTD() {
+    global $user, $ANO, $SEMESTRE;
+
+    $tdDados = new TDDados();
     $sqlAdicional = "AND ((f.finalizado <> '0000-00-00 00:00:00') "
             . "AND (f.valido = '0000-00-00 00:00:00' OR f.valido IS NULL)) "
             . "AND f.area IN (SELECT area FROM Coordenadores WHERE coordenador = :cod) ";
@@ -458,7 +573,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 <th align='center' width='10'>&nbsp;</th>
             </tr>
             <?php
-            $i = $item;
+            $i = 0;
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
@@ -466,7 +581,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                     <td><?= $reg['nome'] ?></td>
                     <td><?= $reg['modelo'] ?></td>
                     <td>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?=crip($reg['pessoa'])?>'); void(0);">
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?= crip($reg['pessoa']) ?>'); void(0);">
                             Validar
                         </a>
                     </td>
@@ -477,10 +592,9 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
             ?>
         </table>
         <?php
-    }    
+    }
 }
 ?>
-
 <script>
     $(document).ready(function () {
         $('#send-lattes').click(function (event) {
@@ -512,4 +626,4 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
             });
         });
     });
-</script>	
+</script>

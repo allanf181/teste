@@ -39,6 +39,7 @@ class PlanosEnsino extends Generic {
     public function listPlanoEnsino($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 
+        $nav = null;        
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 

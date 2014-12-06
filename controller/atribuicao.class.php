@@ -599,6 +599,7 @@ class Atribuicoes extends Generic {
     public function listSolicitacoesDiarios($params = null, $item = null, $itensPorPagina = null, $sqlAdicional = null) {
         $bd = new database();
 
+        $nav = null;
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina ";
 

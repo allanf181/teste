@@ -15,7 +15,7 @@ class Frequencias extends FrequenciasAbonos {
         foreach ($_POST['matricula'] as $matricula => $qtd) {
             $new_qtd = '';
             for ($i = 0; $i < $params['quantidade']; $i++) {
-                if (array_key_exists($i, $qtd))
+                if ($qtd[$i])
                     $new_qtd .= 'F';
                 else
                     $new_qtd .= '*';
