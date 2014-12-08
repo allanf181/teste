@@ -303,7 +303,7 @@ class Atribuicoes extends Generic {
                 }
 
                 if ($reg['prazo'] != '0000-00-00 00:00:00' && $reg['prazoDiff'] > 0) {
-                    $origem = ($reg['prazoDiff'] * 24) . "h";
+                    $origem = 'Diário aberto por '.($reg['prazoDiff'] * 24) . "h";
                 } else {
                     if ($reg['status'] == 1)
                         $origem = "Fechado pela Coordenador.";
@@ -315,7 +315,7 @@ class Atribuicoes extends Generic {
                         $origem = "Fechado automaticamente pelo Sistema por atingir o prazo.";
                 }
                 if (!$origem)
-                    $origem = 'Di&aacute;rio aberto para altera&ccedil;&otilde;es.';
+                    $origem = 'Diário aberto para alterações.';
 
                 $res[$i]['prazo'] = $reg['prazo'];
                 $res[$i]['origem'] = $origem;

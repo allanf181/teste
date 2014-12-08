@@ -157,8 +157,7 @@ if (!empty($curso)) {
             <th align="left" width="40">#</th>
             <th align="left">Disciplina</th>
             <th align="left">Professor</th>
-            <th align="left" width="70">Situa&ccedil;&atilde;o</th>
-            <th align="left">Liberado em:</th>            
+            <th align="left">Situa&ccedil;&atilde;o</th>
             <th align="left">Hist&oacute;rico</th>
             <th width="20" align="center">
                 <input type='checkbox' id='select-all' name='select-all' class='campoTodos' value='' />
@@ -192,10 +191,9 @@ if (!empty($curso)) {
                     <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1, 20) ?></td>
                     <td align='left'>
                         <a href='#' title='<?=$reg['origem']?>'>
-                            <img class='botao' src='<?= ICONS.'/'.$origem ?>.png' />
+                            <img class='botao' src='<?= ICONS.'/'.$origem ?>.png' /><?= abreviar($reg['origem'],35) ?>
                         </a>
                     </td>
-                    <td align='left'><a href='#' title='<?=$motivo?>'><?= $concessao ?></a></td>
                     <td align='center'>
                         <a href='#' title='Ver hist&oacute;rico de solicita&ccedil;&otilde;es'>
                             <img class='botao search' id='<?= crip($reg['atribuicao']) ?>' src='<?= ICONS ?>/search.png' />
