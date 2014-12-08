@@ -209,6 +209,7 @@ class TDDados extends Generic {
                 $c['tipo'] = 'cmp';
                 $c['modelo'] = $modelo;
                 $c['TD'] = $codTD;
+                $resAtv = $atvECmt->insertOrUpdate($c);
             }
         }
 
