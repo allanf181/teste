@@ -54,7 +54,7 @@ $travaFinal = $resAval['final'];
     <?php if ($resAval['calculo'] == 'peso') { ?>
         (peso: <?= $resAval['peso'] ?>)
     <?php 
-        $resAval['notaMaxima'] = $resAval['peso'];
+        $resAval['notaMaxima'] = '10';
     } ?>
     <br> Nota m&aacute;xima permitida: <?= $resAval['notaMaxima'] ?>
     <br />
