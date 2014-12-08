@@ -44,7 +44,6 @@ $params = array('atribuicao' => dcrip($atribuicao));
 if ($_GET['pagina']) {
     // INSERT E UPDATE
     if ($_POST["opcao"] == 'InsertOrUpdate') {
-        extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
         unset($_POST['opcao']);
         unset($_POST['pagina']);
 

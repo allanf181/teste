@@ -103,7 +103,6 @@ $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
 if ($_GET['pagina'] == "inserir") {
     // INSERT E UPDATE
     if ($_POST["opcao"] == 'InsertOrUpdate') {
-        extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
         unset($_POST['opcao']);
         unset($_POST['pagina']);
         $tipo = $_GET['pagina'];

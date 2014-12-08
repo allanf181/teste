@@ -27,7 +27,7 @@ $situacoes = new Situacoes();
     if (isset($_GET['item']))
         $item = $_GET["item"];
 
-    $res = $situacoes->listRegistros($params, $item, $itensPorPagina);
+    $res = $situacoes->listRegistros($params, null, $item, $itensPorPagina);
 
     $totalRegistros = $situacoes->count();
     $SITENAV = $SITE . '?';

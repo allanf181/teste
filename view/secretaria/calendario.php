@@ -123,7 +123,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <?php
                         require CONTROLLER . '/tipo.class.php';
                         $tp = new Tipos();
-                        $res = $tp->listRegistros(null, null, null, 'ORDER BY nome');
+                        $res = $tp->listRegistros(null, 'ORDER BY nome', null, null);
                         foreach ($res as $reg) {
                             $selected = "";
                             if ($reg['codigo'] == $tipo)

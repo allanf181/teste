@@ -32,7 +32,7 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$res = $horario->listRegistros($params, $item, $itensPorPagina);
+$res = $horario->listRegistros($params, null, $item, $itensPorPagina);
 
 $totalRegistros = $horario->count();
 $SITENAV = $SITE . '?';

@@ -21,7 +21,6 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     if (!$_POST['ldap_ativado'])
         $_POST['ldap_ativado'] = 0;
 
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
     $ret = $instituicao->insertOrUpdate($_POST);

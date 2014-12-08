@@ -6,10 +6,8 @@ require FUNCOES;
 
 include PATH . LIB . '/fpdf17/pdfDiario.php';
 
-require CONTROLLER . "/ftdDado.class.php";
-$ftd = new FTDDados();
-
-$pessoa = new Pessoas();
+require CONTROLLER . "/atendimento.class.php";
+$atendimento = new Atendimento();
 
 $fonte = 'Times';
 $orientacao = "P"; //Portrait 
@@ -27,17 +25,17 @@ $pdf->SetLineWidth(.1);
 
 // Cabeçalho
 $pdf->SetFont($fonte, 'B', $tamanho + 5);
-$pdf->Image(PATH . IMAGES . '/logo.png', 12, 12, 80);
-$pdf->Cell(90, 27, "", 1, 0, 'C', false);
-$pdf->Cell(100, 27, utf8_decode("A T E N D I M E N T O   DO   P R O F E S S O R"), 1, 0, 'C', false);
+$pdf->Image(PATH . IMAGES . '/logo.png', 12, 12, 50);
+$pdf->Cell(90, 17, "", 1, 0, 'C', false);
+$pdf->Cell(100, 17, utf8_decode("A T E N D I M E N T O   DO   P R O F E S S O R"), 1, 0, 'C', true);
 $pdf->Ln();
-
-$dias = diasDaSemana();
 
 $i = 1;
 $params['tipo'] = $PROFESSOR;
-$sqlAdicional = ' AND pt.tipo = :tipo ';
-foreach($pessoa->listPessoasTipos($params, $sqlAdicional) as $reg) {
+$params['ano'] = $ANO;
+$params['semestre'] = $SEMESTRE;
+
+foreach ($atendimento->listAtendimento($params) as $reg) {
     if ($i % 2 == 0)
         $pdf->SetFillColor(240, 240, 240);
     else
@@ -46,17 +44,14 @@ foreach($pessoa->listPessoasTipos($params, $sqlAdicional) as $reg) {
     $pdf->Cell(90, 5, utf8_decode($reg['nome']), 1, 0, 'L', true);
 
     $j = 0;
-    foreach ($ftd->getAtendimentoAluno($reg['codigo'], $ANO, $SEMESTRE) as $dia => $h) {
-        if ($j == 1)
-            $pdf->Cell(90, 5, utf8_decode(""), 1, 0, 'L', true);
-
-        $diaSemana = $dias[$dia + 1];
-        $diaSemana = html_entity_decode($diaSemana, ENT_QUOTES, "UTF-8");
-        $ES = $h[1] . ' às ' . $h[2];
-        $pdf->Cell(100, 5, utf8_decode("$diaSemana das $ES"), 1, 0, 'L', true);
-        $j = 1;
+    $conteudo = explode("\n", wordwrap(str_replace("\r\n", ";", utf8_decode($reg['horario'])), 60));
+    foreach ($conteudo as $j => $trecho) {
+        if($j) $pdf->Cell(90, 5, "", 1, 0, 'L', true);
+        $pdf->Cell(100, 5, utf8_decode($conteudo[$j]), 1, 0, 'L', true);
         $pdf->Ln();
+        $j=1;
     }
+
     $pdf->Ln();
     $i++;
 }

@@ -34,7 +34,7 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$res = $modalidade->listRegistros($params, $item, $itensPorPagina);
+$res = $modalidade->listRegistros($params, null, $item, $itensPorPagina);
 
 $totalRegistros = $modalidade->count();
 $SITENAV = $SITE . '?';

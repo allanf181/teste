@@ -264,7 +264,7 @@ if (dcrip($_GET["nome"])) {
                             <select <?php if ($NOT_PERM) print "disabled"; ?> name="estado" id="estado" value="<?php echo $estado; ?>">
                                 <option></option>
                                 <?php
-                                foreach ($estados->listRegistros(null, null, null, null) as $reg) {
+                                foreach ($estados->listRegistros() as $reg) {
                                     $selected = "";
                                     if ($reg['codigo'] == $estado)
                                         $selected = "selected";
@@ -311,7 +311,7 @@ if (dcrip($_GET["nome"])) {
                         <td><select <?php if ($NOT_PERM) print "disabled"; ?> name="estadoNaturalidade" id="estadoNaturalidade" value="<?php echo $estadoNaturalidade; ?>">
                                 <option></option>
                                 <?php
-                                foreach ($estados->listRegistros(null, null, null, null) as $reg) {
+                                foreach ($estados->listRegistros() as $reg) {
                                     $selected = "";
                                     if ($reg['codigo'] == $estadoNaturalidade)
                                         $selected = "selected";
@@ -389,7 +389,7 @@ if (dcrip($_GET["nome"])) {
                                 require CONTROLLER . "/tipo.class.php";
                                 $t = new Tipos();
 
-                                foreach ($t->listRegistros(null, null, null, $restricaoADM . ' ORDER BY nome ') as $reg) {
+                                foreach ($t->listRegistros(null, $restricaoADM . ' ORDER BY nome ', null, null) as $reg) {
                                     $TP[$reg['codigo']] = $reg['nome'];
                                     if (in_array($reg['codigo'], $tipo)) {
                                         echo "<option value='" . $reg['codigo'] . "'>" . $reg['nome'] . "</option>";
@@ -485,8 +485,8 @@ if (isset($_GET['item']))
 if (!$params['codigo'])
     $sqlAdicional = ' WHERE 1 ' . $sqlAdicional . ' ORDER BY nome';
 
-$res = $pessoa->listRegistros($params, $item, $itensPorPagina, $sqlAdicional);
-$totalRegistros = count($pessoa->listRegistros($params, null, null, $sqlAdicional));
+$res = $pessoa->listRegistros($params, $sqlAdicional, $item, $itensPorPagina);
+$totalRegistros = count($pessoa->listRegistros($params, $sqlAdicional, null, null));
 
 $params['prontuario'] = crip($prontuario);
 $params['nome'] = crip($nome);

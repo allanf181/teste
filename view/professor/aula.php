@@ -36,7 +36,6 @@ if ($_GET["motivo"]) {
 
 // INSERT E UPDATE DE AVALIACOES
 if ($_POST["opcao"] == 'InsertOrUpdate') {
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     $_POST['data'] = dataMysql($_POST['data']);
     unset($_POST['opcao']);
     unset($_POST['plano']);
@@ -45,7 +44,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $ret = $aula->insertOrUpdate($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    $_GET["atribuicao"] = $_POST['atribuicao'];
+    $atribuicao = $_POST['atribuicao'];
 }
 
 // DELETE

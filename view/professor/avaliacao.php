@@ -34,7 +34,6 @@ if ($_GET["motivo"]) {
 
 // INSERT E UPDATE DE AVALIACOES
 if ($_POST["opcao"] == 'InsertOrUpdate') {
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     $_POST['data'] = dataMysql($_POST['data']);
     unset($_POST['opcao']);
 
@@ -65,11 +64,10 @@ if ($_GET["opcao"] == 'delete') {
 
 // INSERINDO A FORMULA
 if ($_POST["opcao"] == 'InsertFormula') {
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
     $ret = $att->insertOrUpdate($_POST);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    $_GET['atribuicao'] = $codigo;
+    $_GET['atribuicao'] = $_POST['codigo'];
 }
 
 $atribuicao = dcrip($_GET["atribuicao"]);

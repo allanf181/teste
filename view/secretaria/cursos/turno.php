@@ -25,7 +25,7 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$res = $turno->listRegistros($params, $item, $itensPorPagina, $sqlAdicional);
+$res = $turno->listRegistros($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = $turno->count();
 
 $SITENAV = $SITE . '?';

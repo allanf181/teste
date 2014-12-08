@@ -73,11 +73,12 @@ include_once "inc/config.inc.php";
             align: 'center'
         });
 
-    $('#setTroca').click(function(event) {
+    $('#setTroca').click(function() {
         var ano = $('#campoAnoIndex').val();
         var semestre = $('#campoSemestreIndex').val();
         $(document).ready(function() {
-            window.location = 'index.php?ano='+ano+'&semestre='+semestre;
+            $('#sessaoTime').load('home.php?ano='+ano+'&semestre='+semestre);
+            $('#index').prepend('<font color="red">Conteúdo do semestre anterior, faça uma nova consulta...</font>');
         });
     });
     
@@ -278,8 +279,7 @@ if (isset($_SESSION["loginTipo"])) {
         if ($_SESSION["loginTipo"]) {
             require CONTROLLER . "/permissao.class.php";
             $permissao = new Permissoes();
-            $permissoes = $permissao->listaPermissoes($_SESSION["loginTipo"]);
-            $files = $permissao->listaPermissoes($_SESSION["loginTipo"], 'menu');
+            $menus = $permissao->listaPermissoes($_SESSION["loginTipo"], 'menu');
 
             function menuMapa($k){
                 $mapa['atribuicao_docente'] = 'atribuição docente';
@@ -292,12 +292,11 @@ if (isset($_SESSION["loginTipo"])) {
             }
             
             function makeMenu($ar){
-                ksort($ar, ksort($ar));
-                global $files;
+                global $menus;
                 foreach ($ar as $k => $v ) {
                     if (!is_array($v)) {
                         ?>
-                        <li><a href="javascript:$('#index').load('<?= $v ?>'); void(0);"><span><?= $files[$v] ?></span></a></li>
+                        <li><a href="javascript:$('#index').load('<?= $v ?>'); void(0);"><span><?= $menus['nome'][$v] ?></span></a></li>
                         <?php
                     }
                     if (is_array($ar[$k])) {
@@ -313,7 +312,7 @@ if (isset($_SESSION["loginTipo"])) {
                 </ul></li>
                 <?php
             } 
-            print makeMenu($permissoes['view']);
+            print makeMenu($menus['arvore']['view']);
         }
         ?>
         </ul>
@@ -327,12 +326,11 @@ if (isset($_SESSION["loginTipo"])) {
     }
  }
 ?>
-</div>
+    </div>
 
-<div class="right">
-
-<div id="index"></div>
-</div>
+    <div class="right">
+        <div id="index"></div>
+    </div>
 </div>
 <div class="footer">
     &nbsp;
@@ -354,7 +352,7 @@ if (isset($_SESSION["loginTipo"])) {
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption) {
                 if (caption == 'Sim') {
-                    window.start = <?php print $TIMEOUT*60; ?>;
+                    $('#sessaoTime').load('home.php?time_over=1');
                 }
             }
         });

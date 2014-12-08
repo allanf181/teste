@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+error_reporting(E_ERROR);
 
 // Find and initialize Composer
 $composer_found = false;

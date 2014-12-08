@@ -82,7 +82,7 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$res = $estado->listRegistros($params, $item, $itensPorPagina);
+$res = $estado->listRegistros($params, null, $item, $itensPorPagina);
 
 $totalRegistros = $estado->count();
 $SITENAV = $SITE . '?';

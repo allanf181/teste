@@ -44,7 +44,8 @@ class Professores extends Generic {
         }
     }
 
-    // USADO POR: ATENDIMENTO.PHP
+    // USADO POR: AULATROCA.PHP, 
+    // ATRIBUICAO.PHP, PLANO.PHP, DIARIO.PHP
     // LISTA OS PROFESSORES DA BASE
     public function listProfessores($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();

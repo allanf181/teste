@@ -112,7 +112,7 @@ if ($VALIDO)
                                 <?php
                                 require CONTROLLER . "/area.class.php";
                                 $areas = new Areas();
-                                foreach ($areas->listRegistros(null, null, null, ' ORDER BY nome ') as $reg) {
+                                foreach ($areas->listRegistros(null, ' ORDER BY nome ', null, null) as $reg) {
                                     $selected = "";
                                     if ($reg['codigo'] == $codArea)
                                         $selected = "selected";

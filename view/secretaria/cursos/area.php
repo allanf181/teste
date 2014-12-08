@@ -81,7 +81,7 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$res = $area->listRegistros($params, $item, $itensPorPagina, 'ORDER BY nome');
+$res = $area->listRegistros($params, 'ORDER BY nome', $item, $itensPorPagina);
 
 $totalRegistros = $area->count();
 $SITENAV = $SITE . '?';

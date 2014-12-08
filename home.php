@@ -10,6 +10,18 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
 }
 
+//FUNCAO PARA RENOVAR O TEMPO DO SITE.
+if ($_GET['time_over']) {
+    print "Renovado o tempo...";
+    die;
+}
+
+//FUNCAO PARA TROCAR O ANO/SEMESTRE SEM RELOAD.
+if ($_GET['ano'] && $_GET['semestre']) {
+    print "Ano/Semestre alterado...";
+    die;
+}
+
 require CONTROLLER . "/planoEnsino.class.php";
 require CONTROLLER . "/pessoa.class.php";
 require CONTROLLER . "/professor.class.php";
@@ -18,6 +30,7 @@ require CONTROLLER . "/aluno.class.php";
 require CONTROLLER . "/log.class.php";
 require CONTROLLER . "/tdDado.class.php";
 require CONTROLLER . "/aviso.class.php";
+require CONTROLLER . "/atendimento.class.php";
 
 $user = $_SESSION["loginCodigo"];
 ?>
@@ -69,6 +82,8 @@ $user = $_SESSION["loginCodigo"];
                 checaTD();
                 // Verifica se há correções no Plano de Ensino
                 checaPlanoEnsino();
+                // Verifica se o professor digitou o horário de atendimento
+                checaAtendimentoAluno();
             }
             ?>
         </td>
@@ -322,6 +337,22 @@ function checaPlanoEnsino() {
     }
 }
 
+function checaAtendimentoAluno() {
+    global $user, $ANO, $SEMESTRE;
+
+    $atendimento = new Atendimento();
+    // Verificando se o professor digitou o horário de atendimento ao aluno.
+    $sqlAdicional = ' WHERE pessoa = :pessoa AND ano = :ano AND semestre = :semestre ';
+    $params = array('pessoa' => $user, 'ano' => $ANO, 'semestre' => $SEMESTRE);
+    $res = $atendimento->listRegistros($params, $sqlAdicional, null, null);
+    if (!$res || !$res[0]['horario']) {
+        ?>
+        <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, digite seu hor&aacute;rio de atendimento para divulga&ccedil;&atilde;o aos alunos. </font>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/atendimento.php'); void(0);">Clique aqui para digitar</a>
+        <?php
+    }
+}
+
 function avisos() {
     global $user;
 
@@ -389,7 +420,7 @@ function listaTrocaAula() {
                 <th align='center' width='80'>Data da Troca</th>
             </tr>
             <?php
-            $i = $item;
+            $i = 0;
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
@@ -435,7 +466,7 @@ function listaTrocaCoord() {
                 <th align='center' width='80'>Data da Troca</th>
             </tr>
             <?php
-            $i = $item;
+            $i = 0;
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 $title = $reg['motivo'];
@@ -484,7 +515,7 @@ function checaLibDiario() {
                 <th align='center' width='10'>&nbsp;</th>
             </tr>
             <?php
-            $i = $item;
+            $i = 0;
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 $title = $reg['solicitacao'];
@@ -514,7 +545,7 @@ function checaLibPlanoEnsino() {
 
     $plano = new PlanosEnsino();
     $prof = new Professores();
-    
+
     $sqlAdicional = "AND t.ano = :ano "
             . "AND (t.semestre=:sem OR t.semestre=0)"
             . "AND pe.finalizado <> '0000-00-00 00:00:00' "

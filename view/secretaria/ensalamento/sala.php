@@ -100,7 +100,7 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$res = $sala->listRegistros($params, $item, $itensPorPagina);
+$res = $sala->listRegistros($params, null, $item, $itensPorPagina);
 
 $totalRegistros = $sala->count();
 $SITENAV = $SITE . '?';

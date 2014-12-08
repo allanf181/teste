@@ -16,7 +16,6 @@ require CONTROLLER . "/atribuicao.class.php";
 $att = new Atribuicoes();
 
 if ($_POST["opcao"] == 'InsertOrUpdate') {
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     $_GET['atribuicao'] = $_POST['atribuicao'];
 
     $_POST['codigo'] = $_POST['atribuicao'];

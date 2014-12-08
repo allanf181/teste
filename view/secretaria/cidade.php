@@ -84,7 +84,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <?php
                         require CONTROLLER . '/estado.class.php';
                         $e = new Estados();
-                        $res = $e->listRegistros(null, null, null, ' ORDER BY nome ');
+                        $res = $e->listRegistros(null, ' ORDER BY nome ', null, null);
                         foreach ($res as $reg) {
                             $selected = "";
                             if ($reg['codigo'] == $estado)

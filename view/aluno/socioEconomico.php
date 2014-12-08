@@ -23,7 +23,6 @@ $pessoa = new Pessoas();
 // INSERT E UPDATE
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_POST['codigo'] = $codigo;
-    extract(array_map("htmlspecialchars", $_POST), EXTR_OVERWRITE);
     unset($_POST['opcao']);
 
     $ret = $pessoa->insertOrUpdate($_POST);

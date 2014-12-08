@@ -38,6 +38,8 @@ class Permissoes extends Generic {
         $P['menu'] = null;
         $P['permissao'] = null;
 
+        // CONCATENANDO AS PERMISSOES CASO O USUARIO
+        // TENHA MAIS DE UM TIPO
         foreach ($res as $reg) {
             if ($j)
                 $vir = ',';
@@ -52,6 +54,16 @@ class Permissoes extends Generic {
         $P['menu'] = explode(",", $P['menu']);
         $P['permissao'] = explode(",", $P['permissao']);
 
+        // ARMAZENANDO O NOME DO MENU, ANTES DA ORDENAÇÃO
+        // PARA NÃO PERDER OS ÍNDICES
+        $i = 0;
+        foreach ($P['menu'] as $menu) {
+            if (!array_key_exists($menu, $menus)) {
+                $menus[$menu] = $P['nome'][$i];
+            }
+            $i++;
+        }
+
         // Pegando o codigo em caso de alteracao de alguma permissao
         if ($res)
             $P['codigo'] = $res[0]['codigo'];
@@ -60,33 +72,31 @@ class Permissoes extends Generic {
             return $P;
 
         // BUSCANDO A BASE DOS ARQUIVOS;
+        // ORDERNANDO O MENU        
+        array_multisort($P['menu'], SORT_ASC, SORT_STRING, $P['menu'], SORT_NUMERIC, SORT_DESC);
+
         $i = 0;
         $tree = array();
-        $menus = array();
         foreach ($P['menu'] as $menu) {
-            if (!array_key_exists($menu, $menus)) {
-                $menus[$menu] = $P['nome'][$i];
-
-                $pathParts = explode('/', $menu);
-                $pathParts[count($pathParts) - 1] = $menu;
-                $subTree = array(array_pop($pathParts));
-                foreach (array_reverse($pathParts) as $dir) {
-                    $subTree = array($dir => $subTree);
-                }
-                $tree = array_merge_recursive($tree, $subTree);
+            $pathParts = explode('/', $menu);
+            $pathParts[count($pathParts) - 1] = $menu;
+            $subTree = array(array_pop($pathParts));
+            foreach (array_reverse($pathParts) as $dir) {
+                $subTree = array($dir => $subTree);
             }
-            $i++;            
+            $tree = array_merge_recursive($tree, $subTree);
+            $i++;
         }
 
         if ($tipo == 'menu')
-            return $menus;
+            return array('arvore' => $tree, 'nome' => $menus);
+
         return $tree;
     }
 
     // CHECA SE O USUARIO TEM PERMISSAO PARA ACESSAR O ARQUIVO
     // RETORNA O TITULO DO SITE
     // USADA EM INC/PERMISSAO.PHP
-
     public function isAllowed($codigo, $arquivo) {
         $files = $this->listaPermissoes($codigo, 'permissao');
         if (in_array($arquivo, $files['permissao'])) {

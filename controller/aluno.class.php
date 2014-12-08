@@ -3,7 +3,10 @@ if(!class_exists('Generic'))
     require_once CONTROLLER.'/generic.class.php';
 
 class Alunos extends Generic {
-
+    public function __construct() {
+        //
+    }
+    
     // USADO POR: INC/HOME.PHP
     // Verifica se o aluno completou o SocioEconomico
     // Pode ser colocado com função no MySQL futuramente
