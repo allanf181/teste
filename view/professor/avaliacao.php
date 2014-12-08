@@ -24,7 +24,7 @@ $log = new LogSolicitacoes();
 // PEDIDO DE LIBERAÇÃO DO DIÁRIO
 if ($_GET["motivo"]) {
     $paramsLog['dataSolicitacao'] = date('Y-m-d h:i:s');
-    $paramsLog['solicitacao'] = 'Docente solicitou abertura do diário, motivo: '.$_GET['motivo'];
+    $paramsLog['solicitacao'] = 'Docente solicitou abertura do diário, motivo: ' . $_GET['motivo'];
     $paramsLog['codigoTabela'] = $_GET['atribuicao'];
     $paramsLog['nomeTabela'] = 'DIARIO';
     $paramsLog['solicitante'] = $_SESSION['loginCodigo'];
@@ -108,12 +108,12 @@ if ($_GET['opcao'] == 'insert') {
     ?>
     <script>
         valida();
-        $(document).ready(function() {
+        $(document).ready(function () {
     <?php
     if ($calculo == 'peso' || $calculo == 'soma' || $tipoAval == 'pontoextra') {
         ?>
                 $("#valor").mask("99.99");
-                $("#valor").change(function() {
+                $("#valor").change(function () {
                     if ($(this).val() > <?= $maxPontos ?>)
                         $(this).val('<?= str_pad(number_format($maxPontos, 2), 5, "0", STR_PAD_LEFT) ?>');
                 });
@@ -124,7 +124,7 @@ if ($_GET['opcao'] == 'insert') {
         }
     }
     ?>
-            $('#data1, #tipo, #nome <?= $P1 ?>, #sigla').keyup(function() {
+            $('#data1, #tipo, #nome <?= $P1 ?>, #sigla').keyup(function () {
                 $('#sigla').val($('#sigla').val().toUpperCase());
                 valida();
             });
@@ -217,7 +217,7 @@ if ($_GET['opcao'] == 'insert') {
                             </select>
                         </td></tr>
                     <?php
-                    if (($calculo == 'peso' || $calculo == 'soma' || $tipoAval=='pontoextra') && ($tipoAval != 'substitutiva' && $tipoAvalRec != 'recuperacao')) {
+                    if (($calculo == 'peso' || $calculo == 'soma' || $tipoAval == 'pontoextra') && ($tipoAval != 'substitutiva' && $tipoAvalRec != 'recuperacao')) {
                         if ($maxPontos <= 0)
                             $enabled = 'disabled';
 
@@ -348,7 +348,7 @@ if ($_GET['opcao'] == '') {
 
                 if ($reg['tipo'] == 'recuperacao')
                     $final = 1;
-                
+
                 if ($reg['tipo'] == 'avaliacao')
                     $tipoIns = 'avaliacao';
 
@@ -406,41 +406,41 @@ if ($_GET['opcao'] == '') {
 if ($LIMITE_DIARIO_PROF != 0) {
     // DATA DE INICIO E FIM DA ATRIBUICAO PARA RESTRINGIR O CALENDARIO
     $res = $att->getAtribuicao($atribuicao, $LIMITE_DIARIO_PROF);
-    
-    require CONTROLLER . "/calendario.class.php";
-    $cal = new Calendarios();
-    print "<script>\n";
-    print "var disabledDates = []; \n";
-    foreach($cal->getFeriados() as $f) {
-        print "disabledDates.push( \"$f\" ); \n";
-    }
-    print "</script>\n";    
 }
+
+require CONTROLLER . "/calendario.class.php";
+$cal = new Calendarios();
+print "<script>\n";
+print "var disabledDates = []; \n";
+foreach ($cal->getFeriados() as $f) {
+    print "disabledDates.push( \"$f\" ); \n";
+}
+print "</script>\n";
 ?>
 <script>
     function editDays(date) {
         for (var i = 0; i < disabledDates.length; i++) {
-            if (new Date(disabledDates[i]).toString() == date.toString()) {             
-                 return [false];
+            if (new Date(disabledDates[i]).toString() == date.toString()) {
+                return [false];
             }
         }
         return [true];
     }
-     
+
     function validaItem(item) {
         item.value = item.value.replace(",", ".");
     }
-    
-    $(document).ready(function() {
-        $(".item-excluir").click(function() {
+
+    $(document).ready(function () {
+        $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
-                'onClose': function(caption) {
+                'onClose': function (caption) {
                     if (caption == 'Sim') {
                         var selected = [];
-                        $('input:checkbox:checked').each(function() {
+                        $('input:checkbox:checked').each(function () {
                             selected.push($(this).val());
                         });
                         $('#professor').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&atribuicao=<?= crip($atribuicao) ?>');
@@ -461,25 +461,25 @@ if ($LIMITE_DIARIO_PROF != 0) {
             maxDate: '<?= $res['fimCalendar'] ?>',
             beforeShowDay: editDays
         });
-        $('#select-all').click(function(event) {
+        $('#select-all').click(function (event) {
             if (this.checked) {
                 // Iterate each checkbox
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = true;
                 });
             } else {
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = false;
                 });
             }
         });
     });
-    $("#unlock").click(function() {
+    $("#unlock").click(function () {
         $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
             'type': 'prompt',
             'title': '<?php print $TITLE; ?>',
             'buttons': ['Sim', 'Não'],
-            'onClose': function(caption, valor) {
+            'onClose': function (caption, valor) {
                 if (caption == 'Sim') {
                     $('#professor').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
                 }

@@ -53,6 +53,15 @@ if ($_GET["opcao"] == 'controleDiario') {
         $params['status'] = $status;
         $ret = $att->insertOrUpdate($params);
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+
+        $paramsLog['nomeTabela'] = 'DIARIO';
+        $paramsLog['solicitante'] = $_SESSION['loginCodigo'];
+        $paramsLog['dataSolicitacao'] = date('Y-m-d H:m:s');
+        $paramsLog['dataConcessao'] = date('Y-m-d H:m:s');
+        $paramsLog['codigoTabela'] = $atribuicao;
+        $paramsLog['solicitacao'] = 'Professor fechou o diário manualmente.';
+        $log->insertOrUpdate($paramsLog);
+        
     } else {
         if ($erro == 2)
             mensagem('NOK', 'FALSE_CLOSE_CLASS_REGISTRY');

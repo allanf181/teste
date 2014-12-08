@@ -26,7 +26,7 @@ $log = new LogSolicitacoes();
 // PEDIDO DE LIBERAÇÃO DO DIÁRIO
 if ($_GET["motivo"]) {
     $paramsLog['dataSolicitacao'] = date('Y-m-d h:i:s');
-    $paramsLog['solicitacao'] = 'Docente solicitou abertura do diário, motivo: '.$_GET['motivo'];
+    $paramsLog['solicitacao'] = 'Docente solicitou abertura do diário, motivo: ' . $_GET['motivo'];
     $paramsLog['codigoTabela'] = $_GET['atribuicao'];
     $paramsLog['nomeTabela'] = 'DIARIO';
     $paramsLog['solicitante'] = $_SESSION['loginCodigo'];
@@ -41,7 +41,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     unset($_POST['opcao']);
     unset($_POST['plano']);
     unset($_POST['regAtv']);
-    
+
     $ret = $aula->insertOrUpdate($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
@@ -90,7 +90,7 @@ if ($_GET['opcao'] == 'insert') {
                             <option></option>;
                             <?php
                             foreach ($res as $reg) {
-                                echo "<option title='".$reg['conteudo']."' $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
+                                echo "<option title='" . $reg['conteudo'] . "' $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
                             }
                             if (!$quantidade)
                                 $quantidade = $res[0]['numeroAulaSemanal'];
@@ -194,9 +194,9 @@ if ($_GET['opcao'] == '') {
             ?>
             <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
             <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a>
-            <?php
-        }
-        ?>
+                <?php
+            }
+            ?>
     </center>
 
     <?php
@@ -207,28 +207,28 @@ if ($LIMITE_DIARIO_PROF != 0) {
     require CONTROLLER . "/atribuicao.class.php";
     $att = new Atribuicoes();
     $res = $att->getAtribuicao($atribuicao, $LIMITE_DIARIO_PROF);
-
-    require CONTROLLER . "/calendario.class.php";
-    $cal = new Calendarios();
-    print "<script>\n";
-    print "var disabledDates = []; \n";
-    foreach($cal->getFeriados() as $f) {
-        print "disabledDates.push( \"$f\" ); \n";
-    }
-    print "</script>\n";
 }
+
+require CONTROLLER . "/calendario.class.php";
+$cal = new Calendarios();
+print "<script>\n";
+print "var disabledDates = []; \n";
+foreach ($cal->getFeriados() as $f) {
+    print "disabledDates.push( \"$f\" ); \n";
+}
+print "</script>\n";
 ?>
 
 <script>
     function editDays(date) {
         for (var i = 0; i < disabledDates.length; i++) {
-            if (new Date(disabledDates[i]).toString() == date.toString()) {             
-                 return [false];
+            if (new Date(disabledDates[i]).toString() == date.toString()) {
+                return [false];
             }
         }
         return [true];
     }
-     
+
     valida();
     function valida() {
         if ($('#data').val() != "" && $('#conteudo').val() != "" && $('#quantidade').val() != "")
@@ -237,16 +237,16 @@ if ($LIMITE_DIARIO_PROF != 0) {
             $('#salvar').attr('disabled', 'disabled');
     }
 
-    $(document).ready(function() {
-        $(".item-excluir").click(function() {
+    $(document).ready(function () {
+        $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
-                'onClose': function(caption) {
+                'onClose': function (caption) {
                     if (caption == 'Sim') {
                         var selected = [];
-                        $('input:checkbox:checked').each(function() {
+                        $('input:checkbox:checked').each(function () {
                             selected.push($(this).val());
                         });
                         $('#professor').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&atribuicao=<?= crip($atribuicao) ?>');
@@ -255,18 +255,18 @@ if ($LIMITE_DIARIO_PROF != 0) {
             });
         });
 
-        $('#data, #conteudo, #quantidade, #plano').hover(function() {
+        $('#data, #conteudo, #quantidade, #plano').hover(function () {
             valida();
         });
-        $('#data, #conteudo, #quantidade, #plano').change(function() {
+        $('#data, #conteudo, #quantidade, #plano').change(function () {
             valida();
         });
 
-        $('#plano').change(function() {
+        $('#plano').change(function () {
             $('#conteudo').val($('#plano').val());
         });
 
-        $('#regAtv').change(function() {
+        $('#regAtv').change(function () {
             $('#atividade').val($('#regAtv').val());
         });
 
@@ -305,33 +305,33 @@ if ($LIMITE_DIARIO_PROF != 0) {
             prevText: 'Anterior',
             minDate: '<?= $res['inicioCalendar'] ?>',
             maxDate: '<?= $res['fimCalendar'] ?>',
-            beforeShowDay: editDays            
+            beforeShowDay: editDays
         });
 
-        $('#select-all').click(function(event) {
+        $('#select-all').click(function (event) {
             if (this.checked) {
                 // Iterate each checkbox
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = true;
                 });
             } else {
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = false;
                 });
             }
         });
     });
-    
-    $("#unlock").click(function() {
+
+    $("#unlock").click(function () {
         $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
             'type': 'prompt',
             'title': '<?php print $TITLE; ?>',
             'buttons': ['Sim', 'Não'],
-            'onClose': function(caption, valor) {
+            'onClose': function (caption, valor) {
                 if (caption == 'Sim') {
                     $('#professor').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
                 }
             }
         });
-    });   
+    });
 </script>
