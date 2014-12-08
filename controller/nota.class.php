@@ -1,27 +1,24 @@
 <?php
-if (!class_exists('Frequencias'))
-    require CONTROLLER. "/frequencia.class.php";
 
+if (!class_exists('Frequencias'))
+    require CONTROLLER . "/frequencia.class.php";
 
 class Notas extends Frequencias {
 
     //Funcao para Inserir Notas
     public function putNotas($params) {
         $c = 0;
-
         foreach ($params['matricula'] as $matricula => $nota) {
-            if ($nota != null) {
-                $new_params['codigo'] = $params['codigo'][$matricula];
-                $new_params['avaliacao'] = $params['avaliacao'];
-                $new_params['matricula'] = $matricula;
-                if ($nota == '0')
-                    $nota = '0.0'; //PDO NAO ACEITA ZERO PARA STRING
-                $new_params['nota'] = $nota;
+            $new_params['codigo'] = $params['codigo'][$matricula];
+            $new_params['avaliacao'] = $params['avaliacao'];
+            $new_params['matricula'] = $matricula;
+            if ($nota == '0')
+                $nota = '0.0'; //PDO NAO ACEITA ZERO PARA STRING
+            $new_params['nota'] = $nota;
 
-                $res = $this->insertOrUpdate($new_params);
-                if ($res)
-                    $c++;
-            }
+            $res = $this->insertOrUpdate($new_params);
+            if ($res)
+                $c++;
         }
         $rs['TIPO'] = 'UPDATE';
         $rs['RESULTADO'] = $c;
@@ -112,7 +109,7 @@ class Notas extends Frequencias {
 
         // MEDIA DAS MEDIAS DOS BIMESTRES
         $media = $medias / $c;
-        
+
         // MEDIA DAS FREQUENCIAS DO BIMESTRE
         $frequencia = $frequencias / $c;
 
@@ -199,11 +196,11 @@ class Notas extends Frequencias {
         $params = array(':att' => $atribuicao,
             ':matricula' => $matricula);
         $res = $bd->selectDB($sql, $params);
-                
+
         $media = 0;
         $total = 0;
         $final = 0;
-        
+
         foreach ($res as $reg) {
             $bimestre = $reg['bimestre'];
             $tipo = $reg['calculoAtt'];
@@ -242,7 +239,7 @@ class Notas extends Frequencias {
                 $final = 1;
             }
         }
-    
+
         if ($tipo == 'media' && $medias)
             $media = array_sum($medias) / $total;
         if ($tipo == 'peso')
@@ -257,7 +254,7 @@ class Notas extends Frequencias {
 
         if ($arredondar)
             $media = arredondar($media);
-        
+
         // CALCULANDO A FREQUENCIA
         $dados = $this->getFrequencia($matricula, $atribuicao);
 
@@ -268,7 +265,7 @@ class Notas extends Frequencias {
         // ARMAZENANDO A MEDIA DAS AVALIACOES PARA O DIARIO
         $dados['mediaAvaliacao'] = arredondar($media);
         $dados['notaRecuperacao'] = arredondar($rec);
-        
+
         if ($calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec, $tipo, $formula);
 
