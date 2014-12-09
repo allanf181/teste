@@ -302,7 +302,7 @@ if ($_GET['opcao'] == '') {
                                 <font size="2">M&eacute;dia: </font><input type="text" size="25" maxlength="100" name="formula" value="<?= $formula ?>" onchange="validaItem(this)" />
                             </td>
                             <td>
-                                <input type="submit" value="Salvar" />
+                                <input type="submit" value="Salvar f&oacute;rmula" />
                             </td>
                         </tr>
                         <tr>
