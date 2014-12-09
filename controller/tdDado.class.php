@@ -18,12 +18,10 @@ class TDDados extends Generic {
         $bd = new database();
         $sql = "SELECT (SELECT nome FROM Pessoas "
                 . "WHERE codigo = l.solicitante) as solicitante, "
-                . "l.solicitacao,f.modelo "
+                . "l.solicitacao,f.modelo,f.ano,f.semestre "
                 . "FROM TDDados f, LogSolicitacoes l "
                 . "WHERE l.nometabela = f.modelo "
                 . "AND l.codigoTabela = f.codigo "
-                . "AND f.semestre = :sem "
-                . "AND f.ano = :ano "
                 . "AND (f.valido = '0000-00-00 00:00:00' OR f.valido IS NULL) "
                 . "AND (f.finalizado = '0000-00-00 00:00:00' OR f.finalizado IS NULL) "
                 . "AND (l.dataConcessao = '0000-00-00 00:00:00' OR l.dataConcessao IS NULL) ";
@@ -39,7 +37,7 @@ class TDDados extends Generic {
         }
     }
     
-    public function listTDs($params = null, $item = null, $itensPorPagina = null, $sqlAdicional = null) {
+    public function listTDs($params = null, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 
         $nav = null;
@@ -60,12 +58,12 @@ class TDDados extends Generic {
                 . "         AND l.nomeTabela = f.modelo "
                 . "         AND l.dataConcessao IS NULL) as solicitante "
                 . "FROM TDDados as f, Pessoas as p "
-                . "WHERE f.pessoa = p.codigo "
-                . "AND f.ano = :ano "
-                . "AND (f.semestre = :semestre OR f.semestre = 0) ";
+                . "WHERE f.pessoa = p.codigo ";
+
+        if ($params['ano'] && $params['semestre'])
+            $sql .= "AND f.ano = :ano AND (f.semestre = :semestre OR f.semestre = 0) ";
 
         $sql .= " $sqlAdicional ";
-        $sql .= " ORDER BY p.nome ";
         $sql .= " $nav ";
 
         $res = $bd->selectDB($sql, $params);
@@ -76,7 +74,7 @@ class TDDados extends Generic {
         return false;
     }
     
-    public function listModelo($params = null, $item = null, $itensPorPagina = null, $sqlAdicional = null) {
+    public function listModelo($params = null, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 
         if ($item && $itensPorPagina)
@@ -88,12 +86,12 @@ class TDDados extends Generic {
                 . "a.nome as area, a.codigo as codArea "
                 . "FROM TDDados as f, Pessoas as p, Areas a "
                 . "WHERE f.pessoa = p.codigo "
-                . "AND a.codigo = f.area "
-                . "AND f.ano = :ano "
-                . "AND (f.semestre = :semestre OR f.semestre = 0) ";
+                . "AND a.codigo = f.area ";
 
+        if ($params['ano'] && $params['semestre'])
+            $sql .= "AND f.ano = :ano AND (f.semestre = :semestre OR f.semestre = 0) ";
+        
         $sql .= " $sqlAdicional ";
-        $sql .= " ORDER BY p.nome ";
         $sql .= " $nav ";
 
         $res = $bd->selectDB($sql, $params);
@@ -231,6 +229,8 @@ class TDDados extends Generic {
             return $resC;
         if ($res1['STATUS'] == 'OK')
             return $res1;
+        
+        return $res1;
     }
 
 }

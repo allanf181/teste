@@ -149,19 +149,19 @@ if (isset($_GET['item']))
     $item = $_GET["item"];
 
 //LISTA OS REGISTROS
-$sqlAdicional .= ' AND f.modelo = :modelo ';
+$sqlAdicional .= ' AND f.modelo = :modelo ORDER BY p.nome ';
 $params['ano'] = $ANO;
 $params['semestre'] = $SEMESTRE;
 $params['modelo'] = 'PIT';
-$res = $dados->listTDs($params, null, null, $sqlAdicional);
+$res = $dados->listTDs($params, $sqlAdicional, null, null);
 
-$totalRegistros = count($dados->listTDs($params, null, null, $sqlAdicional));
+$totalRegistros = count($dados->listTDs($params, $sqlAdicional, null, null));
 
 $SITENAV = $SITE . '?';
 require PATH . VIEW . '/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center" width="100%">
-    <tr><th align="center" width="40">#</th><th>Professor</th><th>Entregue</th>
+    <tr><th align="center" width="40">#</th><th>Professor</th><th>Semestre/Ano</th><th>Entregue</th>
         <?php
         if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
             ?>
@@ -194,6 +194,7 @@ require PATH . VIEW . '/paginacao.php';
             <td>
                 <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/pit.php?professor=<?= crip($reg['pessoa']) ?>'><?= mostraTexto($reg['nome']) ?></a>
             </td>
+            <td><?= $reg['semestre'].'/'.$reg['ano'] ?></td>
             <td><?= $reg['finalizado'] ?></td>
             <?php
             if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {

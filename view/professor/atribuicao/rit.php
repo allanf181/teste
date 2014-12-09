@@ -31,33 +31,67 @@ require CONTROLLER . "/logEmail.class.php";
 $logEmail = new LogEmails();
 
 if ($_POST) {
-    $_POST['modelo'] = 'RIT';
-    $_POST['semestre'] = $SEMESTRE;
-    $_POST['ano'] = $ANO;
-    $_POST['pessoa'] = $_SESSION['loginCodigo'];
-    $_POST['codigo'] = dcrip($_POST['codigo']);
+    if (!dcrip($_POST['area'])) {
+        print "<span style='font-weight: bold; color: red'>Atenção, é necessário cadastrar um PIT primeiro.</span>";
+        $_GET['pano'] = $_POST['pano'];
+        $_GET['psemestre'] = $_POST['psemestre'];         
+    } else {    
+        $_POST['modelo'] = 'RIT';
+        $_POST['pessoa'] = $_SESSION['loginCodigo'];
+        $_POST['codigo'] = dcrip($_POST['codigo']);
+        $_POST['semestre'] = dcrip($_POST['psemestre']);
+        $_POST['ano'] = dcrip($_POST['pano']);
 
-    $ret = $dados->insertOrUpdateFPA($_POST);
-    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+        $_GET['pano'] = $_POST['pano'];
+        $_GET['psemestre'] = $_POST['psemestre'];    
+        unset($_POST['pano']);
+        unset($_POST['psemestre']);    
 
-   //ENVIANDO EMAIL
-    if ($ret['STATUS'] == 'OK' && $_POST['enviar']) {
-        if ($coodEmail = $coordenador->getEmailCoordFromArea(dcrip($_POST['area'])))
-            $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente enviou RIT para valida&ccedil;&atilde;o.', $coodEmail);
-    }    
+        $ret = $dados->insertOrUpdateFPA($_POST);
+        mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+
+       //ENVIANDO EMAIL
+        if ($ret['STATUS'] == 'OK' && $_POST['enviar']) {
+            if ($coodEmail = $coordenador->getEmailCoordFromArea(dcrip($_POST['area'])))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente enviou RIT para valida&ccedil;&atilde;o.', $coodEmail);
+        }    
+    }
+}
+
+if ($_GET['pano'] && $_GET['psemestre']) {
+    $pano = dcrip($_GET['pano']);
+    $psemestre = dcrip($_GET['psemestre']);
+} else {
+    // TENTA BUSCAR O ULTIMO REGISTRO GRAVADO PELO USUARIO
+    $sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ORDER BY f.codigo DESC LIMIT 1 ';
+    $params = array('pessoa' => $_SESSION['loginCodigo'], 'modelo' => 'RIT');
+    $res = $dados->listModelo($params, $sqlAdicional, null, null);
+    
+    //SE NAO ENCONTROU PIT, IMPORTA DA FPA
+    if (!$res) {
+        $params['modelo'] = 'PIT';
+        $res = $dados->listModelo($params, $sqlAdicional, null, null);
+    }
+        
+    if ($res && ( ($res[0]['ano'] > $ANO) || ($res[0]['ano'] == $ANO && $res[0]['semestre'] > $SEMESTRE))) {
+        $pano = $res[0]['ano'];
+        $psemestre = $res[0]['semestre'];
+    } else {
+        $pano = $ANO;
+        $psemestre = $SEMESTRE;
+    }
 }
 
 //LISTA OS REGISTROS DA FPA
 $sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ';
-$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $SEMESTRE, 'modelo' => 'RIT');
-$res = $dados->listModelo($params, null, null, $sqlAdicional);
+$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $pano, 'semestre' => $psemestre, 'modelo' => 'RIT');
+$res = $dados->listModelo($params, $sqlAdicional, null, null);
 extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
 //SE NAO ENCONTROU PIT, IMPORTA DA FPA
 if (!$res) {
-    $sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ';
-    $params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $SEMESTRE, 'modelo' => 'PIT');
-    $resFPA = $dados->listModelo($params, null, null, $sqlAdicional);
+    $params['modelo'] = 'PIT';
+    $resFPA = $dados->listModelo($params, $sqlAdicional, null, null);
     extract(array_map("htmlspecialchars", $resFPA[0]), EXTR_OVERWRITE);
     $horario = "";
 }
@@ -115,7 +149,34 @@ if ($VALIDO)
             <input type="hidden" value="<?= crip($horario2) ?>" name="horario2" id="horario2" />
             <input type="hidden" value="<?= crip($horario3) ?>" name="horario3" id="horario3" />
 
-            <font size="3"><b>RIT - RELAT&Oacute;RIO INDIVIDUAL DE TRABALHO DOCENTE <br> <?= $SEMESTRE ?>&ordm; semestre <?= $ANO ?> </b></font>
+            <font size="3"><b>RIT - RELAT&Oacute;RIO INDIVIDUAL DE TRABALHO DOCENTE <br> <?= $psemestre ?>&ordm; semestre <?= $pano ?> </b></font>
+            <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
+                <tr>
+                    <th>
+                        <span style='font-weight: bold; color: white'>
+                            Escolha o semestre/ano refer&ecirc;ncia da sua FPA: 
+                        </span>
+                    </th>
+                    <th>
+                        <select name="psemestre" id="psemestre" value="<?= $psemestre ?>" style="width: 50pt">
+                            <option></option>
+                            <option <?php if ($psemestre == '1') print 'selected'; ?> value='<?= crip('1') ?>'>1</option>
+                            <option <?php if ($psemestre == '2') print 'selected'; ?> value='<?= crip('2') ?>'>2</option>
+                        </select> /
+                        <select name="pano" id="pano" value="<?= $pano ?>" style="width: 50pt">
+                            <option></option>
+                            <?php
+                            for ($i = ($ANO - 1); $i <= ($ANO + 1); $i++) {
+                                $selected = "";
+                                if ($pano == $i)
+                                    $selected = "selected";
+                                print "<option $selected value='" . crip($i) . "'>" . $i . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </th>
+                </tr>
+            </table>
             <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <thead>
                     <tr>
@@ -455,6 +516,12 @@ $hor3 = explode(',', $horario3);
         callFunction();
     });
 
+    $('#pano, #psemestre').change(function () {
+        var pano = $('#pano').val();
+        var psemestre = $('#psemestre').val();
+        $('#index').load('<?= $SITE ?>?pano=' + pano + '&psemestre=' + psemestre);
+    });
+    
     var enviar = 0;
     $('#form_padrao').submit(function () {
         var options = {

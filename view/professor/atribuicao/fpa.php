@@ -32,9 +32,14 @@ $logEmail = new LogEmails();
 
 if ($_POST) {
     $_POST['modelo'] = 'FPA';
-    $_POST['semestre'] = $SEMESTRE;
-    $_POST['ano'] = $ANO;
     $_POST['pessoa'] = $_SESSION['loginCodigo'];
+    $_POST['semestre'] = dcrip($_POST['psemestre']);
+    $_POST['ano'] = dcrip($_POST['pano']);
+
+    $_GET['pano'] = $_POST['pano'];
+    $_GET['psemestre'] = $_POST['psemestre'];    
+    unset($_POST['pano']);
+    unset($_POST['psemestre']);
 
     $ret = $dados->insertOrUpdateFPA($_POST);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
@@ -46,10 +51,27 @@ if ($_POST) {
     }
 }
 
+if ($_GET['pano'] && $_GET['psemestre']) {
+    $pano = dcrip($_GET['pano']);
+    $psemestre = dcrip($_GET['psemestre']);
+} else {
+    // TENTA BUSCAR O ULTIMO REGISTRO GRAVADO PELO USUARIO
+    $sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ORDER BY f.codigo DESC LIMIT 1 ';
+    $params = array('pessoa' => $_SESSION['loginCodigo'], 'modelo' => 'FPA');
+    $res = $dados->listModelo($params, $sqlAdicional, null, null);
+    if ($res && ( ($res[0]['ano'] > $ANO) || ($res[0]['ano'] == $ANO && $res[0]['semestre'] > $SEMESTRE))) {
+        $pano = $res[0]['ano'];
+        $psemestre = $res[0]['semestre'];
+    } else {
+        $pano = $ANO;
+        $psemestre = $SEMESTRE;
+    }
+}
+
 //LISTA OS REGISTROS DA FPA
 $sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ';
-$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $ANO, 'semestre' => $SEMESTRE, 'modelo' => 'FPA');
-$res = $dados->listModelo($params, null, null, $sqlAdicional);
+$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $pano, 'semestre' => $psemestre, 'modelo' => 'FPA');
+$res = $dados->listModelo($params, $sqlAdicional, null, null);
 extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
 if (!$res) {
@@ -99,7 +121,34 @@ if ($VALIDO)
     <div id="html5form" class="main">
         <form id="form_padrao">
             <input type="hidden" value="<?php echo $codigo; ?>" name="codigo" id="codigo" />
-            <font size="3"><b>FPA - FORMUL&Aacute;RIO DE PREFER&Ecirc;NCIA DE ATIVIDADES <br> <?= $SEMESTRE ?>&ordm; semestre <?= $ANO ?> </b></font>
+            <font size="3"><b>FPA - FORMUL&Aacute;RIO DE PREFER&Ecirc;NCIA DE ATIVIDADES <br> <?= $psemestre ?>&ordm; semestre <?= $pano ?> </b></font>
+            <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
+                <tr>
+                    <th>
+                        <span style='font-weight: bold; color: white'>
+                            Escolha o semestre/ano refer&ecirc;ncia da sua FPA: 
+                        </span>
+                    </th>
+                    <th>
+                        <select name="psemestre" id="psemestre" value="<?= $psemestre ?>" style="width: 50pt">
+                            <option></option>
+                            <option <?php if ($psemestre == '1') print 'selected'; ?> value='<?= crip('1') ?>'>1</option>
+                            <option <?php if ($psemestre == '2') print 'selected'; ?> value='<?= crip('2') ?>'>2</option>
+                        </select> /
+                        <select name="pano" id="pano" value="<?= $pano ?>" style="width: 50pt">
+                            <option></option>
+                            <?php
+                            for ($i = ($ANO - 1); $i <= ($ANO + 1); $i++) {
+                                $selected = "";
+                                if ($pano == $i)
+                                    $selected = "selected";
+                                print "<option $selected value='" . crip($i) . "'>" . $i . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </th>
+                </tr>
+            </table>
             <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <thead>
                     <tr>
@@ -572,10 +621,6 @@ if ($VALIDO)
 
     function calcAulas() {
         var maxCH = 40;
-        if (!$("input[id=regime]:radio:checked").val()) {
-            mensagem('Selecione um Regime de Trabalho primeiro!!!');
-            return false;
-        }
         var ministrar = 16;
         var celulas = 32;
         if ($("input[id=duracaoAula]:radio:checked").val() == '00:50'
@@ -666,6 +711,14 @@ if ($VALIDO)
         calcIntervalo()
     }
 
+    $("input[id=duracaoAula]:radio").change(function () {
+        if (!$("input[id=regime]:radio:checked").val() && $("#pano").val() && $("#psemestre").val()) {
+            mensagem('Selecione um Regime de Trabalho primeiro!!!');
+            $(this).removeAttr('checked');
+            return false;
+        }
+    });
+        
     $("input:text,.componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
         callFunction();
     });
@@ -710,6 +763,12 @@ if ($VALIDO)
 
     $("#subHorario").click(function () {
         callPeriodo('Favor preencher todos os campos com os horários!');
+    });
+
+    $('#pano, #psemestre').change(function () {
+        var pano = $('#pano').val();
+        var psemestre = $('#psemestre').val();
+        $('#index').load('<?= $SITE ?>?pano=' + pano + '&psemestre=' + psemestre);
     });
 
     function callPeriodo(message) {

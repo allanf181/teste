@@ -32,9 +32,9 @@ if (dcrip($_GET["professor"])) {
     $params['ano'] = $ANO;
     $params['semestre'] = $SEMESTRE;
 
-    $sqlAdicional .= " AND modelo = 'RIT' ";
+    $sqlAdicional .= " AND modelo = 'RIT' ORDER BY p.nome ";
 
-    $res = $dados->listModelo($params, null, null, $sqlAdicional);
+    $res = $dados->listModelo($params, $sqlAdicional, null, null);
     if ($res) {
         foreach ($res as $reg) {
             $codigo = $reg['codigo'];

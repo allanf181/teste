@@ -307,12 +307,12 @@ function checaTD() {
     // Verificando se há correções para a FPA, PIT e RIT
     $tdDados = new TDDados();
     $sqlAdicional = ' AND f.pessoa = :cod ';
-    $params = array(':cod' => $user, ':ano' => $ANO, ':sem' => $SEMESTRE);
+    $params = array(':cod' => $user);
     $res = $tdDados->hasChangeTD($params, $sqlAdicional);
     if ($res) {
         foreach ($res as $reg) {
             ?>
-            <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em sua <?= $reg['modelo'] ?>: <br><?= $reg['solicitacao'] ?></font>
+            <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em sua <?= $reg['modelo'] ?> (<?= $reg['semestre'].'/'.$reg['ano'] ?>): <br><?= $reg['solicitacao'] ?></font>
             <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/<?= strtolower($reg['modelo']) ?>.php'); void(0);">Clique aqui para corrigir</a>
             <?php
         }
@@ -524,7 +524,7 @@ function checaLibDiario() {
                 ?>
                 <tr <?= $cdif ?>>
                     <td width='120'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
-                    <td width='120'><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
+                    <td width='120'><a href='#' title='<?= $reg['curso'].'<br>'.$reg['disciplina'] ?>'><?= abreviar($reg['disciplina'],30) ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['solicitacao'] ?></a></td>
                     <td><?= $reg['dataSolicitacao'] ?></td>
                     <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codPessoa']) ?>'); void(0);" title='Clique aqui para liberar'>
@@ -591,9 +591,9 @@ function checaLibTD() {
     $tdDados = new TDDados();
     $sqlAdicional = "AND ((f.finalizado <> '0000-00-00 00:00:00') "
             . "AND (f.valido = '0000-00-00 00:00:00' OR f.valido IS NULL)) "
-            . "AND f.area IN (SELECT area FROM Coordenadores WHERE coordenador = :cod) ";
-    $params = array(':cod' => $user, ':ano' => $ANO, ':semestre' => $SEMESTRE);
-    $res = $tdDados->listTDs($params, null, null, $sqlAdicional);
+            . "AND f.area IN (SELECT area FROM Coordenadores WHERE coordenador = :cod) ORDER BY p.nome ";
+    $params = array(':cod' => $user);
+    $res = $tdDados->listTDs($params, $sqlAdicional, null, null);
     if ($res) {
         ?>
         <br><br><table id="listagem">
@@ -601,6 +601,7 @@ function checaLibTD() {
             <tr>
                 <th width='120'>Nome</th>
                 <th align='center' width='120'>Modelo</th>
+                <th align='center' width='120'>Ano/Semestre</th>
                 <th align='center' width='10'>&nbsp;</th>
             </tr>
             <?php
@@ -611,6 +612,7 @@ function checaLibTD() {
                 <tr <?= $cdif ?>>
                     <td><?= $reg['nome'] ?></td>
                     <td><?= $reg['modelo'] ?></td>
+                    <td><?= $reg['semestre'].'/'.$reg['ano'] ?></td>
                     <td>
                         <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?= crip($reg['pessoa']) ?>'); void(0);">
                             Validar
