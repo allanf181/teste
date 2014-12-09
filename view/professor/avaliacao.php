@@ -293,13 +293,30 @@ if ($_GET['opcao'] == '') {
                     messages: 'br'
                 })
             </script>
+            <hr>
             <div id="html5form" class="main">
                 <form id="form_padrao">
-                    <font size="2">M&eacute;dia: </font><input type="text" size="25" maxlength="100" name="formula" value="<?= $formula ?>" onchange="validaItem(this)" />
-                    <font size="1">(Exemplo: <b>($A1+$A2)/2</b>  --> onde A1 &eacute; a sigla da avalia&ccedil;&atilde;o precedida de $)</font>
+                    <table>
+                        <tr>
+                            <td>
+                                <font size="2">M&eacute;dia: </font><input type="text" size="25" maxlength="100" name="formula" value="<?= $formula ?>" onchange="validaItem(this)" />
+                            </td>
+                            <td>
+                                <input type="submit" value="Salvar" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <font size="1">1. Exemplo: <b>($A1+$A2)/2</b>  --> onde A1 &eacute; a sigla da avalia&ccedil;&atilde;o precedida de $</font>
+                                <br />
+                                <font size="1">2. Nas multiplica&ccedil;&otilde;es, utilizar somente 1 fra&ccedil;&atilde;o decimal. Exemplo: <b>($A1+$A2)*0.2</b></font>
+                                <br />
+                                <font size="1">3. Para maior precis&atilde;o utilizar conforme exemplo: <b>($A1+$A2)*(25/100)</b></font>
+                            </td>
+                        </tr>
+                    </table>
                     <input type="hidden" name="opcao" value="InsertFormula" />
                     <input type="hidden" name="codigo" value=<?= crip($atribuicao) ?> />
-                    &nbsp;&nbsp;<input type="submit" value="Salvar" />
                 </form>
             </div>
             <?php
