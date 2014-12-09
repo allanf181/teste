@@ -12,10 +12,13 @@ class NotasFinais extends Notas {
         // SELECIONA OS DADOS DA ATRIBUICAO, DISCIPLINA, MATRICULA...
         $sql = "SELECT m.codigo as matricula, a.bimestre as bimestre,
                 m.aluno as aluno, t.codigo as turma, d.numero
-		FROM Atribuicoes a, Matriculas m, Disciplinas d, Turmas t
+		FROM Atribuicoes a, Matriculas m, Disciplinas d, Turmas t, Situacoes s
 		WHERE a.codigo = m.atribuicao
 		AND t.codigo = a.turma
 		AND d.codigo = a.disciplina
+                AND s.codigo = m.situacao
+                AND s.listar = 1
+                AND s.habilitar = 1
 		AND a.codigo = :cod";
 
         $params = array(':cod' => $atribuicao);
