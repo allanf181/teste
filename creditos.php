@@ -60,6 +60,12 @@ require SESSAO;
 
 </center>
 <br>
+<b>Vers&atilde;o 1.424</b>
+<br> - Diversas corre&ccedil;&otilde;es.
+<br> - Altera&ccedil;&atilde;o na funcionalidade adicionada de acordo com o chamado - #258
+<br />
+<br />
+<br />
 <b>Vers&atilde;o 1.423</b>
 <br> - Adicionado Formul&aacute;rio de Atendimento ao Aluno, pois na PIT e FPA n&atilde;o &eacute; poss&iacute;vel informar.
 <br> - Corre&ccedil;&atilde;o da Renova&ccedil;&atilde;o de Tempo.
