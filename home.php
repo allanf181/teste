@@ -83,7 +83,7 @@ $user = $_SESSION["loginCodigo"];
                 // Verifica se há correções no Plano de Ensino
                 checaPlanoEnsino();
                 // Verifica se o professor digitou o horário de atendimento
-                checaAtendimentoAluno();
+                //checaAtendimentoAluno();
             }
             ?>
         </td>
