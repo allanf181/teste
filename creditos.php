@@ -59,12 +59,17 @@ require SESSAO;
 </table>
 
 </center>
-<br>
+<br />
+
+<b>Vers&atilde;o 1.425</b>
+<br> - Corre&ccedil;&otilde;es na impress&atilde;o do di&aacute;rio.
+<br> - Corre&ccedil;&otilde;es no boletim do aluno.
+<br />
+<br />
 <b>Vers&atilde;o 1.424</b>
 <br> - Diversas corre&ccedil;&otilde;es.
 <br> - Altera&ccedil;&atilde;o na funcionalidade adicionada de acordo com o chamado - #258
 <br> - Corre&ccedil;&atilde;o do chamado - #261
-<br />
 <br />
 <br />
 <b>Vers&atilde;o 1.423</b>
@@ -74,7 +79,6 @@ require SESSAO;
 <br> - Funcionalidade adicionada de acordo com o chamado - #258
 <br />
 <br />
-<br>
 <b>Vers&atilde;o 1.422</b>
 <br> - Adicionado FPA (Formul&aacute;rio de Prefer&ecirc;ncia de Atividades)
 <br> - Adicionado PIT (Plano Individual de Trabalho)
@@ -86,7 +90,6 @@ require SESSAO;
 <br> - Funcionalidade adicionada de acordo com o chamado - #254
 <br />
 <br />
-<br>
 <b>Vers&atilde;o 1.421</b>
 <br> - Corre&ccedil;&atilde;o do chamado - #250
 <br> - Funcionalidade adicionada de acordo com o chamado - #248

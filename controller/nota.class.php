@@ -429,12 +429,23 @@ class Notas extends Frequencias {
             }
             $media = $math->evaluate($formula);
         } catch (Exception $e) {
-            print "<div class=\"flash error\" id=\"flash_error\">"
-                    . "Existe um erro na f&oacute;rmula: $formula"
-                    . "<br>Erro encontrado: " . $e->getMessage() . ""
-                    . "<br />Verifique se faltou algum $ em alguma vari&aacute;vel ou algum sinal ou ponto estranho."
-                    . "<br />Verifique ainda se todos os par&ecirc;nteses foram devidamente fechados.</div><br />";
-            die;
+            $callers = debug_backtrace();
+            //print_r($callers);
+
+            foreach ($callers as $key => $value) {
+                if (strpos($value['file'], 'boletim') !== false) {
+                    $is_boletim = 1;
+                }
+            }
+
+            if (!$is_boletim) {
+                print "<div class=\"flash error\" id=\"flash_error\">"
+                        . "Existe um erro na f&oacute;rmula: $formula"
+                        . "<br>Erro encontrado: " . $e->getMessage() . ""
+                        . "<br />Verifique se faltou algum $ em alguma vari&aacute;vel ou algum sinal ou ponto estranho."
+                        . "<br />Verifique ainda se todos os par&ecirc;nteses foram devidamente fechados.</div><br />";
+                //die;
+            }
         }
         return $media;
     }

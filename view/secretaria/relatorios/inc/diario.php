@@ -358,7 +358,7 @@ $pdf->SetFont($fonte, '', $tamanho);
 $pdf->SetFillColor(255, 255, 255);
 $pdf->SetLineWidth(.1);
 
-$limit = 130; // tamanho limite
+$limit = 120; // tamanho limite
 $limit2 = 120;
 
 $observ = $aulas[0]['observacoes'];
@@ -369,7 +369,6 @@ $comp = explode("\n", wordwrap($competencias, $limit2));
 
 $k=0;
 $j=0;
-$i=0;
 foreach ($aulas as $reg) {
     $dias = null;
     $aulasDadas = null;
@@ -381,7 +380,7 @@ foreach ($aulas as $reg) {
     for ($a = 0; $a < $aulasDadas; ++$a)
         $dias .= ($a != $aulasDadas - 1) ? $dia . ',' : $dia;
 
-    $ATV = explode("\n", wordwrap($reg['atividade'], $limit - 10));
+    $ATV = explode("\n", wordwrap($reg['atividade'], $limit - 25));
     $conteudo = explode("\n", wordwrap(str_replace("\r\n", ";", trim($conteudo)), $limit));
 
     $REG = ($ATV > $conteudo) ? $ATV : $conteudo;
@@ -401,7 +400,7 @@ foreach ($aulas as $reg) {
         $pdf->Ln();
     }
 
-    if ($i == 40) {
+    if ($k == 40) {
         $k = 0;
         $pdf->AddPage($orientacao, $papel);
         $ALT_OBS = 18;
@@ -409,7 +408,6 @@ foreach ($aulas as $reg) {
 }
 
 //COMPLETA AS LINHAS PARA PREENCHER A FOLHA
-
 while ($k < 40) {
     $pdf->Cell($larg1, $alturaLinha, "//", 1, 0, 'C', true);  //mes
     $pdf->Cell($larg2, $alturaLinha, "//", 1, 0, 'C', true);  //dia
@@ -462,6 +460,7 @@ if ($l <= 10) {
     }
 }
 $pdf->Ln();
+
 
 // TEXTOS ROTACIONADOS
 $pdf->SetFont($fonte, '', $tamanho + 4);
