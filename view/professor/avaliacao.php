@@ -122,7 +122,7 @@ if ($_GET['opcao'] == 'insert') {
         }
     }
     ?>
-            $('#data1, #tipo, #nome <?= $P1 ?>, #sigla').keyup(function () {
+            $('#data1, #tipo, #nome <?= $P1 ?>, #sigla').change(function () {
                 $('#sigla').val($('#sigla').val().toUpperCase());
                 valida();
             });

@@ -221,7 +221,7 @@ class Notas extends Frequencias {
             }
 
             if ($reg['tipo'] == 'pontoExtra') {
-                $medias[$reg['sigla']] = $reg['nota'];
+                $pontoExtra[] = $reg['nota'];
             }
 
             if ($reg['tipo'] == 'substitutiva') {
@@ -252,6 +252,9 @@ class Notas extends Frequencias {
             $media = $this->doFormula($formula, $medias);
         }
 
+        // ADICIONANDO OS PONTOS EXTRAS
+        $media += array_sum($pontoExtra);
+                
         if ($arredondar)
             $media = arredondar($media);
 
@@ -283,7 +286,7 @@ class Notas extends Frequencias {
                 $dados = array_merge($dadosRec, $dados);
         }
 
-        // ARREDONDANDO A MEDIA PARA DUAS CASAS
+        // REGISTRANDO A MEDIA
         $dados['media'] = $media;
 
         // RETORNANDO OS DADOS
