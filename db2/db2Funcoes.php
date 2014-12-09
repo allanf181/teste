@@ -245,10 +245,10 @@ function modalidadesCursoNovo() {
             $res = mysql_query($sql);
         }
 
-        if ($cod == 1001 || $cod == 1003) {
-            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $cod, 'sub_media', 1, 4, 6, 'REF', 0, 6, 1, 10)";
-            $res = mysql_query($sql);
-        }
+        //if ($cod == 1001 || $cod == 1003) {
+        //    $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $cod, 'sub_media', 1, 4, 6, 'REF', 0, 6, 1, 10)";
+        //    $res = mysql_query($sql);
+        //}
 
         mysql_set_charset('latin1');
     }
@@ -290,8 +290,8 @@ function modalidadesCursoAntigo() {
         $res = mysql_query($sql);
         
         //REAVALIAÇÃO FINAL
-        $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $r->MD_MODAL, 'sub_media', 1, 0, 6, 'REF', 1, 4, 0, 10)";
-        $res = mysql_query($sql);
+        //$sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $r->MD_MODAL, 'sub_media', 1, 0, 6, 'REF', 1, 4, 0, 10)";
+        //$res = mysql_query($sql);
 
         mysql_set_charset('latin1');
     }
