@@ -51,6 +51,7 @@ if ($_GET["opcao"] == 'controleDiario') {
     if (!$erro = $nota->fecharDiario($atribuicao)) {
         $params['codigo'] = $atribuicao;
         $params['status'] = $status;
+        $params['prazo'] = null;
         $ret = $att->insertOrUpdate($params);
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 

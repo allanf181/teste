@@ -63,6 +63,7 @@ require SESSAO;
 <b>Vers&atilde;o 1.424</b>
 <br> - Diversas corre&ccedil;&otilde;es.
 <br> - Altera&ccedil;&atilde;o na funcionalidade adicionada de acordo com o chamado - #258
+<br> - Corre&ccedil;&atilde;o do chamado - #261
 <br />
 <br />
 <br />
