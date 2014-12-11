@@ -19,7 +19,7 @@ $user = 'BA000022';
 $pass = '4(HC&m3KbT';
 $campus = strtoupper($DIGITANOTAS);
 $turma = '0';
-$flagDigitacaoNota = '0';
+$flagDigitacaoNota = '5';
 
 $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuicoes a1 
                     WHERE p1.codigo = pr1.professor
@@ -48,8 +48,8 @@ $count = 1;
 $conexao = 0;
 
 while ($l = mysql_fetch_array($result)) {
-    if ($l[13] > 10)
-    $flagDigitacaoNota = 5;
+    //if ($l[13] > 10)
+    //    $flagDigitacaoNota = 5;
 
     $prontuario = $l[0];
     $prontuarioAluno = $l[1];
