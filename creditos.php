@@ -61,6 +61,11 @@ require SESSAO;
 </center>
 <br />
 
+<b>Vers&atilde;o 1.426</b>
+<br> - Organiza&ccedil;&atilde;o de Arquivos (Boletim do Aluno).
+<br> - Adi&ccedil;&atilde;o da visualiza&ccedil;&atilde;o do Boletim do Aluno em Relat&oacute;rios.
+<br />
+<br />
 <b>Vers&atilde;o 1.425</b>
 <br> - Corre&ccedil;&otilde;es na impress&atilde;o do di&aacute;rio.
 <br> - Corre&ccedil;&otilde;es no boletim do aluno.

@@ -73,6 +73,7 @@ if ($_GET["opcao"] == 'controleDiario') {
 
 $atribuicao = $_GET["atribuicao"];
 ?>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <?php
@@ -160,7 +161,7 @@ if ($_GET["atribuicao"]) {
             </tr>
             <tr>
                 <td colspan="2">
-                    <font size="1"><b>Professores da disciplina:</b> <?= $professor->getProfessor($atribuicao, '', 1, 1) ?></font>
+                    <font size="1"><b>Professores da disciplina:</b> <?= $professor->getProfessor($atribuicao, 1, '', 1, 1) ?></font>
                 </td>
             </tr>
             <?php

@@ -5,7 +5,7 @@ if (!class_exists('Generic'))
 
 class Professores extends Generic {
 
-    public function getProfessor($atribuicao, $separador = null, $lattes = null, $foto = null, $abreviar = null) {
+    public function getProfessor($atribuicao, $nome = null, $separador = null, $lattes = null, $foto = null, $abreviar = null) {
         $bd = new database();
         $sql = "SELECT p.codigo, p.nome, p.lattes "
                 . "FROM Professores pr, Pessoas p "
@@ -17,17 +17,23 @@ class Professores extends Generic {
         $res = $bd->selectDB($sql, $params);
         if ($res) {
             foreach ($res as $reg) {
-                if ($abreviar)
-                    $reg['nome'] = abreviar ($reg['nome'], $abreviar);
-                
                 $r = null;
                 if ($foto)
-                    $r .= "<a href='#' rel='" . INC . "/file.inc.php?type=pic&id=<?=crip(" . $reg['codigo'] . ")?>&timestamp=<?=time()?>' class='screenshot' title=''>
-                <img style='width: 20px; height: 20px' alt='Embedded Image' src='" . INC . "/file.inc.php?type=pic&id=<?=crip(" . $reg['codigo'] . ")?>&timestamp=<?=time()?>' /></a>";
+                    $r .= "<a href='#' rel='" . INC . "/file.inc.php?type=pic&id=".crip($reg['codigo'])."&timestamp=".time()."' class='screenshot' title='".$reg['nome']."'>
+                                <img style='width: 25px; height: 25px' alt='Embedded Image' src='" . INC . "/file.inc.php?type=pic&id=".crip($reg['codigo'])."&timestamp=".time()."' />
+                           </a>";
+                
                 if ($lattes && $reg['lattes'])
-                    $r .= "<a title='Curr&iacute;culo Lattes' target='_blank' href='" . $reg['lattes'] . "'>" . $reg['nome'] . "</a>";
-                else
+                    $r .= "<a title='Curr&iacute;culo Lattes' target='_blank' href='" . $reg['lattes'] . "'>";
+                
+                if ($abreviar && $nome)
+                    $r .=  abreviar ($reg['nome'], $abreviar);
+                
+                if (!$abreviar && $nome)
                     $r .= $reg['nome'];
+                
+                if ($lattes && $reg['lattes'])
+                    $r .= "</a>";
 
                 $professores[] = $r;
             }
@@ -82,7 +88,7 @@ class Professores extends Generic {
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
         $sql = "SELECT pr.codigo, p.nome as professor, d.nome as disciplina,
-                t.numero as turma, d.numero,
+                t.numero as turma, d.numero, p.codigo as codProfessor,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
                 IF(a.bimestre > 0, CONCAT(' [', a.bimestre,'º BIM]'), '') as bimestre,
                 IF(LENGTH(a.subturma) > 0,CONCAT(' [',a.subturma,']'),CONCAT(' [',a.eventod,']')) as subturma

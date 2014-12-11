@@ -68,7 +68,7 @@ if (!$res) {
     die('Nenhuma aula foi registrada.');
 }
 
-$professor = $prof->getProfessor($atribuicao, '', 0, 0);
+$professor = $prof->getProfessor($atribuicao, 1, '', 0, 0);
 
 $avaliacoes = $aval->getQdeAvaliacoes($params, " AND t.tipo <> 'recuperacao' ");
 $qde_avaliacao = $avaliacoes['avalCadastradas'];

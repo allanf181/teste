@@ -12,8 +12,8 @@ require FUNCOES;
 require SESSAO;
 require PERMISSAO;
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <table width="100%" align="center" border="0">
     <?php
@@ -61,7 +61,7 @@ require PERMISSAO;
                 require CONTROLLER . "/professor.class.php";
                 $professor = new Professores();
 
-                print $professor->getProfessor($atribuicao, '<br>', 1, 1);
+                print $professor->getProfessor($atribuicao, 1, '<br>', 1, 1);
                 ?>
                 <hr>
         </tr></tr>

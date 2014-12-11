@@ -25,6 +25,7 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["codigo"] = null;
 }
 ?>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
@@ -159,7 +160,7 @@ require PATH . VIEW . '/paginacao.php';
             <td>
                 <a title='Abrir Di&aacute;rio' target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= $reg['disciplina'] ?> <?= $reg['bimestre'] ?> [<?= $reg['turno'] ?>]</a>
             </td>
-            <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
+            <td align='left'><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1) ?></td>
             <td align=left><?= $reg['turma'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['atribuicao']) ?>' />

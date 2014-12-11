@@ -49,7 +49,7 @@ if (dcrip($_GET["turma"])) {
         $disciplinas[$reg['atribuicao']][$reg['codAluno']] = $reg['codMatricula'];
         $situacaoListar[$reg['codAluno']][$reg['atribuicao']] = $reg['listar'];
 
-        $disciplinasNomes[$reg['atribuicao']][$reg['numero']] = $reg['disciplina'] . " - " . $prof->getProfessor($reg['atribuicao'], '', 0, 0);
+        $disciplinasNomes[$reg['atribuicao']][$reg['numero']] = $reg['disciplina'] . " - " . $prof->getProfessor($reg['atribuicao'], 1, '', 0, 0);
 
         $situacaoSigla[$reg['codAluno']][$reg['atribuicao']] = $reg['sigla'];
         $situacaoNome[$reg['sigla']] = $reg['situacao'];

@@ -57,7 +57,6 @@ if ($_GET["opcao"] == 'removeFoto') {
 }
 ?>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
@@ -526,7 +525,7 @@ require PATH . VIEW . '/paginacao.php';
             <td>
                 <div <?= $output ?> style='float: left; margin-right: 5px'>
                     <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' class='screenshot' title='<?= mostraTexto($reg['nome']) ?>'>
-                        <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' />
+                        <img style='width: 25px; height: 25px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' />
                     </a>
                 </div><?= mostraTexto($reg['nome']) ?>
             </td>

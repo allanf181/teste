@@ -79,6 +79,7 @@ if ($_GET["opcao"] == 'controle') {
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
 ?>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
@@ -228,7 +229,7 @@ if (!empty($curso)) {
                         <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title="<?= $reg['disciplina'] ?><br>Clique aqui para ver o plano."><?= mostraTexto($reg['numero']) ?> [<?= $reg['turma'] ?>] [<?= $reg['turno'] ?>]</a>
                     </td>
                     <td align='left'>
-                        <?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?>
+                        <?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1) ?>
                     </td>
                     <td align='left'><?= $reg['finalizado'] ?></td>
                     <?php

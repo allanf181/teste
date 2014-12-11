@@ -141,9 +141,9 @@ if ($turma && $fechamento) {
         $situacaoNome[$reg['codAluno']][$reg['atribuicao']] = $reg['situacao'];
         $situacaoSigla[$reg['codAluno']][$reg['atribuicao']] = $reg['sigla'];
 
-        $professores = $professor->getProfessor($reg['atribuicao'], '', 0, 0);
+        $professores = $professor->getProfessor($reg['atribuicao'], 1, '', 0, 0);
 
-        $disciplinasNomes[$reg['bimestre']][$reg['atribuicao']][$reg['numero']] = $reg['disciplina'] . " - " . $professores . "<br>" . $reg['turno'];
+        $disciplinasNomes[$reg['bimestre']][$reg['atribuicao']][$reg['numero']] = $reg['disciplina'] . "<br>" . $professores . "<br>" . $reg['turno'];
         $disciplinasNomes2[$reg['atribuicao']] = $reg['disciplina'];
         $disciplnasStatusNomes[$reg['codDisciplina']][$reg['status']] = $reg['disciplina'] . " (" . $professores . ")";
         $disciplnasStatus[$reg['codDisciplina']] = $reg['status'];
@@ -271,7 +271,7 @@ if ($turma && $fechamento) {
                         if ($bimestre != 'final' && $fechamento == 'b')
                             $bimestreLink = '&bimestre=' . crip($bimestre);
                         ?>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/aluno/boletim.php?aluno=<?= crip($c) ?>&turma=<?= crip($turma) . $bimestreLink ?>'); void(0);"><?= mostraTexto($nome) ?></a>
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/relatorios/boletim.php?aluno=<?= crip($c) ?>&turma=<?= crip($turma) . $bimestreLink ?>'); void(0);"><?= mostraTexto($nome) ?></a>
                     </td>
                     <?php
                     foreach ($disciplinas as $dCodigo => $dMatricula) {

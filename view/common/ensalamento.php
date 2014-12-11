@@ -5,11 +5,17 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     die;
 }
 ?>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <?php
 
 if (!class_exists('Ensalamentos'))
     require CONTROLLER . "/ensalamento.class.php";
+
+if (!class_exists('Professor'))
+    require CONTROLLER . "/professor.class.php";
+
+$prof = new Professores();
 
 $ensalamento = new Ensalamentos();
 $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
@@ -17,7 +23,7 @@ $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
 foreach ($res as $reg) {
     $reg['horario'] = str_ireplace("[$match[1]]", "", $reg['horario']);
     $link = $reg['disciplina'] . '<br>Turma '.$reg['turma'].' ('.$reg['subturma'].') <br>' . $reg['professor'] . '<br>' . $reg['sala'];
-    $horas[$reg['diaSemana']][] = "<a href='#' title='$link'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
+    $horas[$reg['diaSemana']][] = $prof->getProfessor($reg['atribuicao'], 0, ' ', 1, 1)."<br><a href='#' title='$link'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
     $turmaNome = $reg['turma'];
 }
 

@@ -27,6 +27,7 @@ $sqlAdicional = " AND a.codigo = :atribuicao  "
 
 $res = $plano->listPlanoEnsino($params, $sqlAdicional);
 ?>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
@@ -81,7 +82,7 @@ if ($res) {
             </tr>
             <tr><td>TOTAL DE HORAS: <b><?php print $totalHoras; ?></b></td><td>TOTAL DE AULAS: <b><?php print $totalAulas; ?></b></td>
                 <td>NÚMERO DE PROFESSORES: <b><?php print $numeroProfessores; ?></b></td></tr>
-            <tr><td colspan="3">PROFESSOR(A) RESPONSÁVEL: <b><?= $professor->getProfessor(dcrip($_GET['atribuicao']), '', 0, 1) ?></b></td></tr>
+            <tr><td colspan="3">PROFESSOR(A) RESPONSÁVEL: <b><?= $professor->getProfessor(dcrip($_GET['atribuicao']), 1, '', 1, 1) ?></b></td></tr>
         </table>
         <br>
         <?php

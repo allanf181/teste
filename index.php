@@ -105,12 +105,9 @@ require FUNCOES;
 require VARIAVEIS;
 
 // Verifica e redireciona para HTTPS
-if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTP_HOST']!='localhost') {
-    header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
-}
-
 // Verifica se está tentando acessar diretamente
-if ($_SERVER["PHP_SELF"] != LOCATION."/index.php") {
+if ((!isset($_SERVER['HTTPS']) && $_SERVER['HTTP_HOST']!='localhost') 
+        || ($_SERVER["PHP_SELF"] != LOCATION."/index.php") ) {
     header('Location: https://'.$_SERVER['HTTP_HOST'].LOCATION);
 }
 

@@ -838,14 +838,6 @@ div.flash {
 	border-radius: 5px;
 	color: #FFF;
 }
-#output{
-	padding: 5px;
-	font-size: 12px;
-}
-#output img {
-	border: 1px solid #DDD;
-	padding: 5px;
-}
 
 .foto_lista{
     width: 20px; height: 20px;

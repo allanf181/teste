@@ -34,6 +34,7 @@ require CONTROLLER . "/atendimento.class.php";
 
 $user = $_SESSION["loginCodigo"];
 ?>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
 <table border="0" width='100%'>
@@ -532,7 +533,7 @@ function checaLibDiario() {
                     $reg['solicitacao'] = abreviar($reg['solicitacao'], 30);
                 ?>
                 <tr <?= $cdif ?>>
-                    <td width='120'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
+                    <td width='120'><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1) ?></td>
                     <td width='120'><a href='#' title='<?= $reg['curso'].'<br>'.$reg['disciplina'] ?>'><?= abreviar($reg['disciplina'],30) ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['solicitacao'] ?></a></td>
                     <td><?= $reg['dataSolicitacao'] ?></td>
@@ -577,7 +578,7 @@ function checaLibPlanoEnsino() {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?= $cdif ?>>
-                    <td><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1) ?></td>
+                    <td><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1) ?></td>
                     <td><?= $reg['disciplina'] . $reg['subturma'] ?></td>
                     <td>
                         <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/plano.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codProfessor']) ?>'); void(0);" title='Clique aqui para validar'>

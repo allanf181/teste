@@ -22,7 +22,7 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["codigo"] = null;
 }
 ?>
-
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
@@ -83,7 +83,7 @@ if (dcrip($_GET["turma"])) {
 </div>
 <?php
 // PAGINACAO
-$itensPorPagina = 20;
+$itensPorPagina = 50;
 $item = 1;
 
 if (isset($_GET['item']))
@@ -99,11 +99,10 @@ $params['turma'] = crip($params['turma']);
 
 $SITENAV = $SITE . '?' . mapURL($params);
 require PATH . VIEW . '/paginacao.php';
-
 ?>
 <table id="listagem" border="0" align="center">
     <tr>
-        <th align="left" width="300">Professor</th>
+        <th align="left" width="300" colspan="2">Professor</th>
         <th align="left">Disciplina</th>
         <th>Turma</th>
         <th align="center" width="50">&nbsp;&nbsp;
@@ -120,9 +119,16 @@ require PATH . VIEW . '/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>>
-            <td align='left'><?=$reg['professor']?></td>
-            <td><?=$reg['disciplina']?><?=$reg['bimestre']?><?=$reg['subturma']?></td>
-            <td align=left><?=$reg['turma']?></td>
+            <td width="25" align='left'>
+                <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codProfessor']) ?>&timestamp=<?= time() ?>' class='screenshot' title='<?= mostraTexto($reg['professor']) ?>'>
+                    <img style='width: 25px; height: 25px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codProfessor']) ?>&timestamp=<?= time() ?>' />
+                </a>
+            </td>
+            <td align='left'>
+                <?= $reg['professor'] ?>
+            </td>
+            <td><?= $reg['disciplina'] ?><?= $reg['bimestre'] ?><?= $reg['subturma'] ?></td>
+            <td align=left><?= $reg['turma'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
             </td>
@@ -143,16 +149,16 @@ require PATH . VIEW . '/paginacao.php';
             return URLS;
     }
 
-    $(document).ready(function() {
-        $(".item-excluir").click(function() {
+    $(document).ready(function () {
+        $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?php print $TITLE; ?>',
                 'buttons': ['Sim', 'Não'],
-                'onClose': function(caption) {
+                'onClose': function (caption) {
                     if (caption == 'Sim') {
                         var selected = [];
-                        $('input:checkbox:checked').each(function() {
+                        $('input:checkbox:checked').each(function () {
                             selected.push($(this).val());
                         });
 
@@ -162,21 +168,21 @@ require PATH . VIEW . '/paginacao.php';
             });
         });
 
-        $('#select-all').click(function(event) {
+        $('#select-all').click(function (event) {
             if (this.checked) {
                 // Iterate each checkbox
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = true;
                 });
             } else {
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = false;
                 });
             }
         });
 
 
-        $('#turma').change(function() {
+        $('#turma').change(function () {
             atualizar();
         });
     });

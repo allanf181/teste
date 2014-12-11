@@ -238,7 +238,7 @@ require PATH . VIEW . '/paginacao.php';
             <td align='left'><?= $reg['prontuario'] ?></td>
             <td><?= mostraTexto($reg['pessoa']) ?></td>
             <td align='left'>
-                <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title='<?= $professor->getProfessor($reg['atribuicao'], '', 0, 0) ?>'>
+                <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>' title='<?= $professor->getProfessor($reg['atribuicao'], 1, '', 0, 0) ?>'>
                 <?= ' [' . $reg['turma'] . '] ' . $reg['subturma'] . $reg['bimestreFormat'] . ' [' . $reg['numero'] . '] ' . $reg['disciplina'] ?>
                 </a>
             </td>

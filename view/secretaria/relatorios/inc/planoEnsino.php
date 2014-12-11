@@ -56,7 +56,7 @@ if (dcrip($_GET["atribuicao"])) {
     if (!$ITEM)
         die('Sem dados para gerar a lista. Verifique se o plano de ensino e o plano de aula foram preenchidos.');
 
-    $professores = $professor->getProfessor($atribuicao, '', 0, 0);
+    $professores = $professor->getProfessor($atribuicao, 1, '', 0, 0);
 
     $fonte = 'Arial';
     $tamanho = 7;

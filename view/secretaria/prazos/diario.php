@@ -49,6 +49,7 @@ if ($_GET["opcao"] == 'controleDiario') {
     }    
 }
 ?>
+<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
@@ -188,7 +189,7 @@ if (!empty($curso)) {
                     <td>
                         <a title='Clique aqui para visualizar o di&aacute;rio de <br><?=$reg['disciplina']?>' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= abreviar(mostraTexto($reg['disciplina']),20).$reg['bimestre'].$reg['subturma'] ?> [<?= $reg['turma'] ?>] [<?=$reg['turno']?>]</a>
                     </td>
-                    <td align='left'><?= $prof->getProfessor($reg['atribuicao'], '<br>', 1, 1, 20) ?></td>
+                    <td align='left'><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1, 20) ?></td>
                     <td align='left'>
                         <a href='#' title='<?=$reg['origem']?>'>
                             <img class='botao' src='<?= ICONS.'/'.$origem ?>.png' /><?= abreviar($reg['origem'],35) ?>
