@@ -101,7 +101,7 @@ if (dcrip($_GET["bimestre"])) {
                                 ?>
                             </select>
                         </td>
-                    </tr>                
+                    </tr>
                 </table>
             </form>
         </div>

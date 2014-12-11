@@ -105,7 +105,7 @@ class NotasFinais extends Notas {
         // efetuando a consulta para listagem
         $sql = "SELECT n.codigo, p.nome as aluno, n.sincronizado, 
                         n.atribuicao, d.nome as disciplina, t.numero as turma, 
-                        n.retorno, n.flag,
+                        n.retorno, n.flag, n.ncc, n.falta,
                         IF(a.bimestre > 0, CONCAT(' [',a.bimestre,'ºBIM]'), '') as bimestre
                     FROM NotasFinais n, Atribuicoes a, Matriculas m, 
                         Turmas t, Disciplinas d, Pessoas p, Cursos c
