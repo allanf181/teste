@@ -17,7 +17,7 @@ if (isset($_GET["codigo"])) {
 
 $user = 'BA000022';
 $pass = '4(HC&m3KbT';
-$campus = $DIGITANOTAS;
+$campus = strtoupper($DIGITANOTAS);
 $turma = '0';
 $flagDigitacaoNota = '0';
 
