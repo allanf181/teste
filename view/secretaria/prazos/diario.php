@@ -21,12 +21,6 @@ $att = new Atribuicoes();
 require CONTROLLER . "/logSolicitacao.class.php";
 $log = new LogSolicitacoes();
 
-require CONTROLLER . "/pessoa.class.php";
-$pessoa = new Pessoas();
-
-require CONTROLLER . "/logEmail.class.php";
-$logEmail = new LogEmails();
-
 if ($_GET["opcao"] == 'historico') {
     $_GET['tabela'] = 'DIARIO';
     // COPIA DE:
@@ -40,13 +34,6 @@ if ($_GET["opcao"] == 'controleDiario') {
 
     $ret = $att->changePrazo($_GET);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    
-    //ENVIANDO EMAIL
-    if ($ret['STATUS'] == 'OK' && $_GET['botao'] == 'liberou' ) {
-        $resAtt = $att->listRegistros(array('codigo' => $_GET['codigo']));
-        if ($email = $pessoa->getEmailFromAtribuicao($resAtt[0]['codigo']))
-            $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Seu di&aacute;rio foi aberto pelo coordenador.', $email);
-    }    
 }
 ?>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>

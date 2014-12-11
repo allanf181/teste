@@ -1,7 +1,12 @@
 <?php
-
 if (!class_exists('Generic'))
     require_once CONTROLLER . '/generic.class.php';
+
+if (!class_exists('Pessoas'))
+    require CONTROLLER . "/pessoa.class.php";
+
+if (!class_exists('LogEmails'))
+    require CONTROLLER . "/logEmail.class.php";
 
 class Atribuicoes extends Generic {
 
@@ -295,7 +300,7 @@ class Atribuicoes extends Generic {
             $i = 0;
             foreach ($res as $reg) {
                 $origem = null;
-                
+
                 //VERIFICANDO SE O PRAZO FOI FINALIZADO E ALTERA NA ATRIBUICAO
                 if ($reg['prazo'] != '0000-00-00 00:00:00' && $reg['prazo'] < 0) {
                     mysql_query("UPDATE Atribuicoes SET status=4,prazo='' WHERE codigo = " . $linha[0]);
@@ -303,7 +308,7 @@ class Atribuicoes extends Generic {
                 }
 
                 if ($reg['prazo'] != '0000-00-00 00:00:00' && $reg['prazoDiff'] > 0) {
-                    $origem = 'Diário aberto por '.($reg['prazoDiff'] * 24) . "h";
+                    $origem = 'Diário aberto por ' . ($reg['prazoDiff'] * 24) . "h";
                 } else {
                     if ($reg['status'] == 1)
                         $origem = "Fechado pela Coordenador.";
@@ -337,7 +342,7 @@ class Atribuicoes extends Generic {
         foreach ($atribuicoes as $atribuicao) {
             if ($params['botao'] == 'fechou') {
                 $params_new = array('codigo' => $atribuicao, 'status' => 1, 'prazo' => 'NULL');
-                if ($this->insertOrUpdate($params_new))
+                if ($res = $this->insertOrUpdate($params_new))
                     $ok++;
 
                 //ALTERAR NOTASFINAIS PARA SINCRONIZAR NOVAMENTE
@@ -356,6 +361,18 @@ class Atribuicoes extends Generic {
                 $sql = "UPDATE Atribuicoes SET prazo=DATE_ADD(NOW(), INTERVAL 1 DAY), status='0' WHERE codigo=:codigo";
                 if ($res = $bd->updateDB($sql, $params_new))
                     $ok++;
+
+                //ENVIANDO EMAIL
+                if ($res) {
+                    if ($res['STATUS'] == 'OK') {
+                        $resAtt = $this->listRegistros(array('codigo' => $atribuicao));
+                        $pessoa = new Pessoas();
+                        if ($email = $pessoa->getEmailFromAtribuicao($resAtt[0]['codigo'])) {
+                            $logEmail = new LogEmails();
+                            $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Seu di&aacute;rio foi aberto pelo coordenador.', $email);
+                        }
+                    }
+                }
             }
 
             //REGISTRANDO NA TABELA LogSolicitacoes O MOTIVO
@@ -367,7 +384,7 @@ class Atribuicoes extends Generic {
             $params_pd['nomeTabela'] = 'DIARIO';
             $params_pd['codigoTabela'] = $atribuicao;
             $params_pd['dataConcessao'] = date('Y-m-d H:i:s');
-            
+
             if ($res) {
                 foreach ($res as $reg) {
                     $params_pd['codigo'] = $reg['codigo'];
@@ -380,7 +397,7 @@ class Atribuicoes extends Generic {
                 $params_pd['solicitacao'] = $params['pessoa'] . ', ' . $params['botao'] . ' o diário. Motivo: ' . $params['motivo'];
                 $ret = $this->insertOrUpdate($params_pd, 'LogSolicitacoes');
             }
-         }
+        }
 
         $rs['TIPO'] = 'UPDATE';
         $rs['RESULTADO'] = $ok;
@@ -627,7 +644,8 @@ class Atribuicoes extends Generic {
             return $res;
 
         return false;
-    }    
+    }
+
 }
 
 ?>

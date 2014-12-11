@@ -246,7 +246,8 @@ class Pessoas extends Generic {
         $sql = "SELECT p.email "
                 . "FROM Pessoas p, Professores pr "
                 . "WHERE p.codigo = pr.professor "
-                . "AND pr.atribuicao = :atribuicao";
+                . "AND pr.atribuicao = :atribuicao "
+                . "AND (p.email IS NOT NULL OR p.email <> '')";
 
         $params = array(':atribuicao' => $atribuicao);
 
