@@ -34,8 +34,8 @@ while ($row2 = mysql_fetch_object($res2)) {
     while ($row = db2_fetch_object($res)) {
         $row->NTA_NOTA = str_replace(',', '.', $row->NTA_NOTA);
 
-        if ($row->NTA_BIM == 1 && $row->NTA_ANO == 0)
-            $row->NTA_BIM = 0;
+        //if ($row->NTA_BIM == 1 && $row->NTA_ANO == 0)
+        //    $row->NTA_BIM = 0;
 
         if ($row->NTA_BIM == 'R') {
             $registros[$row->NTA_PRONT]['M']['rec'] = $row->NTA_NOTA;
