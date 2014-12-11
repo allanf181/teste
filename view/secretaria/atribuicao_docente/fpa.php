@@ -162,13 +162,12 @@ $SITENAV = $SITE . '?';
 require PATH . VIEW . '/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center" width="100%">
-    <tr><th align="center" width="40">#</th><th>Professor</th><th>Semestre/Ano</th><th>Entregue</th>
+    <tr>
+        <th align="center" width="40">#</th>
+        <th width="300">Professor</th>
+        <th width="100">Sem/Ano</th>
+        <th width="150">Entregue</th>
         <?php
-        if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
-            ?>
-            <th align="center" style="width: 300px">Coordenador</th>
-            <?php
-        }
         if (in_array($COORD, $_SESSION["loginTipo"]) || in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
             ?>
             <th width="150" title='Solicitar Corre&ccedil;&atilde;o?'>Solicitar corre&ccedil;&atilde;o</th>
@@ -198,22 +197,14 @@ require PATH . VIEW . '/paginacao.php';
             <td><?= $reg['semestre'].'/'.$reg['ano'] ?></td>
             <td><?= $reg['finalizado'] ?></td>
             <?php
-            if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
-                if ($reg['valido'] != "00/00/0000 00:00" && $reg['valido'] != "") {
-                    ?>
-                    <td><?= $reg['solicitante'] ?></td>
-                    <?php
-                } else {
-                    ?>
-                    <td style='color:red; font-weight: bold'>pendente</td>
-                    <?php
-                }
-            }
+
 
             // VERIFICA SE JÀ FOI CORRIGIDO
             if ($reg['valido'] != "00/00/0000 00:00" && $reg['valido'] != "") {
                 ?>
-                <td>Corrigido</td>
+                <td>
+                    <a href='#' title='Corrigido por <?= $reg['solicitante'] ?>'>Corrigido</a>
+                </td>
                 <?php
                 $checked = "checked='checked'";
             } else if ($reg['solicitacao']) {

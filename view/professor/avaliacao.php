@@ -312,6 +312,8 @@ if ($_GET['opcao'] == '') {
                                 <font size="1">2. Nas multiplica&ccedil;&otilde;es, utilizar somente 1 fra&ccedil;&atilde;o decimal. Exemplo: <b>($A1+$A2)*0.2</b></font>
                                 <br />
                                 <font size="1">3. Para maior precis&atilde;o utilizar conforme exemplo: <b>($A1+$A2)*(25/100)</b></font>
+                                <br />
+                                <font size="1">4. Utilizar somente Avalia&ccedil;&otilde;es e Pontos Extras na f&oacute;rmula.</font>
                             </td>
                         </tr>
                     </table>
