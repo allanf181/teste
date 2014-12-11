@@ -211,7 +211,7 @@ function socioEconomico() {
 }
 
 function checaSistema() {
-    global $VERSAOAT, $VERSAO, $SITE_TITLE, $SITE_CIDADE;
+    global $VERSAOAT, $VERSAO, $SITE_TITLE, $SITE_CIDADE, $DIGITANOTAS;
     // Checa a versão atual.
     if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
         if (updateDataBase()) {
@@ -250,6 +250,15 @@ function checaSistema() {
     if (!$SITE_TITLE || !$SITE_CIDADE) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: nome da institui&ccedil;&atilde;o e a cidade devem ser preenchidos.</font>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php'); void(0);">Clique aqui para preencher</a>
+        <?php
+    }
+    
+    // Verifica se a sigla do campus foi preenchida
+    // Utilizada pela DigitaNotas
+    if (!$DIGITANOTAS) {
+        ?>
+        <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: a sigla da institui&ccedil;&atilde;o deve ser preenchida para que as notas sejam exportadas automaticamente para o DigitaNotas.</font>
         <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php'); void(0);">Clique aqui para preencher</a>
         <?php
     }

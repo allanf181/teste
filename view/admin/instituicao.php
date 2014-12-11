@@ -178,8 +178,9 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
             <div class="cont_tab fundo_listagem" id="Dados4">
                 <table align="left" width="100%">
-                    <tr><td colspan="2"><h3><b>Campus - Digita Notas</b></h3></td></tr>
-                    <tr><td>Campus: </td><td><input style="width: 50px" type="text" name="campiDigitaNotas" id="campiDigitaNotas" value="<?php echo $campiDigitaNotas; ?>" maxlength="2" /></td></tr>
+                    <tr><td colspan="2"><h3><b>Digita Notas</b></h3></td></tr>
+                    <tr><td>Sigla do Campus: </td><td><input style="width: 50px" type="text" name="campiDigitaNotas" id="campiDigitaNotas" value="<?php echo $campiDigitaNotas; ?>" maxlength="2" /></td></tr>
+                    <tr><td colspan="2">Ap&oacute;s cadastro da sigla, o WebDi&aacute;rio consegue exportar para o DigitaNotas as notas finalizadas pelos di&aacute;rios.</td></tr>
                     <tr><td colspan="2"><hr></td></tr>
 
                     <tr><td colspan="2"><h3><b>Senha</b></h3></td></tr>
