@@ -138,7 +138,7 @@ if (!empty($curso) && !empty($turma)) {
                     <?php
                 }
                 ?>
-                <td align=center><?= $reg['flah'] ?></td>
+                <td align=center><?= $reg['flag'] ?></td>
                 <?php
                 $i++;
             }

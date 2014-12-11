@@ -22,6 +22,7 @@ if ($_GET['ano'] && $_GET['semestre']) {
     die;
 }
 
+require CONTROLLER . "/atribuicao.class.php";
 require CONTROLLER . "/planoEnsino.class.php";
 require CONTROLLER . "/pessoa.class.php";
 require CONTROLLER . "/professor.class.php";
@@ -506,9 +507,8 @@ function checaLibDiario() {
     global $user, $ANO, $SEMESTRE;
 
     $prof = new Professores();
-
-    require CONTROLLER . "/atribuicao.class.php";
     $att = new Atribuicoes();
+
     $sqlAdicional = " AND c.codigo IN (SELECT curso "
             . "FROM Coordenadores WHERE coordenador = :coordenador)";
     $params = array('coordenador' => $user, 'ano' => $ANO, 'semestre' => $SEMESTRE);

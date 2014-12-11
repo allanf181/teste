@@ -92,7 +92,7 @@ if (isset($_GET['item']))
 $params['ano'] = $ANO;
 $params['semestre'] = $SEMESTRE;
 
-$sqlAdicional = ' ORDER BY p.nome ';
+$sqlAdicional .= ' ORDER BY p.nome ';
 $res = $professor->getProfessoresByTurma($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($professor->getProfessoresByTurma($params, $sqlAdicional, null, null));
 

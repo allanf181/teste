@@ -2,12 +2,6 @@
 if (!class_exists('Generic'))
     require_once CONTROLLER . '/generic.class.php';
 
-if (!class_exists('Pessoas'))
-    require CONTROLLER . "/pessoa.class.php";
-
-if (!class_exists('LogEmails'))
-    require CONTROLLER . "/logEmail.class.php";
-
 class Atribuicoes extends Generic {
 
     // USADO POR: PROFESSOR/AVALIACAO.PHP
@@ -349,6 +343,7 @@ class Atribuicoes extends Generic {
                 if (!class_exists('NotasFinais'))
                     require CONTROLLER . "/notaFinal.class.php";
                 $nota = new NotasFinais();
+                
                 if ($nota->fecharDiario($atribuicao)) {
                     $params_nota = array('codigo' => $atribuicao);
                     $sql = "UPDATE NotasFinais SET sincronizado='' WHERE atribuicao=:codigo AND flag <> 5";
@@ -366,8 +361,12 @@ class Atribuicoes extends Generic {
                 if ($res) {
                     if ($res['STATUS'] == 'OK') {
                         $resAtt = $this->listRegistros(array('codigo' => $atribuicao));
+                        if (!class_exists('Pessoas'))
+                            require CONTROLLER . "/pessoa.class.php";
                         $pessoa = new Pessoas();
                         if ($email = $pessoa->getEmailFromAtribuicao($resAtt[0]['codigo'])) {
+                            if (!class_exists('LogEmails'))
+                                require CONTROLLER . "/logEmail.class.php";
                             $logEmail = new LogEmails();
                             $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Seu di&aacute;rio foi aberto pelo coordenador.', $email);
                         }

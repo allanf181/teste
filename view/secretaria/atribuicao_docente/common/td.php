@@ -14,6 +14,9 @@ $log = new LogSolicitacoes();
 require CONTROLLER . "/logEmail.class.php";
 $logEmail = new LogEmails();
 
+require CONTROLLER . "/pessoa.class.php";
+$pessoa = new Pessoas();
+
 if ($_GET["opcao"] == 'historico') {
     $_GET['tabela'] = $tabela;
     // COPIA DE:
