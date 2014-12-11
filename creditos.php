@@ -62,6 +62,7 @@ require SESSAO;
 <br />
 
 <b>Vers&atilde;o 1.426</b>
+<br> - Adi&ccedil;&atilde;o de fotos em Ensalamentos.
 <br> - Organiza&ccedil;&atilde;o de Arquivos (Boletim do Aluno).
 <br> - Adi&ccedil;&atilde;o da visualiza&ccedil;&atilde;o do Boletim do Aluno em Relat&oacute;rios.
 <br />
