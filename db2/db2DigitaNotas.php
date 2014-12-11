@@ -11,8 +11,9 @@ require ('lib/digitaNotasWS.php');
 if (isset($_GET["codigo"])) {
     $codigo = $_GET["codigo"];
     $sqlCodigo = "AND n.codigo = $codigo";
-} else
-    $sqlCodigo = "AND (n.sincronizado IS NULL OR n.sincronizado = '0000-00-00 00:00:00')";
+} 
+//else
+//    $sqlCodigo = "AND (n.sincronizado IS NULL OR n.sincronizado = '0000-00-00 00:00:00')";
 
 
 $user = 'BA000022';
