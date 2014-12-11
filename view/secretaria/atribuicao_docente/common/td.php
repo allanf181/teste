@@ -45,7 +45,6 @@ if ($_GET["opcao"] == 'change') {
     //ENVIANDO EMAIL
     if ($ret['STATUS'] == 'OK') {
         $resPessoa = $dados->listRegistros(array('codigo' => $_GET['codigoTabela']));
-        $pessoa = new Pessoas();
         if ($email = $pessoa->getEmailFromPessoa($resPessoa[0]['pessoa']))
             $logEmail->sendEmailLogger($_SESSION['loginNome'], "Foi solicitada uma corre&ccedil;&atilde;o em sua $tabela.", $email);
     }
@@ -104,7 +103,6 @@ if (dcrip($_GET["professor"])) {
             <select name="professor" id="professor" value="<?= $professor ?>" style="width: 400px">
                 <option></option>
                 <?php
-                $pessoa = new Pessoas();
                 $sqlAdicionalProf = ' AND pt.tipo = :prof ';
                 $paramsProf = array('prof' => $PROFESSOR);
                 $resProf = $pessoa->listPessoasTipos($paramsProf, $sqlAdicionalProf, null, null);

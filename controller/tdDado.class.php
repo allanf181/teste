@@ -3,9 +3,6 @@
 if (!class_exists('Generic'))
     require_once CONTROLLER . '/generic.class.php';
 
-if (!class_exists('Pessoas'))
-    require_once CONTROLLER . '/pessoa.class.php';
-
 class TDDados extends Generic {
 
     public function __construct() {
@@ -221,6 +218,8 @@ class TDDados extends Generic {
         }
 
         if ($modelo == 'FPA') {
+            if (!class_exists('Pessoas'))
+                require_once CONTROLLER . '/pessoa.class.php';            
             $p = new Pessoas();
             $p->insertOrUpdate($pessoa);
         }

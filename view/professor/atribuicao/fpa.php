@@ -30,6 +30,9 @@ $coordenador = new Coordenadores();
 require CONTROLLER . "/logEmail.class.php";
 $logEmail = new LogEmails();
 
+require CONTROLLER . "/pessoa.class.php";
+$pessoa = new Pessoas();
+
 if ($_POST) {
     $_POST['modelo'] = 'FPA';
     $_POST['pessoa'] = $_SESSION['loginCodigo'];
