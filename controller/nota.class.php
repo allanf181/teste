@@ -59,7 +59,7 @@ class Notas extends Frequencias {
 
             foreach ($res as $reg) {
                 if ($reg['habilitado']) {
-                    return $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], 1, $fechamento);
+                    return $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], $final, $fechamento);
                 }
             }
         }
