@@ -21,9 +21,6 @@ $log = new LogSolicitacoes();
 require CONTROLLER . "/coordenador.class.php";
 $coordenador = new Coordenadores();
 
-require CONTROLLER . "/logEmail.class.php";
-$logEmail = new LogEmails();
-
 // PEDIDO DE LIBERAÇÃO DO DIÁRIO
 if ($_GET["motivo"]) {
     $paramsLog['dataSolicitacao'] = date('Y-m-d h:i:s');
