@@ -42,11 +42,11 @@ if ($_GET["opcao"] == 'change') {
     $params['solicitacao'] = 'Correção solicitada: '.$_GET['solicitacao'];
 
     $ret = $log->insertOrUpdate($params);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 
     $paramsPlano["finalizado"] = null;
     $paramsPlano['codigo'] = $_GET['codigo'];
     $ret = $plano->insertOrUpdate($paramsPlano);
-    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     
     //ENVIANDO EMAIL
     if ($ret['STATUS'] == 'OK') {
@@ -194,13 +194,8 @@ if (!empty($curso)) {
             <th align="center" width="40">#</th>
             <th align="left">Disciplina</th>
             <th align="left">Professor</th>
-            <th align="left" width="120">Finalizado</th>
+            <th align="left" width="150">Finalizado</th>
             <?php
-            if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
-                ?>
-                <th align="center" style="width: 100px">Coordenador</th>
-                <?php
-            }
             if (in_array($COORD, $_SESSION["loginTipo"]) || in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
                 ?>
                 <th align='center' width="140" title='Solicitar Corre&ccedil;&atilde;o?'>Solicitar Corre&ccedil;&atilde;o</th>
@@ -233,28 +228,17 @@ if (!empty($curso)) {
                     </td>
                     <td align='left'><?= $reg['finalizado'] ?></td>
                     <?php
-                    if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
-                        if ($reg['valido'] != "00/00/0000 00:00" && $reg['valido'] != "") {
-                            ?>
-                            <td align = 'left'><?= $reg['solicitante'] ?></td>
-                            <?php
-                        } else {
-                            ?>
-                            <td align = 'left' style = 'color:red; font-weight: bold'>pendente</td>
-                            <?php
-                        }
-                    }
 
                     // VERIFICA SE JÀ FOI CORRIGIDO
                     if ($reg['valido'] != "00/00/0000 00:00" && $reg['valido'] != "") {
                         ?>
-                        <td align='center'>Plano corrigido</a></td>
+                        <td align='left'>Plano corrigido</a></td>
                         <?php
                         $checked = "checked = 'checked'";
                     } else if ($reg['solicitacao']) {
                         ?>
-                        <td align='center' colspan='2'>
-                            <a href='#' title='Corre&ccedil;&atilde;o solicitada por <?= $reg['solicitante'] ?>'>Correção solicitada</a>
+                        <td align='left' colspan='2'>
+                            Correção solicitada
                         </td>
                         <?php
                         $correcao = 1;
