@@ -395,12 +395,12 @@ foreach ($aulas as $reg) {
         $pdf->SetFont('Courier', '', $tamanho);
         $pdf->Cell($larg3, $alturaLinha, utf8_decode($conteudo[$j]), 1, 0, 'L', true);
         $pdf->Cell($larg4, $alturaLinha, utf8_decode($ATV[$j]), 1, 0, 'L', true);
-        $k ++;
+        $k++;
         $pdf->SetFont($fonte, '', $tamanho);
         $pdf->Ln();
     }
 
-    if ($k == 40) {
+    if ($k > 40) {
         $k = 0;
         $pdf->AddPage($orientacao, $papel);
         $ALT_OBS = 18;
