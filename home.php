@@ -32,21 +32,22 @@ require CONTROLLER . "/log.class.php";
 require CONTROLLER . "/tdDado.class.php";
 require CONTROLLER . "/aviso.class.php";
 require CONTROLLER . "/atendimento.class.php";
+require CONTROLLER . "/coordenador.class.php";
 
 $user = $_SESSION["loginCodigo"];
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 
 <table border="0" width='100%'>
     <tr>
         <td colspan="2">
             <font size="4"><b>WebDi&aacute;rio</b></font>
             <br><a class="link" title='O que h&aacute; de novo...' href="javascript:$('#index').load('creditos.php'); void(0);">
-                <font size="1">Vers&atilde;o 1.<?php print $VERSAO; ?></font>
+                <font size="1">Vers&atilde;o 1.<?= $VERSAO ?></font>
             </a>
         </td>
-        <td align="right    ">
+        <td align="right">
             <a title='Clique aqui para enviar sugest&otilde;es ou reportar problemas' href="javascript:$('#index').load('<?= VIEW ?>/email.php'); void(0);">
                 <img src="<?= ICONS ?>/email.png">
             </a>
@@ -56,7 +57,7 @@ $user = $_SESSION["loginCodigo"];
         <td colspan="3">&nbsp;</td>
     </tr>
     <tr>
-        <td colspan="2">
+        <td colspan="2" valign="top">
             <?php
             // Mostra e altera a foto do usuário
             defineFoto();
@@ -73,6 +74,12 @@ $user = $_SESSION["loginCodigo"];
             // Verifica a Versão do Sistema
             if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"])) {
                 checaSistema();
+            }
+
+            // INFORMES PARA SECRETARIA/GED/ADM
+            if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
+                // Verifica se o coordenador tem trocas para validar
+                checkCoordHasCursoArea(0);
             }
 
             if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
@@ -123,7 +130,10 @@ function senhaInfo() {
     $res = $pessoa->infoPassword($user);
     if ($res['dataSenha']) {
         ?>
-        <br><br><a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);" title='Clique aqui para alterar sua senha!'>&Uacute;ltima altera&ccedil;&atilde;o da senha: <?php print formata($res['dataSenha']); ?></a>
+        <br><br>
+        <a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);" title='Clique aqui para alterar sua senha!'>
+            &Uacute;ltima altera&ccedil;&atilde;o da senha: <?= formata($res['dataSenha']) ?>
+        </a>
         <?php
     }
 
@@ -144,7 +154,7 @@ function senhaInfo() {
 }
 
 function defineFoto() {
-    global $_GET, $ALUNO, $user, $_SESSION, $ENVIOFOTO;
+    global $_GET, $ALUNO, $user, $_SESSION, $ENVIOFOTO, $COORD;
 
     $pessoa = new Pessoas();
 
@@ -156,15 +166,76 @@ function defineFoto() {
     if (!$ENVIOFOTO && in_array($ALUNO, $_SESSION["loginTipo"]))
         $addFoto = '';
     ?>
-    <a href='#' <?= $addFoto ?>>
-        <img alt="foto" style="width: 150px; height: 150px" src="<?= INC ?>/file.inc.php?type=pic&time=<?= time() ?>&id=<?= crip($user) ?>" />
-    </a>
+    <table border='0'>
+        <tr>
+            <td>
+                <a href='#' <?= $addFoto ?>>
+                    <img alt="foto" style="width: 150px; height: 150px" src="<?= INC ?>/file.inc.php?type=pic&time=<?= time() ?>&id=<?= crip($user) ?>" />
+                </a>
+                <?php
+                $params = array('codigo' => $user);
+                $userDados = $pessoa->listRegistros($params);
+                if ($userDados[0]['foto'] && $addFoto) {
+                    ?>
+                    <br><img src="<?= ICONS ?>/remove.png" id="remover-foto" title='Remover Foto' style="width: 15px; height: 15px">
+                    <?php
+                }
+                ?>
+            </td>
+            <td width="20px">&nbsp;</td>
+            <td valign="top">
+                <?php
+                if (in_array($COORD, $_SESSION["loginTipo"])) {
+                    showCoordCurso();
+                }
+                ?>
+            </td>
+            <td width="20px">&nbsp;</td>            
+        </tr>
+    </table>
     <?php
-    $params = array('codigo' => $user);
-    $userDados = $pessoa->listRegistros($params);
-    if ($userDados[0]['foto'] && $addFoto) {
+}
+
+function showCoordCurso() {
+    global $user;
+
+    $coordenador = new Coordenadores();
+
+    print "<b>Olá Coordenador</b>,<br>Verifique abaixo os cursos que coordena: <br><br>";
+    $params['pessoa'] = $user;
+    $sqlAdicional = ' AND p.codigo = :pessoa ';
+    $res = $coordenador->listCoordenadores($params, $sqlAdicional);
+    foreach ($res as $reg)
+        print "- " . $reg['curso'] . "<br>";
+
+    checkCoordHasCursoArea(1);
+}
+
+function checkCoordHasCursoArea($coord) {
+    global $user;
+
+    if ($coord) {
+        $params['pessoa'] = $user;
+        $sqlAdicional = " WHERE c.coordenador = :pessoa ";
+        $resp1 = "Aten&ccedil;&atilde;o Coordenador, sua &aacute;rea de atua&ccedil;&atilde;o n&atilde;o foi definida. Solicitar ao respons&aacute;vel o cadastro para acesso a FPA, PIT e RIT de seus professores.";
+        $resp2 = "Aten&ccedil;&atilde;o Coordenador, seu curso de atua&ccedil;&atilde;o n&atilde;o foi definido. Solicitar ao respons&aacute;vel o cadastro para acesso aos Di&aacute;rios, Planos de Ensino/Aula, FPA, PIT e RIT de seus professores.";
+    } else {
+        $link .= "<br><a href=\"javascript:$('#index').load('".VIEW."/secretaria/cursos/coordenador.php'); void(0);\">Clique aqui para definir</a>";        
+        $resp1 = "Aten&ccedil;&atilde;o, as &aacute;reas de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidas. $link";
+        $resp2 = "Aten&ccedil;&atilde;o, os cursos de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidos. $link";
+        print "<br />";
+    }
+
+    $coordenador = new Coordenadores();
+    $res = $coordenador->checkIfCoordHasAreaCurso($params, $sqlAdicional);
+    if ($res == 1) {
         ?>
-        <br><img src="<?= ICONS ?>/remove.png" id="remover-foto" title='Remover Foto' style="width: 15px; height: 15px">
+        <br><font size="2" color="red"><?= $resp1 ?></font>
+        <?php
+    }
+    if ($res == 2) {
+        ?>
+        <br><font size="2" color="red"><?= $resp2 ?></font>
         <?php
     }
 }
@@ -184,14 +255,15 @@ function defineEmail() {
 
     $params = array('codigo' => $user);
     $userDados = $pessoa->listRegistros($params);
+
     if (!$userDados[0]['email']) {
         ?>
-        <br><br>Email: <input type="text" size="60" maxlength="100" name="email" id="email" value="" />
+        <br>Email: <input type="text" size="60" maxlength="100" name="email" id="email" value="" />
         <img src="<?php print ICONS; ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
         <?php
     } else {
         ?>
-        <br><br>Email: <?php print $userDados[0]['email']; ?></a>
+        <br>Email: <?php print $userDados[0]['email']; ?></a>
         &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="send-email" title='Remover Email' style="width: 15px; height: 15px">
         <?php
     }
@@ -206,8 +278,8 @@ function socioEconomico() {
     $aluno = new Alunos();
     if ($nome = $aluno->hasSocioEconomico($user)) {
         ?>
-        <br><br><font size="2" color="red">Ol&aacute; <?php print $nome; ?>, seu question&aacute;rio Socioecon&ocirc;mico est&aacute; incompleto.</font>
-        <br><a href="javascript:$('#index').load('<?php print VIEW; ?>/aluno/socioEconomico.php'); void(0);" title='Socioencon&ocirc;mico'>Clique aqui para responder</a>
+        <br><br><font size="2" color="red">Ol&aacute; <?= $nome ?>, seu question&aacute;rio Socioecon&ocirc;mico est&aacute; incompleto.</font>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/aluno/socioEconomico.php'); void(0);" title='Socioencon&ocirc;mico'>Clique aqui para responder</a>
         <?php
     }
 }
@@ -255,7 +327,7 @@ function checaSistema() {
         <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php'); void(0);">Clique aqui para preencher</a>
         <?php
     }
-    
+
     // Verifica se a sigla do campus foi preenchida
     // Utilizada pela DigitaNotas
     if (!$DIGITANOTAS) {
@@ -323,7 +395,7 @@ function checaTD() {
     if ($res) {
         foreach ($res as $reg) {
             ?>
-            <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em sua <?= $reg['modelo'] ?> (<?= $reg['semestre'].'/'.$reg['ano'] ?>): <br><?= $reg['solicitacao'] ?></font>
+            <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em sua <?= $reg['modelo'] ?> (<?= $reg['semestre'] . '/' . $reg['ano'] ?>): <br><?= $reg['solicitacao'] ?></font>
             <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/<?= strtolower($reg['modelo']) ?>.php'); void(0);">Clique aqui para corrigir</a>
             <?php
         }
@@ -534,7 +606,7 @@ function checaLibDiario() {
                 ?>
                 <tr <?= $cdif ?>>
                     <td width='120'><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1) ?></td>
-                    <td width='120'><a href='#' title='<?= $reg['curso'].'<br>'.$reg['disciplina'] ?>'><?= abreviar($reg['disciplina'],30) ?></a></td>
+                    <td width='120'><a href='#' title='<?= $reg['curso'] . '<br>' . $reg['disciplina'] ?>'><?= abreviar($reg['disciplina'], 30) ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['solicitacao'] ?></a></td>
                     <td><?= $reg['dataSolicitacao'] ?></td>
                     <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codPessoa']) ?>'); void(0);" title='Clique aqui para liberar'>
@@ -622,7 +694,7 @@ function checaLibTD() {
                 <tr <?= $cdif ?>>
                     <td><?= $reg['nome'] ?></td>
                     <td><?= $reg['modelo'] ?></td>
-                    <td><?= $reg['semestre'].'/'.$reg['ano'] ?></td>
+                    <td><?= $reg['semestre'] . '/' . $reg['ano'] ?></td>
                     <td>
                         <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?= crip($reg['pessoa']) ?>'); void(0);">
                             Validar

@@ -217,7 +217,7 @@ class TDDados extends Generic {
             $log->updateSolicitacao($l);
         }
 
-        if ($modelo == 'FPA') {
+        if ($modelo == 'FPA' && $pessoa['codigo']) {
             if (!class_exists('Pessoas'))
                 require_once CONTROLLER . '/pessoa.class.php';            
             $p = new Pessoas();

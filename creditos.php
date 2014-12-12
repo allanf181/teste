@@ -61,6 +61,11 @@ require SESSAO;
 </center>
 <br />
 
+<b>Vers&atilde;o 1.427</b>
+<br> - Diversas corre&ccedil;&otilde;es solicitadas por e-mail.
+<br> - Adi&ccedil;&atilde;o de aviso para coordenadores que n&atilde;o est&atilde;o relacionados com cursos e/ou &aacute;reas.
+<br />
+<br />
 <b>Vers&atilde;o 1.426</b>
 <br> - Adi&ccedil;&atilde;o de fotos em Ensalamentos.
 <br> - Organiza&ccedil;&atilde;o de Arquivos (Boletim do Aluno).

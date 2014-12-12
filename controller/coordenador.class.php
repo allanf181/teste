@@ -10,7 +10,31 @@ class Coordenadores extends Generic {
         //
     }
     
-    // UTILIZADO POR: SECRETARIA/CIDADE.PHP
+    // VERIFICA SE O COORDENADOR POSSUI AREA E CURSO
+    // UTILIZADO POR: HOME.PHP
+    public function checkIfCoordHasAreaCurso($params, $sqlAdicional) {
+        $bd = new database();
+        
+        $sql = "SELECT COUNT(*) as reg, (SELECT COUNT(*) "
+                . "FROM Coordenadores c1 "
+                . "WHERE c1.coordenador = c.coordenador "
+                . "AND (c.area <> 0 AND c.curso <> 0)) as total "
+                . "FROM Coordenadores c ";
+
+        $sql .= $sqlAdicional;
+        
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res[0]['reg'] != $res[0]['total'])
+            return 1;
+
+        if ($res[0]['reg'] == 0)
+            return 2;
+        
+        return false;
+    } 
+    
+    // UTILIZADO POR: SECRETARIA/COORDENADOR.PHP
     public function listCoordenadores($params=null, $sqlAdicional=null, $item=null, $itensPorPagina=null) {
         $bd = new database();
         
