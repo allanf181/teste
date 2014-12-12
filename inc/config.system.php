@@ -16,6 +16,7 @@ ini_set('max_execution_time', 60);
 //=======================================//
 error_reporting(E_ALL && !E_NOTICE);
 ini_set("display_errors", 1);
+ini_set("memory_limit","-1");
 
 //=======================================//
 //           PATHs GLOBAIS           //
