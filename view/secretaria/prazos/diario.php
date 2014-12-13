@@ -259,7 +259,7 @@ if (!empty($curso)) {
         and p.atribuicao = a.codigo
 		    and t.ano=$ano
 		    and (t.semestre=$semestre OR t.semestre=0)
-		    and d.curso=c.codigo $restricao order by d.nome";
+		    and d.curso=c.codigo $restricao GROUP BY a.codigo order by d.nome";
         //echo $sql;
         $resultado = mysql_query($sql);
         $i = 1;
@@ -277,6 +277,7 @@ if (!empty($curso)) {
                 echo "<td><a target='_blank' href='relatorios/diarioProfessor.php?atribuicao=" . crip($linha[0]) . "'>$bimestre " . mostraTexto($linha[1]) . "</a></td>";
                 echo "<td align='left'>" . mostraTexto($prof) . "</td><td align=left>$linha[3]</td>";
                 $bloqueado = "";
+                $origem = "";
 
                 if ($linha[6] != '0000-00-00 00:00:00' && $linha[4] > 0) {
                     $origem = ($linha[4] * 24) . "h";
@@ -340,7 +341,7 @@ if (!empty($curso)) {
       and p.atribuicao = a.codigo	    
 	    and t.ano=$ano
 	    and (t.semestre=$semestre OR t.semestre=0)
-	    $restricao order by l.data";
+	    $restricao order by l.data desc";
 //    echo $sql;
     $resultado = mysql_query($sql);
     $linha = mysql_fetch_row($resultado);
@@ -365,7 +366,7 @@ if (!empty($curso)) {
       and p.atribuicao = a.codigo	    
 	    and t.ano=$ano
 	    and (t.semestre=$semestre OR t.semestre=0)
-	    $restricao order by l.data limit " . ($item - 1) . ",$itensPorPagina";
+	    $restricao order by l.data desc limit " . ($item - 1) . ",$itensPorPagina";
 //print $sql;
     $SITENAV = $SITE . "?$lk";
     include PATH . VIEW . '/navegacao.php';
@@ -379,17 +380,13 @@ if (!empty($curso)) {
         $i = $item;
         while ($linha = mysql_fetch_array($resultado)) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            $disciplina = $linha[1];
-            if (strlen($disciplina) > 30)
-                $disciplina = "<a href='#' class='tooltip' title='$linha[1]'>" . abreviar($disciplina, 30) . "</a>";
 
             $professores = '';
             foreach (getProfessor($linha[2]) as $key => $reg)
                 $professores[] = $reg['nome'];
             $prof = implode("<br>", $professores);
-            if (strlen($prof) > 30)
-                $prof = "<a href='#' class='tooltip' title='$prof'>" . abreviar($prof, 30) . "</a>";
-            echo "<tr $cdif><td align='center'>$i</td><td>$linha[0]</td><td>$disciplina</a></td><td>$prof</td><td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td></tr>";
+
+            echo "<tr $cdif><td align='center'>$i</td><td>$linha[0]</td><td>$linha[1]</a></td><td>$prof</td><td><a href='#Data' title='$linha[3]'>" . abreviar($linha[3], 25) . "</a></td></tr>";
             $i++;
         }
         mysql_close($conexao);
