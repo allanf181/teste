@@ -251,7 +251,7 @@ if ($_GET['pagina'] == "planoEnsino") {
     $att = new Atribuicoes();
     $mod = $att->getAtribuicao(dcrip($_GET["atribuicao"]));
     if ($mod['codModalidade'] == 1001 || $mod['codModalidade'] == 1003 || $mod['codModalidade'] < 1000 )
-        $titleRecuperacao = 'Recupera&ccedil;&atilde;o Final:';
+        $titleRecuperacao = 'Reavalia&ccedil;&atilde;o Final:';
     else
         $titleRecuperacao = 'Instrumento Final de Avalia&ccedil;&atilde;o:';
     

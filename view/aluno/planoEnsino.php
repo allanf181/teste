@@ -33,7 +33,7 @@ if (in_array($ALUNO, $_SESSION["loginTipo"])) {
         $ITEM['7.1 - RECUPERAÇÃO PARALELA'] = $res["recuperacaoParalela"];
         // VERIFICA A NOMENCLATURA
         if ($res['codModalidade'] == 1001 || $res['codModalidade'] == 1003 || $res['codModalidade'] < 1000)
-            $titleRecuperacao = '7.2 - RECUPERAÇÃO FINAL:';
+            $titleRecuperacao = '7.2 - REAVALIAÇÃO FINAL:';
         else
             $titleRecuperacao = '7.2 - INSTRUMENTO FINAL DE AVALIAÇÃO:';
 

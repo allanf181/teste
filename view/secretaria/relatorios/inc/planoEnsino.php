@@ -53,7 +53,7 @@ for ($i = 0; $i < mysql_num_rows($result); ++$i) {
     if (mysql_result($result, $i, "m.codigo") == 1001 ||
             mysql_result($result, $i, "m.codigo") == 1003 || 
             mysql_result($result, $i, "m.codigo") < 1000 )
-        $titleRecuperacao = '7.2 - RECUPERAÇÃO FINAL:';
+        $titleRecuperacao = '7.2 - REAVALIAÇÃO FINAL:';
     else
         $titleRecuperacao = '7.2 - INSTRUMENTO FINAL DE AVALIAÇÃO:';    
     $ITEM[$titleRecuperacao] = mysql_result($result, $i, "pe.recuperacaoFinal");
