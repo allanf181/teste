@@ -120,7 +120,7 @@ if ($codigo) { // se o parâmetro não estiver vazio
                 <option value="">N&atilde;o declarado</option>
                 <?php
                         require CONTROLLER . '/situacaoTrabalho.class.php';
-                        $trabalho = new Racas();
+                        $trabalho = new SituacoesTrabalho();
                         $res = $trabalho->listRegistros();
                         foreach ($res as $reg) {
                             $selected = "";
