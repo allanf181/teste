@@ -28,17 +28,19 @@ class Atribuicoes extends Generic {
     // Pode ser colocado com função no MySQL futuramente
     public function getAtribuicao($codigo, $LIMITE_AULA_PROF=0) {
         $bd = new database();
-
+        
+        $LIMITE_AULA_PROF1 = $LIMITE_AULA_PROF * 2;
+        
         $sql = "SELECT d.nome as disciplina, t.numero as turma, c.nome as curso, a.status, a.prazo,
                 c.nomeAlternativo as cursoAlt, a.bimestre as bimestre, c.fechamento as fechamento,
         	t.semestre as semestre, t.ano as ano, t.codigo as turmaCodigo, a.subturma as subturma,
                 c.fechamento as fechamento, a.observacoes as observacoes, a.competencias as competencias,
                 m.codigo as codModalidade, m.nome as modalidade, d.ch as CH, a.aulaPrevista as aulaPrevista,
-                date_format(DATE_ADD(a.prazo, INTERVAL $LIMITE_AULA_PROF DAY), '%H:%i de %d/%m/%Y') as prazoFormat, 
-                DATEDIFF(DATE_ADD(a.prazo, INTERVAL $LIMITE_AULA_PROF DAY), NOW()) as prazoDiff,
+                IF(a.prazo, date_format(a.prazo, '%H:%i de %d/%m/%Y'), '') as prazoFormat, 
+                DATEDIFF(a.prazo, NOW()) as prazoDiff,
                 date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_AULA_PROF DAY), '%d/%m/%Y') as dataFimFormat,
-                date_format( DATE_SUB(NOW(), INTERVAL $LIMITE_AULA_PROF DAY), '%d/%m/%Y') as dataInicioCal,
-                date_format( DATE_ADD(a.prazo, INTERVAL $LIMITE_AULA_PROF DAY), '%d/%m/%Y') as dataFimFormaCal,
+                date_format( DATE_SUB(NOW(), INTERVAL $LIMITE_AULA_PROF1 DAY), '%d/%m/%Y') as dataInicioCal,
+                date_format( a.prazo, '%d/%m/%Y') as dataFimCal,
                 DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_AULA_PROF DAY), NOW()) as dataFimDiff
                 FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
                 WHERE a.disciplina=d.codigo
@@ -49,11 +51,11 @@ class Atribuicoes extends Generic {
                 AND a.codigo=:cod";
         $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);
-        
+
         if ($res) {
-            if ($res[0]['prazo']) {
+            if ($res[0]['prazoFormat']) {
                 $res[0]['inicioCalendar'] = $res[0]['dataInicioCal'];
-                $res[0]['fimCalendar'] = $res[0]['dataFimFormaCal'];
+                $res[0]['fimCalendar'] = $res[0]['dataFimCal'];
             } else {
                 $res[0]['inicioCalendar'] = date("d/m/Y", mktime(0, 0, 0, date("m"), date("d") - $LIMITE_AULA_PROF, date("Y")));
                 $res[0]['fimCalendar'] = date("d/m/Y", mktime(0, 0, 0, date("m"), date("d") + $LIMITE_AULA_PROF, date("Y")));

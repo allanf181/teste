@@ -60,7 +60,15 @@ $atribuicao = $_GET["atribuicao"];
             $bimestre .= 'º BIMESTRE';
         elseif (!$bimestre && $semestre)
             $bimestre = 'SEMESTRAL';
-        
+
+        // Anulando o prazo se a dataFim está maior
+        if ($prazoDiff <= 0 && $dataFimDiff >= 0) {
+            $params['codigo'] = crip($atribuicao);
+            $params['prazo'] = crip('NULL');
+            $params['status'] = crip(0);
+            $att->insertOrUpdate($params);
+        }
+
         // verificando se o prazo foi atingido.
         $dataExpirou = false;
         if ($status == 0 && (!$prazoDiff && $dataFimDiff < 0) || ($prazoDiff && $prazoDiff < 0)) {
@@ -74,13 +82,13 @@ $atribuicao = $_GET["atribuicao"];
 
         if ($status != 0)
             $dataExpirou = true;
-        
+
         $_SESSION['dataExpirou'] = $dataExpirou;
-        
+
         // Informa se o diário foi aberto
-        if ($prazoFormat)
+        if ($prazoDiff > 0 && !$dataExpirou)
             mensagem('INFO', 'PRAZO_DIARIO', $prazoFormat);
-        
+
         require CONTROLLER . "/aula.class.php";
         $aula = new Aulas();
         $qdeAulas = $aula->countQdeAulas($atribuicao);
@@ -102,7 +110,7 @@ $atribuicao = $_GET["atribuicao"];
             if ($status == 4)
                 $info = "Este diário foi fechado pelo Sistema pois o prazo para finalização do diário foi atingido!";
             if ($prazo && !$status)
-                $info = "Seu prazo para altera&ccedil;&atilde;o do di&aacute;rio foi estentido at&eacute; &agrave;s $prazo";
+                $info = "Seu prazo para altera&ccedil;&atilde;o do di&aacute;rio foi estentido at&eacute; &agrave;s $prazoFormat";
         }
         else {
             if ($dataExpirou || ($CH && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima'] && $status == 0 )) { // está desbloqueado e já tem a quantidade de aulas previstas e pelo menos uma avaliação ou a data final do período foi atingida
