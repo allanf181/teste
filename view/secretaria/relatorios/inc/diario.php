@@ -400,7 +400,7 @@ foreach ($aulas as $reg) {
         $pdf->Ln();
     }
 
-    if ($k > 40) {
+    if ($k >= 40) {
         $k = 0;
         $pdf->AddPage($orientacao, $papel);
         $ALT_OBS = 18;
