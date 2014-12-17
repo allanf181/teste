@@ -49,8 +49,6 @@ $logs = array();
 $count = 0;
 $conexao = 0;
 
-print count($result);
-
 while ($l = mysql_fetch_array($result)) {
     print "A: $a\n";
     $a++;
@@ -124,9 +122,9 @@ while ($l = mysql_fetch_array($result)) {
             $lista = array("notas" => $notas);
 
             $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
-            if ($ret) {
-                $conexao++;
+            $conexao++;
 
+            if ($ret) {
                 if ($ret->sucesso == 1) {
                     $URL = 'Nota registra com sucesso';
                 } else {
