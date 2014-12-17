@@ -101,7 +101,7 @@ while ($l = mysql_fetch_array($result)) {
         );
 
 
-        $logs[] = "TURMA: $turmaD [$bimestre BIM] |PRONT: $prontuario |DISC: $codigoDisciplina |NOTA: $nota";
+        $logs[] = "COD: $l[12] |TURMA: $turmaD [$bimestre BIM] |PRONT: $prontuario |DISC: $codigoDisciplina |NOTA: $nota \n";
         $codigos[] = $l[12];
         array_push($notas, $aluno);
 
