@@ -6,7 +6,6 @@ class DigitaNotasWS {
 
     public function digitarNotasAlunos($user, $pass, $campus, $lista) {
         try {
-
             $pass = Criptografia::codificar($pass);
 
             $servicoDigitaNotas = 'http://ws.ifsp.edu.br/servicoDigitaNotas';

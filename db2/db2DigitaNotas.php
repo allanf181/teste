@@ -11,7 +11,7 @@ require ('lib/digitaNotasWS.php');
 if (isset($_GET["codigo"])) {
     $codigo = $_GET["codigo"];
     $sqlCodigo = "AND n.codigo = $codigo";
-} 
+}
 //else
 //    $sqlCodigo = "AND (n.sincronizado IS NULL OR n.sincronizado = '0000-00-00 00:00:00')";
 
@@ -37,7 +37,8 @@ $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuico
 	AND m.atribuicao = a.codigo
 	AND t.codigo = a.turma
         AND flag <> 5
-	$sqlCodigo";
+	$sqlCodigo
+        ORDER BY n.bimestre";
 
 $result = mysql_query($sql);
 $n = 0;
@@ -60,7 +61,7 @@ while ($l = mysql_fetch_array($result)) {
     $ano = $l[4];
     $nota = $l[11];
     $turmaD = $l[14];
-    
+
     if ($l[11] < 10)
         $nota = number_format($l[11], 1, '.', ' ');
 
@@ -117,31 +118,33 @@ while ($l = mysql_fetch_array($result)) {
                 $lista = array("notas" => $notas);
 
                 $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
-                $conexao++;
+                if ($ret) {
+                    $conexao++;
 
-                if ($ret->sucesso == 1) {
-                    $URL = 'Nota registra com sucesso';
-                } else {
-                    $URL = $ret->motivo;
-                }
+                    if ($ret->sucesso == 1) {
+                        $URL = 'Nota registra com sucesso';
+                    } else {
+                        $URL = $ret->motivo;
+                    }
 
-                if ($ret->sucesso == 1) {
-                    if ($DEBUG)
-                        echo "$URL \n";
-                    mysql_query("insert into Logs values(0, '$URL:## $log', now(), 'CRON_NT', 1)");
-                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$URL' WHERE codigo IN ($cod)");
-                    if ($codigo)
-                        print "Nota registrada.";
-                    $s++;
-                } else {
-                    $URL = "$URL:## $log \n";
-                    if ($DEBUG)
-                        echo "$URL \n";
-                    mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_NTERR', 1)");
-                    mysql_query("UPDATE NotasFinais SET retorno='".$ret->motivo."' WHERE codigo IN ($cod)");
-                    if ($codigo)
-                        print "Problema ao registrar nota.";
-                    $n++;
+                    if ($ret->sucesso == 1) {
+                        if ($DEBUG)
+                            echo "$URL \n";
+                        mysql_query("insert into Logs values(0, '$URL:## $log', now(), 'CRON_NT', 1)");
+                        mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$URL', flag='$flagDigitacaoNota' WHERE codigo IN ($cod)");
+                        if ($codigo)
+                            print "Nota registrada.";
+                        $s++;
+                    } else {
+                        $URL = "$URL:## $log \n";
+                        if ($DEBUG)
+                            echo "$URL \n";
+                        mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_NTERR', 1)");
+                        mysql_query("UPDATE NotasFinais SET retorno='" . $ret->motivo . "' WHERE codigo IN ($cod)");
+                        if ($codigo)
+                            print "Problema ao registrar nota.";
+                        $n++;
+                    }
                 }
             } catch (Exception $ex) {
                 if ($codigo)
