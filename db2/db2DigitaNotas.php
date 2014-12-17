@@ -50,8 +50,6 @@ $count = 0;
 $conexao = 0;
 
 while ($l = mysql_fetch_array($result)) {
-    print "A: $a\n";
-    $a++;
     $count++;
 
     //if ($l[13] > 10)
