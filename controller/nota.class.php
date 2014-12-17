@@ -30,40 +30,6 @@ class Notas extends Frequencias {
     public function resultadoBimestral($aluno, $turma, $numeroDisciplina, $final = 0, $fechamento = 0) {
         $bd = new database();
 
-        if (!$fechamento) {
-            // VERIFICANDO SE O DIÁRIO FOI FINALIZADO, 
-            // SE SIM, BUSCA NA TABELA DE NOTAS FINALIZADAS
-            $sql = "SELECT ma.codigo as matricula, a.codigo as atribuicao,
-            	(SELECT habilitar FROM Situacoes WHERE codigo = ma.situacao) as habilitado,
-                ma.situacao, d.numero, a.bimestre
-                FROM Turmas t, Cursos c, Modalidades m, Matriculas ma, Atribuicoes a, 
-                    Pessoas p, Disciplinas d, NotasFinais n
-		WHERE c.modalidade = m.codigo 
-		AND ma.atribuicao = a.codigo
-		AND a.turma = t.codigo
-		AND p.codigo = ma.aluno
-		AND c.codigo = d.curso
-		AND a.disciplina = d.codigo
-		AND n.atribuicao = a.codigo
-		AND ma.aluno = :aluno
-		AND t.codigo IN (SELECT t1.codigo FROM Turmas t1 
-			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
-			WHERE t2.codigo = :turma))
-		AND d.numero = :numDisc
-		AND a.bimestre = 4";
-
-            $params = array(':aluno' => $aluno,
-                ':turma' => $turma,
-                ':numDisc' => $numeroDisciplina);
-            $res = $bd->selectDB($sql, $params);
-
-            foreach ($res as $reg) {
-                if ($reg['habilitado']) {
-                    return $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], $final, $fechamento);
-                }
-            }
-        }
-
         // PEGANDO AS MATRICULAS E ATRIBUICOES DOS 4 BIMESTRES
         $sql = "SELECT ma.codigo as matricula, a.codigo as atribuicao,
 		(SELECT habilitar FROM Situacoes WHERE codigo = ma.situacao) as habilitado,
@@ -94,7 +60,7 @@ class Notas extends Frequencias {
             $atribuicao = $reg['atribuicao'];
             if ($reg['habilitado']) {
                 //BUSCANDO AS MEDIAS DOS BIMESTRES DE CADA ALUNO
-                $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], 0, $fechamento);
+                $dados = $this->resultado($reg['matricula'], $reg['atribuicao'], $final, $fechamento);
                 $medias += $dados['media'];
                 $faltas += $dados['faltas'];
                 $frequencias += $dados['frequencia'];
