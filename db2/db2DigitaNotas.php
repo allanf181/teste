@@ -50,6 +50,9 @@ $logs = array();
 $count = 0;
 $conexao = 0;
 
+print count($result);
+print "--";
+
 while ($l = mysql_fetch_array($result)) {
     $count++;
 
