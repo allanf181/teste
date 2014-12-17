@@ -46,10 +46,12 @@ $s = 0;
 $notas = array();
 $codigos = array();
 $logs = array();
-$count = 1;
+$count = 0;
 $conexao = 0;
 
 while ($l = mysql_fetch_array($result)) {
+    $count++;
+
     //if ($l[13] > 10)
     //    $flagDigitacaoNota = 5;
 
@@ -101,77 +103,74 @@ while ($l = mysql_fetch_array($result)) {
             "dataGravacao" => date('dmY')
         );
 
-
         $logs[] = "COD: $l[12] |TURMA: $turmaD [$bimestre BIM] |PRONT: $prontuario |DISC: $codigoDisciplina |NOTA: $nota \n";
         $codigos[] = $l[12];
         array_push($notas, $aluno);
+    }
 
-        if ($count == 10 || $codigo) {
-            $count = 0;
+    if ($count >= 10 || isset($codigo)) {
+        $count = 0;
 
-            $cod = implode(',', $codigos);
-            $log = implode('##', $logs);
+        $cod = implode(',', $codigos);
+        $log = implode('##', $logs);
 
-            try {
-                $digitaNotaAlunoWS = new digitaNotasWS();
+        try {
+            $digitaNotaAlunoWS = new digitaNotasWS();
 
-                $lista = array("notas" => $notas);
+            $lista = array("notas" => $notas);
 
-                $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
-                if ($ret) {
-                    $conexao++;
+            $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
+            if ($ret) {
+                $conexao++;
 
-                    if ($ret->sucesso == 1) {
-                        $URL = 'Nota registra com sucesso';
-                    } else {
-                        $URL = $ret->motivo;
-                    }
-
-                    if ($ret->sucesso == 1) {
-                        if ($DEBUG)
-                            echo "$URL \n";
-                        mysql_query("insert into Logs values(0, '$URL:## $log', now(), 'CRON_NT', 1)");
-                        mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$URL', flag='$flagDigitacaoNota' WHERE codigo IN ($cod)");
-                        if ($codigo)
-                            print "Nota registrada.";
-                        $s++;
-                    } else {
-                        $URL = "$URL:## $log \n";
-                        if ($DEBUG)
-                            echo "$URL \n";
-                        mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_NTERR', 1)");
-                        mysql_query("UPDATE NotasFinais SET retorno='" . $ret->motivo . "' WHERE codigo IN ($cod)");
-                        if ($codigo)
-                            print "Problema ao registrar nota.";
-                        $n++;
-                    }
+                if ($ret->sucesso == 1) {
+                    $URL = 'Nota registra com sucesso';
+                } else {
+                    $URL = $ret->motivo;
                 }
-            } catch (Exception $ex) {
-                if ($codigo)
-                    print $ex;
-                $erro = "Erro DigitaNotas: $ex";
-                if ($DEBUG)
-                    echo "$erro \n";
-                mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_NTERR', 1)");
-                mysql_query("UPDATE NotasFinais SET retorno='$erro' WHERE codigo IN ($cod)");
-                $n++;
-            }
 
-            $codigos = array();
-            $notas = array();
-            $logs = array();
-
-            if ($conexao == 6) {
-                //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
-                for ($m = 1; $m <= 10; $m++) {
-                    sleep(1);
-                    print "Esperando WS Block... $m segundos... \n";
+                if ($ret->sucesso == 1) {
+                    if ($DEBUG)
+                        echo "$URL \n";
+                    mysql_query("insert into Logs values(0, '$URL:## $log', now(), 'CRON_NT', 1)");
+                    mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$URL', flag='$flagDigitacaoNota' WHERE codigo IN ($cod)");
+                    if ($codigo)
+                        print "Nota registrada.";
+                    $s++;
+                } else {
+                    $URL = "$URL:## $log \n";
+                    if ($DEBUG)
+                        echo "$URL \n";
+                    mysql_query("insert into Logs values(0, '" . addslashes($URL) . "', now(), 'CRON_NTERR', 1)");
+                    mysql_query("UPDATE NotasFinais SET retorno='" . $ret->motivo . "' WHERE codigo IN ($cod)");
+                    if ($codigo)
+                        print "Problema ao registrar nota.";
+                    $n++;
                 }
-                $conexao = 0;
             }
+        } catch (Exception $ex) {
+            if ($codigo)
+                print $ex;
+            $erro = "Erro DigitaNotas: $ex";
+            if ($DEBUG)
+                echo "$erro \n";
+            mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_NTERR', 1)");
+            mysql_query("UPDATE NotasFinais SET retorno='$erro' WHERE codigo IN ($cod)");
+            $n++;
         }
 
-        $count++;
+        $codigos = array();
+        $notas = array();
+        $logs = array();
+
+        if ($conexao == 6) {
+            //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
+            for ($m = 1; $m <= 10; $m++) {
+                sleep(1);
+                print "Esperando WS Block... $m segundos... \n";
+            }
+            $conexao = 0;
+        }
     }
 }
 
