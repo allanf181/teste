@@ -49,7 +49,11 @@ $logs = array();
 $count = 0;
 $conexao = 0;
 
+print count($result);
+
 while ($l = mysql_fetch_array($result)) {
+    print "A: $a\n";
+    $a++;
     $count++;
 
     //if ($l[13] > 10)
