@@ -50,8 +50,7 @@ $logs = array();
 $count = 0;
 $conexao = 0;
 
-print mysql_num_rows($result);
-print "--";
+$total = mysql_num_rows($result);
 
 while ($l = mysql_fetch_array($result)) {
     $count++;
@@ -113,7 +112,7 @@ while ($l = mysql_fetch_array($result)) {
         $c++;
     }
 
-    if ($count >= 10 || isset($codigo)) {
+    if ($count >= 10 || isset($codigo) || $total <= $count) {
         $count = 0;
 
         $cod = implode(',', $codigos);
