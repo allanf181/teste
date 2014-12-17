@@ -43,6 +43,7 @@ $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuico
 $result = mysql_query($sql);
 $n = 0;
 $s = 0;
+$c = 0;
 $notas = array();
 $codigos = array();
 $logs = array();
@@ -106,6 +107,7 @@ while ($l = mysql_fetch_array($result)) {
         $logs[] = "COD: $l[12] |TURMA: $turmaD [$bimestre BIM] |PRONT: $prontuario |DISC: $codigoDisciplina |NOTA: $nota \n";
         $codigos[] = $l[12];
         array_push($notas, $aluno);
+        $c++;
     }
 
     if ($count >= 10 || isset($codigo)) {
@@ -136,7 +138,8 @@ while ($l = mysql_fetch_array($result)) {
                     mysql_query("UPDATE NotasFinais SET sincronizado = NOW(), retorno='$URL', flag='$flagDigitacaoNota' WHERE codigo IN ($cod)");
                     if ($codigo)
                         print "Nota registrada.";
-                    $s++;
+                    $s += $c;
+                    $c = 0;
                 } else {
                     $URL = "$URL:## $log \n";
                     if ($DEBUG)
