@@ -23,7 +23,7 @@ class LogEmails extends Generic {
     public function send() {
         $bd = new database();
 
-        foreach ($this->listRegistros(null, null, null, ' WHERE data IS NULL GROUP BY para, mensagem ') as $reg)
+        foreach ($this->listRegistros(null, ' WHERE data IS NULL GROUP BY para, mensagem ', null, null) as $reg)
             foreach (explode(',', $reg['para']) as $e)
                 if ($e)
                     $lista[$e] .= '<hr>'.$reg['mensagem'];
