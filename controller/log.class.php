@@ -53,7 +53,7 @@ class Logs extends Generic {
         $bd = new database();
 
         $sql = "SELECT COUNT(*) as total, url, "
-                . "(SELECT date_format(MAX(data), '%d/%m/%Y às %H:%i') FROM Logs WHERE pessoa = :pessoa LIMIT 1,1) as last "
+                . "(SELECT date_format(MAX(data), '%d/%m/%Y às %H:%i') FROM Logs WHERE pessoa = :pessoa) as last "
                 . "FROM Logs "
                 . "WHERE ORIGEM = 'LOGIN' "
                 . "AND pessoa = :pessoa "
