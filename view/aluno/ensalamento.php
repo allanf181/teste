@@ -45,18 +45,17 @@ if ($atribuicao)
     $MOSTRA = $discNome[$atribuicao];
 ?>
 <h2><font color="white"><?= $MOSTRA ?></h2>
-
-<center><table width="80%" border="0" summary="Calendário" id="tabela_boletim">
-        <thead>
-            <tr>
-                <?php
-                foreach (diasDaSemana() as $dCodigo => $dNome) {
-                    ?>
-                    <th abbr="Domingo" title="<?= $dNome ?>"><span style='font-weight: bold; color: white'><?= $dNome ?></span></th>
-                    <?php
-                }
+<center>
+    <table width="100%" align="center" class='ensalamento'>
+        <tr>
+            <?php
+            foreach (diasDaSemana() as $dCodigo => $dNome) {
                 ?>
-            </tr>
+                <th abbr="Domingo" title="<?= $dNome ?>"><span style='font-weight: bold; color: white'><?= $dNome ?></span></th>
+                <?php
+            }
+            ?>
+        </tr>
         </thead>
         <tr align="center">
             <?php

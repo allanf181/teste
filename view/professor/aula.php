@@ -110,11 +110,11 @@ if ($_GET['opcao'] == '') {
         <table id="listagem" border="0" align="center">
             <tr class="listagem_tr"><th align="center" width="40">#</th><th align="center" width="100">Data</th><th align='center' width="50">Qtd</th><th align='center'>Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
             <?php
-            $i = 1;
+            $i = count($res);
             foreach ($res as $reg) {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
-                <tr <?= $cdif ?>><td><?= $i++ ?></td>
+                <tr <?= $cdif ?>><td><?= $i-- ?></td>
                     <td><a class='nav' title='Clique aqui para lan&ccedil;ar as faltas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/frequencia.php?atribuicao=<?= crip($atribuicao) ?>&aula=<?= crip($reg['codigo']) ?>'); void(0);"><?= $reg['data_formatada'] ?></a></td>
                     <td><?= $reg['quantidade'] ?></td><td><?= htmlspecialchars($reg['conteudo']) ?></td>
                     <?php

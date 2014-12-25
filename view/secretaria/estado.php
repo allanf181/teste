@@ -23,8 +23,10 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $ret = $estado->insertOrUpdate($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    if ($_POST['codigo']) $_GET["codigo"] = $_POST['codigo'];
-    else $_GET["codigo"] = crip($ret['RESULTADO']);
+    if ($_POST['codigo'])
+        $_GET["codigo"] = $_POST['codigo'];
+    else
+        $_GET["codigo"] = crip($ret['RESULTADO']);
 }
 
 // DELETE
@@ -43,7 +45,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 }
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <script>
     $('#form_padrao').html5form({
@@ -66,54 +68,52 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" class="submit" /></td>
                             <td><input type="reset" value="Novo/Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?php print $SITE; ?>');
-                                                void(0);" /></td>
+                                            void(0);" /></td>
                         </tr></table>
                 </td></tr>
         </table>
     </form>
 </div>
 
-<div id="sitelist">
 <?php
 // PAGINACAO
-    $itensPorPagina = 20;
-    $item = 1;
-    $ordem = '';
+$itensPorPagina = 20;
+$item = 1;
+$ordem = '';
 
-    if (isset($_GET['item']))
-        $item = $_GET["item"];
+if (isset($_GET['item']))
+    $item = $_GET["item"];
 
-    $res = $estado->listRegistros($params, $item, $itensPorPagina);
+$res = $estado->listRegistros($params, $item, $itensPorPagina);
 
-    $totalRegistros = $estado->count();
-    $SITENAV = $SITE . '?';
-    require PATH . VIEW . '/paginacao.php';
-    ?>
+$totalRegistros = $estado->count();
+$SITENAV = $SITE . '?';
+require PATH . VIEW . '/paginacao.php';
+?>
 
-    <table id="listagem" border="0" align="center">
-        <tr><th align="center" width="40">#</th><th align="left">Estado</th><th align="left">Sigla</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
-        <?php
-        // efetuando a consulta para listagem
-        $i = $item;
-        foreach ($res as $reg) {
-            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            $codigo = crip($reg['codigo']);
-            ?>
-            <tr <?php print $cdif; ?>><td align='center'><?php print $i; ?></td>
-                <td><?php print $reg['nome']; ?>
-                </td><td><?php print $reg['sigla']; ?></td>
-                <td align='center'>
-                    <input type='checkbox' id='deletar' name='deletar[]' value='<?=$codigo?>' />
-                    <a href='#' title='Alterar' class='item-alterar' id='<?=$codigo?>'><img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
-                </td>
-            </tr>
-            <?php
-            $i++;
-        }
+<table id="listagem" border="0" align="center">
+    <tr><th align="center" width="40">#</th><th align="left">Estado</th><th align="left">Sigla</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+    <?php
+    // efetuando a consulta para listagem
+    $i = $item;
+    foreach ($res as $reg) {
+        $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        $codigo = crip($reg['codigo']);
         ?>
-    </table>
+        <tr <?php print $cdif; ?>><td align='center'><?php print $i; ?></td>
+            <td><?php print $reg['nome']; ?>
+            </td><td><?php print $reg['sigla']; ?></td>
+            <td align='center'>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
+                <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'><img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
+            </td>
+        </tr>
+        <?php
+        $i++;
+    }
+    ?>
+</table>
 <br />
-</div>
 <script>
     $(document).ready(function() {
         $(".item-excluir").click(function() {
@@ -127,7 +127,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         $('input:checkbox:checked').each(function() {
                             selected.push($(this).val());
                         });
-                        
+
                         $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
                     }
                 }

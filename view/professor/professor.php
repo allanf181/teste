@@ -63,23 +63,26 @@ $atribuicao = $_GET["atribuicao"];
             $bimestre = 'SEMESTRAL';
 
         // Anulando o prazo se a dataFim está maior
-        if ($prazoDiff <= 0 && $dataFimDiff >= 0) {
+        $dataExpirou = false;
+        if ($prazoDiff && $prazoDiff <= 0 && $dataFimDiff >= 0) {
             $params['codigo'] = crip($atribuicao);
             $params['prazo'] = crip('NULL');
             $params['status'] = crip(0);
+            $status = 0;
+            $prazo = null;
             $att->insertOrUpdate($params);
+        } else {
+            // verificando se o prazo foi atingido.
+            $dataExpirou = false;
+            if ($status == 0 && (!$prazoDiff && $dataFimDiff < 0) || ($prazoDiff && $prazoDiff < 0)) {
+                $params['codigo'] = crip($atribuicao);
+                $params['status'] = crip(4);
+                $att->insertOrUpdate($params);
+                $status = 4;
+                $dataExpirou = true;
+            }
         }
 
-        // verificando se o prazo foi atingido.
-        $dataExpirou = false;
-        if ($status == 0 && (!$prazoDiff && $dataFimDiff < 0) || ($prazoDiff && $prazoDiff < 0)) {
-            $params['codigo'] = crip($atribuicao);
-            $params['status'] = crip(4);
-            $att->insertOrUpdate($params);
-            $status = 4;
-            $dataExpirou = true;
-        } else
-            $dataExpirou = false;
 
         if ($status != 0)
             $dataExpirou = true;
@@ -88,7 +91,7 @@ $atribuicao = $_GET["atribuicao"];
             $dataExpirou = true;
             $status = 100;
         }
-        
+
         $_SESSION['dataExpirou'] = $dataExpirou;
 
         // Informa se o diário foi aberto
@@ -224,11 +227,11 @@ $atribuicao = $_GET["atribuicao"];
                             <div id="html5form" class="main">
                                 <form id="form_padrao">
                                     <h2>Competências Desenvolvidas:</h2>
-                                    <div class='professores_textarea'>
+                                    <div class='fundo_listagem'>
                                         <textarea <?php print $disabled; ?> maxlength='1500' id='competencias' name='competencias'><?php print $competencias; ?></textarea>
                                     </div>
                                     <h2>Observações a serem incluídas no diário da disciplina:</h2>
-                                    <div class='professores_textarea'>
+                                    <div class='fundo_listagem'>
                                         <textarea <?php print $disabled; ?> maxlength='1500' id='observacoes' name='observacoes'><?php print $observacoes; ?></textarea>
                                     </div>
                                     <input type='hidden' value='<?php print crip($atribuicao); ?>' name='atribuicao' id='atribuicao' />

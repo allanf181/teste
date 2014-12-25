@@ -46,7 +46,7 @@ $uso = round(($uso * 100) / $count);
 $width1 = "$uso";
 $width2 = (100 - $uso);
 ?>
-<div class='professores_textarea'>
+<div class='fundo_listagem'>
     <table class="listagem" align="center">
         <tr>
             <td>Utilizando: </td>

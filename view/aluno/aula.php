@@ -21,30 +21,22 @@ $res = $aula->listAulasAluno($aluno, $atribuicao);
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-<div class='professores_textarea'>
+<div class='fundo_listagem'>
     <table width="100%" align="center" style="border: 0px solid black">
-        <tr class="listagem_tr"><th align="center" style="width: 100px">Data</th>
-            <th align="center">Conte&uacute;do</th><th width="50" align='center'>Falta</th></tr>
+        <tr class="listagem_tr">
+            <th align="center" style="width: 100px">Data</th>
+            <th align="center">Conte&uacute;do</th>
+            <th width="50" align='center'>Falta</th></tr>
         <?php
         $i = 0;
         foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            if (isset($reg['freqMat']))
-                $regFreq = explode(',', $reg['freqMat']);
-            if (!$A = getFrequenciaAbono($aluno, $atribuicao, $reg['data'])) {
-                $falta = $regFreq[0];
-                if ($falta) {
-                    $F = $falta;
-                } else {
-                    $F = str_repeat('*', $reg['quantidade']);
-                }
-            } else {
-                $F = $A['nome'];
-            }
             ?>
-            <tr <?= $cdif ?>><td align='left'><?= $reg['dataFormatada'] ?></td>
+            <tr <?= $cdif ?>>
+                <td align='left'><?= $reg['dataFormatada'] ?></td>
                 <td align='left'><?= $reg['conteudo'] ?></td>
-                <td align='center'><?= $F ?></td></tr>
+                <td align='center'><?= $reg['falta'] ?></td>
+            </tr>
             <?php
             $i++;
         }

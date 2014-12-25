@@ -117,7 +117,7 @@ if (isset($_GET["bimestre"]))
     });
 </script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <table align="center" id="form" width="100%">
     <tr><td align="right" style="width: 100px">Turma: </td><td>
@@ -157,16 +157,31 @@ if (isset($_GET["bimestre"]))
         <tr><td align="right">Bimestre: </td><td>
                 <select name="campoBimestre" id="campoBimestre">
                     <option></option>
-                    <option <?php if ($bimestre == '1') echo "selected='selected'";
-    else echo ""; ?> value="<?= crip(1) ?>">1º bimestre</option>
-                    <option <?php if ($bimestre == '2') echo "selected='selected'";
-    else echo ""; ?> value="<?= crip(2) ?>">2º bimestre</option>
-                    <option <?php if ($bimestre == '3') echo "selected='selected'";
-    else echo ""; ?> value="<?= crip(3) ?>">3º bimestre</option>
-                    <option <?php if ($bimestre == '4') echo "selected='selected'";
-    else echo ""; ?> value="<?= crip(4) ?>">4º bimestre</option>
-                    <option <?php if ($bimestre == 'final') echo "selected='selected'";
-    else echo ""; ?> value="<?= crip('final') ?>">Final</option>
+                    <option <?php if ($bimestre == '1')
+        echo "selected='selected'";
+    else
+        echo "";
+        ?> value="<?= crip(1) ?>">1º bimestre</option>
+                    <option <?php if ($bimestre == '2')
+                        echo "selected='selected'";
+                    else
+                        echo "";
+                    ?> value="<?= crip(2) ?>">2º bimestre</option>
+                    <option <?php if ($bimestre == '3')
+                        echo "selected='selected'";
+                    else
+                        echo "";
+        ?> value="<?= crip(3) ?>">3º bimestre</option>
+                    <option <?php if ($bimestre == '4')
+        echo "selected='selected'";
+    else
+        echo "";
+        ?> value="<?= crip(4) ?>">4º bimestre</option>
+                    <option <?php if ($bimestre == 'final')
+        echo "selected='selected'";
+    else
+        echo "";
+        ?> value="<?= crip('final') ?>">Final</option>
                 </select>
             </td>
         </tr>
@@ -180,7 +195,7 @@ if (!empty($_GET["turma"])) {
         $sqlBimestre = " IN (SELECT t1.codigo FROM Turmas t1 
 			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
 			WHERE t2.codigo = $turma)) AND a.bimestre=$bimestre ";
-    else 
+    else
         $sqlBimestre = " = $turma";
 
     // consulta no banco	
@@ -194,7 +209,7 @@ if (!empty($_GET["turma"])) {
 			WHERE a.turma 
 			$sqlBimestre 
 			ORDER BY a.bimestre, d.nome, al.nome";
-    echo $sql;
+    //echo $sql;
     $resultado = mysql_query($sql);
     if ($resultado)
         while ($l = mysql_fetch_array($resultado)) {
@@ -294,7 +309,7 @@ if (!empty($_GET["turma"])) {
                 if ($situacaoListar[$c][$dCodigo]) {
                     if ($situacaoHabilitar[$c][$dCodigo]) {
                         $dados = resultado($dMatricula[$c], $dCodigo);
-                        print "<td align='center'><a title='Situa&ccedil;&atilde;o: <b>" . $dados['situacao'] . "</b><br>Faltas: " . $dados['faltas'] . "<br>Aulas Dadas: " . $dados['auladada'] . "<br>Frequ&ecirc;ncia: " . arredondar($dados['frequencia']) . "%'><font color='" . $dados['color'] . "'>" . $dados['media'] . "</font></a></td>";
+                        print "<td align='center'><a title='Situa&ccedil;&atilde;o: " . $dados['situacao'] . "<br>Faltas: " . $dados['faltas'] . "<br>Aulas Dadas: " . $dados['auladada'] . "<br>Frequ&ecirc;ncia: " . arredondar($dados['frequencia']) . "%'><font color='" . $dados['color'] . "'>" . $dados['media'] . "</font></a></td>";
                     } else {
                         print "<td align='center'><a title='" . $situacaoNome[$c][$dCodigo] . "'>" . $situacaoSigla[$c][$dCodigo] . "</a></td>";
                     }
@@ -325,7 +340,11 @@ if (!empty($_GET["turma"])) {
         }
     print "</table>\n";
 }
+
+$_SESSION['VOLTAR'] = "index";
+$_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . crip($turma) . "&bimestre=" . crip($bimestre);
 ?>
+
 <div style="text-align: center; margin-top: 10px"><a id="atualizar" href="#" title="Atualizar"><img class="botao" src="<?php print ICONS; ?>/sync.png" /></a></div>
 
 <script>

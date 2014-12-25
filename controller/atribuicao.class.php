@@ -24,6 +24,7 @@ class Atribuicoes extends Generic {
     }
     
     // USADO POR: ALUNO/ALUNO.PHP, PROFESSOR/PROFESSOR.PHP, PROFESSOR/PLANO.PHP
+    // BOLETIM.PHP
     // Retorna dados da atribuicao (Disciplina, Turma, etc..)
     // Pode ser colocado com função no MySQL futuramente
     public function getAtribuicao($codigo, $LIMITE_AULA_PROF=0) {
@@ -31,8 +32,9 @@ class Atribuicoes extends Generic {
         
         $LIMITE_AULA_PROF1 = 365;
         
-        $sql = "SELECT d.nome as disciplina, t.numero as turma, c.nome as curso, a.status, a.prazo,
-                c.nomeAlternativo as cursoAlt, a.bimestre as bimestre, c.fechamento as fechamento,
+        $sql = "SELECT d.nome as disciplina, t.numero as turma, a.status, a.prazo,
+                IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
+                a.bimestre as bimestre, c.fechamento as fechamento,
         	t.semestre as semestre, t.ano as ano, t.codigo as turmaCodigo, a.subturma as subturma,
                 c.fechamento as fechamento, a.observacoes as observacoes, a.competencias as competencias,
                 m.codigo as codModalidade, m.nome as modalidade, d.ch as CH, a.aulaPrevista as aulaPrevista,

@@ -21,11 +21,16 @@ $res = $avaliacao->listAvaliacoesAluno($aluno, $atribuicao);
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-<div class='professores_textarea'>
+<div class='fundo_listagem'>
     <table width="100%" align="center" style="border: 0px solid black">
         <tr class="listagem_tr">
             <th align="center" style="width: 100px">Data</th>
-            <th align="center">Avalia&ccedil;&atilde;o</th><th width="50" align='center'>Nota</th>
+            <th align="center">Avalia&ccedil;&atilde;o</th>
+            <th align="center" style="width: 50px">Sigla</th>
+            <th align="center" style="width: 200px">Tipo</th>
+            <th align="center" style="width: 100px">C&aacute;lculo</th>
+            <th align="center" style="width: 40px">Peso</th>
+            <th width="50" align='center'>Nota</th>
         </tr>
         <?php
         $i = 0;
@@ -33,8 +38,13 @@ $res = $avaliacao->listAvaliacoesAluno($aluno, $atribuicao);
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
             ?>
             <tr <?= $cdif ?>><td align='left'><?= $reg['data'] ?></td>
-                <td align='left'><?= $reg['conteudo'] ?></td>
-                <td align='left'><?= $reg['falta'] ?></td></tr>
+                <td align='left'><?= $reg['nome'] ?></td>
+                <td align='left'><?= $reg['sigla'] ?></td>
+                <td align='left'><?= $reg['tipoAval'] ?></td>
+                <td align='left'><?= $$reg['calculo'] ?></td>
+                <td align='left'><?= $reg['peso'] ?></td>
+                <td align='left'><?= $reg['nota'] ?></td>
+            </tr>
             <?php
             $i++;
         }

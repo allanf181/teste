@@ -56,7 +56,7 @@ if ($res) {
         $professores[] = "<a target=\"_blank\" href=" . $reg['lattes'] . ">" . $reg['nome'] . "</a>";
     $professor = implode(" / ", $professores);
     ?>
-    <div class='professores_textarea'>
+    <div class='fundo_listagem'>
         <table border="1" width="100%" cellpadding="2" cellspacing="0">
             <tr><td colspan="2" align="center"><h3><font size="4">PLANO DE ENSINO</font></h3></td>
                 <td>CAMPUS: <b> <?php print $SITE_CIDADE; ?></b></td>

@@ -43,6 +43,7 @@ if ($codigo) { // se o parâmetro não estiver vazio
 
 
 ?>
+
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
@@ -57,7 +58,7 @@ if ($codigo) { // se o parâmetro não estiver vazio
 <div id="html5form" class="main">
 <form id="form_padrao">
 <input type="hidden" name="opcao" value="InsertOrUpdate" /> 
-<table width="100%" border="0" width="152" align="right">
+<table width="100%" border="0" width="152" align="right" id='form'>
     <tr>
         <td width="250" align="right">Estado Civil:</td>
         <td width="215"><select style="width:200px;" id="campoEstadoCivil" name="estadoCivil" value="<?php echo $estadoCivil; ?>">

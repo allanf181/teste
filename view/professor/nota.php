@@ -200,6 +200,8 @@ mysql_close($conexao);
 	<?php
 
     echo "<br><div style='margin: auto'><a href=\"javascript:$('#professor').load('".VIEW."/professor/avaliacao.php?atribuicao=".crip($atribuicao)."'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='" . ICONS . "/left.png'/></a></div>";
+    $_SESSION['VOLTAR'] = "professor";
+    $_SESSION['LINK'] = VIEW."/professor/nota.php?atribuicao=".crip($atribuicao)."&avaliacao=".crip($avaliacao);
 
     ?>
 <script>

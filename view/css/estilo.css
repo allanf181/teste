@@ -608,11 +608,32 @@ select{
     margin: 0 auto 0 auto;
 }
 
-.professores_textarea{
-    background: white;
+.ensalamento table{
+    border: 1px solid lightgray;
+    width: 730px; 
+    max-width: 730px; 
+    height: 100px;
+    max-height: 100px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ensalamento tr:not(.cdif){
+    background: #bedfc2;
+}
+
+.ensalamento tr th{
+    color: white;
+    text-align: center;
+    background: #70bb84;  
+}
+
+.fundo_listagem{
+    
     border: 10px solid white;
 }
-.professores_textarea textarea{
+.fundo_listagem textarea{
     border: 1px solid lightgray;
     width: 730px; 
     max-width: 730px; 
@@ -655,8 +676,10 @@ select{
 }
 
 #alunos_cabecalho img {
-    width: 100px; max-height: 130px;
+    width: 100px; 
+    max-height: 130px;
     border-right: 2px solid #bfe0c5;
+    margin-left: -613px;
 }
 
 .alunos_dados_nome{

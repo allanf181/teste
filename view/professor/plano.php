@@ -316,10 +316,10 @@ if ($_GET['pagina'] == "planoAula") {
             <table width="100%"><tr><td><input type="submit" <?= $disabled; ?> value="Salvar" /></td>
                     <td><a href="javascript:$('#professor').load('<?= "$SITE?pagina=planoAula&atribuicao=" . $_GET['atribuicao']; ?>'); void(0);">Novo/Limpar</a></td>
                 </tr></table>	
-            <br>
+            <br><br>
 
             <table id="listagem" border="0" align="center">
-                <tr><th align="center" width="80">Semana</th><th align="left">Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+                <tr class="listagem_tr"><th align="center" width="80">Semana</th><th align="left">Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
                 <?php
                 // efetuando a consulta para listagem
                 $i = 0;

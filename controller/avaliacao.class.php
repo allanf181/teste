@@ -1,35 +1,40 @@
 <?php
-if(!class_exists('Generic'))
-    require_once CONTROLLER.'/generic.class.php';
 
+if (!class_exists('Generic'))
+    require_once CONTROLLER . '/generic.class.php';
 
 class Avaliacoes extends Generic {
-    
-    public function __construct(){
+
+    public function __construct() {
         //
     }
-    
+
     // LISTA AVALIACOES DO ALUNO
-    // USADO POR: VIEW/ALUNO/AVALIACAO.PHP
+    // USADO POR: VIEW/ALUNO/AVALIACAO.PHP, BOLETIM.PHP
     public function listAvaliacoesAluno($aluno, $atribuicao) {
         $bd = new database();
-        
-        $sql = "SELECT date_format(a.data, '%d/%m/%Y') as data, a.nome as conteudo,
-    			(SELECT nota FROM Notas n, Matriculas m 
-    				WHERE n.matricula = m.codigo 
-    				AND m.aluno = :aluno
-    				AND m.atribuicao = :atr
-    				AND n.avaliacao = a.codigo) as falta 
-    			FROM Avaliacoes a WHERE a.atribuicao = :atr";
 
-        $params = array(':aluno'=> $aluno,':atr'=> $atribuicao);
+        $sql = "SELECT av.nome, av.sigla, ti.nome as tipoAval,
+                ti.tipo, DATE_FORMAT(av.data, '%d/%m/%Y') as data, 
+                n.nota as nota, UPPER(a.calculo) as calculo,
+                IF(av.peso > 0, av.peso, '') as peso
+    		FROM Atribuicoes a 
+    		left join Avaliacoes av on av.atribuicao=a.codigo 
+    		left join Matriculas m on m.atribuicao=a.codigo 
+    		left join Notas n on n.avaliacao=av.codigo and n.matricula=m.codigo
+		left join TiposAvaliacoes ti on av.tipo=ti.codigo
+ 		left join Pessoas al on m.aluno=al.codigo 
+ 		left join Situacoes s on s.codigo = m.situacao 
+ 		WHERE a.codigo=:atr 
+ 		AND m.aluno=:aluno
+ 		ORDER BY al.nome";
+
+        $params = array(':aluno' => $aluno, ':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
-        if ( $res )
-        {
+
+        if ($res) {
             return $res;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -38,13 +43,13 @@ class Avaliacoes extends Generic {
     // USADO POR: VIEW/PROFESSOR/AVALIACAO.PHP
     public function listAvaliacoes($atribuicao, $tipo = null) {
         $bd = new database();
-        
+
         if ($tipo == 'substitutiva')
             $sqlAdicional = " AND ( ( a.codigo NOT IN (SELECT a2.substitutiva FROM Avaliacoes a2 "
-                                                      . "WHERE a2.atribuicao = at.codigo AND a2.substitutiva IS NOT NULL) )"
-                            . " AND ( a.substitutiva IS NULL  )"
-                            . " AND ( a.tipo IN ( SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'avaliacao') ) )";
-        
+                    . "WHERE a2.atribuicao = at.codigo AND a2.substitutiva IS NOT NULL) )"
+                    . " AND ( a.substitutiva IS NULL  )"
+                    . " AND ( a.tipo IN ( SELECT codigo FROM TiposAvaliacoes WHERE tipo = 'avaliacao') ) )";
+
         $sql = "SELECT date_format(a.data, '%d/%m/%Y') dataFormatada, a.nome as nome,
 		a.peso, a.codigo, d.nome as disciplina, tu.nome as turno, a.data, a.tipo, at.status,
 		DATEDIFF(prazo, NOW()) as prazo, at.calculo, ti.tipo,
@@ -60,24 +65,22 @@ class Avaliacoes extends Generic {
             WHERE at.codigo = :atr
             AND at.turma=t.codigo 
             AND at.disciplina=d.codigo 
-            AND t.turno=tu.codigo";
+            AND t.turno=tu.codigo
+            ORDER BY a.data DESC";
 
         $params = array(':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
-        if ( $res )
-        {
+        if ($res) {
             return $res;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    
+
     // USADO POR: VIEW/PROFESSOR/PROFESSOR.PHP
     public function getQdeAvaliacoes($atribuicao) {
         $bd = new database();
-        
+
         $sql = "SELECT (SELECT count(av.codigo) 
                         FROM Avaliacoes av, TiposAvaliacoes t1 
                         WHERE av.tipo = t1.codigo 
@@ -92,18 +95,15 @@ class Avaliacoes extends Generic {
 		AND a.codigo = :atr
 		AND t.tipo = 'avaliacao'";
 
-        $params = array(':atr'=> $atribuicao);
+        $params = array(':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
-        if ( $res[0] )
-        {
+        if ($res[0]) {
             return $res[0];
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    
+
 }
 
 ?>

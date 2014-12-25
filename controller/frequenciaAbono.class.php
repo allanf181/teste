@@ -39,6 +39,48 @@ class FrequenciasAbonos extends Generic {
         }
     }
 
+    // VERIFICANDO OS ABONOS DO ALUNO
+    public function getFrequenciaAbono($aluno, $atribuicao, $data) {
+        $bd = new database();
+
+        $sql = "SELECT f.tipo as sigla,
+                CASE f.tipo WHEN 'A' THEN 'Abono'
+                WHEN 'R' THEN 'Regime de Exerc&iacute;cios Domiciliares'
+                WHEN 'M' THEN 'Matr&iacute;cula ap&oacute;s inicio letivo'
+                WHEN 'D' THEN 'Dispensa' END as tipo
+                FROM FrequenciasAbonos f
+                WHERE f.aluno = :aluno
+                AND ( (:data BETWEEN f.dataInicio AND f.dataFim)
+                        OR (f.dataInicio = :data)
+                    )
+                AND
+                (   (f.atribuicao = :atr)
+                    OR 
+                    (
+                        (f.aula = (SELECT h1.nome
+                            FROM Ensalamentos e1, Horarios h1
+                            WHERE e1.horario = h1.codigo
+                            AND e1.atribuicao=:atr LIMIT 1)
+                        )
+                        OR 
+                        ( f.aula =  (SELECT tu2.sigla
+                            FROM Atribuicoes a2, Turmas t2, Turnos tu2
+                            WHERE a2.turma = t2.codigo
+                            AND t2.turno = tu2.codigo
+                            AND a2.codigo=:atr LIMIT 1)
+                        ) 
+                    )
+                )";
+
+        $params = array('aluno' => $aluno, 'atr' => $atribuicao, 'data' => $data);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res)
+            return $res;
+        else
+            return false;
+    }
+    
     public function listAbonos($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 

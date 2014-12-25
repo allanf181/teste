@@ -161,7 +161,9 @@ if ( $status || ($_SESSION['dataExpirou'] && ($linha[7] < 0 || $linha[7]=='')))
 <?php
     echo "<br><div style='margin: auto'><a href=\"javascript:$('#professor').load('".VIEW."/professor/aula.php?atribuicao=".crip($atribuicao)."'); void(0);\" class='voltar' title='Voltar' ><img class='botao' src='" . ICONS . "/left.png'/></a></div>";
 
-    ?>
+    $_SESSION['VOLTAR'] = "professor";
+    $_SESSION['LINK'] = VIEW."/professor/frequencia.php?atribuicao=".crip($atribuicao)."&aula=".crip($aula);
+?>
 
 <script>
 $(document).ready(function(){

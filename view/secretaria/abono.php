@@ -12,7 +12,7 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 
-require CONTROLLER . "/abono.class.php";
+require CONTROLLER . "/frequenciaAbono.class.php";
 $abono = new FrequenciasAbonos();
 
 if ($_POST["opcao"] == 'InsertOrUpdate') {
@@ -114,7 +114,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                             $selected = "";
                             if ($reg['codigo'] == $aluno)
                                 $selected = "selected";
-                            print "<option $selected value='" . crip($reg['codigo']) . "'>[" . $reg['prontuario'] . "]" . $reg['nome'] . "</option>";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>[" . $reg['prontuario'] . "] " . $reg['nome'] . "</option>";
                         }
                         ?>
                     </select>

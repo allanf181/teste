@@ -5,7 +5,9 @@ function getFrequenciaAbono($aluno, $atribuicao, $data) {
         $sql = "SELECT f.tipo
                 FROM FrequenciasAbonos f
                 WHERE f.aluno = $aluno
-                AND '" . $data . "' BETWEEN f.dataInicio AND f.dataFim
+                AND ( ('" . $data . "' BETWEEN f.dataInicio AND f.dataFim)
+                        OR (f.dataInicio = '" . $data . "')
+                    )
                 AND
                 (   (f.atribuicao = $atribuicao)
                     OR 

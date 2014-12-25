@@ -1,9 +1,9 @@
 <?php
 
-if (!class_exists('Generic'))
-    require_once CONTROLLER . '/generic.class.php';
+if (!class_exists('Frequencias'))
+    require_once CONTROLLER . '/frequencia.class.php';
 
-class Aulas extends Generic {
+class Aulas extends Frequencias {
 
     public function __construct() {
         //
@@ -14,13 +14,7 @@ class Aulas extends Generic {
     public function listAulasAluno($codigo, $atribuicao) {
         $bd = new database();
 
-        $sql = "SELECT (
-		SELECT CONCAT_WS(',',f.quantidade,m.codigo)
-		FROM Frequencias f, Matriculas m
-		WHERE f.aula = a.codigo
-		AND f.matricula = m.codigo
-		AND m.aluno = :aluno
-		) as freqMat, a.quantidade as quantidade,
+        $sql = "SELECT a.quantidade as quantidade,
                 a.data as data, 
                 date_format(a.data, '%d/%m/%Y') as dataFormatada,
                 a.conteudo as conteudo
@@ -28,9 +22,25 @@ class Aulas extends Generic {
             WHERE a.atribuicao = :atr
             ORDER BY a.data, a.codigo";
 
-        $params = array(':aluno' => $aluno, ':atr' => $atribuicao);
+        $params = array(':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
         if ($res) {
+            $i=0;
+            foreach ($res as $reg) {
+                $regFreq = explode(',', $reg['freqMat']);
+                if (!$A = $this->getFrequenciaAbono($codigo, $atribuicao, $reg['data'])) {
+                    $falta = $regFreq[0];
+                    if ($falta) {
+                        $res[$i]['falta'] = $falta;
+                    } else {
+                        $res[$i]['falta'] = str_repeat('*', $reg['quantidade']);
+                    }
+                } else {
+                    $res[$i]['falta'] = $A[0]['tipo'];
+                }
+                $i++;
+            }
+            //print_r($new_res);
             return $res;
         } else {
             return false;
@@ -71,7 +81,7 @@ class Aulas extends Generic {
                     WHERE at.disciplina=d.codigo 
                     AND at.turma=t.codigo 
                     AND at.codigo= :cod
-                    ORDER BY data";
+                    ORDER BY data DESC";
 
         $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);

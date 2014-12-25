@@ -21,7 +21,7 @@ $res = $arq->listArquivos($params, $item, $itensPorPagina);
 ?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-<div class='professores_textarea'>
+<div class='fundo_listagem'>
     <table width="100%" align="center" style="border: 0px solid black">
         <tr class="listagem_tr">
         <th align="center" width="30">#</th><th align="center" width="300">Descri&ccedil;&atilde;o</th><th align="left" width="255">Link</th><th align="left">Arquivo</th><th align="left" width="160">Data</th></tr>

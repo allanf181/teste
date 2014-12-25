@@ -21,7 +21,7 @@ require PERMISSAO;
     ?>
     <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
     <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
-    <div class='professores_textarea'>
+    <div class='fundo_listagem'>
     <table width="100%" align="center" style="border: 0px solid black">
     <tr class="listagem_tr"><th align="center" style="width: 150px">Data</th>
         <th align="center">Conte&uacute;do</th></tr>

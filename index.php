@@ -237,7 +237,7 @@ if (isset($_SESSION["loginTipo"])) {
                 if (isset($disc[$ano]['A']['A']))
                     foreach ($disc[$ano]['A']['A'] as $atribuicao => $reg) { // ANUAL
                         ?>
-                        <li><a title="<?php print $reg[0].' - '.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
+                        <li><a title="<?php print $reg[0].'<br>'.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
                         <?php
                     }
                 foreach ($disc[$ano] as $semestre => $reg) {
@@ -249,7 +249,7 @@ if (isset($_SESSION["loginTipo"])) {
                         if (isset($disc[$ano][$semestre]['S'])) { // DISCIPLINA SEMESTRAL
                             foreach ($disc[$ano][$semestre]['S'] as $atribuicao => $reg) {
                                 ?>
-                                <li><a title="<?php print $reg[0].' - '.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
+                                <li><a title="<?php print $reg[0].'<br>'.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
                                 <?php
                             }
                         }
@@ -261,7 +261,7 @@ if (isset($_SESSION["loginTipo"])) {
                                 <?php
                                 foreach ($disc[$ano][$semestre]['B'][$bimestre] as $atribuicao => $reg) {
                                     ?>
-                                    <li><a title="<?php print $reg[0].' - '.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
+                                    <li><a title="<?php print $reg[0].'<br>'.$reg[3]; ?>" href="javascript:$('#index').load('<?php print VIEW."/".$menuDiferencial."/".$menuDiferencial.".php?atribuicao=".crip($reg[1]);?>'); void(0);"><span><?php print $reg[2]; ?></span></a></li>
                                     <?php
                                 }
                                 ?></ul></li><?php
@@ -271,7 +271,7 @@ if (isset($_SESSION["loginTipo"])) {
                     }
                 }
                 ?></ul></li><?php                    
-            } // FIM MENU PROFESSOR
+            } // FIM MENU PROFESSOR/ALUNO
         }
         require CONTROLLER . "/permissao.class.php";
         $permissao = new Permissoes();

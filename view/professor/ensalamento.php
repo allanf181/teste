@@ -52,13 +52,13 @@ if ($atribuicao)
     $MOSTRA = $discNome[$atribuicao];
 ?>
 <h2><font color="white"><?= $MOSTRA ?></h2>
-
-<center><table width="80%" border="0" summary="Calendário" id="tabela_boletim">
+<center>
+    <table width="80%" border="0" class='ensalamento'>
         <thead>
             <tr>
-<?php
-foreach (diasDaSemana() as $dCodigo => $dNome) {
-    ?>
+                <?php
+                foreach (diasDaSemana() as $dCodigo => $dNome) {
+                    ?>
                     <th abbr="Domingo" title="<?= $dNome ?>"><span style='font-weight: bold; color: white'><?= $dNome ?></span></th>
                     <?php
                 }
@@ -66,28 +66,28 @@ foreach (diasDaSemana() as $dCodigo => $dNome) {
             </tr>
         </thead>
         <tr align="center">
-<?php
-for ($i = 1; $i <= 7; $i++) {
-    $TA = '';
-    ?>
+            <?php
+            for ($i = 1; $i <= 7; $i++) {
+                $TA = '';
+                ?>
                 <td style='width: 10%' valign="top">
-                <?php
-                if (isset($horas[$i]))
-                    foreach ($horas[$i] as $disc) {
-                        preg_match('#\[(.*?)\]#', $disc, $match);
-                        $T = $match[1];
-                        if ($T != $TA) {
-                            print strtoupper($turnos[$T]) . "<hr>\n";
-                            $TA = $T;
-                        }
-                        print str_ireplace("[$match[1]]", "", $disc);
-                        print '<br>-----------------<br>';
-                    }
-                ?>
-                </td>
                     <?php
-                }
-                ?>
+                    if (isset($horas[$i]))
+                        foreach ($horas[$i] as $disc) {
+                            preg_match('#\[(.*?)\]#', $disc, $match);
+                            $T = $match[1];
+                            if ($T != $TA) {
+                                print strtoupper($turnos[$T]) . "<hr>\n";
+                                $TA = $T;
+                            }
+                            print str_ireplace("[$match[1]]", "", $disc);
+                            print '<br>-----------------<br>';
+                        }
+                    ?>
+                </td>
+                <?php
+            }
+            ?>
         </tr>
     </table>
 </center>

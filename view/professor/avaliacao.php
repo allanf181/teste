@@ -299,7 +299,7 @@ if ($_GET['opcao'] == '') {
         <table id="listagem" border="0" align="center">
             <tr><th width="40">#</th><th width="100">Data</th><th>Avalia&ccedil;&atilde;o</th><th>Sigla</th><th>Tipo</th><th width="150">Valor</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
             <?php
-            $i = 1;
+            $i = count($res);
             foreach ($res as $reg) {
                 $bimestre = $reg['bimestre'];
                 $recFinal .= $reg['final'];
@@ -317,7 +317,7 @@ if ($_GET['opcao'] == '') {
                 $reg['tipo'] = strtoupper($reg['tipo']);
                 $titleAval = strtoupper($reg['recuperacao']);
                 ?>
-                <tr <?= $cdif ?>><td><?= $i ?></td>
+                <tr <?= $cdif ?>><td><?= $i-- ?></td>
                     <td><a class='nav' title='Clique aqui para lan&ccedil;ar as notas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/nota.php?atribuicao=<?= crip($atribuicao) ?>&avaliacao=<?= crip($reg['codigo']) ?>'); void(0);"><?= $reg['dataFormatada'] ?></a></td>
                     <td><?= $reg['nome'] ?></td>
                     <td><?= $reg['sigla'] ?></td>
@@ -336,7 +336,6 @@ if ($_GET['opcao'] == '') {
                         </td>
                         <?php
                     }
-                    $i++;
                 }
                 ?>
         </table>
