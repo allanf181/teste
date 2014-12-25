@@ -1,4 +1,5 @@
 <?php
+
 if (!class_exists('Generic'))
     require_once CONTROLLER . '/generic.class.php';
 
@@ -45,16 +46,17 @@ class Atribuicoes extends Generic {
                 m.codigo as codModalidade, m.nome as modalidade, d.ch as CH, a.aulaPrevista as aulaPrevista,
                 IF(a.prazo, date_format(a.prazo, '%H:%i de %d/%m/%Y'), '') as prazoFormat,
                 DATEDIFF(NOW(), a.dataInicio) as diarioAberto,
-                DATEDIFF(a.prazo, NOW()) as prazoDiff, 
+                DATEDIFF(a.prazo, NOW()) as prazoDiff,
                 date_format( a.dataInicio, '%d/%m/%Y') as dataInicioFormat,
                 date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), '%d/%m/%Y') as dataFimFormat,
                 DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), NOW()) as dataFimDiff
-                FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
+                FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a, Matriculas ma
                 WHERE a.disciplina=d.codigo
                 AND t.curso=c.codigo
                 AND a.turma=t.codigo
                 AND t.turno=tu.codigo
                 AND m.codigo = c.modalidade
+                AND ma.atribuicao = a.codigo
                 AND a.codigo=:cod";
         $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);
@@ -265,7 +267,7 @@ class Atribuicoes extends Generic {
 
         $sql = "SELECT IF(a.bimestre > 0, CONCAT(' [', a.bimestre,'º BIM]'), '') as bimestre, a.codigo as atribuicao, 
                        d.nome as disciplina, d.numero as numero, 
-                        t.numero as turma, a.status,
+                        t.numero as turma, a.status, IF(a.bimestre > 0, CONCAT(' [', a.bimestre,'º BIM]'), '') as bimestreFormat,
                         IF(LENGTH(a.subturma) > 0,CONCAT(' [',a.subturma,']'),CONCAT(' [',a.eventod,']')) as subturma, 
                         IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
                             IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)) 
@@ -343,7 +345,7 @@ class Atribuicoes extends Generic {
                 if (!class_exists('NotasFinais'))
                     require CONTROLLER . "/notaFinal.class.php";
                 $nota = new NotasFinais();
-                
+
                 if ($nota->fecharDiario($atribuicao)) {
                     $params_nota = array('codigo' => $atribuicao);
                     $sql = "UPDATE NotasFinais SET sincronizado='' WHERE atribuicao=:codigo AND flag <> 5";
@@ -476,16 +478,14 @@ class Atribuicoes extends Generic {
 
         $sql = "SELECT 	al.codigo as codAluno, al.nome as aluno, 
                         d.codigo as codDiciplina, d.numero as numero, 
-                        d.nome as disciplina, m.situacao, a.status,
+                        d.nome as disciplina, a.status,
                 	m.codigo as codMatricula, a.codigo as atribuicao,
-                        s.listar, s.habilitar, s.nome as situacao, 
-                        s.sigla, a.bimestre, al.prontuario, t.nome as turno,
+                        a.bimestre, al.prontuario, t.nome as turno,
                         (SELECT numero FROM Turmas where codigo = a.turma) as turma
 			FROM Atribuicoes a 
 			LEFT JOIN Disciplinas d on a.disciplina=d.codigo 
 			LEFT JOIN Matriculas m on m.atribuicao=a.codigo 
 			LEFT JOIN Pessoas al on m.aluno=al.codigo
-			LEFT JOIN Situacoes s on m.situacao=s.codigo
                         LEFT JOIN Turnos t on t.codigo = a.periodo
 			WHERE a.turma 
 			$sqlAdicional
@@ -543,7 +543,7 @@ class Atribuicoes extends Generic {
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
         $sql = "SELECT DISTINCT p.prontuario, p.nome as pessoa, d.nome as disciplina,
-                    e.diaSemana, s.nome as sala,
+                    e.diaSemana, s.nome as sala, d.codigo as codDisciplina,
                     CONCAT(DATE_FORMAT(h.inicio, '%h:%i'), ' - ', DATE_FORMAT(h.fim, '%h:%i')) as horario
                     FROM Ensalamentos e, Atribuicoes a, Professores pr, Pessoas p,
                         Disciplinas d, Horarios h, Turmas t, Salas s, Cursos c
@@ -573,6 +573,35 @@ class Atribuicoes extends Generic {
         }
     }
 
+    // LISTA AS ATRIBUICOES DE DOCENTES
+    // USADO POR: RELATORIOS/LISTAGEM.PHP
+    public function getADToJSON($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
+        $res = $this->getAtribuicaoDocente($params, $sqlAdicional, $item, $itensPorPagina);
+
+        foreach ($res as $reg) {
+            if ($reg['prontuario'] != $pront) {
+                if ($total) {
+                    $item1[] = $pront;
+                    $item2[] = $total;
+                    $item3[] = count($disciplina);
+                }
+                $total = 0;
+                $disciplina = array();
+            } else {
+                $total++;
+                $disciplina[$reg['codDisciplina']] = $disciplina[$reg['codDisciplina']] + 1;
+            }
+            $pront = $reg['prontuario'];
+        }
+
+        $graph_data = array('item1Name' => 'Prontuário', 'item1' => $item1,
+            'item2Name' => 'Aulas', 'item2' => $item2,
+            'item3Name' => 'Disciplinas', 'item3' => $item3,
+            'title' => 'Atribuição Docente', 'titleY'=>'Quantidade', 'titleX'=>'Prontuário');
+
+        return json_encode($graph_data);
+    }
+
     // RETORNA OS DADOS DO BOLETIM INDIVIDUAL
     // USADO POR: SECRETARIA/RELATORIOS/BOLETIM.PHP
     public function getAtribuicoesFromBoletim($turma, $aluno = null) {
@@ -585,15 +614,13 @@ class Atribuicoes extends Generic {
 
         $sql = "SELECT al.codigo as codAluno, al.nome as aluno, d.codigo as codDisciplina, 
                         d.numero as numeroDisciplina, d.nome as disciplina, a.status,
-			m.codigo as matricula, a.codigo as atribuicao, s.listar, s.habilitar, 
-                        s.nome as situacao, s.sigla, a.bimestre, al.prontuario,
-			t.numero as turma,
+			m.codigo as matricula, a.codigo as atribuicao, a.bimestre,
+			t.numero as turma, al.prontuario,
                         IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso
 		FROM Atribuicoes a 
 		LEFT JOIN Disciplinas d on a.disciplina=d.codigo 
 		LEFT JOIN Matriculas m on m.atribuicao=a.codigo 
 		LEFT JOIN Pessoas al on m.aluno=al.codigo
-		LEFT JOIN Situacoes s on m.situacao=s.codigo
 		LEFT JOIN Turmas t on t.codigo=a.turma
 		LEFT JOIN Cursos c on c.codigo=t.curso
 		WHERE a.turma IN (SELECT t1.codigo FROM Turmas t1 

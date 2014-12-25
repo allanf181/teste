@@ -19,6 +19,9 @@ $att = new Atribuicoes();
 require CONTROLLER . '/avaliacao.class.php';
 $aval = new Avaliacoes();
 
+require CONTROLLER . '/situacao.class.php';
+$situacao = new Situacoes();
+
 if (dcrip($_GET["atribuicao"])) {
     $atribuicao = dcrip($_GET["atribuicao"]);
     $params['atribuicao'] = $atribuicao;
@@ -136,8 +139,8 @@ function cabecalho() {
 
     // 3ª LINHA
     global $aula, $qde_avaliacao, $atribuicao, $totalDias, $aulas;
- 
-    $aulas = $aula->listAulasProfessor($atribuicao, 'ORDER BY data ASC');
+
+    $aulas = $aula->listAulasProfessor($atribuicao, 'ORDER BY a.data ASC, a.codigo');
     // imprime o MES
     foreach ($aulas as $reg) {
         if ($mes = $reg['mes']) {
@@ -148,7 +151,7 @@ function cabecalho() {
             $quantidades += $quantidade;
         }
     }
-    
+
     $quantidadeTotal = $quantidades;
     $totalDias = intval((295 - $quantidadeTotal) / 4);
     $totalDias -= $qde_avaliacao * 3;
@@ -229,9 +232,9 @@ function cabecalho() {
     $pdf->Ln();
 }
 
-// Pular linha
-$i = 0;
 // Mostrando os alunos
+$situacoes = array();
+$i = 0;
 $params = array('atribuicao' => $atribuicao);
 $sqlAdicional = ' WHERE a.codigo=:atribuicao GROUP BY al.codigo ORDER BY al.nome ';
 foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
@@ -239,9 +242,6 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
         cabecalho();
 
     $nome = $reg['aluno'];
-    $snome = $reg['situacao'];
-    $slistagem = $reg['listar'];
-    $shabilitar = $reg['habilitar'];
     $prontuario = $reg['prontuario'];
     $matricula = $reg['matricula'];
     $aluno = $reg['codAluno'];
@@ -253,77 +253,77 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
     $pdf->Cell(15, $alturaLinha, "$prontuario", 1, 0, 'C', true);
     $pdf->Cell(6, $alturaLinha, "", 1, 0, 'C', true);
 
-    if ($shabilitar) {
-        if ($slistagem) {
-            // Verificar Frequencia
-            $quantidadeTotal = 0;
-            $resAula = $aula->listAulasAluno($aluno, $atribuicao, 'sigla');
-            foreach ($resAula as $reg) {
-                $quantidade = $reg['auladada'];
-                if ($quantidade <= 2)
-                    $quantidade = 3;
-                $quantidadeTotal += $quantidade;
+    // Verificar Frequencia
+    $quantidadeTotal = 0;
+    foreach ($aulas as $reg) {
+        $resAula = $aula->listAulasAluno($reg['codigo'], $aluno, 'sigla');
+        $quantidade = $resAula[0]['auladada'];
+        if ($quantidade <= 2)
+            $quantidade = 3;
+        $quantidadeTotal += $quantidade;
 
-                $pdf->SetFont($fonte, '', $tamanho - 3);
-                $pdf->Cell($quantidade, $alturaLinha, $reg['falta'], 1, 0, 'C', true);
-            }
-
-            // completa quadros
-            for ($j = 1; $j < ($totalDias); $j ++) {
-                $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
-            }
-
-            $pdf->Cell($larguraDia, $alturaLinha, "", 0, 0, 'C', true);
-
-            if ($qde_avaliacao != 0) {
-                foreach ($aval->getAvaliacoes($atribuicao) as $reg) {
-                    $pdf->SetFont($fonte, '', 6);
-                    $pdf->Cell($larguraDia, $alturaLinha, utf8_decode($reg['sigla']), 1, 0, 'C', true);
-                }
-            }
-
-            $pdf->SetFont($fonte, '', 4);
-            $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("MCC"), 1, 0, 'C', true);
-            $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("REC"), 1, 0, 'C', true);
-            $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("NCC"), 1, 0, 'C', true);
-            $pdf->SetFont($fonte, '', 5);
-
-
-            $params = array(':aluno' => $aluno, ':atribuicao' => $atribuicao);
-            $sqlAdicional = " AND ti.tipo <> 'recuperacao' ";
-            // Verificar Avalicao do Aluno
-            foreach ($aval->listAvaliacoesAluno($params, $sqlAdicional) as $reg) {
-                if ($reg['nome']) {
-                    if ($reg['peso'] && $reg['calculo'] == 'PESO')
-                        $reg['nota'] = round($reg['nota'] * $reg['peso'], 1);
-                    $pdf->Cell($larguraDia, $alturaLinha, $reg['nota'], 1, 0, 'C', true);
-                }
-            }
-
-            for ($t = $j; $t < $qde_avaliacao; $t++)
-                $pdf->Cell($larguraDia, $alturaLinha, '-', 1, 0, 'C', true);
-
-            $MEDIAS = $nota->resultado($matricula, $atribuicao);
-
-            // FECHAMENTO DE NOTAS
-            $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['mediaAvaliacao'], 1, 0, 'C', true);
-            $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['notaRecuperacao'], 1, 0, 'C', true);
-            $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['media'], 1, 0, 'C', true);
-            // FALTAS
-            $pdf->Cell(8, $alturaLinha, $MEDIAS['faltas'], 1, 0, 'C', true);
-        } else {
-            $pdf->Cell((($totalDias * 4) + $quantidadeTotal) - 4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
-        }
-    } else {
-        $pdf->Cell((($totalDias * 4) + $quantidadeTotal) - 4, $alturaLinha, mostraTexto(utf8_decode($snome)), 1, 0, 'C', true);
+        $situacoes[$resAula[0]['falta']] = $resAula[0]['falta'];
+        $pdf->SetFont($fonte, '', $tamanho - 3);
+        $pdf->Cell($quantidade, $alturaLinha, $resAula[0]['falta'], 1, 0, 'C', true);
     }
+
+    // completa quadros
+    for ($j = 1; $j < ($totalDias); $j ++) {
+        $pdf->Cell(4, $alturaLinha, "", 1, 0, 'C', true);
+    }
+
+    $pdf->Cell($larguraDia, $alturaLinha, "", 0, 0, 'C', true);
+
+    if ($qde_avaliacao != 0) {
+        foreach ($aval->getAvaliacoes($atribuicao) as $reg) {
+            $pdf->SetFont($fonte, '', 6);
+            $pdf->Cell($larguraDia, $alturaLinha, utf8_decode($reg['sigla']), 1, 0, 'C', true);
+        }
+    }
+
+    $pdf->SetFont($fonte, '', 4);
+    $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("MCC"), 1, 0, 'C', true);
+    $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("REC"), 1, 0, 'C', true);
+    $pdf->Cell($larguraDia, $alturaLinha, utf8_decode("NCC"), 1, 0, 'C', true);
+    $pdf->SetFont($fonte, '', 5);
+
+
+    $params = array(':aluno' => $aluno, ':atribuicao' => $atribuicao);
+    $sqlAdicional = " AND ti.tipo <> 'recuperacao' ";
+    // Verificar Avalicao do Aluno
+    foreach ($aval->listAvaliacoesAluno($params, $sqlAdicional) as $reg) {
+        if ($reg['nome']) {
+            if ($reg['peso'] && $reg['calculo'] == 'PESO')
+                $reg['nota'] = round($reg['nota'] * $reg['peso'], 1);
+            $pdf->Cell($larguraDia, $alturaLinha, $reg['nota'], 1, 0, 'C', true);
+        }
+    }
+
+    for ($t = $j; $t < $qde_avaliacao; $t++)
+        $pdf->Cell($larguraDia, $alturaLinha, '-', 1, 0, 'C', true);
+
+    $MEDIAS = $nota->resultado($matricula, $atribuicao);
+
+    // FECHAMENTO DE NOTAS
+    $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['mediaAvaliacao'], 1, 0, 'C', true);
+    $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['notaRecuperacao'], 1, 0, 'C', true);
+    $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['media'], 1, 0, 'C', true);
+    // FALTAS
+    $pdf->Cell(8, $alturaLinha, $MEDIAS['faltas'], 1, 0, 'C', true);
 
     $i++;
 
     // Pular linha
     $pdf->Ln();
 }
-$pdf->Ln();
+
+//IMPRIMINDO AS SITUACOES EXISTENTES NO DIÁRIO
+foreach ($situacao->listRegistros() as $reg) {
+    if (in_array($reg['sigla'], $situacoes)) {
+        $sigla = '| '. $reg['sigla'].': '.$reg['nome'];
+        $pdf->Cell(strlen($sigla), $alturaLinha, $sigla, 0, 0, 'C', true);
+    }
+}
 
 // /// VERSO
 $pdf->AliasNbPages();
@@ -367,8 +367,8 @@ $competencias = $aulas[0]['competencias'];
 $obs = explode("\n", wordwrap($observ, $limit2));
 $comp = explode("\n", wordwrap($competencias, $limit2));
 
-$k=0;
-$j=0;
+$k = 0;
+$j = 0;
 foreach ($aulas as $reg) {
     $dias = null;
     $aulasDadas = null;

@@ -81,7 +81,7 @@ foreach ($res as $reg) {
     $pdf->Cell(72, 5, utf8_decode($reg['disciplina']), 1, 0, 'L', true);
     $pdf->Cell(32, 5, html_entity_decode($dias[$reg['diaSemana']]), 1, 0, 'L', true);
     $pdf->Cell(22, 5, utf8_decode($reg['sala']), 1, 0, 'L', true);
-    $pdf->Cell(42, 5, utf8_decode($reg['sala']), 1, 0, 'L', true);
+    $pdf->Cell(42, 5, utf8_decode($reg['horario']), 1, 0, 'L', true);
 
     if ($reg['prontuario'] <> @$res[$i]['prontuario']) {
         $pdf->Cell(10, 5, utf8_decode($c), 1, 0, 'L', true);

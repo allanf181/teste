@@ -20,6 +20,9 @@ $nota = new Notas();
 require CONTROLLER . "/atribuicao.class.php";
 $atribuicao = new Atribuicoes();
 
+require CONTROLLER . "/matriculaAlteracao.class.php";
+$ma = new MatriculasAlteracoes();
+
 include PATH . LIB . '/fpdf17/pdfDiario.php';
 
 if (dcrip($_GET["turma"])) {
@@ -47,12 +50,12 @@ if (dcrip($_GET["turma"])) {
         $alunosProntuario[$reg['codAluno']] = $reg['prontuario'];
         $disciplinasMedia[$reg['atribuicao']] = $reg['numero'];
         $disciplinas[$reg['atribuicao']][$reg['codAluno']] = $reg['codMatricula'];
-        $situacaoListar[$reg['codAluno']][$reg['atribuicao']] = $reg['listar'];
-
         $disciplinasNomes[$reg['atribuicao']][$reg['numero']] = $reg['disciplina'] . " - " . $prof->getProfessor($reg['atribuicao'], 1, '', 0, 0);
-
-        $situacaoSigla[$reg['codAluno']][$reg['atribuicao']] = $reg['sigla'];
-        $situacaoNome[$reg['sigla']] = $reg['situacao'];
+        
+        $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $reg['atribuicao'], date('Y-m-d'));
+        $situacaoListar[$reg['codAluno']][$reg['atribuicao']] = $matSituacao['listar'];
+        $situacaoSigla[$reg['codAluno']][$reg['atribuicao']] = $matSituacao['sigla'];
+        $situacaoNome[$matSituacao['sigla']] = $matSituacao['tipo'];
     }
 
     $pdf = new PDF ();

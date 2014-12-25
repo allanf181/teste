@@ -11,7 +11,7 @@ class Aulas extends Frequencias {
 
     // LISTA OS CONTEUDOS DAS AULAS DO ALUNO
     // USADO POR: VIEW/ALUNO/AULA.PHP, VIEW/SECRETARIA/RELATORIOS/DIARIO.PHP
-    public function listAulasAluno($aluno, $atribuicao, $sigla=null) {
+    public function listAulasAluno($aula, $aluno, $sigla) {
         $bd = new database();
 
         $sql = "SELECT (
@@ -19,28 +19,37 @@ class Aulas extends Frequencias {
 			FROM Frequencias f, Matriculas m
 			WHERE f.matricula = m.codigo
                         AND f.aula = a.codigo
-			AND m.aluno = :cod
-                        AND m.atribuicao = :atr
+			AND m.aluno = :aluno
+                        AND m.atribuicao = a.atribuicao
                     LIMIT 1) as quantidade, 
-                    quantidade as auladada,a.data,
+                    quantidade as auladada,a.data, a.atribuicao,
                     date_format(a.data, '%d/%m/%Y') as dataFormatada,
                     a.conteudo as conteudo
 		FROM Aulas a
-		WHERE a.atribuicao = :atr
-		ORDER BY data, codigo";
-
-        $params = array(':cod' => $aluno, ':atr' => $atribuicao);
+		WHERE a.codigo = :aula";
+        $params = array('aluno' => $aluno, ':aula' => $aula);
         $res = $bd->selectDB($sql, $params);
+
         if ($res) {
+
+            if (!class_exists('MatriculasAlteracoes'))
+                require_once CONTROLLER . '/matriculaAlteracao.class.php';
+            $ma = new MatriculasAlteracoes();
+
             $i = 0;
             foreach ($res as $reg) {
-                if ($A = $this->getFrequenciaAbono($aluno, $atribuicao, $reg['data'])) {
-                    $res[$i]['falta'] = (!$sigla) ? $A['tipo']:$A['sigla'];
+                $M = $ma->getAlteracaoMatricula($aluno, $reg['atribuicao'], $reg['data']);
+                if ($M['habilitar'] || !$M) {
+                    if ($A = $this->getFrequenciaAbono($aluno, $reg['atribuicao'], $reg['data'])) {
+                        $res[$i]['falta'] = (!$sigla) ? $A['tipo'] : $A['sigla'];
+                    } else {
+                        if ($reg['quantidade'])
+                            $res[$i]['falta'] = $reg['quantidade'];
+                        else
+                            $res[$i]['falta'] = str_repeat('*', $reg['auladada']);
+                    }
                 } else {
-                    if ($reg['quantidade'])
-                        $res[$i]['falta'] = $reg['quantidade'];
-                    else
-                        $res[$i]['falta'] = str_repeat('*',$reg['auladada']);
+                    $res[$i]['falta'] = (!$sigla) ? $M['tipo'] : $M['sigla'];
                 }
                 $i++;
             }
@@ -70,7 +79,7 @@ class Aulas extends Frequencias {
 
     // LISTA AS AULAS AULAS DO PROFESSOR
     // USADO POR: VIEW/PROFESSOR/AULA.PHP
-    public function listAulasProfessor($atribuicao, $order=null) {
+    public function listAulasProfessor($atribuicao, $order = null) {
         $bd = new database();
 
         $sql = "SELECT date_format(data, '%d/%m/%Y') data_formatada,
@@ -90,6 +99,7 @@ class Aulas extends Frequencias {
 
         $params = array(':cod' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
+
         if ($res) {
             return $res;
         } else {
@@ -131,14 +141,16 @@ class Aulas extends Frequencias {
 
         $sql = "SELECT f.quantidade as frequencia, al.codigo as codAluno, 
                 al.nome as aluno, m.codigo as matricula, a.turma, a.bimestre, 
-                s.listar, s.habilitar, s.nome as situacao, al.prontuario, 
-                au.quantidade as aulaQde, f.codigo as freqCodigo
+                au.quantidade as aulaQde, f.codigo as freqCodigo, al.prontuario,
+                (SELECT s.nome FROM Situacoes s, MatriculasAlteracoes m1 
+                    WHERE m1.matricula = m.codigo 
+                    AND s.codigo = m1.situacao 
+                    ORDER BY m1.data DESC LIMIT 1) as situacao               
 		FROM Atribuicoes a 
 		left join Aulas au on au.atribuicao=a.codigo 
 		left join Matriculas m on m.atribuicao=a.codigo 
 		left join Frequencias f on f.aula=au.codigo and f.matricula=m.codigo 
 		left join Pessoas al on m.aluno=al.codigo 
-	        left join Situacoes s on s.codigo = m.situacao 
 		$sqlAdicional";
 
         $res = $bd->selectDB($sql, $params);
@@ -154,7 +166,7 @@ class Aulas extends Frequencias {
     public function listLancamentoAula($params, $sqlAdicional) {
         $bd = new database();
 
-        $sql = "SELECT SUBSTRING(p.nome, 1, 37) as professor, 
+        $sql = "SELECT SUBSTRING(p.nome, 1, 37) as professor, p.prontuario,
                 CONCAT(d.nome,' [',IFNULL(a.subturma, a.eventod),']', 
                 IF(a.bimestre>0, CONCAT(' [',a.bimestre,' BIM]'), '') ) as disciplina, d.ch,
                 (SELECT SUM(quantidade) FROM Aulas au WHERE au.atribuicao = a.codigo) as aulas,
@@ -168,14 +180,35 @@ class Aulas extends Frequencias {
                 AND t.codigo = a.turma
                 AND a.disciplina = d.codigo
                 $sqlAdicional";
-        
+
         $res = $bd->selectDB($sql, $params);
         if ($res) {
             return $res;
         } else {
             return false;
         }
-    }    
+    }
+
+    // LISTA OS PROFESSORES X LANÇAMENTO DE AULAS
+    // USADO POR: VIEW/SECRETARIA/RELATORIOS/LISTAGEM.PHP
+    public function listLAToJSON($params, $sqlAdicional) {
+        $sqlAdicional .= ' AND t.ano=:ano AND (t.semestre=:semestre OR t.semestre=0) GROUP BY a.codigo ORDER BY p.nome ';
+        $res = $this->listLancamentoAula($params, $sqlAdicional);
+
+        foreach ($res as $reg) {
+            $item1[] = $reg['prontuario'];
+            $item2[] = intval(($reg['aulaPrevista']) ? $reg['aulaPrevista'] : $reg['ch']);
+            $item3[] = intval( ($reg['aulas']) ? $reg['aulas'] : 0 );
+        }
+
+        $graph_data = array('item1Name' => 'Prontuário', 'item1' => $item1,
+            'item2Name' => 'Aulas Previstas/CH', 'item2' => $item2,
+            'item3Name' => 'Aulas Dadas', 'item3' => $item3,
+            'title' => 'Lançamento de Aulas', 'titleY' => 'Quantidade', 'titleX' => 'Prontuário');
+
+        return json_encode($graph_data);
+    }
+
 }
 
 ?>

@@ -18,6 +18,9 @@ $att = new Atribuicoes();
 require CONTROLLER . "/logSolicitacao.class.php";
 $log = new LogSolicitacoes();
 
+require CONTROLLER . "/logEmail.class.php";
+$logEmail = new LogEmails();
+
 require CONTROLLER . "/coordenador.class.php";
 $coordenador = new Coordenadores();
 
@@ -68,7 +71,6 @@ if ($_GET["opcao"] == 'controleDiario') {
     }
 }
 
-$atribuicao = $_GET["atribuicao"];
 ?>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>

@@ -32,9 +32,12 @@ class Notas extends Frequencias {
 
         // PEGANDO AS MATRICULAS E ATRIBUICOES DOS 4 BIMESTRES
         $sql = "SELECT ma.codigo as matricula, a.codigo as atribuicao,
-		(SELECT habilitar FROM Situacoes WHERE codigo = ma.situacao) as habilitado,
-			ma.situacao as situacao, d.numero as numero,
-			a.bimestre as bimestre
+		(SELECT habilitar FROM Situacoes s, MatriculasAlteracoes m1 
+                    WHERE m1.matricula = ma.codigo 
+                    AND s.codigo = m1.situacao 
+                    ORDER BY m1.data DESC LIMIT 1) as habilitado,
+                d.numero as numero,
+		a.bimestre as bimestre
 		FROM Turmas t, Cursos c, Modalidades m, Matriculas ma, 
                     Atribuicoes a, Pessoas p, Disciplinas d
 		WHERE c.modalidade = m.codigo 
@@ -267,8 +270,12 @@ class Notas extends Frequencias {
         $bd = new database();
 
         $sql = "SELECT ma.codigo as matricula, a.codigo as atribuicao,
-			ma.situacao as situacao, c.fechamento as fechamento,
-                        d.numero as numero
+			c.fechamento as fechamento,
+                        d.numero as numero,
+                        (SELECT habilitar FROM Situacoes s, MatriculasAlteracoes m1 
+                            WHERE m1.matricula = ma.codigo 
+                            AND s.codigo = m1.situacao 
+                            ORDER BY m1.data DESC LIMIT 1) as situacao
 			FROM Turmas t, Cursos c, Modalidades m, Matriculas ma, 
                             Atribuicoes a, Pessoas p, Disciplinas d
 			WHERE c.modalidade = m.codigo 

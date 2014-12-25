@@ -39,6 +39,8 @@ $situacoes = new Situacoes();
             <th align="center" width="40">#</th>
             <th align="left">Situação</th>
             <th>Sigla</th>
+            <th>Listar</th>
+            <th>Habilitar</th>
         </tr>
         <?php
         // efetuando a consulta para listagem
@@ -51,6 +53,8 @@ $situacoes = new Situacoes();
                 <td align='center'><?= $i ?></td>
                 <td><?= $reg['nome'] ?></td>
                 <td><?= $reg['sigla'] ?></td>
+                <td><?= ($reg['listar'])?'Sim':'Não'; ?></td>
+                <td><?= ($reg['habilitar'])?'Sim':'Não'; ?></td>
             </tr>
             <?php
             $i++;

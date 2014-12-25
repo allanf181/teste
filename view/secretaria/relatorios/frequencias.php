@@ -18,11 +18,14 @@ $professor = new Professores();
 require CONTROLLER . "/frequencia.class.php";
 $frequencia = new Frequencias();
 
+require CONTROLLER . "/aula.class.php";
+$aula = new Aulas();
+
 $data = date("d/m/Y", time()); // data atual
 
 if (isset($_GET["mes"])) {
     $mes = $_GET["mes"];
-    $sqlAdicional = " WHERE date_format(au.data, '%m')=$mes+1 ";
+    $sqlAdicional = " AND date_format(au.data, '%m')=$mes+1 ";
 }
 
 if (dcrip($_GET["turma"])) {
@@ -121,8 +124,9 @@ if ($turma) {
         $datas[] = $reg['dataFormatada'];
         $aulas[$reg['dataFormatada']][$reg['codAula']] = $reg['quantidade'];
         $disciplinas[$reg['codAula']] = $reg['disciplina'];
-        $frequencias[$reg['codAluno']][$reg['codAula']] = ($A = $frequencia->getFrequenciaAbono($reg['matricula'], $reg['atribuicao'], $reg['data'])) ? $A['sigla'] : $reg['frequencia'];
-        $nomes[$reg['codAluno']] = $reg['aluno'];
+        $falta = $aula->listAulasAluno($reg['codAula'], $reg['aluno'], 'sigla');
+        $frequencias[$reg['codAluno']][$reg['codAula']] = $falta[0]['falta'];
+        $nomes[$reg['codAluno']] = $reg['aluno'].' ('.$reg['situacao'].')';
         $professores[$reg['codAula']] = $professor->getProfessor($reg['atribuicao'], 1, '', 0, 0);
     }
 }

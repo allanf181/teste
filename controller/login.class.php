@@ -9,6 +9,9 @@ if (!class_exists('PessoasTipos'))
 if (!class_exists('Instituicoes'))
     require_once CONTROLLER . '/instituicao.class.php';
 
+if (!class_exists('Logs'))
+    require_once CONTROLLER . '/log.class.php';
+
 class login extends Generic {
 
     public function __construct() {
@@ -71,7 +74,6 @@ class login extends Generic {
 
         if ($res) {
             $pessoa = new PessoasTipos();
-
             $_SESSION["loginCodigo"] = $res[0]['codigo'];
             $_SESSION["loginNome"] = $res[0]['nome'];
             $_SESSION["loginTipo"] = $pessoa->getTipoPessoa($res[0]['codigo']);
@@ -79,6 +81,13 @@ class login extends Generic {
             $_SESSION["loginPassword"] = crip($res[0]['senha']);
             $_SESSION["loginEmail"] = $res[0]['email'];
             $_SESSION["loginDataSenha"] = $res[0]['dataSenha'];
+
+            $log = new Logs();
+            $paramsLog['url'] = getClientIP();
+            $paramsLog['data'] = date('Y-m-d H:i:s');
+            $paramsLog['origem'] = 'LOGIN';
+            $paramsLog['pessoa'] = $res[0]['codigo'];
+            $log->insertOrUpdate($paramsLog);            
             return true;
         } else {
             return false;

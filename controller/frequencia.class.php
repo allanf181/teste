@@ -44,9 +44,14 @@ class Frequencias extends FrequenciasAbonos {
 
         $sql = "SELECT a.data, a.quantidade, p.prontuario, p.nome as aluno,
                 f.quantidade, a.atribuicao, d.nome as disciplina, p.codigo as codigo,
-                IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso
+                IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
+                (SELECT s.habilitar FROM Situacoes s, MatriculasAlteracoes ma
+                    WHERE ma.situacao = s.codigo 
+                    AND ma.matricula = m.codigo 
+                    ORDER BY ma.data DESC LIMIT 1) 
                 FROM Aulas a, Frequencias f, Matriculas m, Pessoas p,
-                    Disciplinas d, Turmas t, Cursos c, Atribuicoes at
+                    Disciplinas d, Turmas t, Cursos c, Atribuicoes at, 
+                    MatriculasAlteracoes ma, Situacoes s
                 WHERE f.matricula = m.codigo
                 AND a.codigo = f.aula
                 AND p.codigo = m.aluno
@@ -54,6 +59,11 @@ class Frequencias extends FrequenciasAbonos {
                 AND at.turma = t.codigo
                 AND t.curso = c.codigo
                 AND d.codigo = at.disciplina
+                AND ma.matricula = m.codigo
+                AND ma.situacao = s.codigo
+                AND ma.data = (SELECT MAX(data) FROM MatriculasAlteracoes WHERE matricula = m.codigo)
+                AND s.listar = 1
+                AND s.habilitar = 1
                 AND DATE_FORMAT(a.data, '%m') = :mes
                 AND DATE_FORMAT(a.data, '%Y') = :ano
                 ORDER BY p.nome";
@@ -154,20 +164,32 @@ class Frequencias extends FrequenciasAbonos {
         		IfNULL(f.quantidade,0) as frequencia, upper(p.nome) as aluno,
                         au.codigo as codAula, d.nome as disciplina, sum(au.quantidade) as aulas,
         		at.codigo as atribuicao, au.data as data, m.aluno as matricula,
-                        au.quantidade, s.nome as situacao, p.prontuario, m.codigo as codMatricula,
+                        au.quantidade, p.prontuario, m.codigo as codMatricula,
                         p.rg,t.numero as turma,
+                        (SELECT s.nome 
+                            FROM MatriculasAlteracoes ma, Situacoes s 
+                            WHERE s.codigo = ma.situacao 
+                            AND ma.matricula = m.codigo 
+                            ORDER BY ma.data DESC LIMIT 1 
+                        ) as situacao,
                         IF(at.bimestre = 0 AND t.semestre <> 0, CONCAT(t.semestre,'º semestre'),
                             CONCAT(at.bimestre,'º bimestre')) as bimestreFormat,
                         IF(LENGTH(at.subturma) > 0,at.subturma,at.eventod) as subturma                            
-                FROM Atribuicoes at
-                join Disciplinas d on at.disciplina=d.codigo
-                join Aulas au on au.atribuicao=at.codigo
-                join Frequencias f on f.aula=au.codigo
-                join Matriculas m on f.matricula=m.codigo
-                join Situacoes s on s.codigo=m.situacao 
-                join Pessoas p on m.aluno=p.codigo
-                join Turmas t on t.codigo = at.turma
-                join Cursos c on c.codigo = t.curso
+                FROM Atribuicoes at, Disciplinas d, Aulas au,
+                Frequencias f, Matriculas m, MatriculasAlteracoes ma,
+                Pessoas p, Turmas t, Cursos c, Situacoes s
+                WHERE at.disciplina=d.codigo
+                AND au.atribuicao=at.codigo
+                AND f.aula=au.codigo
+                AND f.matricula=m.codigo
+                AND m.aluno=p.codigo
+                AND t.codigo = at.turma
+                AND c.codigo = t.curso
+                AND ma.matricula = m.codigo
+                AND ma.situacao = s.codigo
+                AND ma.data = (SELECT MAX(data) FROM MatriculasAlteracoes WHERE matricula = m.codigo)
+                AND s.listar = 1
+                AND s.habilitar = 1
                 $sqlAdicional
                 order by au.data, p.nome";
         
@@ -180,6 +202,33 @@ class Frequencias extends FrequenciasAbonos {
         }
     }
 
+    // RETORNA OS DADOS DA LISTAGEM DE FREQUENCIAS
+    // USADO POR: SECRETARIA/RELATORIOS/LISTAGEM.PHP,
+    public function getLFToJSON($params, $sqlAdicional) {
+        $sqlAdicional .= ' group by at.codigo, p.codigo ';
+        $res = $this->getListaFrequencias($params, $sqlAdicional);
+
+        $item = array();
+        foreach ($res as $reg) {
+            $dados = $this->getFrequencia($reg['codMatricula'], $reg['atribuicao']);
+            $item[$reg['prontuario']]['frequencia'] += intval($dados['frequencia']);
+            $item[$reg['prontuario']]['count'] += 1;
+        }
+        
+        foreach ($item as $k => $i) {
+            $item1[] = $k;
+            $item2[] = intval($i['frequencia']/$i['count']);
+        }
+
+        $graph_data = array('item1Name' => 'Prontuário', 'item1' => $item1,
+            'item2Name' => 'Frequência', 'item2' => $item2,
+            'item3Name' => ' ', 'item3' => $item3,
+            'title' => 'Relatório de Frequência', 
+            'titleY' => 'Porcentagem (todas as disciplinas)',
+            'titleX' => 'Prontuário');
+
+        return json_encode($graph_data);
+    }    
 }
 
 ?>

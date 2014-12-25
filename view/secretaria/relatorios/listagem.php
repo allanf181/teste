@@ -9,8 +9,6 @@ require '../../../inc/config.inc.php';
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
-require PERMISSAO;
-require SESSAO;
 
 require CONTROLLER . '/atribuicao.class.php';
 $atribuicao = new Atribuicoes();
@@ -45,14 +43,44 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     $sqlAdicionalCurso = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord)";
 }
 
-
 if (isset($_GET["bimestre"]))
     $bimestre = dcrip($_GET["bimestre"]);
-?>
 
+// MOSTRANDO OS GRÁFICOS
+if ($_GET['opcao'] == 'grafico') {
+    if ($_GET['relatorio'] == 'docente') {
+        $params['ano'] = $ANO;
+        $params['semestre'] = $SEMESTRE;
+        print $atribuicao->getADToJSON($params, $sqlAdicional);
+        exit;
+    }
+    if ($_GET['relatorio'] == 'lancamentos') {
+        $params['ano'] = $ANO;
+        $params['semestre'] = $SEMESTRE;
+        require CONTROLLER . '/aula.class.php';
+        $aula = new Aulas();        
+        print $aula->listLAToJSON($params, $sqlAdicional);
+        exit;
+    }
+    if ($_GET['relatorio'] == 'frequencia' && $_GET['curso'] && $_GET['turma']) {
+        require CONTROLLER . '/frequencia.class.php';
+        $frequencia = new Frequencias();        
+        print $frequencia->getLFToJSON($params, $sqlAdicional);
+        exit;
+    }
+    if ($_GET['relatorio'] == 'matriculasTotais' && $_GET['curso']) {
+        require CONTROLLER . '/matricula.class.php';
+        $matricula = new Matriculas();
+        print $matricula->getMToJSON($params, $sqlAdicional);
+        exit;
+    }
+}
+
+require PERMISSAO;
+require SESSAO;
+?>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
-
 <?php
 $tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2, 'turno' => 1);
 $tipo['atendimento'] = array('nome' => 'Atendimento');
@@ -70,7 +98,7 @@ $tipo['ftdr'] = array('nome' => 'FTD Resumida', 'professor' => 1);
 $tipo['lancamentos'] = array('nome' => 'Lançamento de Aulas', 'curso' => 2, 'turma' => 1);
 $tipo['chamada'] = array('nome' => 'Lista de Chamada', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['matriculas'] = array('nome' => 'Lista de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
-$tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'turno' => 1, 'data' => 1, 'assunto'=>1);
+$tipo['presenca'] = array('nome' => 'Lista de Presença', 'curso' => 1, 'turma' => 1, 'turno' => 1, 'data' => 1, 'assunto' => 1);
 $tipo['planoEnsino'] = array('nome' => 'Planos de Ensino', 'curso' => 1, 'turma' => 1, 'disciplina' => 1);
 $tipo['frequencia'] = array('nome' => 'Relatório de Frequências', 'curso' => 1, 'turma' => 1, 'disciplina' => 1, 'data' => 1);
 $tipo['matriculasTotais'] = array('nome' => 'Totalização de Matrículas', 'curso' => 2, 'turma' => 1, 'turno' => 1, 'situacao' => 1);
@@ -119,8 +147,7 @@ $rel_assunto = null;
 
     <!-- ================================ -->         	
 
-    <?php 
-    if ($relatorio == 'alunos') { ?>
+    <?php if ($relatorio == 'alunos') { ?>
         <tr>
             <td colspan="3">&nbsp;</td>
         </tr>
@@ -141,8 +168,7 @@ $rel_assunto = null;
     <tr>
         <td colspan="3">&nbsp;</td>
     </tr>
-    <?php 
-    if ($rel_curso) { ?>
+    <?php if ($rel_curso) { ?>
         <tr>
             <td>Curso: </td>
             <td>
@@ -165,8 +191,7 @@ $rel_assunto = null;
             </td>
         </tr>
     <?php } ?>
-    <?php 
-    if ($rel_turma) { ?>
+    <?php if ($rel_turma) { ?>
         <tr>
             <td>Turma: </td>
             <td>
@@ -184,14 +209,16 @@ $rel_assunto = null;
                         $selected = "";
                         if ($reg['codTurma'] == $turma)
                             $selected = "selected";
-                        print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] ."</option>";
+                        print "<option $selected value='" . crip($reg['codTurma']) . "'>" . $reg['numero'] . "</option>";
                     }
                     ?>
                 </select>
             </td>
         </tr>
-    <?php } 
-    if ($rel_fechamento) { ?>
+        <?php
+    }
+    if ($rel_fechamento) {
+        ?>
         <tr>
             <td>Fechamento: </td>
             <td>
@@ -202,7 +229,7 @@ $rel_assunto = null;
                         $selected = "";
                         if ($reg['value'] == $bimestre)
                             $selected = "selected";
-                        print "<option $selected value='" . crip($reg['value']) . "'>" . $reg['nome'] ."</option>";
+                        print "<option $selected value='" . crip($reg['value']) . "'>" . $reg['nome'] . "</option>";
                     }
                     ?>
                 </select>
@@ -223,34 +250,38 @@ $rel_assunto = null;
                         $selected = "";
                         if ($reg['atribuicao'] == $disciplina)
                             $selected = "selected";
-                        print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['disciplina'] . $reg['bimestre'] . $reg['subturma'] ." [".$reg['turno']."]</option>";
+                        print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['disciplina'] . $reg['bimestre'] . $reg['subturma'] . " [" . $reg['turno'] . "]</option>";
                     }
                     ?>
                 </select>
             </td></tr>
-    <?php } 
-    
-    if ($rel_turno) { ?>
+        <?php
+    }
+
+    if ($rel_turno) {
+        ?>
         <tr><td>Per&iacute;odo: </td>
-        <td>
-            <select name="turno" id="turno" value="<?= $turno ?>">
-                <option></option>
-                <?php
-                require CONTROLLER . '/turno.class.php';
-                $turnos = new Turnos();
-                foreach ($turnos->listRegistros() as $reg) {
-                    $selected = "";
-                    if ($reg['codigo'] == $turno)
-                        $selected = "selected";
-                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
-                }
-                ?>
-            </select>
-        </td>
-    </tr>
-    <?php } 
-    
-    if ($rel_aluno) { ?>
+            <td>
+                <select name="turno" id="turno" value="<?= $turno ?>">
+                    <option></option>
+                    <?php
+                    require CONTROLLER . '/turno.class.php';
+                    $turnos = new Turnos();
+                    foreach ($turnos->listRegistros() as $reg) {
+                        $selected = "";
+                        if ($reg['codigo'] == $turno)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <?php
+    }
+
+    if ($rel_aluno) {
+        ?>
         <tr>
             <td>Aluno: </td>
             <td>
@@ -264,70 +295,78 @@ $rel_assunto = null;
                                     AND m.aluno = p.codigo 
                                     AND t.codigo = :turma
                                     GROUP BY p.codigo)";
-                        $paramsAluno = array('turma' => $turma);
-                        foreach ($pessoa->listPessoasTipos($paramsAluno, $sqlAdicionalAluno, null, null) as $reg) {
-                            $selected = "";
-                            if ($reg['codigo'] == $aluno)
-                                $selected = "selected";
-                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
-                        }
-                        ?>
+                    $paramsAluno = array('turma' => $turma);
+                    foreach ($pessoa->listPessoasTipos($paramsAluno, $sqlAdicionalAluno, null, null) as $reg) {
+                        $selected = "";
+                        if ($reg['codigo'] == $aluno)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                    }
+                    ?>
                 </select>
             </td>
         </tr>
-    <?php } 
-    if ($rel_situacao) { ?>
+        <?php
+    }
+    if ($rel_situacao) {
+        ?>
         <tr>
             <td>Situa&ccedil;&atilde;o: </td>
             <td>
                 <select name="situacao" id="situacao" style="width: 350px">
                     <option value="">Todas as situa&ccedil;&otilde;es</option>
                     <?php
-                        require CONTROLLER . '/situacao.class.php';
-                        $situacao = new Situacoes();
-                        $sqlAdicionalSit = "AND t.codigo = :turma";
-                        $paramsSit = array('turma' => $turma);
-                        foreach ($situacao->getSituacoes($paramsSit, $sqlAdicionalSit) as $reg) {
-                            $selected = "";
-                            if ($reg['codigo'] == $situacao)
-                                $selected = "selected";
-                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
-                        }
-                        ?>
+                    require CONTROLLER . '/situacao.class.php';
+                    $situacao = new Situacoes();
+                    $sqlAdicionalSit = "AND t.codigo = :turma";
+                    $paramsSit = array('turma' => $turma);
+                    foreach ($situacao->getSituacoesOfTurma($paramsSit, $sqlAdicionalSit) as $reg) {
+                        $selected = "";
+                        if ($reg['codigo'] == $situacao)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                    }
+                    ?>
                 </select>
             </td>
         </tr>
-    <?php }
-    if ($rel_professor) { ?>
+        <?php
+    }
+    if ($rel_professor) {
+        ?>
         <tr>
             <td>Professor: </td>
             <td>
                 <select name="professor" id="professor" style="width: 350px">
-                    <option selected value="<?=crip('Todos')?>">Todos</option>
+                    <option selected value="<?= crip('Todos') ?>">Todos</option>
                     <?php
-                        $sqlAdicionalProf = ' AND pt.tipo = :prof ';
-                        $paramsProf = array('prof' => $PROFESSOR);
-                        foreach ($pessoa->listPessoasTipos($paramsProf, $sqlAdicionalProf, null, null) as $reg) {
-                            $selected = "";
-                            if ($reg['codigo'] == $aluno)
-                                $selected = "selected";
-                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
-                        }
-                        ?>
+                    $sqlAdicionalProf = ' AND pt.tipo = :prof ';
+                    $paramsProf = array('prof' => $PROFESSOR);
+                    foreach ($pessoa->listPessoasTipos($paramsProf, $sqlAdicionalProf, null, null) as $reg) {
+                        $selected = "";
+                        if ($reg['codigo'] == $aluno)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                    }
+                    ?>
                 </select>
             </td>
         </tr>
-    <?php }
-    if ($rel_data) { ?>
+        <?php
+    }
+    if ($rel_data) {
+        ?>
         <tr>
             <td>Data: </td>
             <td>
                 <input value="<?= $data ?>" readonly type="text" class="data1" name="data" id="data" />
             </td>
         </tr>
-    <?php }
-    
-    if ($rel_assunto) { ?>
+        <?php
+    }
+
+    if ($rel_assunto) {
+        ?>
         <tr>
             <td>Assunto: </td>
             <td>
@@ -341,25 +380,89 @@ $rel_assunto = null;
         <td colspan="3">&nbsp;</td>
     </tr>
     <tr>
-    <td width="120">
-        <a href="#" title="Imprimir em PDF" onclick="relatorio('pdf', '<?= $relatorio ?>')">
-            <img style="width: 30px" src="<?= ICONS ?>/files/pdf.png" />
-        </a>
-        <?php if ($relatorio == 'alunos') { ?>
-            <a href="#" title="Imprimir em HTML" onclick="relatorio('html', '<?= $relatorio ?>')">
-                <img style="width: 30px" src="<?= ICONS ?>/files/htm.png" />
+        <td width="120">
+            <a href="#" title="Imprimir em PDF" onclick="relatorio('pdf', '<?= $relatorio ?>')">
+                <img style="width: 30px" src="<?= ICONS ?>/files/pdf.png" />
             </a>
-            <a href="#" title="Imprimir em XLS" onclick="relatorio('xls', '<?= $relatorio ?>')">
-                <img style="width: 30px" src="<?= ICONS ?>/files/xls.png" />
-            </a>        
-        <?php } ?>
-    </td>
+            <?php if ($relatorio == 'alunos') { ?>
+                <a href="#" title="Imprimir em HTML" onclick="relatorio('html', '<?= $relatorio ?>')">
+                    <img style="width: 30px" src="<?= ICONS ?>/files/htm.png" />
+                </a>
+                <a href="#" title="Imprimir em XLS" onclick="relatorio('xls', '<?= $relatorio ?>')">
+                    <img style="width: 30px" src="<?= ICONS ?>/files/xls.png" />
+                </a>        
+            <?php } ?>
+        </td>
     </tr>
 <?php } ?>
 </table>
 
+<div id="container"></div>
+<script src="<?= VIEW ?>/js/highcharts/highcharts.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/highcharts/exporting.js" type="text/javascript"></script>
+
+
+<?php
+    if ($relatorio == 'docente' || $relatorio == 'lancamentos' 
+            || $relatorio == 'frequencia' || $relatorio == 'matriculasTotais') {
+    ?>
+    <script>
+                        var options = {
+                            chart: {
+                                renderTo: 'chart',
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {},
+                            xAxis: {
+                                categories: [{}],
+                                title: {},
+                            },
+                            yAxis: {
+                                title: {},
+                            },
+                            tooltip: {
+                                formatter: function () {
+                                    var s = '<b>' + this.x + '</b>';
+
+                                    $.each(this.points, function (i, point) {
+                                        s += '<br/>' + point.series.name + ': ' + point.y;
+                                    });
+
+                                    return s;
+                                },
+                                shared: true
+                            },
+                            series: [{}, {}]
+                        };
+                        
+                        var curso = $('#curso').val();
+                        var turma = $('#turma').val();
+
+                        $.ajax({
+                            url: "<?= VIEW ?>/secretaria/relatorios/listagem.php?opcao=grafico&relatorio=<?= $relatorio ?>&curso=" + curso + "&turma=" + turma,
+                            data: 'show=impression',
+                            type: 'post',
+                            dataType: "json",
+                            success: function (data) {
+                                options.xAxis.categories = data.item1;
+                                options.series[0].name = data.item2Name;
+                                options.series[0].data = data.item2;
+                                options.series[1].name = data.item3Name;
+                                options.series[1].data = data.item3;
+                                options.title.text = data.title;
+                                options.xAxis.title.text = data.titleX;
+                                options.yAxis.title.text = data.titleY;
+                                $('#container').highcharts(options);
+                            }
+                        });
+    </script>
+    <?php
+}
+?>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#data").datepicker({
             dateFormat: 'dd/mm/yy',
             dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
@@ -371,13 +474,14 @@ $rel_assunto = null;
             prevText: 'Anterior'
         });
 
-        $('#turma, #curso, #relatorio, #bimestre').change(function() {
+        $('#turma, #curso, #relatorio, #bimestre').change(function () {
             var turma = $('#turma').val();
             var curso = $('#curso').val();
             var bimestre = $('#bimestre').val();
             $('#index').load('<?= $SITE ?>?relatorio=' + $('#relatorio').val() + '&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre);
         });
     });
+
     function relatorio(impressao, tipo) {
         var bimestre = $('#bimestre').val();
         var aluno = $('#aluno').val();
@@ -389,7 +493,7 @@ $rel_assunto = null;
         var data = $('#data').val();
         var professor = $('#professor').val();
         var assunto = encodeURIComponent($('#assunto').val());
-        
+
         var rg = $('#alunos_rg').is(':checked');
         var cpf = $('#alunos_cpf').is(':checked');
         var nasc = $('#alunos_nasc').is(':checked');
@@ -413,5 +517,4 @@ $rel_assunto = null;
         else
             window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno, '_blank');
     }
-
 </script>

@@ -35,7 +35,7 @@ if (isset($_GET["codigo"])) {
     }
 
     $params = array('codigo' => dcrip($_GET["codigo"]));
-    $sqlAdicional = ' AND m.codigo = :codigo ';
+    $sqlAdicional = ' AND m.codigo = :codigo GROUP BY m.codigo ORDER BY a.bimestre, p.nome';
     $linha = $matricula->getMatriculas($params, $sqlAdicional);
 
     $res = $atribuicao->getAtribuicao($linha[0]['atribuicao']);

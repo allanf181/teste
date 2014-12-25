@@ -18,6 +18,9 @@ $freq = new Frequencias();
 require CONTROLLER . "/aula.class.php";
 $aulaFreq = new Aulas();
 
+require CONTROLLER . "/matriculaAlteracao.class.php";
+$ma = new MatriculasAlteracoes();
+
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_GET["aula"] = $_POST["aula"];
     $_GET["atribuicao"] = $_POST["atribuicao"];
@@ -87,39 +90,37 @@ $dadosAula = $aulaFreq->getAula($aula);
                     </td>
                     <?php
                     $frequencia = $freq->getFrequencia($reg['matricula'], $atribuicao);
-
-                    if ($reg['listar']) {
-                        if ($reg['habilitar']) {
-                            ?>
-                            <td align='left'>
-                                <?php
-                                if (!$A = $freq->getFrequenciaAbono($reg['codAluno'], $atribuicao, $dadosAula['data'])) {
-                                    ?>
-                                    <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['freqCodigo'] ?>'>
-                                    <input <?= $disabled ?> type='hidden' checked name='matricula[<?= $reg['matricula'] ?>][<?= $reg['matricula'] ?>]' />
-                                    <?php
-                                    for ($n = 0; $n < $reg['aulaQde']; $n++) {
-                                        if (substr($reg['frequencia'], $n, 1) == 'F')
-                                            $F = 'checked';
-                                        else
-                                            $F = '';
-                                        ?>
-                                        <input id='<?= $reg['matricula'] ?>' class='<?= $reg['matricula'] ?>' <?= $disabled ?> tabindex='<?= $i ?>' type='checkbox' <?= $F ?> name='matricula[<?= $reg['matricula'] ?>][<?= $n ?>]' />
-                                        <?php
-                                    }
-                                } else {
-                                    print $A['tipo'];
-                                }
+                    $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $atribuicao, $dadosAula['data']);
+                    if ($matSituacao['listar'] && $matSituacao['habilitar']) {
+                        ?>
+                        <td align='left'>
+                            <?php
+                            if (!$A = $freq->getFrequenciaAbono($reg['codAluno'], $atribuicao, $dadosAula['data'])) {
                                 ?>
-                            </td>
-                            <td align='center'><?= $frequencia['faltas'] ?></td>
-                            <td align='center'><?= arredondar($frequencia['frequencia']) ?>%</td>
-                            <?php
-                        } else {
+                                <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['freqCodigo'] ?>'>
+                                <input <?= $disabled ?> type='hidden' checked name='matricula[<?= $reg['matricula'] ?>][<?= $reg['matricula'] ?>]' />
+                                <?php
+                                for ($n = 0; $n < $reg['aulaQde']; $n++) {
+                                    if (substr($reg['frequencia'], $n, 1) == 'F')
+                                        $F = 'checked';
+                                    else
+                                        $F = '';
+                                    ?>
+                                    <input id='<?= $reg['matricula'] ?>' class='<?= $reg['matricula'] ?>' <?= $disabled ?> tabindex='<?= $i ?>' type='checkbox' <?= $F ?> name='matricula[<?= $reg['matricula'] ?>][<?= $n ?>]' />
+                                    <?php
+                                }
+                            } else {
+                                print $A['tipo'];
+                            }
                             ?>
-                            <td align='center' colspan='3'><?= $reg['situacao'] ?></td>
-                            <?php
-                        }
+                        </td>
+                        <td align='center'><?= $frequencia['faltas'] ?></td>
+                        <td align='center'><?= arredondar($frequencia['frequencia']) ?>%</td>
+                        <?php
+                    } else {
+                        ?>
+                        <td align='center' colspan='3'><?= $matSituacao['tipo'] ?></td>
+                        <?php
                     }
                     $i++;
                     ?>

@@ -10,12 +10,14 @@ class Situacoes extends Generic {
     
     // USADO POR: RELATORIOS.PHP
     // Retornas situacoes de uma determinada turma
-    public function getSituacoes($params, $sqlAdicional) {
+    public function getSituacoesOfTurma($params, $sqlAdicional) {
         $bd = new database();
         
         $sql = "SELECT s.codigo, s.nome 
-                    FROM Situacoes s, Matriculas m, Atribuicoes a, Turmas t, Cursos c
-	            WHERE s.codigo = m.situacao
+                    FROM Situacoes s, Matriculas m, MatriculasAlteracoes ma, 
+                        Atribuicoes a, Turmas t, Cursos c
+	            WHERE s.codigo = ma.situacao
+                    AND ma.matricula = m.codigo
 	            AND m.atribuicao = a.codigo
 	            AND t.codigo = a.turma
 	            AND c.codigo = t.curso
@@ -29,7 +31,7 @@ class Situacoes extends Generic {
             return $res;
         else
             return false;
-    }    
+    }
 }
 
 ?>

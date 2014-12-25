@@ -4,7 +4,7 @@ include_once "inc/config.inc.php";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title><?= $SITE_TITLE ?></title>
+    <title></title>
 <meta http-equiv="Content-Language" content="pt-br" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="shortcut icon" type="image/x-icon" href="<?= ICONS ?>/favicon.ico" />
@@ -56,6 +56,11 @@ include_once "inc/config.inc.php";
             time_over();
             first = 1;
         }
+        
+        if (first) {
+            document.title = 'SESSÃO: ' + minutes + "min" + secs;
+        }
+        
         try { document.getElementById('sessaoTimeOver').innerHTML = x1; } catch (e) {}
         window.start= window.start- 1;
         tt=display_c(window.start);
@@ -73,14 +78,14 @@ include_once "inc/config.inc.php";
             align: 'center'
         });
 
-    $('#setTroca').click(function() {
-        var ano = $('#campoAnoIndex').val();
-        var semestre = $('#campoSemestreIndex').val();
-        $(document).ready(function() {
-            $('#sessaoTime').load('home.php?ano='+ano+'&semestre='+semestre);
-            $('#index').prepend('<font color="red">Conteúdo do semestre anterior, faça uma nova consulta...</font>');
+        $('#setTroca').click(function() {
+            var ano = $('#campoAnoIndex').val();
+            var semestre = $('#campoSemestreIndex').val();
+            $(document).ready(function() {
+                $('#sessaoTime').load('home.php?ano='+ano+'&semestre='+semestre);
+                $('#index').prepend('<font color="red">Conteúdo do semestre anterior, faça uma nova consulta...</font>');
+            });
         });
-    });
     
         $(window).scroll(function () {
             if ($(this).scrollTop() > 100) {
@@ -96,8 +101,7 @@ include_once "inc/config.inc.php";
             }, 600);
             return false;
         });
-    
-});
+    });
 </script>
 </head>
 <?php
@@ -130,7 +134,6 @@ if (isset($nome)) {
     ?>
     <script> 
         display_c(<?= $TIMEOUT*60 ?>); 
-        document.title = '<?= $SITE_TITLE ?>';
     </script>    
     <div id="header" style='height: 80px;'>
     </div>
@@ -342,14 +345,20 @@ if (isset($_SESSION["loginTipo"])) {
 </html>
 
 <script>
+    document.title = '<?= $SITE_TITLE ?>';
+    
     function time_over() {
         $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, sua sess&atilde;o vai expirar em <div id="sessaoTimeOver"></div></strong>', {
             'type': 'question',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption) {
+                document.title = '<?= $SITE_TITLE ?>';
+                first=0;
                 if (caption == 'Sim') {
                     $('#sessaoTime').load('home.php?time_over=1');
+                } else {
+                    $('#index').load('<?= VIEW ?>/logoff.php');
                 }
             }
         });

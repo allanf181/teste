@@ -81,7 +81,7 @@ if ($result)
     mysql_query("UPDATE Instituicoes SET versaoAtual = '$result'");
 
 // DELETANDO LOGS ANTIGOS
-mysql_query("DELETE FROM Logs WHERE datediff(now(), data) > 30");
+mysql_query("DELETE FROM Logs WHERE origem LIKE 'CRON%' AND datediff(now(), data) > 30");
 
 //ENVIA OS BOLETINS DIÁRIOS
 require CONTROLLER . "/logEmail.class.php";

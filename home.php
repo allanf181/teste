@@ -3,6 +3,18 @@ include_once "inc/config.inc.php";
 
 require VARIAVEIS;
 require FUNCOES;
+
+$user = $_SESSION["loginCodigo"];
+
+require CONTROLLER . "/log.class.php";
+
+// GERANDO GRAFICO DE ACESSOS
+if ($_GET['opcao'] == 'grafico' && $_GET['relatorio'] == 'lastAccess') {
+    $log = new Logs();
+    print $log->getLOGINToJSON($user, 'acesso');
+    exit;
+}
+
 require SESSAO;
 
 // verifica se não está sendo chamado diretamente.
@@ -28,13 +40,10 @@ require CONTROLLER . "/pessoa.class.php";
 require CONTROLLER . "/professor.class.php";
 require CONTROLLER . "/aulaTroca.class.php";
 require CONTROLLER . "/aluno.class.php";
-require CONTROLLER . "/log.class.php";
 require CONTROLLER . "/tdDado.class.php";
 require CONTROLLER . "/aviso.class.php";
 require CONTROLLER . "/atendimento.class.php";
 require CONTROLLER . "/coordenador.class.php";
-
-$user = $_SESSION["loginCodigo"];
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
@@ -92,7 +101,7 @@ $user = $_SESSION["loginCodigo"];
                 // Verifica se há correções no Plano de Ensino
                 checaPlanoEnsino();
                 // Verifica se o professor digitou o horário de atendimento
-                //checaAtendimentoAluno();
+                checaAtendimentoAluno();
             }
             ?>
         </td>
@@ -120,6 +129,9 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     // Verifica se há FPA, PIT e RIT para validar.
     checaLibTD();
 }
+
+// MOSTRA AS ESTATISTICAS DOS ULTIMOS ACESSOS
+showLastAccess();
 
 ///////////////////////// FUNCOES ////////////////////////////////////
 function senhaInfo() {
@@ -220,7 +232,7 @@ function checkCoordHasCursoArea($coord) {
         $resp1 = "Aten&ccedil;&atilde;o Coordenador, sua &aacute;rea de atua&ccedil;&atilde;o n&atilde;o foi definida. Solicitar ao respons&aacute;vel o cadastro para acesso a FPA, PIT e RIT de seus professores.";
         $resp2 = "Aten&ccedil;&atilde;o Coordenador, seu curso de atua&ccedil;&atilde;o n&atilde;o foi definido. Solicitar ao respons&aacute;vel o cadastro para acesso aos Di&aacute;rios, Planos de Ensino/Aula, FPA, PIT e RIT de seus professores.";
     } else {
-        $link .= "<br><a href=\"javascript:$('#index').load('".VIEW."/secretaria/cursos/coordenador.php'); void(0);\">Clique aqui para definir</a>";        
+        $link .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/secretaria/cursos/coordenador.php'); void(0);\">Clique aqui para definir</a>";
         $resp1 = "Aten&ccedil;&atilde;o, as &aacute;reas de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidas. $link";
         $resp2 = "Aten&ccedil;&atilde;o, os cursos de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidos. $link";
         print "<br />";
@@ -708,6 +720,65 @@ function checaLibTD() {
         </table>
         <?php
     }
+}
+
+function showLastAccess() {
+    ?>
+    <br />
+    <br />
+    <hr />
+    <div id="container" style="position: static; min-width: 310px; height: 300px; margin: 0 auto"></div>
+    <script src="<?= VIEW ?>/js/highcharts/highcharts.js" type="text/javascript"></script>
+    <script src="<?= VIEW ?>/js/highcharts/exporting.js" type="text/javascript"></script>
+
+    <script>
+        var options = {
+            chart: {
+                type: 'column',
+            },
+            credits: {
+                enabled: false
+            },
+            title: {},
+            xAxis: {
+                categories: [{}],
+                title: {},
+            },
+            yAxis: {
+                title: {},
+            },
+            tooltip: {
+                formatter: function () {
+                    var s = '<b>' + this.x + '</b>';
+
+                    $.each(this.points, function (i, point) {
+                        s += '<br/>' + point.series.name + ': ' + point.y;
+                    });
+
+                    return s;
+                },
+                shared: true
+            },
+            series: [{}]
+        };
+
+        $.ajax({
+            url: "home.php?opcao=grafico&relatorio=lastAccess",
+            data: 'show=impression',
+            type: 'post',
+            dataType: "json",
+            success: function (data) {
+                options.xAxis.categories = data.item1;
+                options.series[0].name = data.item2Name;
+                options.series[0].data = data.item2;
+                options.title.text = data.title;
+                options.xAxis.title.text = data.titleX;
+                options.yAxis.title.text = data.titleY;
+                $('#container').highcharts(options);
+            }
+        });
+    </script>
+    <?php
 }
 ?>
 <script>

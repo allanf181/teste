@@ -25,7 +25,6 @@ class Avaliacoes extends Generic {
     		left join Notas n on n.avaliacao=av.codigo and n.matricula=m.codigo
 		left join TiposAvaliacoes ti on av.tipo=ti.codigo
  		left join Pessoas al on m.aluno=al.codigo 
- 		left join Situacoes s on s.codigo = m.situacao 
  		WHERE a.codigo=:atribuicao 
  		AND m.aluno=:aluno
                 $sqlAdicional";
@@ -111,8 +110,8 @@ class Avaliacoes extends Generic {
 
         $sql = "SELECT IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, c.nome) as curso,
                 t.codigo as turmaCodigo, t.ano as ano, t.semestre as semestre,
-                av.codigo as avalCodigo, date_format(av.data, '%d/%m/%Y') data,
-                av.peso as peso, av.nome as nome, ti.tipo as tipo,
+                av.codigo as avalCodigo, date_format(av.data, '%d/%m/%Y') dataFormat,
+                av.peso as peso, av.nome as nome, ti.tipo as tipo, av.data,
 		DATEDIFF(a.prazo, NOW()) as prazo, a.status as status,
 		d.numero as discNumero, a.bimestre as bimestre, ti.final,
                 t.numero as turma, a.calculo as calculo,
@@ -142,15 +141,13 @@ class Avaliacoes extends Generic {
     public function getNotasAlunosOfAvaliacao($atribuicao, $avaliacao) {
         $bd = new database();
         $sql = "SELECT al.codigo as codAluno, m.codigo as matricula,
-                n.nota, al.nome as aluno, s.listar, s.habilitar, 
-                s.nome as situacao, a.turma, a.bimestre, al.prontuario, 
+                n.nota, al.nome as aluno, a.turma, a.bimestre, al.prontuario, 
                 n.codigo as codNota
 		FROM Atribuicoes a 
 		left join Avaliacoes av on av.atribuicao=a.codigo 
 		left join Matriculas m on m.atribuicao=a.codigo 
 		left join Notas n on n.avaliacao=av.codigo and n.matricula=m.codigo 
 		left join Pessoas al on m.aluno=al.codigo 
-                left join Situacoes s on s.codigo = m.situacao 
 		WHERE a.codigo=:atribuicao 
                 AND av.codigo=:avaliacao 
                 ORDER BY al.nome";

@@ -297,7 +297,7 @@ if ($VALIDO)
                                 }
                                 $IS = $p . $l . $c;
                                 ?>
-                                <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[<?= $IS ?>]" value="<?=$horarios[$n]?>" type="text" size="10" maxlength="10"  /></td>
+                                <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[<?= $IS ?>]" value="<?=$horarios[$n]?>" type="text" size="10" maxlength="45"  /></td>
                                 <?php
                                 $c++;
                                 $n++;

@@ -24,6 +24,9 @@ $att = new Atribuicoes();
 require CONTROLLER . "/matricula.class.php";
 $matricula = new Matriculas();
 
+require CONTROLLER . "/matriculaAlteracao.class.php";
+$ma = new MatriculasAlteracoes();
+
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_GET["avaliacao"] = $_POST["avaliacao"];
     $_GET["atribuicao"] = $_POST["atribuicao"];
@@ -50,12 +53,13 @@ $travaFinal = $resAval['final'];
     Curso: <?= $resAval['curso'] ?><br />
     Turma: <?= $resAval['turma'] ?><br />
     Semestre: <?= $resAval['semestre'] ?> / <?= $resAval['ano'] ?><br />
-    Notas para: <?= $resAval['nome'] ?> de <?= $resAval['data'] ?>
+    Notas para: <?= $resAval['nome'] ?> de <?= $resAval['dataFormat'] ?>
     <?php if ($resAval['calculo'] == 'peso') { ?>
         (peso: <?= $resAval['peso'] ?>)
-    <?php 
+        <?php
         $resAval['notaMaxima'] = '10';
-    } ?>
+    }
+    ?>
     <br> Nota m&aacute;xima permitida: <?= $resAval['notaMaxima'] ?>
     <br />
 </div>
@@ -128,80 +132,82 @@ if ($_SESSION['dataExpirou'])
                     </td>
                     <td align='center'>
                         <?php
-                        if ($reg['listar']) {
-                            if ($reg['habilitar']) {
-                                ?>
-                                <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
-                                <input <?= $disabled ?> id='<?= $i ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
-                                <?php
-                                $situacao = array();
-                                if ($reg['bimestre'] > 0) { // Busca as Notas dos Bimestres
-                                    foreach ($AT_BIM as $nBim => $at) {
-                                        $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0);
-                                        if ($reg['bimestre'] == $nBim && $res['final'] == 0) {
-                                            $color = 'blue';
-                                            $situacao[$reg['codAluno']] = abreviar($dados['situacao'], 14);
-                                        } else{
-                                            $color = null;
-                                        }
-                                        ?>
-                                    <td align='center'><font color='<?= $color ?>'><?= $dados['media'] ?></font></td>
-                                    <?php
-                                }
-                                
-                                if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']] )
-                                    $resAval['final'] = 1;
-                                $dados1 = $nota->resultadoBimestral($reg['codAluno'], $resAval['turmaCodigo'], $resAval['discNumero'], $resAval['final']);
-                                if ($resAval['final'])
-                                    $color = 'blue';
-                                else
-                                    $color = '';
-                                ?>
-                                <td align='center'><font color="<?= $color ?>"><?= $dados1['media'] ?></font></td>
-                                <?php
-                                if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']] )  {
-                                    ?>
-                                    <td align='center'><?= abreviar($dados1['situacao'], 24) ?></td>
-                                    <?php //TRAVANDO PARA REAVALIACAO FINAL
-                                    $trava=null;
-                                    if ( $travaFinal && !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
-                                        ?>
-                                        <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
-                                        <?php
+                        $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $atribuicao, $resAval['data']);
+                        if ($matSituacao['listar'] && $matSituacao['habilitar']) {
+                            ?>
+                            <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
+                            <input <?= $disabled ?> id='<?= $i ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
+                            <?php
+                            $situacao = array();
+                            if ($reg['bimestre'] > 0) { // Busca as Notas dos Bimestres
+                                foreach ($AT_BIM as $nBim => $at) {
+                                    $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0);
+                                    if ($reg['bimestre'] == $nBim && $res['final'] == 0) {
+                                        $color = 'blue';
+                                        $situacao[$reg['codAluno']] = abreviar($dados['situacao'], 14);
+                                    } else {
+                                        $color = null;
                                     }
-                                }
-                                ?>
-                                <td align='center'><?=$situacao[$reg['codAluno']]?></td>
-                                <?php //TRAVANDO PARA RECUPERACAO
-                                if ( !$travaFinal && !$situacao[$reg['codAluno']] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                     ?>
-                                    <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
+                                <td align='center'><font color='<?= $color ?>'><?= $dados['media'] ?></font></td>
+                                <?php
+                            }
+
+                            if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']])
+                                $resAval['final'] = 1;
+                            $dados1 = $nota->resultadoBimestral($reg['codAluno'], $resAval['turmaCodigo'], $resAval['discNumero']);
+                            if ($resAval['final'])
+                                $color = 'blue';
+                            else
+                                $color = '';
+                            ?>
+                            <td align='center'><font color="<?= $color ?>"><?= $dados1['media'] ?></font></td>
+                            <?php
+                            if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']]) {
+                                ?>
+                                <td align='center'><?= abreviar($dados1['situacao'], 24) ?></td>
+                                <?php
+                                //TRAVANDO PARA REAVALIACAO FINAL
+                                $trava = null;
+                                if ($travaFinal && !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
+                                    ?>
+                                            <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
                                     <?php
                                 }
-                            } else {
-                                $dados = $nota->resultado($reg['matricula'], $atribuicao, $resAval['final']);
+                            }
+                            ?>
+                            <td align='center'><?= $situacao[$reg['codAluno']] ?></td>
+                            <?php
+                            //TRAVANDO PARA RECUPERACAO
+                            if (!$travaFinal && !$situacao[$reg['codAluno']] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                 ?>
-                                <td align='center'><?= $dados['media'] ?></td>
-                                <td align='center'><?= $dados['situacao'] ?></td>
-                                <?php // TRAVANDO PARA ATRIBUICOES NAO BIMESTRAIS
-                               if ( !$dados['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota'] ) {
-                                    ?>
-                                    <script> $('#<?= $i ?>').attr('disabled','disabled'); </script>
-                                    <?php
-                                }                                
+                                        <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
+                                <?php
                             }
                         } else {
+                            $dados = $nota->resultado($reg['matricula'], $atribuicao, $resAval['final']);
                             ?>
-                            <td align='center' colspan='6'><?=$reg['situacao']?></td>
+                            <td align='center'><?= $dados['media'] ?></td>
+                            <td align='center'><?= $dados['situacao'] ?></td>
+                            <?php
+                            // TRAVANDO PARA ATRIBUICOES NAO BIMESTRAIS
+                            if (!$dados['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
+                                ?>
+                            <script> $('#<?= $i ?>').attr('disabled', 'disabled');</script>
                             <?php
                         }
                     }
+                } else {
                     ?>
-                    </tr>
+                    <td align='center' colspan='6'><?= $matSituacao['tipo'] ?></td>
                     <?php
-                    $i++;
                 }
                 ?>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
         </table>
         <table align="center">
             <tr><td></td><td>
@@ -218,8 +224,8 @@ if ($_SESSION['dataExpirou'])
 
 <br>
 <div style='margin: auto'>
-    <a href="javascript:$('#professor').load('<?=VIEW?>/professor/avaliacao.php?atribuicao=<?=crip($atribuicao)?>'); void(0);" class='voltar' title='Voltar' >
-        <img class='botao' src='<?=ICONS?>/left.png'/>
+    <a href="javascript:$('#professor').load('<?= VIEW ?>/professor/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='voltar' title='Voltar' >
+        <img class='botao' src='<?= ICONS ?>/left.png'/>
     </a>
 </div>
 <?php

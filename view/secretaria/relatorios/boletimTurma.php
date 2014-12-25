@@ -22,6 +22,9 @@ $nota = new Notas();
 require CONTROLLER . "/atribuicao.class.php";
 $atribuicao = new Atribuicoes();
 
+require CONTROLLER . "/matriculaAlteracao.class.php";
+$ma = new MatriculasAlteracoes();
+
 if (dcrip($_GET["turma"]))
     $turma = dcrip($_GET["turma"]);
 
@@ -136,11 +139,13 @@ if ($turma && $fechamento) {
         $alunos[$reg['codAluno']] = $reg['aluno'];
         $disciplinasMediaNome[$reg['numero']] = $reg['numero'];
         $disciplinas[$reg['atribuicao']][$reg['codAluno']] = $reg['codMatricula'];
-        $situacaoListar[$reg['codAluno']][$reg['atribuicao']] = $reg['listar'];
-        $situacaoHabilitar[$reg['codAluno']][$reg['atribuicao']] = $reg['habilitar'];
-        $situacaoNome[$reg['codAluno']][$reg['atribuicao']] = $reg['situacao'];
-        $situacaoSigla[$reg['codAluno']][$reg['atribuicao']] = $reg['sigla'];
 
+        $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $reg['atribuicao'], date('Y-m-d'));
+        $situacaoListar[$reg['codAluno']][$reg['atribuicao']] = $matSituacao['listar'];
+        $situacaoSigla[$reg['codAluno']][$reg['atribuicao']] = $matSituacao['sigla'];
+        $situacaoNome[$matSituacao['sigla']] = $matSituacao['tipo'];
+        $situacaoHabilitar[$reg['codAluno']][$reg['atribuicao']] = $matSituacao['habilitar'];
+        
         $professores = $professor->getProfessor($reg['atribuicao'], 1, '', 0, 0);
 
         $disciplinasNomes[$reg['bimestre']][$reg['atribuicao']][$reg['numero']] = $reg['disciplina'] . "<br>" . $professores . "<br>" . $reg['turno'];

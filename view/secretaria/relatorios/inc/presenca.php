@@ -20,8 +20,9 @@ if (dcrip($_GET["turma"])) {
         $sqlAdicional .= ' AND a.periodo = :turno ';
     }
 
-    $sqlAdicional .= ' GROUP BY p.codigo ORDER BY p.nome';
+    $sqlAdicional .= ' AND s.habilitar = 1 AND s.listar = 1 ';
 
+    $sqlAdicional .= " GROUP BY m.codigo ORDER BY a.bimestre, p.nome ";
     $linha2 = $matricula->getMatriculas($params, $sqlAdicional);
 
     $titulo = "Lista de Presença [" . $linha2[0]['turma'] . "] - $data";

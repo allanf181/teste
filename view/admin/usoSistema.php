@@ -12,13 +12,11 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 ?>
+<script src="<?= VIEW ?>/js/highcharts/highcharts.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/highcharts/exporting.js" type="text/javascript"></script>
+
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
-
-<style>
-    progress::-webkit-progress-bar { /* Estilizando barra de progresso */ } progress::-webkit-progress-value { /* Estilizando apenas valor do progresso */ }
-    progress { /* Estilizando barra de progresso */ } progress::-webkit-progress-value { /* Estilizando apenas valor do progresso */ }
-</style>
 
 <?php
 require CONTROLLER . "/atribuicao.class.php";
@@ -28,17 +26,50 @@ $params = array('ano' => $ANO, 'semestre' => $SEMESTRE);
 
 $res = $atribuicao->getDadosUsoSistema($params);
 ?>
-<div class='fundo_listagem'>
-    <table class="listagem" align="center">
-        <tr>
-            <td>Utilizando: </td>
-            <td><progress max="100" value="<?= $res[0]['uso'] ?>"></progress><?= $res[0]['uso'] ?>%</td>
-        </tr>
-        <tr>
-            <td>N&atilde;o utilizado: </td><td><progress max="100" value="<?= (100 - $res[0]['uso']) ?>"></progress><?= (100 - $res[0]['uso']) ?>%</td>
-        </tr>
-    </table>
-</div>
+<div id="container" style="position: static; min-width: 310px; height: 300px; margin: 0 auto"></div>
+<script>
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 1,//null,
+            plotShadow: false
+        },
+        title: {
+            text: 'Utilização do Sistema'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Percentual',
+            data: [
+                {
+                    name: 'Utilizado',
+                    y: <?= $res[0]['uso'] ?>,
+                    sliced: true,
+                    selected: true
+                },
+                ['Não utilizado', <?= (100 - $res[0]['uso']) ?>]
+            ]
+        }]
+    });
+});
+</script>
 <?php
 // PAGINACAO
 $itensPorPagina = 60;
