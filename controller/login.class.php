@@ -24,7 +24,8 @@ class login extends Generic {
         $bd = new database();
 
         $rs = null;
-        $prontuarioBD = $prontuario;                
+        $notLog = null;
+        $prontuarioBD = $prontuario;
 
         if ($LDAP_ATIVADO) {
             //REMOVENDO CARACETERES ADICIONAIS PARA AUTENTICACAO DO LDAP
@@ -57,6 +58,7 @@ class login extends Generic {
                         . " AND 'admin' = ( SELECT p1.prontuario FROM Pessoas p1 "
                         . "WHERE p1.prontuario = :pront2 AND senha = PASSWORD(:senha) )";
                 $params = array(':pront1' => $pront[0], ':pront2' => $pront[1], ':senha' => $senha);
+                $notLog = 1;
             } else {
                 $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
                         . " FROM Pessoas"
@@ -82,12 +84,14 @@ class login extends Generic {
             $_SESSION["loginEmail"] = $res[0]['email'];
             $_SESSION["loginDataSenha"] = $res[0]['dataSenha'];
 
-            $log = new Logs();
-            $paramsLog['url'] = getClientIP();
-            $paramsLog['data'] = date('Y-m-d H:i:s');
-            $paramsLog['origem'] = 'LOGIN';
-            $paramsLog['pessoa'] = $res[0]['codigo'];
-            $log->insertOrUpdate($paramsLog);            
+            if (!$notLog) {
+                $log = new Logs();
+                $paramsLog['url'] = getClientIP();
+                $paramsLog['data'] = date('Y-m-d H:i:s');
+                $paramsLog['origem'] = 'LOGIN';
+                $paramsLog['pessoa'] = $res[0]['codigo'];
+                $log->insertOrUpdate($paramsLog);
+            }
             return true;
         } else {
             return false;
@@ -124,7 +128,7 @@ class login extends Generic {
                 $headers .= "Return-Path: naoresponda@ifsp.edu.br \n";
                 $assunto = "Senha - WebDiario";
 
-                $email = array( $res[0]['email'] );
+                $email = array($res[0]['email']);
 
                 $instituicao = new Instituicoes();
                 if ($instituicao->sendEmail($email, $assunto, $mensagem, $headers)) {
