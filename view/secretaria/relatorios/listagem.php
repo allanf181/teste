@@ -84,6 +84,7 @@ require SESSAO;
 <?php
 $tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2, 'turno' => 1);
 $tipo['atendimento'] = array('nome' => 'Atendimento');
+$tipo['atvAcadEmica'] = array('nome' => 'Atividades Acadêmicas', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
 $tipo['docente'] = array('nome' => 'Atribuição Docente', 'curso' => 2, 'turma' => 1);
 $tipo['boletim'] = array('nome' => 'Boletim Individual', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
 $tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' => 1, 'fechamento' => 1, 'turno' => 1);

@@ -246,7 +246,7 @@ if (isset($_SESSION["loginTipo"])) {
                 foreach ($disc[$ano] as $semestre => $reg) {
                     if ($semestre != 'A') { // SEMESTRAL
                         ?>
-                        <li class='active has-sub'><a href='#'><span><?= $semestre ?>&ordm; SEMESTRE</span></a>
+                        <li class='active has-sub'><a href='#'><span><b><?= $semestre ?>&ordm; SEMESTRE</b></span></a>
                         <ul>
                         <?php
                         if (isset($disc[$ano][$semestre]['S'])) { // DISCIPLINA SEMESTRAL
@@ -259,7 +259,7 @@ if (isset($_SESSION["loginTipo"])) {
                         if (isset($disc[$ano][$semestre]['B'])) { // BIMESTRE
                             foreach ($disc[$ano][$semestre]['B'] as $bimestre => $reg) {
                                 ?>
-                                <li class='active has-sub'><a href='#'><span><?= $bimestre ?>&ordm; BIMESTRE</span></a>
+                                <li class='active has-sub'><a href='#'><span><b><?= $bimestre ?>&ordm; BIMESTRE</b></span></a>
                                 <ul>
                                 <?php
                                 foreach ($disc[$ano][$semestre]['B'][$bimestre] as $atribuicao => $reg) {
@@ -283,6 +283,7 @@ if (isset($_SESSION["loginTipo"])) {
 
             function menuMapa($k){
                 $mapa['atribuicao_docente'] = 'atribuição docente';
+                $mapa['atividade_academica'] = 'atividades acadêmicas';
                 $mapa['atribuicao'] = 'atribuição';
                 $mapa['relatorios'] = 'relatórios';
                 if (@$mapa[$k])

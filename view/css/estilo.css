@@ -194,7 +194,6 @@ th {
 #listagem{
     width: 100%;
     margin-top: -15px;
-    /*background: red;*/
     padding: -5px;
     border-collapse:collapse;
 }
@@ -507,7 +506,6 @@ li{
 }
 
 #botao_ano_semestre{
-    background: red;
     width: 20px;
     height: 20px;
 }
@@ -551,7 +549,6 @@ h2{
 }
 
 #barra_topo{
-    /*background: red;*/
     width: 600px;
     margin-left: 210px;
     text-align: right;
@@ -559,7 +556,6 @@ h2{
 }
 #ano_semestre{
     background: #77ba87;
-    /*background: blue;*/
     text-align: center; 
     width: 200px;
     float: left;  
@@ -745,7 +741,6 @@ ul.menu_esquerdo li span.menu_item a{
 }
 
 #senhaTip2{
-    /*background: red;*/
     margin-top: 73px;
     margin-left: 43px;
     position: absolute;
@@ -886,7 +881,6 @@ div.flash {
 #listagemTroca {
     width: 100%;
     margin-top: -15px;
-    /*background: red;*/
     padding: -5px;
     border-collapse:collapse;
 }

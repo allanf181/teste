@@ -124,6 +124,11 @@ function mensagem($TIPO, $MSG, $OPT = null) {
 
     $OK_EMAIL_SUGESTAO = "O e-mail foi enviado com sucesso. Obrigado por participar!!!";
 
+    $ERRO_CHSEM = 'Limite da carga hor&aacute;ria do semestre ser&aacute; atingido com esse registro.';
+    $ERRO_CHCURSO = 'Limite da carga hor&aacute;ria do curso ser&aacute; atingido com esse registro.';
+    
+    $INFO_ATV_EMPTY = 'Por favor, selecione uma atividade.';
+    
     // CODIGOS DE ERROS - PDO/MYSQL
     if ($OPT) {
         if ($OPT == 23000 && ($MSG == 'UPDATE' || $MSG == 'INSERT')) {

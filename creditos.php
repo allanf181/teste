@@ -61,6 +61,12 @@ require SESSAO;
 </center>
 <br />
 
+<b>Vers&atilde;o 1.429</b>
+<br> - Adi&ccedil;&atilde;o do registro de Atividades Acad&ecirc;micas para coordenadores.
+<br> - Adi&ccedil;&atilde;o da tela de visualiza&ccedil;&atilde;o de ativiadades para os alunos.
+<br> - Adi&ccedil;&atilde;o do relat&oacute;rio de atividades acad&ecirc;micas.
+<br />
+<br />
 <b>Vers&atilde;o 1.428</b>
 <br> - Diversas corre&ccedil;&otilde;es solicitadas por e-mail.
 <br> - Adi&ccedil;&atilde;o de Gr&aacute;ficos em Relat&oacute;rios (Atribui&ccedil;&atilde;o Docente, Lan&ccedil;amento de Aulas, Totaliza&ccedil;&atilde;o de Matr&iacute;culas e Relat&oacute;rio de Frequ&ecirc;ncias).

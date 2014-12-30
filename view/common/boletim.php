@@ -1,7 +1,7 @@
 <?php
 //Esse arquivo é fixo para o aluno.
 //Visualização do Boletim do Aluno.
-//Link visível no menu: sim
+//Link visível no menu: não, pois para este item é criado um ícone.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
@@ -208,13 +208,13 @@ if (dcrip($_GET["bimestre"])) {
             if ($_SESSION['LINK']) {
                 ?>
                 <br><div style='margin: auto'><a href="javascript:$('#<?= $_SESSION['VOLTAR'] ?>').load('<?= $_SESSION['LINK'] ?>'); void(0);" title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
-                        <?php
-                    }
-                    ?>
-        </div>
-        <?php
-    }
-    ?>
+                <?php
+            }
+            ?>
+            <?php
+        }
+        ?>
+    </div>
 </center>
 
 <script>
