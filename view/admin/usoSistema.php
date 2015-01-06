@@ -25,52 +25,55 @@ $atribuicao = new Atribuicoes();
 $params = array('ano' => $ANO, 'semestre' => $SEMESTRE);
 
 $res = $atribuicao->getDadosUsoSistema($params);
-?>
-<div id="container" style="position: static; min-width: 310px; height: 300px; margin: 0 auto"></div>
-<script>
-$(function () {
-    $('#container').highcharts({
-        chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: 1,//null,
-            plotShadow: false
-        },
-        title: {
-            text: 'Utilização do Sistema'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                    style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                    }
-                }
-            }
-        },
-        series: [{
-            type: 'pie',
-            name: 'Percentual',
-            data: [
-                {
-                    name: 'Utilizado',
-                    y: <?= $res[0]['uso'] ?>,
-                    sliced: true,
-                    selected: true
+if ($res) {
+    ?>
+    <div id="container" style="position: static; min-width: 310px; height: 300px; margin: 0 auto"></div>
+    <script>
+        $(function () {
+            $('#container').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: 1, //null,
+                    plotShadow: false
                 },
-                ['Não utilizado', <?= (100 - $res[0]['uso']) ?>]
-            ]
-        }]
-    });
-});
-</script>
-<?php
+                title: {
+                    text: 'Utilização do Sistema'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                        type: 'pie',
+                        name: 'Percentual',
+                        data: [
+                            {
+                                name: 'Utilizado',
+                                y: <?= $res[0]['uso'] ?>,
+                                sliced: true,
+                                selected: true
+                            },
+                            ['Não utilizado', <?= (100 - $res[0]['uso']) ?>]
+                        ]
+                    }]
+            });
+        });
+    </script>
+    <?php
+}
+
 // PAGINACAO
 $itensPorPagina = 60;
 $item = 1;
