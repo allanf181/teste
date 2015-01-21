@@ -6,6 +6,9 @@ if (!class_exists('Generic'))
 if (!class_exists('PessoasTipos'))
     require_once CONTROLLER . '/pessoaTipo.class.php';
 
+if (!class_exists('Tipos'))
+    require_once CONTROLLER . '/tipo.class.php';
+
 if (!class_exists('Instituicoes'))
     require_once CONTROLLER . '/instituicao.class.php';
 
@@ -76,9 +79,11 @@ class login extends Generic {
 
         if ($res) {
             $pessoa = new PessoasTipos();
+            $tipo = new Tipos();
             $_SESSION["loginCodigo"] = $res[0]['codigo'];
             $_SESSION["loginNome"] = $res[0]['nome'];
             $_SESSION["loginTipo"] = $pessoa->getTipoPessoa($res[0]['codigo']);
+            $_SESSION['loginAlteraAno'] = $tipo->getTipo($_SESSION["loginTipo"]);
             $_SESSION["loginProntuario"] = $res[0]['prontuario'];
             $_SESSION["loginPassword"] = crip($res[0]['senha']);
             $_SESSION["loginEmail"] = $res[0]['email'];

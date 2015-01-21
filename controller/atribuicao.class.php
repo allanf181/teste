@@ -112,7 +112,7 @@ class Atribuicoes extends Generic {
                 $dataExpirou = false;
             }
 
-            // SEM LIMITE CASO O FECHAMENTO NÂO FOR MANUAL
+            // SEM LIMITE CASO O FECHAMENTO NAO FOR MANUAL
             if (!$LIMITE_DIARIO_PROF && $res[0]['status'] > 3) {
                 $res[0]['status'] = 0;
                 $res[0]['prazo'] = null;
@@ -273,7 +273,9 @@ class Atribuicoes extends Generic {
                             IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)) 
                         as curso, a.prazo, (SELECT nome FROM Turnos WHERE codigo = a.periodo) as turno,
                         m.codigo as codigoModalidade, m.nome as modalidade,
-                        DATEDIFF(a.prazo,NOW()) as prazoDiff
+                        DATEDIFF(a.prazo,NOW()) as prazoDiff,
+                        CONCAT(date_format( a.dataInicio, '%d/%m/%Y'), ' a ', 
+                            date_format( a.dataFim, '%d/%m/%Y')) as periodo
                 FROM Disciplinas d, Turmas t, Atribuicoes a, 
                            Cursos c, Modalidades m, Professores p
 		WHERE d.codigo = a.disciplina 

@@ -142,7 +142,8 @@ require PATH . VIEW . '/paginacao.php';
         <th align="left" width="60">N&uacute;mero</th>
         <th align="left">Disciplina</th>
         <th>Professor</th>
-        <th>Turma</th>
+        <th width="70px">Turma</th>
+        <th>Per&iacute;odo</th>
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
@@ -154,14 +155,18 @@ require PATH . VIEW . '/paginacao.php';
     $i = $item;
     foreach ($res as $reg) {
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+        $disc = $reg['bimestre'] . '['. $reg['turno'] .']';
         ?>
         <tr <?php print $cdif; ?>>
             <td><?= $reg['numero'] ?></td>
             <td>
-                <a title='Abrir Di&aacute;rio' target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= $reg['disciplina'] ?> <?= $reg['bimestre'] ?> [<?= $reg['turno'] ?>]</a>
+                <a title='Clique aqui para abrir o Di&aacute;rio desta disciplina. <br><?= $reg['disciplina'] . $disc?>' target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'>
+                <?= abreviar($reg['disciplina'], 30).$disc ?>
+                </a>
             </td>
             <td align='left'><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1) ?></td>
             <td align=left><?= $reg['turma'] ?></td>
+            <td align=left><?= $reg['periodo'] ?></td>            
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['atribuicao']) ?>' />
             </td>

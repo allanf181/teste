@@ -228,7 +228,7 @@ function checkCoordHasCursoArea($coord) {
 
     if ($coord) {
         $params['pessoa'] = $user;
-        $sqlAdicional = " WHERE c.coordenador = :pessoa ";
+        $sqlAdicional = " WHERE curso IN (SELECT curso FROM Coordenadores WHERE coordenador = :pessoa) ";
         $resp1 = "Aten&ccedil;&atilde;o Coordenador, sua &aacute;rea de atua&ccedil;&atilde;o n&atilde;o foi definida. Solicitar ao respons&aacute;vel o cadastro para acesso a FPA, PIT e RIT de seus professores.";
         $resp2 = "Aten&ccedil;&atilde;o Coordenador, seu curso de atua&ccedil;&atilde;o n&atilde;o foi definido. Solicitar ao respons&aacute;vel o cadastro para acesso aos Di&aacute;rios, Planos de Ensino/Aula, FPA, PIT e RIT de seus professores.";
     } else {
@@ -240,12 +240,13 @@ function checkCoordHasCursoArea($coord) {
 
     $coordenador = new Coordenadores();
     $res = $coordenador->checkIfCoordHasAreaCurso($params, $sqlAdicional);
-    if ($res == 1) {
+
+    if ($res['area']) {
         ?>
         <br><font size="2" color="red"><?= $resp1 ?></font>
         <?php
     }
-    if ($res == 2) {
+    if ($res['curso']) {
         ?>
         <br><font size="2" color="red"><?= $resp2 ?></font>
         <?php

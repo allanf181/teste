@@ -73,7 +73,7 @@ if ($_GET["nomeDisciplina"]) {
                         ?>
                     </select>
                 </td></tr>
-            <tr><td align="right">C&oacute;digo: </td><td><input type="text" name="numeroDisciplina" maxlength="45" id="numeroDisciplina" value="<?php echo $numeroDisciplina; ?>" />
+            <tr><td align="right">N&uacute;mero: </td><td><input type="text" name="numeroDisciplina" maxlength="45" id="numeroDisciplina" value="<?php echo $numeroDisciplina; ?>" />
                     <a href="#" id="setNumero" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
                 </td></tr>
             <tr><td align="right">Nome: </td><td><input type="text" name="nomeDisciplina" maxlength="45" id="nomeDisciplina" value="<?php echo $nomeDisciplina; ?>" />

@@ -14,24 +14,22 @@ class Coordenadores extends Generic {
     // UTILIZADO POR: HOME.PHP
     public function checkIfCoordHasAreaCurso($params, $sqlAdicional) {
         $bd = new database();
-        
-        $sql = "SELECT COUNT(*) as reg, (SELECT COUNT(*) "
-                . "FROM Coordenadores c1 "
-                . "WHERE c1.coordenador = c.coordenador "
-                . "AND (c.area <> 0 AND c.curso <> 0)) as total "
-                . "FROM Coordenadores c ";
-
+       
+        $sql = "SELECT co.area, co.curso "
+                . "FROM Cursos c "
+                . "LEFT JOIN Coordenadores co "
+                . "ON co.curso = c.codigo ";
         $sql .= $sqlAdicional;
         
         $res = $bd->selectDB($sql, $params);
-
-        if ($res[0]['reg'] != $res[0]['total'])
-            return 1;
-
-        if ($res[0]['reg'] == 0)
-            return 2;
-        
-        return false;
+          
+        foreach($res as $reg) {
+            if (!$reg['area'])
+                $newRes['area']++;
+            if (!$reg['curso'])
+                $newRes['curso']++;
+        }
+        return $newRes;
     } 
     
     // UTILIZADO POR: SECRETARIA/COORDENADOR.PHP

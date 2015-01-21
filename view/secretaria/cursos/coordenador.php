@@ -207,7 +207,7 @@ require PATH . VIEW . '/paginacao.php';
 
 <script>
     function valida() {
-        if ($('#curso').val() == "" || $('#coordenador').val() == "") {
+        if ($('#curso').val() == "" || $('#coordenador').val() == "" || $('#area').val() == "") {
             $('#salvar').attr('disabled', 'disabled');
         } else {
             $('#salvar').enable();
@@ -225,7 +225,7 @@ require PATH . VIEW . '/paginacao.php';
 
     $(document).ready(function() {
         valida();
-        $('#curso, #coordenador').change(function() {
+        $('#curso, #coordenador, #area').change(function() {
             valida();
         });
 

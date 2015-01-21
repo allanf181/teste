@@ -18,7 +18,9 @@ $tipo = new Tipos();
 // INSERT E UPDATE
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     unset($_POST['opcao']);
-
+    if (!$_POST['alteraAnoSem'])
+        $_POST['alteraAnoSem'] = 0;
+    
     $ret = $tipo->insertOrUpdate($_POST);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
@@ -66,6 +68,10 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 <td><input type="text" id="nome" maxlength="45" name="nome" value="<?= $nome ?>" /></td>
             </tr>
             <tr>
+                <td width="220px" align="right">Permitir altera&ccedil;&atilde;o do Ano/Semestre:</td>
+                <td><input type='checkbox' <?php if ($alteraAnoSem) print "checked"; ?> id='alteraAnoSem' name='alteraAnoSem' value='1'/></td>
+            </tr>
+            <tr>
                 <td>&nbsp;</td>
                 <td>
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
@@ -100,6 +106,7 @@ require PATH . VIEW . '/paginacao.php';
     <tr>
         <th align="center" width="40">#</th>
         <th align="left">Tipo</th>
+        <th align="left">Altera&ccedil;&atilde;o do Ano/Semestre</th>
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
@@ -114,8 +121,9 @@ require PATH . VIEW . '/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         $codigo = crip($reg['codigo']);
         ?>
-        <tr <?php print $cdif; ?>><td align='center'><?php print $i; ?></td>
-            <td><?php print mostraTexto($reg['nome']); ?>
+        <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
+            <td><?= mostraTexto($reg['nome']) ?></td>
+            <td><?= (!$reg['alteraAnoSem'])?'Não':'Sim' ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>

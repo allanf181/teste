@@ -36,7 +36,7 @@ class PessoasTipos extends Generic {
         return $ret;
     }
 
-    // UTILIZADO POR: LOGIN.PHP
+    // UTILIZADO POR: LOGIN.PHP, PESSOA.PHP
     // RETORNA OS TIPOS DE UM DETERMINADO USUARIO
     function getTipoPessoa($pessoa) {
         $bd = new database();

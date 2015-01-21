@@ -60,7 +60,10 @@ require SESSAO;
 
 </center>
 <br />
-
+<b>Vers&atilde;o 1.430</b>
+<br> - Alterado o Cadastro de Tipos para permitir altera&ccedil;&atilde;o do Ano/Semestre para determinados tipos de pessoas.
+<br />
+<br />
 <b>Vers&atilde;o 1.429</b>
 <br> - Adi&ccedil;&atilde;o do registro de Atividades Acad&ecirc;micas para coordenadores.
 <br> - Adi&ccedil;&atilde;o da tela de visualiza&ccedil;&atilde;o de ativiadades para os alunos.

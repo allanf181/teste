@@ -81,10 +81,8 @@ include_once "inc/config.inc.php";
         $('#setTroca').click(function() {
             var ano = $('#campoAnoIndex').val();
             var semestre = $('#campoSemestreIndex').val();
-            $(document).ready(function() {
-                $('#sessaoTime').load('home.php?ano='+ano+'&semestre='+semestre);
-                $('#index').prepend('<font color="red">Conteúdo do semestre anterior, faça uma nova consulta...</font>');
-            });
+            $('#sessaoTime').load('home.php?ano='+ano+'&semestre='+semestre);
+            location.reload();
         });
     
         $(window).scroll(function () {
@@ -140,10 +138,7 @@ if (isset($nome)) {
     <div id="menu"><div id='sessaoTime'></div>
         <div id='barra_topo'>
     <?php
-
-    if (!in_array($ALUNO, $_SESSION["loginTipo"]) &&
-        ( !in_array($PROFESSOR, $_SESSION["loginTipo"]) ||
-        (in_array($PROFESSOR, $_SESSION["loginTipo"]) && count($_SESSION["loginTipo"]) > 1)  ) ) {
+    if ($_SESSION['loginAlteraAno']) {
     ?>
         <div id='ano_semestre'>
         <span style="color: white">Ano:<input type="text" maxlength="4" style="width: 50px" value="<?= $_SESSION['ano'] ?>" name="campoAnoIndex" id="campoAnoIndex" /></span>
