@@ -6,7 +6,7 @@ class Academico47 extends Ruckusing_Migration_Base {
 
     public function up() {
         //ALTERANDO TABELA TIPOS
-        $this->execute("ALTER TABLE  `Tipos` ADD  `alteraAnoSem` CHAR( 1 ) NULL AFTER  `nome` ;");
+        $this->execute("ALTER TABLE  `Tipos` ADD  `alteraAnoSem` VARCHAR( 1 ) NULL AFTER  `nome` ;");
 
         //ATUALIZANDO REGISTROS DA TABELA TIPOS
         $this->execute("UPDATE Tipos SET alteraAnoSem=0 WHERE nome = 'Aluno' OR nome = 'Professor' ;");
