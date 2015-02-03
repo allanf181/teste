@@ -106,6 +106,8 @@ if (isset($_GET['item']))
 $params['ano'] = $ANO;
 $params['semestre'] = $SEMESTRE;
 
+$sqlAdicional .= ' ORDER BY t.numero, d.nome, p.nome, e.diaSemana, h.nome ';
+
 $res = $ensalamento->listEnsalamentos($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($ensalamento->listEnsalamentos($params, $sqlAdicional));
 
@@ -138,7 +140,7 @@ require(PATH . VIEW . '/paginacao.php');
         $reg['diaSemana'] = $dias[$reg['diaSemana']];
         ?>
         <tr <?= $cdif ?>><td align='left'><?= $i ?></td>
-            <td><?= $reg['professor'] . ' [' . $reg['discNumero'] . '][' . $reg['turma'] . ']' ?></td>
+            <td><?= $reg['professor'] . ' [' . $reg['discNumero'] . '][' . $reg['turma'] . ']'. $reg['bimestreFormat'] ?></td>
             <td><?= $reg['sala'] ?></td>
             <td><?= $reg['diaSemana'] ?></td>
             <td><?= $reg['horario'] . ' [' . $reg['inicio'] . ' - ' . $reg['fim'] . ']' ?></td>
@@ -150,7 +152,7 @@ require(PATH . VIEW . '/paginacao.php');
         $i++;
     }
     ?>
-</table>wwwww
+</table>
 
 <script>
     function atualizar(getLink) {

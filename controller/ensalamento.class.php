@@ -16,6 +16,7 @@ class Ensalamentos extends Generic {
 
         $sql = "SELECT e.codigo, p.nome as professor, d.numero as discNumero, h.nome as horario,
                         t.numero as turma, e.diaSemana, a.codigo as atribuicao,
+                        IF(a.bimestre > 0, CONCAT('[', a.bimestre,'º BIM]'), '') as bimestreFormat,
                         IF(LENGTH(a.subturma) > 0,a.subturma,a.eventod) as subturma,
                         (SELECT nome FROM Turnos WHERE codigo = a.periodo) as turno,
                         IF(LENGTH(s.localizacao) > 0, CONCAT(s.nome, '-',s.localizacao), s.nome) as sala,
