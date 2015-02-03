@@ -120,6 +120,7 @@ require(PATH . VIEW . '/paginacao.php');
         <th align="center" width="40">#</th>
         <th>Atribui&ccedil;&atilde;o</th>
         <th>Sala</th>
+        <th>Dia da Semana</th>
         <th width="180">Hor&aacute;rio</th>
         <th align="center" width="40">
             <input type='checkbox' id="select-all" value="" />
@@ -139,6 +140,7 @@ require(PATH . VIEW . '/paginacao.php');
         <tr <?= $cdif ?>><td align='left'><?= $i ?></td>
             <td><?= $reg['professor'] . ' [' . $reg['discNumero'] . '][' . $reg['turma'] . ']' ?></td>
             <td><?= $reg['sala'] ?></td>
+            <td><?= $reg['diaSemana'] ?></td>
             <td><?= $reg['horario'] . ' [' . $reg['inicio'] . ' - ' . $reg['fim'] . ']' ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
@@ -148,7 +150,7 @@ require(PATH . VIEW . '/paginacao.php');
         $i++;
     }
     ?>
-</table>
+</table>wwwww
 
 <script>
     function atualizar(getLink) {
