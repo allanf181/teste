@@ -140,8 +140,10 @@ class Atribuicoes extends Generic {
                 $res[0]['info1'] = 'STATUS_DIARIO_3';
             if ($res[0]['status'] == 4)
                 $res[0]['info1'] = 'STATUS_DIARIO_4';
-            if ($res[0]['status'] == 100)
+            if ($res[0]['status'] == 100) {
                 $res[0]['info1'] = 'STATUS_DIARIO_100';
+                $res[0]['info2'] = $res[0]['prazoFormat'];
+            }
             if ($res[0]['prazoDiff'] && $res[0]['prazoDiff'] >= 0 && !$res[0]['status']) {
                 $res[0]['info1'] = 'STATUS_DIARIO_101';
                 $res[0]['info2'] = $res[0]['prazoFormat'];
