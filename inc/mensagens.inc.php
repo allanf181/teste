@@ -119,7 +119,7 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $INFO_STATUS_DIARIO_2 = "Você j&aacute; finalizou este di&aacute;rio!";
     $INFO_STATUS_DIARIO_3 = "Este di&aacute;rio foi fechado pela Secretaria!";
     $INFO_STATUS_DIARIO_4 = "Este di&aacute;rio foi fechado pelo Sistema pois o prazo para finaliza&ccedil;&atilde;o do di&aacute;rio foi atingido!";
-    $INFO_STATUS_DIARIO_100 = "Esse di&aacute;rio ainda n&atilde;o come&ccedil;ou!";
+    $INFO_STATUS_DIARIO_100 = "Esse di&aacute;rio ainda n&atilde;o come&ccedil;ou!<br>Ele ser&aacute; desbloqueado em ".$OPT;
     $INFO_STATUS_DIARIO_101 = "Seu prazo para altera&ccedil;&atilde;o do di&aacute;rio foi estentido at&eacute; &agrave;s " . $OPT;
 
     $OK_EMAIL_SUGESTAO = "O e-mail foi enviado com sucesso. Obrigado por participar!!!";
