@@ -27,7 +27,7 @@ while ($row = db2_fetch_object($res)) {
 	$numero = "A".$row->T_TURMA;
 	
 	for ($n=1; $n <= 2; $n++) {
-	    $sql = "select * from Turmas where numero='$numero' and curso=$cCodigo AND semestre = $n";
+	    $sql = "select * from Turmas where numero='$numero' and curso=$cCodigo AND ano=$ano AND semestre = $n";
 	    $res2 = mysql_query($sql);
 	    if (!$turma = mysql_fetch_object($res2)){// TURMA NAO EXISTE, ENTAO IMPORTA
 

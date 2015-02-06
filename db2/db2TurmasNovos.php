@@ -48,6 +48,7 @@ while ($row = db2_fetch_object($res)) {
     $sql = "SELECT * FROM Turmas 
     		WHERE numero='$numero' 
     		AND curso=$row->CN_CDCURSO 
+                AND ano=$ano
     		AND (semestre=$semestre OR semestre=0)";
     $res2 = mysql_query($sql);
     if (!$turma = mysql_fetch_object($res2)) {// TURMA NÃO EXISTE, ENTÃO IMPORTA
@@ -103,6 +104,7 @@ while ($row = db2_fetch_object($res)) {
     $sql = "SELECT * FROM Turmas 
     		WHERE numero='$numero' 
     		AND curso=$row->CM_CDCURSO 
+                AND ano=$ano
     		AND (semestre=$semestre OR semestre=0)";
     $res2 = mysql_query($sql);
     if (!$turma = mysql_fetch_object($res2)) {// TURMA NÃO EXISTE, ENTÃO IMPORTA
