@@ -82,7 +82,7 @@ include_once "inc/config.inc.php";
             var ano = $('#campoAnoIndex').val();
             var semestre = $('#campoSemestreIndex').val();
             $('#sessaoTime').load('home.php?ano='+ano+'&semestre='+semestre);
-            location.reload();
+            window.location.reload();
         });
     
         $(window).scroll(function () {
