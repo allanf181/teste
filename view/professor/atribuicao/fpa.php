@@ -553,7 +553,8 @@ if ($VALIDO)
     var totalCelulas = 0;
     var totalHoras = 0;
     callFunction();
-
+    calcIntervalo();
+    
     function calcComponente() {
         total = 0;
         if ($("input[id=duracaoAula]:radio:checked").val()) {
@@ -711,7 +712,7 @@ if ($VALIDO)
         calcComplementacao();
         calcAulas();
         checkCelulas();
-        calcIntervalo()
+        //calcIntervalo()
     }
 
     $("input[id=duracaoAula]:radio").change(function () {
@@ -726,42 +727,19 @@ if ($VALIDO)
         callFunction();
     });
 
-    $("#Intervalo1").click(function () {
-        $('#IniIntervalo1').find('option').remove();
-        callFunction();
-    });
-
-    $("#Intervalo2").click(function () {
-        $('#IniIntervalo2').find('option').remove();
-        callFunction();
-    });
-
-    $("#Intervalo3").click(function () {
-        $('#IniIntervalo3').find('option').remove();
-        callFunction();
-    });
-
-    $("#IniIntervalo1").keyup(function () {
-        $('#IniIntervalo1').find('option').remove();
-        callFunction();
-    });
-
-    $("#IniIntervalo2").keyup(function () {
-        $('#IniIntervalo2').find('option').remove();
-        callFunction();
-    });
-
-    $("#IniIntervalo3").keyup(function () {
-        $('#IniIntervalo3').find('option').remove();
-        callFunction();
-    });
-
     $("#IniIntervalo1,#IniIntervalo2,#IniIntervalo3,#Intervalo1,#Intervalo2,#Intervalo3").change(function () {
         callFunction();
     });
 
     $("input:checkbox,input:radio,#dedicarEnsino").click(function () {
         callFunction();
+    });
+
+    $("#Periodo1,#Periodo2,#Periodo3").keyup(function () {
+        $('#IniIntervalo1').find('option').remove();
+        $('#IniIntervalo2').find('option').remove();
+        $('#IniIntervalo3').find('option').remove();
+        calcIntervalo();
     });
 
     $("#subHorario").click(function () {
