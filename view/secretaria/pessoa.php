@@ -87,6 +87,7 @@ if ($_GET["opcao"] == 'validacao') {
                 <th width="40" align="center"><input type='checkbox' checked id='select-all' name='select-all' class='campoTodos' value='' /></th></tr>
             <?php
             $res = $pessoa->countBloqPic();
+            $i=1;
             if ($res[0]['total']) {
                 foreach ($res as $reg) {
                     $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";

@@ -89,6 +89,7 @@ require CONTROLLER . "/coordenador.class.php";
             if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
                 // Verifica se o coordenador tem trocas para validar
                 checkCoordHasCursoArea(0);
+                checkBloqueioFoto();
             }
 
             if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
@@ -236,6 +237,31 @@ function checkCoordHasCursoArea($coord) {
         $resp1 = "Aten&ccedil;&atilde;o, as &aacute;reas de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidas. $link";
         $resp2 = "Aten&ccedil;&atilde;o, os cursos de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidos. $link";
         print "<br />";
+    }
+
+    $coordenador = new Coordenadores();
+    $res = $coordenador->checkIfCoordHasAreaCurso($params, $sqlAdicional);
+
+    if ($res['area']) {
+        ?>
+        <br><font size="2" color="red"><?= $resp1 ?></font>
+        <?php
+    }
+    if ($res['curso']) {
+        ?>
+        <br><font size="2" color="red"><?= $resp2 ?></font>
+        <?php
+    }
+}
+
+function checkBloqueioFoto() {
+    $pessoa = new Pessoas();
+    $res = $pessoa->countBloqPic();
+    if ($res) {
+        ?>
+        <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, h&aacute; fotos de alunos bloqueadas aguardando valida&ccedil;&atilde;o.</font>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/pessoa.php?opcao=validacao'); void(0);">Clique aqui para validar</a>
+        <?php
     }
 
     $coordenador = new Coordenadores();
