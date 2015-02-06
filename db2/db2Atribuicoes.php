@@ -79,7 +79,7 @@ for ($n = 1; $n <= 2; $n++) {
             $turno = getTurno($row->NH_PERIODO);
             
             // BUSCA O CODIGO DA TURMA
-            $sql = "SELECT * FROM Turmas t WHERE numero='A$row->TD_TURMA' AND semestre = $n";
+            $sql = "SELECT * FROM Turmas t WHERE numero='A$row->TD_TURMA' AND ano=$ano AND semestre = $n";
             $result = mysql_query($sql);
             while ($turma = @mysql_fetch_object($result)) {
                 $nn = $n;

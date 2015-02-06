@@ -65,6 +65,7 @@ for ($n = 1; $n <= 2; $n++) {
             $sql = "SELECT * FROM Turmas t 
 	    		WHERE numero='$numero' 
 	    		AND curso='" . $row->CM_CDCURSO . "'
+                        AND ano=$ano
 	    		AND semestre = $semestre";
 
             $result = mysql_query($sql);
