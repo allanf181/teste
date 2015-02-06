@@ -129,6 +129,8 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     
     $INFO_ATV_EMPTY = 'Por favor, selecione uma atividade.';
     
+    $NOK_EMPTY_REG = 'Por favor, preencha todo o formul&aacute;rio!';
+    
     // CODIGOS DE ERROS - PDO/MYSQL
     if ($OPT) {
         if ($OPT == 23000 && ($MSG == 'UPDATE' || $MSG == 'INSERT')) {

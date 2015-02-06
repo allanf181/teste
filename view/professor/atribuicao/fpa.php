@@ -44,13 +44,17 @@ if ($_POST) {
     unset($_POST['pano']);
     unset($_POST['psemestre']);
 
-    $ret = $dados->insertOrUpdateFPA($_POST);
-    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    if(!$_POST['regime'] || !$_POST['duracaoAula'] || !$_POST['area']) {
+        mensagem('NOK', 'EMPTY_REG');
+    } else {
+        $ret = $dados->insertOrUpdateFPA($_POST);
+        mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 
-    //ENVIANDO EMAIL
-    if ($ret['STATUS'] == 'OK' && $_POST['enviar']) {
-        if ($coodEmail = $coordenador->getEmailCoordFromArea(dcrip($_POST['area'])))
-            $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente enviou FPA para valida&ccedil;&atilde;o.', $coodEmail);
+        //ENVIANDO EMAIL
+        if ($ret['STATUS'] == 'OK' && $_POST['enviar']) {
+            if ($coodEmail = $coordenador->getEmailCoordFromArea(dcrip($_POST['area'])))
+                $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente enviou FPA para valida&ccedil;&atilde;o.', $coodEmail);
+        }
     }
 }
 
