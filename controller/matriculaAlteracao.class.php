@@ -53,9 +53,11 @@ class MatriculasAlteracoes extends Generic {
             $rs['sigla'] = $res[0]['sigla'];
             $rs['tipo'] = $res[0]['nome'];
             $rs['codSituacao'] = $res[0]['codigo'];
-            return $rs;
-        } else
-            return false;
+        } else {
+            $rs['habilitar'] = 1;
+            $rs['listar'] = 1;
+        }
+        return $rs;
     }
     
 }

@@ -44,6 +44,7 @@ require CONTROLLER . "/tdDado.class.php";
 require CONTROLLER . "/aviso.class.php";
 require CONTROLLER . "/atendimento.class.php";
 require CONTROLLER . "/coordenador.class.php";
+require CONTROLLER . "/ocorrencia.class.php";
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
@@ -117,6 +118,10 @@ require CONTROLLER . "/coordenador.class.php";
 if (in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
     // Listra Trocas de Aulas validadas para os Alunos e Professores
     listaTrocaAula();
+}
+
+if (!in_array($ALUNO, $_SESSION["loginTipo"])) {
+    checkOcorrencia();
 }
 
 // INFORMES PARA COORDENADORES
@@ -235,7 +240,7 @@ function checkCoordHasCursoArea($coord) {
     } else {
         $link .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/secretaria/cursos/coordenador.php'); void(0);\">Clique aqui para definir</a>";
         $resp1 = "Aten&ccedil;&atilde;o, as &aacute;reas de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidas. $link";
-        $resp2 = "Aten&ccedil;&atilde;o, os cursos de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidos. $link";
+        $resp2 = "<br>Aten&ccedil;&atilde;o, os cursos de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidos. $link";
         print "<br />";
     }
 
@@ -737,6 +742,52 @@ function checaLibTD() {
                     <td>
                         <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?= crip($reg['pessoa']) ?>'); void(0);">
                             Validar
+                        </a>
+                    </td>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+        </table>
+        <?php
+    }
+}
+
+function checkOcorrencia() {
+    global $user, $ANO, $SEMESTRE;
+
+    $ocorrencia = new Ocorrencias();
+
+    if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
+        $sqlAdicional = "AND registroPor = :cod ORDER BY data DESC LIMIT 5";
+        $params = array('cod' => $user);
+    } else {
+        $sqlAdicional = "ORDER BY data DESC LIMIT 5";
+    }
+    $res = $ocorrencia->checkOcorrencias($params, $sqlAdicional);
+    if ($res) {
+        ?>
+        <br><br><table id="listagem">
+            <caption>Lista as últimas 5 ocorrências e/ou interações.</caption>
+            <tr>
+                <th width='250'>Nome</th>
+                <th align='center' width='140'>Data</th>
+                <th align='center'>Última descrição</th>
+                <th align='center' width='10'>&nbsp;</th>
+            </tr>
+            <?php
+            $i = 0;
+            foreach ($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                ?>
+                <tr <?= $cdif ?>>
+                    <td>&nbsp;<a href="#" title="<?= $reg['aluno'] ?>"><?= abreviar($reg['aluno'], 30) ?></a></td>
+                    <td><?= $reg['data'] ?></td>
+                    <td>&nbsp;<a href="#" title="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 70) ?></a></td>
+                    <td>
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/ocorrencia.php?aluno=<?= crip($reg['codAluno']) ?>'); void(0);" title='Clique aqui para validar'>
+                            Visualizar
                         </a>
                     </td>
                 </tr>

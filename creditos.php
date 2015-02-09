@@ -8,7 +8,7 @@ require SESSAO;
 <h2>Equipe WebDi&aacute;rio</h2>
 
 <br />
-<center><img style="width: 400px" src="<?php print IMAGES; ?>/pic.png"/>
+<center><img style="width: 400px" src="<?= IMAGES ?>/pic.png"/>
 
 
 <table border="0" id="form" width="100%">
@@ -59,6 +59,11 @@ require SESSAO;
 </table>
 
 </center>
+<br />
+<b>Vers&atilde;o 1.431</b>
+<br> - Adi&ccedil;&atilde;o do registro de Ocorr&ecirc;ncias.
+<br> - Diversas corre&ccedil;&otilde;es solicitadas por e-mail.
+<br />
 <br />
 <b>Vers&atilde;o 1.430</b>
 <br> - Alterado o Cadastro de Tipos para permitir altera&ccedil;&atilde;o do Ano/Semestre para determinados tipos de pessoas.

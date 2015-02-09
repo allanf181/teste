@@ -50,13 +50,12 @@ class Atribuicoes extends Generic {
                 date_format( a.dataInicio, '%d/%m/%Y') as dataInicioFormat,
                 date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), '%d/%m/%Y') as dataFimFormat,
                 DATEDIFF( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), NOW()) as dataFimDiff
-                FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a, Matriculas ma
+                FROM Disciplinas d, Turmas t, Cursos c, Turnos tu, Modalidades m, Atribuicoes a
                 WHERE a.disciplina=d.codigo
                 AND t.curso=c.codigo
                 AND a.turma=t.codigo
                 AND t.turno=tu.codigo
                 AND m.codigo = c.modalidade
-                AND ma.atribuicao = a.codigo
                 AND a.codigo=:cod";
         $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);
@@ -232,25 +231,29 @@ class Atribuicoes extends Generic {
 
     // USADO POR: PROFESSOR/NOTA.PHP
     // Lista as atribuicoes dos bimestres do mesmo número da disciplina
-    public function listAtribuicoesOfBimestre($atribuicao) {
+    public function listAtribuicoesOfBimestre($atribuicao, $ano) {
         $bd = new database();
 
-        $sql = "SELECT a2.codigo, a2.bimestre 
-                    FROM Atribuicoes a2 
-                    WHERE a2.turma IN (
-				SELECT t1.codigo FROM Turmas t1 
-				WHERE t1.numero IN ( SELECT t.numero 
-                                                FROM Atribuicoes a, Turmas t 
-                                                WHERE a.turma = t.codigo 
-                                                AND a.codigo = :att)
-                                )
-                    AND a2.disciplina = (SELECT a3.disciplina 
-                                               FROM Atribuicoes a3 
-                                                WHERE a3.codigo = :att)
-                    AND a2.subturma = (SELECT a4.subturma 
-                                            FROM Atribuicoes a4 
-                                            WHERE a4.codigo = :att)";
-        $params = array(':att' => $atribuicao);
+            $sql = "SELECT a2.codigo, a2.bimestre 
+                        FROM Atribuicoes a2, Turmas t2
+                        WHERE a2.turma = t2.codigo
+                        AND t2.ano = :ano
+                        AND a2.turma IN (
+                                    SELECT t1.codigo FROM Turmas t1 
+                                    WHERE t1.numero IN ( SELECT t.numero 
+                                                    FROM Atribuicoes a, Turmas t 
+                                                    WHERE a.turma = t.codigo 
+                                                    AND a.codigo = :att
+                                                    AND t.ano = :ano)
+                                    )
+                        AND a2.disciplina = (SELECT a3.disciplina 
+                                                   FROM Atribuicoes a3 
+                                                    WHERE a3.codigo = :att)
+                        AND a2.subturma = (SELECT a4.subturma 
+                                                FROM Atribuicoes a4 
+                                                WHERE a4.codigo = :att)";
+        $params = array(':att' => $atribuicao, ':ano' => $ano);
+
         $res = $bd->selectDB($sql, $params);
         if ($res) {
             return $res;

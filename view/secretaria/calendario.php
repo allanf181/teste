@@ -27,7 +27,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 
     $ret = $calendario->insertOrUpdate($_POST);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    if ($_POST['codigo'])
+    if (!dcrip($_POST['codigo']))
         $_GET["codigo"] = crip($ret['RESULTADO']);
     else
         $_GET["codigo"] = $_POST['codigo'];

@@ -91,7 +91,7 @@ if ($_SESSION['dataExpirou'])
                 // SE FOR BIMESTRAL, ACHAR OS CODIGOS DAS OUTRAS ATRIBUICOES
                 // PARA MOSTRAR AS NOTAS DOS BIMESTRES ANTERIORES
                 if ($resAval['bimestre'] <> 0) {
-                    foreach ($att->listAtribuicoesOfBimestre($atribuicao) as $reg) {
+                    foreach ($att->listAtribuicoesOfBimestre($atribuicao, $ANO) as $reg) {
                         if ($resAval['bimestre'] == $reg['bimestre'] && !$resAval['final'])
                             $color = 'blue';
                         else
