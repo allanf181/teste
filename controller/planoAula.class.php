@@ -14,17 +14,24 @@ class PlanosAula extends Generic {
         $bd = new database();
 
         $sql = "SELECT pa.conteudo, pa.semana, pe.numeroAulaSemanal 
-		FROM PlanosAula pa, PlanosEnsino pe, Atribuicoes a, Disciplinas d, Turmas t
+		FROM PlanosAula pa, PlanosEnsino pe, Atribuicoes a, 
+                    Disciplinas d, Turmas t, Cursos c
 		WHERE pa.atribuicao = pe.atribuicao 
 		AND pe.atribuicao = a.codigo
 		AND a.disciplina = d.codigo
                 AND t.codigo = a.turma
+                AND c.codigo = t.curso
 		AND d.numero IN (SELECT d1.numero 
 				FROM Atribuicoes a1, Disciplinas d1, Turmas t1
 				WHERE a1.disciplina = d1.codigo 
                                 AND t1.codigo = a1.turma
                                 AND t.numero = t1.numero
 				AND a1.codigo = :cod)
+                AND c.codigo IN (SELECT t1.curso
+                                FROM Disciplinas d1, Atribuicoes a1, Turmas t1 
+        			WHERE a1.disciplina = d1.codigo 
+                                AND t1.codigo = a1.turma
+        			AND a1.codigo = :cod)                                
                 GROUP BY pa.semana
                 ORDER BY pa.semana";
 
