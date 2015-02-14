@@ -112,7 +112,7 @@ class PlanosEnsino extends Generic {
 		    p.ementa,p.objetivoGeral,p.objetivoEspecifico,p.conteudoProgramatico,p.metodologia,
                     p.recursoDidatico,p.avaliacao,
 		    p.recuperacaoParalela,p.recuperacaoFinal,p.bibliografiaBasica,p.bibliografiaComplementar
-		    ,NULL,NULL,NULL,NULL
+		    ,NULL,NULL
                     FROM PlanosEnsino p
                     WHERE p.atribuicao=:copia";
 
@@ -159,12 +159,13 @@ class PlanosEnsino extends Generic {
     // LISTA OS PLANOS EQUIVALENTES
     public function getPlanoEquivalente($codigo) {
         $bd = new database();
-        $sql = "SELECT a.codigo, d.nome, t.numero, t.ano, t.semestre, a.eventod, a.subturma 
-        		FROM PlanosEnsino pe, PlanosAula pa, Disciplinas d, Atribuicoes a, Turmas t
+        $sql = "SELECT a.codigo, d.nome, t.numero, t.ano, t.semestre, a.eventod, a.subturma, c.nome as curso
+        		FROM PlanosEnsino pe, PlanosAula pa, Disciplinas d, Atribuicoes a, Turmas t, Cursos c
         		WHERE pe.atribuicao = pa.atribuicao
         		AND pe.atribuicao = a.codigo
         		AND a.disciplina = d.codigo
         		AND a.turma = t.codigo
+                        AND t.curso = c.codigo
         		AND d.numero IN (SELECT d1.numero 
         				FROM Disciplinas d1, Atribuicoes a1 
         				WHERE a1.disciplina = d1.codigo 

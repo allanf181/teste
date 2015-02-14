@@ -77,7 +77,7 @@ if ($_GET['pagina']) {
         if ($_GET["entregar"]) {
             $ret = $planoEnsino->entregarPlano(dcrip($atribuicao));
             mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-            
+
             if ($ret['STATUS'] == 'OK') {
                 if ($coodEmail = $coordenador->getEmailCoordFromAtribuicao(dcrip($atribuicao)))
                     $logEmail->sendEmailLogger($_SESSION['loginNome'], 'Docente realizou entrega de Plano de Ensino. Necessita valida&ccedil;&atilde;o.', $coodEmail);
@@ -165,7 +165,7 @@ if ($_GET['pagina']) {
                                     if (!$reg['subturma'])
                                         $reg['subturma'] = $reg['eventod'];
                                     ?>
-                                    <option value='<?= crip($reg['codigo']) ?>'><?= $reg['nome'] . ' [' . $reg['semestre'] . '/' . $reg['ano'] . '] [' . $reg['numero'] . '] [' . $reg['subturma'] ?>]</option>
+                                    <option value='<?= crip($reg['codigo']) ?>'><?= $reg['nome'] . ' [' . $reg['semestre'] . '/' . $reg['ano'] . '] [' . $reg['numero'] . '] [' . $reg['subturma'] . '] (' . $reg['curso'] ?>)</option>
                                     <?php
                                 }
                                 ?>
@@ -388,7 +388,7 @@ $atribuicao = $_GET['atribuicao'];
         item.value = item.value.replace(",", ".");
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#ementa,#objetivoGeral,#objetivoEspecifico,#conteudoProgramatico,#metodologia,#recursoDidatico,#avaliacao,#recuperacaoParalela,#recuperacaoFinal,#bibliografiaBasica,#bibliografiaComplementar').maxlength({
             events: [], // Array of events to be triggerd    
             maxCharacters: <?= $caracteres ?>, // Characters limit   
@@ -413,15 +413,15 @@ $atribuicao = $_GET['atribuicao'];
             slider: true // True Use counter slider    
         });
 
-        $(".item-excluir").click(function() {
+        $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
                 'title': '<?php print $TITLE; ?>',
                 'buttons': ['Sim', 'Não'],
-                'onClose': function(caption) {
+                'onClose': function (caption) {
                     if (caption == 'Sim') {
                         var selected = [];
-                        $('input:checkbox:checked').each(function() {
+                        $('input:checkbox:checked').each(function () {
                             selected.push($(this).val());
                         });
                         $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=planoAula&opcao=delete&codigo=' + selected + '&item=<?= $item; ?>');
@@ -430,17 +430,17 @@ $atribuicao = $_GET['atribuicao'];
             });
         });
 
-        $(".item-alterar").click(function() {
+        $(".item-alterar").click(function () {
             var codigo = $(this).attr('id');
             $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=planoAula&codigo=' + codigo);
         });
 
-        $("#item-entregar").click(function() {
+        $("#item-entregar").click(function () {
             $.Zebra_Dialog('<strong>Deseja enviar seu Plano para seu coordenador? \n O Plano ser&aacute; bloqueado, podendo ser desbloqueado somente pelo coordenador.', {
                 'type': 'question',
                 'title': '<?php print $TITLE; ?>',
                 'buttons': ['Sim', 'Não'],
-                'onClose': function(caption) {
+                'onClose': function (caption) {
                     if (caption == 'Sim') {
                         $('#professor').load('<?= $SITE; ?>?pagina=entregarPlano&atribuicao=<?= $atribuicao; ?>&entregar=1');
                     }
@@ -448,13 +448,13 @@ $atribuicao = $_GET['atribuicao'];
             });
         });
 
-        $("#item-copiar").click(function() {
+        $("#item-copiar").click(function () {
             var codigo = $('#campoDisciplina').val();
             $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, seu plano de ensino ser&aacute; exclu&iacute;do e substitu&iacute;do pelo escolhido. Deseja continuar?', {
                 'type': 'question',
                 'title': '<?php print $TITLE; ?>',
                 'buttons': ['Sim', 'Não'],
-                'onClose': function(caption) {
+                'onClose': function (caption) {
                     if (caption == 'Sim') {
                         $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=planoCopiar&codigoCopy=' + codigo);
                     }
@@ -462,14 +462,14 @@ $atribuicao = $_GET['atribuicao'];
             });
         });
 
-        $('#select-all').click(function(event) {
+        $('#select-all').click(function (event) {
             if (this.checked) {
                 // Iterate each checkbox
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = true;
                 });
             } else {
-                $(':checkbox').each(function() {
+                $(':checkbox').each(function () {
                     this.checked = false;
                 });
             }
