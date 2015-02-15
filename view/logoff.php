@@ -11,7 +11,7 @@ require VARIAVEIS;
 @session_unset($_SESSION_NAME);
 @session_destroy($_SESSION_NAME); 
 
-print "Aguardo.. O sistema est&aacute; removendo sua sess&atilde;o...";
+print "Aguarde... O sistema est&aacute; removendo sua sess&atilde;o...";
 
 print "<script type=\"text/javascript\">\n ";
 print " window.location='index.php'; \n";
