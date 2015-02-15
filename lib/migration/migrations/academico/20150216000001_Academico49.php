@@ -72,7 +72,7 @@ class Academico49 extends Ruckusing_Migration_Base {
         }
 
         // ATUALIZAR VERSAO ATUAL
-        $this->execute("UPDATE Instituicoes SET versao='433', versaoAtual='433'");
+        $this->execute("UPDATE Instituicoes SET versao='432', versaoAtual='432'");
         printf("<br>Patch Academico49: OK");
     }
 
