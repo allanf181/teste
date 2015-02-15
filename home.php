@@ -45,6 +45,7 @@ require CONTROLLER . "/aviso.class.php";
 require CONTROLLER . "/atendimento.class.php";
 require CONTROLLER . "/coordenador.class.php";
 require CONTROLLER . "/ocorrencia.class.php";
+require CONTROLLER . "/chat.class.php";
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
@@ -58,9 +59,26 @@ require CONTROLLER . "/ocorrencia.class.php";
             </a>
         </td>
         <td align="right">
-            <a title='Clique aqui para enviar sugest&otilde;es ou reportar problemas' href="javascript:$('#index').load('<?= VIEW ?>/email.php'); void(0);">
-                <img src="<?= ICONS ?>/email.png">
-            </a>
+            <table border="0">
+                <tr>
+                    <td>
+                        <?php
+                        $chat = new Chat();
+                        $params = array(':prontuario' => $_SESSION['loginProntuario']);
+                        $message = $chat->listMessage($params);
+                        ?>
+                        <a title='<?= $message ?>'>
+                            <img style='width: 40px' src='<?= INC ?>/file.inc.php?type=chat' />
+                        </a>
+                    </td>
+                    <td width='20'>&nbsp;</td>                    
+                    <td>
+                        <a title='Clique aqui para enviar sugest&otilde;es ou reportar problemas' href="javascript:$('#index').load('<?= VIEW ?>/email.php'); void(0);">
+                            <img style='width: 40px' src="<?= ICONS ?>/bug.png">
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
     <tr>

@@ -75,6 +75,7 @@ include_once "inc/config.inc.php";
         $.ajaxSetup({
             cache: false
         });
+        
         $.loading({
             onAjax: true,
             text: 'Aguarde Carregando...',

@@ -7,7 +7,6 @@ $type = $_GET['type'];
 $codigo = dcrip($_GET['id']);
 
 if ($type == 'pic') {
-
     if (isset($_GET['force']))
         $force = dcrip($_GET['force']);
 
@@ -63,5 +62,28 @@ if ($type == 'arquivo') {
         flush();
         readfile($file);
     }
+}
+
+if ($type == 'chat') {
+    require CONTROLLER . "/chat.class.php";
+    $chat = new Chat();
+
+    $params = array(':prontuario' => $_SESSION['loginProntuario']);
+    if (dcrip($_GET['atribuicao'])) {
+        $sqlAdicional = ' AND c.atribuicao = :atribuicao ';
+        $params[':atribuicao'] = dcrip($_GET['atribuicao']);
+    }
+    $message = $chat->qdeMessage($params, $sqlAdicional);
+    
+    list($width, $height, $type, $attr) = getimagesize(PATH . IMAGES . "chat.png");
+    $imgPng = imageCreateFromPng(PATH . IMAGES . "chat.png");
+    imageAlphaBlending($imgPng, true);
+    imageSaveAlpha($imgPng, true);
+    $cor = imagecolorallocate($imgPng, 255, 0, 0);
+    $font = imageloadfont(PATH . VIEW . "/css/fonts/chat.gdf");
+    imagestring($imgPng, $font, $width-45, 0, urldecode($message), $cor);
+
+    header("Content-type: image/png");
+    imagePng($imgPng);
 }
 ?>

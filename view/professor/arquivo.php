@@ -93,7 +93,7 @@ $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
                 </table>
                 <br />
                 <table width="100%"><tr><td>
-                            <a class="nav" id='item-copiar' href="#" title="Copiar Plano de Ensino"><img src='<?= ICONS ?>/copiar.gif' width="30" /></a>
+                            <a class="nav" id='item-copiar' href="#" title="Copiar Material de Aula"><img src='<?= ICONS ?>/copiar.gif' width="30" /></a>
                         </td></tr></table> 
             </form>
         </div>

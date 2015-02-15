@@ -412,6 +412,7 @@ if (dcrip($_GET["nome"])) {
                                     echo "<option value='$TP_COD'>$TP_NM</option>";
                                 ?>
                             </select>
+                        </td>
                     </tr></table>
                 <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
                         <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>

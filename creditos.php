@@ -60,6 +60,11 @@ require SESSAO;
 
 </center>
 <br />
+<b>Vers&atilde;o 1.432</b>
+<br> - Adi&ccedil;&atilde;o do CHAT para atendimento e suporte aos alunos.
+<br> - Diversas corre&ccedil;&otilde;es solicitadas por e-mail.
+<br />
+<br />
 <b>Vers&atilde;o 1.431</b>
 <br> - Adi&ccedil;&atilde;o do registro de Ocorr&ecirc;ncias.
 <br> - Diversas corre&ccedil;&otilde;es solicitadas por e-mail.

@@ -11,52 +11,61 @@ require MENSAGENS;
 require FUNCOES;
 require SESSAO;
 require PERMISSAO;
+
 ?>
 <script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
 
-<table width="100%" align="center" border="0">
-    <?php
-    if ($_GET["atribuicao"]) {
-        $atribuicao = dcrip($_GET["atribuicao"]);
-        $aluno = $_SESSION["loginCodigo"];
+<?php
+if ($_GET["atribuicao"]) {
+    $atribuicao = dcrip($_GET["atribuicao"]);
+    $aluno = $_SESSION["loginCodigo"];
 
-        require CONTROLLER . "/atribuicao.class.php";
-        $att = new Atribuicoes();
-        $res = $att->getAtribuicao($atribuicao);
+    require CONTROLLER . "/atribuicao.class.php";
+    $att = new Atribuicoes();
+    $res = $att->getAtribuicao($atribuicao);
 
-        $bimestre = "SEMESTRAL";
-        $fechamento = $res['fechamento'];
-        $_SESSION['semestre'] = $res['semestre'];
-        $_SESSION['ano'] = $res['ano'];
+    $bimestre = "SEMESTRAL";
+    $fechamento = $res['fechamento'];
+    $_SESSION['semestre'] = $res['semestre'];
+    $_SESSION['ano'] = $res['ano'];
 
-        if ($fechamento == 'a')
-            $bimestre = "ANUAL";
+    if ($fechamento == 'a')
+        $bimestre = "ANUAL";
 
-        $numeroBimestre = null;
-        if ($res['bimestre'] != "" && $res['bimestre'] > 0) {
-            $numeroBimestre = $res['bimestre'];
-            $bimestre = abreviar($res['bimestre'] . "&ordm; BIMESTRE", 100);
-        }
-        ?>
-        <h2><?= abreviar($res['disciplina'] . ": " . $res['turma'] . "/" . $res['curso'], 150) ?></h2>
-        <h2 id='titulo_disciplina_modalidade'><?= $bimestre ?><br></h2><br />
+    $numeroBimestre = null;
+    if ($res['bimestre'] != "" && $res['bimestre'] > 0) {
+        $numeroBimestre = $res['bimestre'];
+        $bimestre = abreviar($res['bimestre'] . "&ordm; BIMESTRE", 100);
+    }
+    ?>
+    <h2><?= abreviar($res['disciplina'] . ": " . $res['turma'] . "/" . $res['curso'], 150) ?></h2>
+    <div style="float: left">
+        <a title='IN&Iacute;CIO' href="javascript:$('#index').load('<?= VIEW; ?>/aluno/aluno.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);">
+            <img src='<?= ICONS ?>/home.png'>
+        </a>
+    </div>
+    <div>
+        <h2 id='titulo_disciplina_modalidade'><?= $bimestre ?></h2>
+    </div>
+    <table width="100%" align="center" border="0">        
         <tr align='center'>
-            <td valign="bottom"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aula.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 90px' src='<?= IMAGES ?>/aulas.png' /><br />Aulas</a></td>
-            <td valign="bottom"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 90px' src='<?= IMAGES ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-            <td valign="bottom"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/arquivo.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 90px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>    
-            <td valign="bottom"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/ensalamento.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 90px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
-            <td valign="bottom"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aviso.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 90px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos</a></td>
-            <td valign="bottom"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/atvAcadEmica.php?aluno=<?= crip($aluno) ?>'); void(0);"><img style='width: 90px' src='<?= IMAGES ?>/atvAcadEmicas.png' /><br />Atividades Acad&ecirc;micas</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aula.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/aulas.png' /><br />Aulas</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/arquivo.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>    
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/ensalamento.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aviso.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/chat.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><div id="imageChat"><img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat (Atendimento)</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/atvAcadEmica.php?aluno=<?= crip($aluno) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/atvAcadEmicas.png' /><br />Atividades Acad&ecirc;micas</a></td>
 
-            <td valign="bottom"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/boletim.php?turma=<?= crip($res['turmaCodigo']) ?>&aluno=<?= crip($aluno) ?>&bimestre=<?= crip($numeroBimestre) ?>'); void(0);"><img style='width: 90px' src='<?= IMAGES ?>/boletim.png' /><br />Boletim Escolar</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/boletim.php?turma=<?= crip($res['turmaCodigo']) ?>&aluno=<?= crip($aluno) ?>&bimestre=<?= crip($numeroBimestre) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/boletim.png' /><br />Boletim Escolar</a></td>
             <?php
             if ($bimestre == "ANUAL" || $bimestre == "SEMESTRAL" || $bimestre == "1&ordm; BIMESTRE") {
                 ?>
-                <td valign="bottom"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/planoEnsino.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 90px' src='<?= IMAGES ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
+                <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/planoEnsino.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
             <?php } ?>
         </tr>
-        <tr><td colspan=10 align='center'>
+        <tr><td colspan="9" align='center'>
                 <hr>
                 PROFESSOR(ES): <br />
                 <?php

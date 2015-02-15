@@ -117,25 +117,25 @@ if ($_GET["atribuicao"]) {
         </div>
         <?php
         if ($codModalidade != 1004 && $codModalidade != 1006 && $codModalidade != 1007 && ($bimestre == 4 || $bimestre == 0))
-            print "<tr><td colspan=\"8\"><font color=\"red\">A Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o ser&aacute; realizada pelo Nambei e n&atilde;o estar&aacute; dispon&iacute;vel no Webdi&aacute;rio.</font></td></tr>\n";
-        print "<tr><td colspan=\"8\">&nbsp;</td></tr>\n";
+            print "<tr><td colspan=\"9\"><font color=\"red\">A Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o ser&aacute; realizada pelo Nambei e n&atilde;o estar&aacute; dispon&iacute;vel no Webdi&aacute;rio.</font></td></tr>\n";
         ?>
 
         <tr valign="top" align='center'>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aula.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/aulas.png' /><br />Aulas</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/avaliacao.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/diario.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/chamada.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/chamada.png' /><br />Lista de Chamada</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aula.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 70px' src='<?php print IMAGES; ?>/aulas.png' /><br />Aulas</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/avaliacao.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 70px' src='<?php print IMAGES; ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/diario.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 70px' src='<?php print IMAGES; ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/chamada.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 70px' src='<?php print IMAGES; ?>/chamada.png' /><br />Lista de Chamada</a></td>
             <?php
             if ($bimestreNome == "SEMESTRAL" || $bimestreNome == "1º BIMESTRE" || $bimestreNome == "ANUAL") {
                 ?>
-                <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/plano.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
+                <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/plano.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 70px' src='<?php print IMAGES; ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
                 <?php
             }
             ?>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aviso.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/aviso.png' /><br />Avisos para Turma</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/ensalamento.php?turma=<?php print crip($turmaCodigo); ?>&subturma=<?php print crip($subturma); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/arquivo.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 80px' src='<?php print IMAGES; ?>/arquivo.png' /><br />Material de Aula</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/aviso.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 70px' src='<?php print IMAGES; ?>/aviso.png' /><br />Avisos para Turma</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/chat.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><div id="imageChat"><img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat (Atendimento)</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/ensalamento.php?turma=<?php print crip($turmaCodigo); ?>&subturma=<?php print crip($subturma); ?>'); void(0);"><img style='width: 70px' src='<?php print IMAGES; ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?php print VIEW; ?>/professor/arquivo.php?atribuicao=<?php print crip($atribuicao); ?>'); void(0);"><img style='width: 70px' src='<?php print IMAGES; ?>/arquivo.png' /><br />Material de Aula</a></td>
         </tr>
         <tr><td colspan="9"><hr></td></tr>
     </table>
@@ -260,6 +260,7 @@ if ($_GET["atribuicao"]) {
 ?>
 
 <script>
+
 <?php if ($pergunta && !$erro) print "pergunta('$pergunta');" ?>
 
     $(document).ready(function () {
