@@ -1,4 +1,5 @@
 <?php
+
 //SESSAO
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
@@ -8,12 +9,16 @@ if (!isset($_SESSION)) {
 }
 
 $DEBUG = 0;
+$FULL = 0;
 $LOCATION_CRON = dirname(__FILE__) . '/';
 
 require $LOCATION_CRON . '../inc/config.inc.php';
 
 if (isset($argv[1]))
     $DEBUG = 1;
+
+if (isset($argv[2]))
+    $FULL = 1;
 
 require("$LOCATION_CRON" . "db2Mysql.php");
 require("$LOCATION_CRON" . "../inc/funcoes.inc.php");
@@ -41,7 +46,8 @@ if (!$DB2_FAIL) {
     include ("$LOCATION_CRON" . "db2Notas.php");
     include ("$LOCATION_CRON" . "db2Dispensas.php");
 
-    include ("$LOCATION_CRON" . "db2NotasDivergentes.php");
+    if ($FULL)
+        include ("$LOCATION_CRON" . "db2NotasDivergentes.php");
 }
 
 //METRICAS DO SISTEMA
