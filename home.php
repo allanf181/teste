@@ -63,13 +63,10 @@ require CONTROLLER . "/chat.class.php";
                 <tr>
                     <td>
                         <?php
-                        $chat = new Chat();
-                        $params = array(':prontuario' => $_SESSION['loginProntuario']);
-                        $message = $chat->listMessage($params);
+                        if (in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
+                            chat();
+                        }
                         ?>
-                        <a title='<?= $message ?>'>
-                            <img style='width: 40px' src='<?= INC ?>/file.inc.php?type=chat' />
-                        </a>
                     </td>
                     <td width='20'>&nbsp;</td>                    
                     <td>
@@ -134,7 +131,7 @@ require CONTROLLER . "/chat.class.php";
 
 <?php
 if (in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
-    // Listra Trocas de Aulas validadas para os Alunos e Professores
+// Listra Trocas de Aulas validadas para os Alunos e Professores
     listaTrocaAula();
 }
 
@@ -144,13 +141,13 @@ if (!in_array($ALUNO, $_SESSION["loginTipo"])) {
 
 // INFORMES PARA COORDENADORES
 if (in_array($COORD, $_SESSION["loginTipo"])) {
-    // Verifica se o coordenador tem trocas para validar
+// Verifica se o coordenador tem trocas para validar
     listaTrocaCoord();
-    // Verificar se há diários para liberar
+// Verificar se há diários para liberar
     checaLibDiario();
-    // Verifica se há Planos de Ensino para validar
+// Verifica se há Planos de Ensino para validar
     checaLibPlanoEnsino();
-    // Verifica se há FPA, PIT e RIT para validar.
+// Verifica se há FPA, PIT e RIT para validar.
     checaLibTD();
 }
 
@@ -158,11 +155,22 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 showLastAccess();
 
 ///////////////////////// FUNCOES ////////////////////////////////////
+function chat() {
+    $chat = new Chat();
+    $params = array(':prontuario' => $_SESSION['loginProntuario']);
+    $message = $chat->listMessage($params);
+    ?>
+    <a title='<?= $message ?>'>
+        <img style='width: 40px' src='<?= INC ?>/file.inc.php?type=chat' />
+    </a>
+    <?php
+}
+
 function senhaInfo() {
     global $user;
 
     $pessoa = new Pessoas();
-    // INFOS DE SENHA
+// INFOS DE SENHA
     $res = $pessoa->infoPassword($user);
     if ($res['dataSenha']) {
         ?>
@@ -194,7 +202,7 @@ function defineFoto() {
 
     $pessoa = new Pessoas();
 
-    // REMOVER FOTO
+// REMOVER FOTO
     if (isset($_GET['removerFoto']))
         $pessoa->removeFoto($user);
 
@@ -306,7 +314,7 @@ function defineEmail() {
     global $user, $_GET;
 
     $pessoa = new Pessoas();
-    // ALTERACAO DE EMAIL
+// ALTERACAO DE EMAIL
     if (isset($_GET['email'])) {
         if ($_GET['email'] == 'undefined')
             $_GET['email'] = null;
@@ -348,7 +356,7 @@ function socioEconomico() {
 
 function checaSistema() {
     global $VERSAOAT, $VERSAO, $SITE_TITLE, $SITE_CIDADE, $DIGITANOTAS;
-    // Checa a versão atual.
+// Checa a versão atual.
     if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
         if (updateDataBase()) {
             ?>
@@ -373,7 +381,7 @@ function checaSistema() {
         }
     }
 
-    // Verifica se o CRON está sendo executado.
+// Verifica se o CRON está sendo executado.
     $log = new Logs();
     if ($log->hasCronActive()) {
         ?>
@@ -382,7 +390,7 @@ function checaSistema() {
         <?php
     }
 
-    // Verifica se o nome e cidade no sistema estão preenchidos.
+// Verifica se o nome e cidade no sistema estão preenchidos.
     if (!$SITE_TITLE || !$SITE_CIDADE) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: nome da institui&ccedil;&atilde;o e a cidade devem ser preenchidos.</font>
@@ -390,8 +398,8 @@ function checaSistema() {
         <?php
     }
 
-    // Verifica se a sigla do campus foi preenchida
-    // Utilizada pela DigitaNotas
+// Verifica se a sigla do campus foi preenchida
+// Utilizada pela DigitaNotas
     if (!$DIGITANOTAS) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: a sigla da institui&ccedil;&atilde;o deve ser preenchida para que as notas sejam exportadas automaticamente para o DigitaNotas.</font>
@@ -404,7 +412,7 @@ function defineLattes() {
     global $_GET, $user;
 
     $pessoa = new Pessoas();
-    // ALTERACAO DO LATTES
+// ALTERACAO DO LATTES
     if (isset($_GET['lattes'])) {
         if ($_GET['lattes'] == 'undefined')
             $_GET['lattes'] = null;
@@ -449,7 +457,7 @@ function checaTrocaAula() {
 function checaTD() {
     global $user, $ANO, $SEMESTRE;
 
-    // Verificando se há correções para a FPA, PIT e RIT
+// Verificando se há correções para a FPA, PIT e RIT
     $tdDados = new TDDados();
     $sqlAdicional = ' AND f.pessoa = :cod ';
     $params = array(':cod' => $user);
@@ -468,7 +476,7 @@ function checaPlanoEnsino() {
     global $user;
 
     $plano = new PlanosEnsino();
-    // Verificando se há correções para o Plano de Ensino.
+// Verificando se há correções para o Plano de Ensino.
     $sqlAdicional = "AND pr.professor = :cod ";
     $params = array('cod' => $user);
     $res = $plano->hasChangePE($params, $sqlAdicional);
@@ -486,7 +494,7 @@ function checaAtendimentoAluno() {
     global $user, $ANO, $SEMESTRE;
 
     $atendimento = new Atendimento();
-    // Verificando se o professor digitou o horário de atendimento ao aluno.
+// Verificando se o professor digitou o horário de atendimento ao aluno.
     $sqlAdicional = ' WHERE pessoa = :pessoa AND ano = :ano AND semestre = :semestre ';
     $params = array('pessoa' => $user, 'ano' => $ANO, 'semestre' => $SEMESTRE);
     $res = $atendimento->listRegistros($params, $sqlAdicional, null, null);
@@ -501,7 +509,7 @@ function checaAtendimentoAluno() {
 function avisos() {
     global $user;
 
-    // SISTEMA DE AVISOS
+// SISTEMA DE AVISOS
     $aviso = new Avisos();
     $res = $aviso->getAvisoGeral($user);
     if ($res) {
@@ -536,7 +544,7 @@ function listaTrocaAula() {
     global $PROFESSOR, $ALUNO, $_SESSION;
 
     if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
-        // Verificando se o Professor tem aulas trocadas vigentes
+// Verificando se o Professor tem aulas trocadas vigentes
         $params = array('professor' => $_SESSION['loginCodigo']);
         $sqlAdicional = " AND (professor = :professor OR professorSub = :professor) "
                 . " AND coordenadorAceite = 'S' "
@@ -544,7 +552,7 @@ function listaTrocaAula() {
     }
 
     if (in_array($ALUNO, $_SESSION["loginTipo"])) {
-        // Verificando se o Aluno tem aulas trocadas vigentes
+// Verificando se o Aluno tem aulas trocadas vigentes
         $params = array('aluno' => $_SESSION['loginCodigo']);
         $sqlAdicional = " AND atribuicao IN (SELECT atribuicao FROM Matriculas WHERE aluno = :aluno) "
                 . " AND coordenadorAceite = 'S' "
@@ -590,7 +598,7 @@ function listaTrocaCoord() {
 
     $_SESSION['regAnterior'] = null;
 
-    // Verificando Troca de Aulas
+// Verificando Troca de Aulas
     $aulaTroca = new AulasTrocas();
 
     $params = array('coord' => $_SESSION['loginCodigo']);
