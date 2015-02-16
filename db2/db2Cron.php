@@ -14,11 +14,30 @@ $LOCATION_CRON = dirname(__FILE__) . '/';
 
 require $LOCATION_CRON . '../inc/config.inc.php';
 
-if (isset($argv[1]))
-    $DEBUG = 1;
+if (isset($argv[1]) && $argv[1] == '-help') {
+    print "\nSCRIPT SYNC IFSP DB2 - NAMBEI. \n";
+    print "Verifique abaixo todas as opções existentes:\n \n";
+    print "-D: executa o script de sincronização em modo DEBUG, mostrando todos os erros e inserções.\n\n";
+    print "-F: executa o script em modo FULL que além da sincronização, executa também a função que analisa divergência de notas entre o Nambei e o WebDiário.\n";
+    print "Essa opção pode causar lentidão no sistema, utilize somente quando necessário, após fechamento das notas.\n\n";
+    die;
+} else {
+    print "Comando não reconhecido, digite -help para verificar as opções. \n";
+    die;
+}
 
-if (isset($argv[2]))
+if (isset($argv[1]) && $argv[1] == '-D') {
+    $DEBUG = 1;
+} else {
+    print "Comando não reconhecido, digite -help para verificar as opções. \n";
+    die;
+}
+
+if (isset($argv[2]) && $argv[2] == '-F') {
     $FULL = 1;
+} else {
+    print "Comando não reconhecido, digite -help para verificar as opções. \n";
+}
 
 require("$LOCATION_CRON" . "db2Mysql.php");
 require("$LOCATION_CRON" . "../inc/funcoes.inc.php");
