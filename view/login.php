@@ -54,7 +54,7 @@ if ($prontuario && $senha) {
 <div id='fundo_login'></div><div id='form_login_logo'></div>
 <div id="" class="">
     <form method="post" id="form_login">
-        <div id='div_login_logo'><img id='login_logo' src='<?php print IMAGES; ?>/logotipo_new.png' /></div>
+        <div id='div_login_logo'><img id='login_logo' src='<?= IMAGES ?>/logotipo_new.png' /></div>
         <table>
             <tr><td align="right"><div id="form_login_label">Prontu&aacute;rio: </div></td><td align='left'><input type="text" name="campoLogin" id="campoLogin" /></td></tr>
             <tr><td align="right"><div id="form_login_label">Senha: </div></td><td align='left'><input type="password" name="campoSenha" id="campoSenha" /></td></tr>
@@ -62,16 +62,16 @@ if ($prontuario && $senha) {
             <?php
             if ($try < 1) {
                 ?>
-                <div id='senhaTip2'><img src='<?php print CAPTCHA; ?>/captcha.php' style='margin-left: 0px; width:106px; height: 32px' />
+                <div id='senhaTip2'><img src='<?= CAPTCHA ?>/captcha.php' style='margin-left: 0px; width:106px; height: 32px' />
                     <input type="text" name="cap" id="cap" placeholder='Digite o código da figura' autocomplete='off' />
-                    <input type="hidden" name="try" value="<?php print $try; ?>" />
+                    <input type="hidden" name="try" value="<?= $try ?>" />
                 </div>
                 <tr><td colspan="2">&nbsp</td></tr>
                 <style>#entrar {margin-top: 15px;}</style>
                 <?php
             } else {
                 ?>
-                <input type="hidden" name="try" value="<?php print $try; ?>" />
+                <input type="hidden" name="try" value="<?= $try ?>" />
                 <?php
             }
             ?>
@@ -131,7 +131,7 @@ if ($opcao == 'recuperar') {
 
     $('#form_login').html5form({
         method: 'POST',
-        action: '<?php print VIEW; ?>/login.php',
+        action: '<?= VIEW ?>/login.php',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -140,6 +140,6 @@ if ($opcao == 'recuperar') {
 
     function recuperarSenha() {
         var campoLogin = $('#campoLogin').val();
-        $('#index').load('<?php print VIEW; ?>/login.php?opcao=recuperar&campoLogin=' + campoLogin);
+        $('#index').load('<?= VIEW ?>/login.php?opcao=recuperar&campoLogin=' + campoLogin);
     }
 </script>

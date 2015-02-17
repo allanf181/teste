@@ -20,7 +20,7 @@ if (dcrip($_GET["professor"])) {
     $sqlAdicional = " AND p.codigo = :professor";
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 
@@ -95,6 +95,6 @@ require(PATH . VIEW . '/paginacao.php');
 <script>
     $(document).ready(function () {
         $('#campoProfessor').change(function () {
-            $('#index').load('<?php print $SITE; ?>?professor=' + $('#campoProfessor').val());
+            $('#index').load('<?= $SITE ?>?professor=' + $('#campoProfessor').val());
         });
     });

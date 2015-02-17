@@ -57,7 +57,7 @@ if ($_GET['pagina']) {
     }
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
@@ -157,7 +157,7 @@ if ($_GET['pagina']) {
             <form id="form_padrao">
                 <table border="0" width="100%">
                     <tr><td align="left" style="width: 160px">Disciplinas equivalentes: </td><td>
-                            <select name="campoDisciplina" <?= $disabled ?> id="campoDisciplina" value="<?php echo $disciplina; ?>" >
+                            <select name="campoDisciplina" <?= $disabled ?> id="campoDisciplina" value="<?= $disciplina ?>" >
                                 <option></option>
                                 <?php
                                 $res = $planoEnsino->getPlanoEquivalente(dcrip($_GET["atribuicao"]));
@@ -217,16 +217,16 @@ if ($_GET['pagina'] == "planoEnsino") {
             <table id="form" border="0" width="100%">
                 <tr>
                     <td align="left">N&uacute;m. Aulas Semanais: </td>
-                    <td><input type="text" size="2" <?= $disabled; ?> id="numeroAulaSemanal" onchange="validaItem(this)" name="numeroAulaSemanal" maxlength="2" value="<?php echo $numeroAulaSemanal; ?>"/>
+                    <td><input type="text" size="2" <?= $disabled; ?> id="numeroAulaSemanal" onchange="validaItem(this)" name="numeroAulaSemanal" maxlength="2" value="<?= $numeroAulaSemanal ?>"/>
                     <td>&nbsp;</td>
                     <td align="left">Total de Horas: </td>
-                    <td><input type="text" size="5" <?= $disabled; ?> id="totalHoras" onchange="validaItem(this)" name="totalHoras" maxlength="5" value="<?php echo $totalHoras; ?>"/>
+                    <td><input type="text" size="5" <?= $disabled; ?> id="totalHoras" onchange="validaItem(this)" name="totalHoras" maxlength="5" value="<?= $totalHoras ?>"/>
                     <td>&nbsp;</td>
                     <td align="left">Total de Aulas: </td>
-                    <td><input type="text" size="5" <?= $disabled; ?> id="totalAulas" onchange="validaItem(this)" name="totalAulas" maxlength="5" value="<?php echo $totalAulas; ?>"/>
+                    <td><input type="text" size="5" <?= $disabled; ?> id="totalAulas" onchange="validaItem(this)" name="totalAulas" maxlength="5" value="<?= $totalAulas ?>"/>
                     <td>&nbsp;</td>
                     <td align="left">N&uacute;m. Professores: </td>
-                    <td><input type="text" size="1" <?= $disabled; ?> id="numeroProfessores" name="numeroProfessores" maxlength="1" value="<?php echo $numeroProfessores; ?>"/>
+                    <td><input type="text" size="1" <?= $disabled; ?> id="numeroProfessores" name="numeroProfessores" maxlength="1" value="<?= $numeroProfessores ?>"/>
                 </tr>
                 <tr>
                     <td align="left">2 - Ementa: </td>
@@ -345,7 +345,7 @@ if ($_GET['pagina'] == "planoAula") {
             <br><br>
 
             <table id="listagem" border="0" align="center">
-                <tr class="listagem_tr"><th align="center" width="80">Semana</th><th align="left">Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+                <tr class="listagem_tr"><th align="center" width="80">Semana</th><th align="left">Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a></th></tr>
                 <?php
                 // efetuando a consulta para listagem
                 $i = 0;
@@ -416,7 +416,7 @@ $atribuicao = $_GET['atribuicao'];
         $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function (caption) {
                     if (caption == 'Sim') {
@@ -438,7 +438,7 @@ $atribuicao = $_GET['atribuicao'];
         $("#item-entregar").click(function () {
             $.Zebra_Dialog('<strong>Deseja enviar seu Plano para seu coordenador? \n O Plano ser&aacute; bloqueado, podendo ser desbloqueado somente pelo coordenador.', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function (caption) {
                     if (caption == 'Sim') {
@@ -452,7 +452,7 @@ $atribuicao = $_GET['atribuicao'];
             var codigo = $('#campoDisciplina').val();
             $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, seu plano de ensino ser&aacute; exclu&iacute;do e substitu&iacute;do pelo escolhido. Deseja continuar?', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function (caption) {
                     if (caption == 'Sim') {

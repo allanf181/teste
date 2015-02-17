@@ -120,14 +120,14 @@ if (!$VALIDO && $disabled)
 if ($VALIDO)
     mensagem('OK', 'VALID_FORM');
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <br />
 <center>
     <div id="html5form" class="main">
         <form id="form_padrao">
-            <input type="hidden" value="<?php echo $codigo; ?>" name="codigo" id="codigo" />
+            <input type="hidden" value="<?= $codigo ?>" name="codigo" id="codigo" />
             <font size="3"><b>FPA - FORMUL&Aacute;RIO DE PREFER&Ecirc;NCIA DE ATIVIDADES <br> <?= $psemestre ?>&ordm; semestre <?= $pano ?> </b></font>
             <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <tr>
@@ -777,7 +777,7 @@ if ($VALIDO)
     $('#form_padrao').submit(function () {
         var options = {
             target: '#index',
-            url: '<?php print $SITE; ?>',
+            url: '<?= $SITE ?>',
             type: 'POST',
             data: {enviar: enviar},
         };

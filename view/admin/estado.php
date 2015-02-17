@@ -43,7 +43,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <script>
 
@@ -60,13 +60,13 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
-            <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
-            <tr><td align="right">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="45" value="<?php echo $nome; ?>" /></td></tr>
-            <tr><td align="right">Sigla: </td><td><input type="text" name="sigla" id="sigla" maxlength="2" value="<?php echo $sigla; ?>" /></td></tr>
+            <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
+            <tr><td align="right">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="45" value="<?= $nome ?>" /></td></tr>
+            <tr><td align="right">Sigla: </td><td><input type="text" name="sigla" id="sigla" maxlength="2" value="<?= $sigla ?>" /></td></tr>
             <tr><td></td><td>
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" class="submit" /></td>
-                            <td><input type="reset" value="Novo/Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?php print $SITE; ?>');
+                            <td><input type="reset" value="Novo/Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?= $SITE ?>');
                                             void(0);" /></td>
                         </tr></table>
                 </td></tr>

@@ -54,7 +54,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <script>
 

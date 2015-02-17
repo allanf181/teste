@@ -22,8 +22,8 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["codigo"] = null;
 }
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -109,7 +109,7 @@ require PATH . VIEW . '/paginacao.php';
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
-                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
             </a>
         </th>
     </tr>
@@ -154,7 +154,7 @@ require PATH . VIEW . '/paginacao.php';
         $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function (caption) {
                     if (caption == 'Sim') {

@@ -25,9 +25,9 @@ if (strpos($_SERVER["HTTP_REFERER"], "/$LOCATION/") == false) {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
 }
 ?>
-<link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/js/croppic/imgareaselect-default.css" />
-<script type="text/javascript" src="<?php print VIEW; ?>/js/croppic/jquery.min.js"></script>
-<script type="text/javascript" src="<?php print VIEW; ?>/js/croppic/jquery.imgareaselect.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="<?= VIEW ?>/js/croppic/imgareaselect-default.css" />
+<script type="text/javascript" src="<?= VIEW ?>/js/croppic/jquery.min.js"></script>
+<script type="text/javascript" src="<?= VIEW ?>/js/croppic/jquery.imgareaselect.pack.js"></script>
 <?php
 $path = sys_get_temp_dir() . '/';
 

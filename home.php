@@ -315,7 +315,7 @@ function defineEmail() {
 
     $pessoa = new Pessoas();
 // ALTERACAO DE EMAIL
-    if (isset($_GET['email'])) {
+    if (isset($_GET['email']) && $user) {
         if ($_GET['email'] == 'undefined')
             $_GET['email'] = null;
 
@@ -329,12 +329,12 @@ function defineEmail() {
     if (!$userDados[0]['email']) {
         ?>
         <br>Email: <input type="text" size="60" maxlength="100" name="email" id="email" value="" />
-        <img src="<?php print ICONS; ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
+        <img src="<?= ICONS ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
         <?php
     } else {
         ?>
-        <br>Email: <?php print $userDados[0]['email']; ?></a>
-        &nbsp;<img src="<?php print ICONS; ?>/remove.png" id="send-email" title='Remover Email' style="width: 15px; height: 15px">
+        <br>Email: <?= $userDados[0]['email'] ?></a>
+        &nbsp;<img src="<?= ICONS ?>/remove.png" id="send-email" title='Remover Email' style="width: 15px; height: 15px">
         <?php
     }
     ?>
@@ -525,9 +525,9 @@ function avisos() {
                         ?>
                         <tr><td colspan="2"><h2><?= $nome ?></h2></td></tr>
                         <tr><td valign="top" width="50">
-                                <img alt="foto" style="width: 50px; height: 50px" src="<?php print INC; ?>/file.inc.php?type=pic&id=<?php print crip($codigo); ?>" />
+                                <img alt="foto" style="width: 50px; height: 50px" src="<?= INC ?>/file.inc.php?type=pic&id=<?= crip($codigo) ?>" />
                             </td>
-                            <td valign="top"><font size='1'><?= $reg['Data'] . $disc ?></font><br><?php print $reg['Conteudo']; ?></a>
+                            <td valign="top"><font size='1'><?= $reg['Data'] . $disc ?></font><br><?= $reg['Conteudo'] ?></a>
                             </td>
                         </tr>
                         <?php
@@ -887,24 +887,24 @@ function showLastAccess() {
 ?>
 <script>
     $(document).ready(function () {
-        $('#send-lattes').click(function (event) {
+        $('#send-lattes').click(function () {
             var lattes = encodeURIComponent($('#lattes').val());
             $('#index').load('home.php?lattes=' + lattes);
         });
-        $('#send-email').click(function (event) {
+        $('#send-email').click(function () {
             var email = encodeURIComponent($('#email').val());
             $('#index').load('home.php?email=' + email);
         });
 
-        $('#remover-foto').click(function (event) {
-            $('#index').load('home.php?removerFoto=<?php print crip($user); ?>');
+        $('#remover-foto').click(function () {
+            $('#index').load('home.php?removerFoto=<?= crip($user) ?>');
 
         });
 
-        $('#adiciona-foto').click(function (event) {
+        $('#adiciona-foto').click(function () {
             new $.Zebra_Dialog('<strong>Recorte a foto, se desejar.</strong>', {
                 source: {'iframe': {
-                        'src': '<?php print VIEW; ?>/trocaFoto.php',
+                        'src': '<?= VIEW ?>/trocaFoto.php',
                         'height': 350
                     }
                 },

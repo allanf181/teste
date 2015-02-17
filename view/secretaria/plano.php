@@ -79,8 +79,8 @@ if ($_GET["opcao"] == 'controle') {
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -119,7 +119,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     <tr>
         <td align="right" style="width: 100px">Curso: </td>
         <td>
-            <select name="curso" id="curso" value="<?php echo $curso; ?>" style="width: 350px">
+            <select name="curso" id="curso" value="<?= $curso ?>" style="width: 350px">
                 <option></option>
                 <?php
                 require CONTROLLER . '/curso.class.php';
@@ -304,7 +304,7 @@ if (!empty($curso)) {
         curso = $('#curso').val();
         bimestre = $('#bimestre').val();
         professor = $('#professor').val();
-        $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre + '&professor=' + professor);
+        $('#index').load('<?= $SITE ?>?&turma=' + turma + '&curso=' + curso + '&bimestre=' + bimestre + '&professor=' + professor);
     }
 
     $('#turma, #curso, #bimestre, #professor').change(function () {
@@ -314,11 +314,11 @@ if (!empty($curso)) {
     function change(codigo, nome, curso, professor, turma, atribuicao) {
         $.Zebra_Dialog('<strong>Confirma a solicitação de correção do plano de ensino de ' + nome + '?<br><br>Motivo:</strong>', {
             'type': 'prompt',
-            'title': '<?php print $TITLE; ?>',
+            'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {
                 if (caption == 'Sim') {
-                    $('#index').load('<?php print $SITE; ?>?opcao=change&codigo=' + codigo + '&curso=' + curso + '&solicitacao=' + valor + "&professor=" + professor + '&turma=' + turma + '&atribuicao=' + atribuicao);
+                    $('#index').load('<?= $SITE ?>?opcao=change&codigo=' + codigo + '&curso=' + curso + '&solicitacao=' + valor + "&professor=" + professor + '&turma=' + turma + '&atribuicao=' + atribuicao);
                 }
             }
         });
@@ -336,7 +336,7 @@ if (!empty($curso)) {
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption) {
                 if (caption == 'Sim') {
-                    $('#index').load('<?php print $SITE; ?>?opcao=controle&curso=' + curso + '&codigo=' + codigo + '&conferido=' + checked + "&professor=" + professor + '&turma=' + turma + '&atribuicao=' + atribuicao);
+                    $('#index').load('<?= $SITE ?>?opcao=controle&curso=' + curso + '&codigo=' + codigo + '&conferido=' + checked + "&professor=" + professor + '&turma=' + turma + '&atribuicao=' + atribuicao);
                 } else
                     document.getElementById(codigo).checked = !checked;
             }

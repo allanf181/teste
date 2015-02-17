@@ -32,7 +32,7 @@ if (dcrip($_GET["bimestre"])) {
     $sqlAdicional .= ' AND a.bimestre=:bimestre ';
 }
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <center>
     <?php if (!in_array($ALUNO, $_SESSION["loginTipo"]) && !in_array($PROFESSOR, $_SESSION["loginTipo"])) { ?>
         <div id="html5form" class="main">

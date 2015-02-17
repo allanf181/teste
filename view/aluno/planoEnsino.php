@@ -27,8 +27,8 @@ $sqlAdicional = " AND a.codigo = :atribuicao  "
 
 $res = $plano->listPlanoEnsino($params, $sqlAdicional);
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 if ($res) {
@@ -61,27 +61,27 @@ if ($res) {
                         <font size="4">PLANO DE ENSINO</font>
                     </h3>
                 </td>
-                <td>CAMPUS: <b> <?php print $SITE_CIDADE; ?></b></td>
+                <td>CAMPUS: <b> <?= $SITE_CIDADE ?></b></td>
             </tr>
             <tr>
                 <td colspan="3">1 - IDENTIFICAÇÃO</td>
             </tr>
             <tr>
-                <td colspan="3">CURSO: <b><?php print $curso; ?></b></td>
+                <td colspan="3">CURSO: <b><?= $curso ?></b></td>
             </tr>
             <tr>
-                <td colspan="3">COMPONENTE CURRICULAR: <b><?php print $disciplina; ?></b></td>
+                <td colspan="3">COMPONENTE CURRICULAR: <b><?= $disciplina ?></b></td>
             </tr>
             <tr>
-                <td colspan="3">CÓDIGO DISCIPLINA: <b><?php print $numero; ?></b></td>
+                <td colspan="3">CÓDIGO DISCIPLINA: <b><?= $numero ?></b></td>
             </tr>
             <tr>
-                <td>SEMESTRE/ANO: <b><?php print "$SEMESTRE/$ANO"; ?></b></td>
-                <td>NÚMERO DE AULAS SEMANAIS: <b><?php print $numeroAulaSemanal; ?></b></td>
-                <td>ÁREA: <b><?php print $modalidade; ?></b></td>
+                <td>SEMESTRE/ANO: <b><?= "$SEMESTRE/$ANO" ?></b></td>
+                <td>NÚMERO DE AULAS SEMANAIS: <b><?= $numeroAulaSemanal ?></b></td>
+                <td>ÁREA: <b><?= $modalidade ?></b></td>
             </tr>
-            <tr><td>TOTAL DE HORAS: <b><?php print $totalHoras; ?></b></td><td>TOTAL DE AULAS: <b><?php print $totalAulas; ?></b></td>
-                <td>NÚMERO DE PROFESSORES: <b><?php print $numeroProfessores; ?></b></td></tr>
+            <tr><td>TOTAL DE HORAS: <b><?= $totalHoras ?></b></td><td>TOTAL DE AULAS: <b><?= $totalAulas ?></b></td>
+                <td>NÚMERO DE PROFESSORES: <b><?= $numeroProfessores ?></b></td></tr>
             <tr><td colspan="3">PROFESSOR(A) RESPONSÁVEL: <b><?= $professor->getProfessor(dcrip($_GET['atribuicao']), 1, '', 1, 1) ?></b></td></tr>
         </table>
         <br>
@@ -89,8 +89,8 @@ if ($res) {
         foreach ($ITEM as $chave => $valor) {
             ?>
             <table border="1" width="100%" cellpadding="2" cellspacing="0">
-                <tr><td><b><?php print $chave; ?></b></td></tr>
-                <tr><td><?php print nl2br($valor); ?></td></tr>
+                <tr><td><b><?= $chave ?></b></td></tr>
+                <tr><td><?= nl2br($valor) ?></td></tr>
             </table>
             <br>
             <?php

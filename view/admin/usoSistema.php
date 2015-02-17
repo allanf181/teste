@@ -15,7 +15,7 @@ require SESSAO;
 <script src="<?= VIEW ?>/js/highcharts/highcharts.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/highcharts/exporting.js" type="text/javascript"></script>
 
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php

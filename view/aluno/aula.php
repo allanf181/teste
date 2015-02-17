@@ -19,7 +19,7 @@ require CONTROLLER . "/aula.class.php";
 $aula = new Aulas();
 $res = $aula->listAulasAluno($aluno, $atribuicao);
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <div class='fundo_listagem'>
     <table width="100%" align="center" style="border: 0px solid black">

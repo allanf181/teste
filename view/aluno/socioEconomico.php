@@ -12,7 +12,7 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 $codigo = $_SESSION["loginCodigo"];
@@ -42,7 +42,7 @@ if ($codigo) { // se o parâmetro não estiver vazio
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',

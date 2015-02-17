@@ -1,5 +1,5 @@
 <script>
-    window.start = <?php print $TIMEOUT * 60; ?>;
+    window.start = <?= $TIMEOUT * 60 ?>;
 
     //O restante do scrip abaixo pertence ao CHAT
     //Ele é utilizado aqui, pois caso o usuário saia
@@ -20,7 +20,7 @@ if (isset($_SESSION['timeout']) && $_SESSION['timeout'] + $TIMEOUT * 60 < time()
     ?>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#index').load('<?php print VIEW; ?>/logoff.php');
+            $('#index').load('<?= VIEW ?>/logoff.php');
         });
     </script>
     <?php

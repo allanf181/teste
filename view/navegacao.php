@@ -20,20 +20,20 @@ if (isset($_GET["ordem"]))
                
                 if ($item!=$primeiro){
                 ?>
-                    <a class="nav" href="javascript:$('#index').load('<?php print $SITENAV; ?>&item=<?php echo $primeiro; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="primeiro"><img class="botao" src="<?php print ICONS; ?>/rewind.png" /></a>
+                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $primeiro ?>&ordem=<?= $ordem ?>'); void(0);" title="primeiro"><img class="botao" src="<?= ICONS ?>/rewind.png" /></a>
                 <?php    
                 } else {
                 ?>
-                    <img class="botao" title="botao desativado" src="<?php print ICONS; ?>/rewind_dis.png" />
+                    <img class="botao" title="botao desativado" src="<?= ICONS ?>/rewind_dis.png" />
                 <?php    
                 } // fecha o if
                 if ($item!=$anterior){
                 ?>
-                    <a class="nav" href="javascript:$('#index').load('<?php print $SITENAV; ?>&item=<?php echo $anterior; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="anterior"><img class="botao" src="<?php print ICONS; ?>/wleft.png" /></a>
+                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $anterior ?>&ordem=<?= $ordem ?>'); void(0);" title="anterior"><img class="botao" src="<?= ICONS ?>/wleft.png" /></a>
                 <?php    
                 } else {
                 ?>
-                    <img class="botao" title="botao desativado" src="<?php print ICONS; ?>/wleft_dis.png" />
+                    <img class="botao" title="botao desativado" src="<?= ICONS ?>/wleft_dis.png" />
                 <?php    
                 } // fecha o if
                 
@@ -54,20 +54,20 @@ if (isset($_GET["ordem"]))
                 
                 if ($item!=$proximo){
                 ?>
-                    <a class="nav" href="javascript:$('#index').load('<?php print $SITENAV; ?>&item=<?php echo $proximo; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="próximo"><img class="botao" src="<?php print ICONS; ?>/wright.png" /></a>
+                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $proximo ?>&ordem=<?= $ordem ?>'); void(0);" title="próximo"><img class="botao" src="<?= ICONS ?>/wright.png" /></a>
                 <?php    
                 } else {
                 ?>
-                    <img class="botao" title="botao desativado" src="<?php print ICONS; ?>/wright_dis.png" />
+                    <img class="botao" title="botao desativado" src="<?= ICONS ?>/wright_dis.png" />
                 <?php    
                 } // fecha o if
                 if ($item!=$ultimo){
                 ?>
-                    <a class="nav" href="javascript:$('#index').load('<?php print $SITENAV; ?>&item=<?php echo $ultimo; ?>&ordem=<?php echo $ordem; ?>'); void(0);" title="último"><img class="botao" src="<?php print ICONS; ?>/fastforward.png" /></a>
+                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $ultimo ?>&ordem=<?= $ordem ?>'); void(0);" title="último"><img class="botao" src="<?= ICONS ?>/fastforward.png" /></a>
                 <?php    
                 } else {
                 ?>
-                    <img class="botao" title="botao desativado" src="<?php print ICONS; ?>/fastforward_dis.png" />
+                    <img class="botao" title="botao desativado" src="<?= ICONS ?>/fastforward_dis.png" />
                 <?php    
                 } // fecha o if
                 ?>

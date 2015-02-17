@@ -34,7 +34,7 @@ if (dcrip($_GET["turma"])) {
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -75,7 +75,7 @@ if (dcrip($_GET["turma"])) {
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%">
                         <tr>
-                            <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td>
+                            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a></td>
                         </tr>
                     </table>
                 </td>
@@ -127,7 +127,7 @@ require(PATH . VIEW . '/paginacao.php');
         <th align="center" width="40">
             <input type='checkbox' id="select-all" value="" />
             <a href="#" class='item-excluir'>
-                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
             </a>
         </th>
     </tr>
@@ -198,7 +198,7 @@ require(PATH . VIEW . '/paginacao.php');
         $(".item-excluir").click(function() {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function(caption) {
                     if (caption == 'Sim') {
@@ -206,7 +206,7 @@ require(PATH . VIEW . '/paginacao.php');
                         $('input:checkbox:checked').each(function() {
                             selected.push($(this).val());
                         });
-                        $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                     }
                 }
             });

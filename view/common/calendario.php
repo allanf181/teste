@@ -6,8 +6,8 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 }
 ?>
 
-<link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/calendario.css" media="screen" />
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="<?= VIEW ?>/css/calendario.css" media="screen" />
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php

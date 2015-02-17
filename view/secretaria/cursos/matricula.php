@@ -121,7 +121,7 @@ if (dcrip($_GET["nome"])) {
     $sqlAdicional .= ' AND p.nome LIKE :nome ';
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <div id="html5form" class="main">
@@ -148,7 +148,7 @@ if (dcrip($_GET["nome"])) {
         <tr>
             <td align="right">Disciplina: </td>
             <td>
-                <select name="atribuicao" id="atribuicao" value="<?php echo $atribuicao; ?>">
+                <select name="atribuicao" id="atribuicao" value="<?= $atribuicao ?>">
                     <option></option>
                     <?php
                     require CONTROLLER . '/atribuicao.class.php';
@@ -168,15 +168,15 @@ if (dcrip($_GET["nome"])) {
         <tr>
             <td align="right">Prontu&aacute;rio: </td>
             <td>
-                <input type="text" size="5" value="<?php echo $prontuario; ?>" name="prontuario" id="prontuario" />
-                <a href="#" title="Buscar" id="setProntuario"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
+                <input type="text" size="5" value="<?= $prontuario ?>" name="prontuario" id="prontuario" />
+                <a href="#" title="Buscar" id="setProntuario"><img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' /></a>
             </td>
         </tr>
         <tr>
             <td align="right">Nome: </td>
             <td>   
-                <input type="text" size="25" value="<?php echo $nome; ?>" name="nome" id="nome" />
-                <a href="#" title="Buscar" id="setNome"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
+                <input type="text" size="25" value="<?= $nome ?>" name="nome" id="nome" />
+                <a href="#" title="Buscar" id="setNome"><img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' /></a>
             </td>
         </tr>
         <tr>
@@ -336,7 +336,7 @@ if ($params['turma'] || $params['atribuicao'] || $params['nome'] || $params['pro
             if ($reg['dataFim'] && $reg['dataFim'] != '00/00/0000')
                 $reg['dataInicio'] = $reg['dataInicio'] . ' a ' . $reg['dataFim'];
             ?>
-            <tr <?php print $cdif; ?>>        
+            <tr <?= $cdif ?>>        
                 <td align='left'><?= $reg['prontuario'] ?></td>
                 <td><?= mostraTexto($reg['pessoa']) ?></td>
                 <td align='left'>
@@ -376,7 +376,7 @@ if ($params['turma'] || $params['atribuicao'] || $params['nome'] || $params['pro
         var atribuicao = $('#atribuicao').val();
         var nome = encodeURIComponent($('#nome').val());
         var prontuario = encodeURIComponent($('#prontuario').val());
-        var URLS = '<?php print $SITE; ?>?pesquisa=1&turma=' + turma + '&atribuicao=' + atribuicao + '&nome=' + nome + '&prontuario=' + prontuario;
+        var URLS = '<?= $SITE ?>?pesquisa=1&turma=' + turma + '&atribuicao=' + atribuicao + '&nome=' + nome + '&prontuario=' + prontuario;
         if (!getLink)
             $('#index').load(URLS + '&item=<?= $item ?>');
         else

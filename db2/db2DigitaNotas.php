@@ -185,7 +185,7 @@ if (!$LOCATION_CRON) {
     mysql_query($sql);
     ?>
     <script>
-        $('#db2DigitaNotasRetorno').text('<?php print $s; ?> sincronizadas, <?php print $n; ?> nao sincronizados');
+        $('#db2DigitaNotasRetorno').text('<?= $s ?> sincronizadas, <?= $n ?> nao sincronizados');
     </script><?php
 } else {
     $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";

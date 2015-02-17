@@ -131,7 +131,7 @@ if (!$VALIDO && $disabled)
 if ($VALIDO)
     mensagem('OK', 'VALID_FORM', $solicitante);
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <br />
@@ -252,7 +252,7 @@ if ($VALIDO)
                         <tr>
                             <th>        
                         <div class='fundo_listagem' style="background: #fff;">
-                            <textarea <?= $disabled ?> maxlength='500' id='horario' name='horario'><?php print $horario; ?></textarea>
+                            <textarea <?= $disabled ?> maxlength='500' id='horario' name='horario'><?= $horario ?></textarea>
                         </div>
                         </th>
                         </tr>
@@ -526,7 +526,7 @@ $hor3 = explode(',', $horario3);
     $('#form_padrao').submit(function () {
         var options = {
             target: '#index',
-            url: '<?php print $SITE; ?>',
+            url: '<?= $SITE ?>',
             type: 'POST',
             data: {enviar: enviar},
         };

@@ -13,8 +13,8 @@ require SESSAO;
 require PERMISSAO;
 
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 
 <?php
 if ($_GET["atribuicao"]) {
@@ -84,5 +84,5 @@ if ($_GET["atribuicao"]) {
 ?>
 <div id="aluno"></div>
 <script>
-    $('#aluno').load('<?php print VIEW . "/aluno/aviso?atribuicao=" . crip($atribuicao); ?>');
+    $('#aluno').load('<?= VIEW . "/aluno/aviso?atribuicao=" . crip($atribuicao) ?>');
 </script>

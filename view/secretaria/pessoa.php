@@ -56,8 +56,8 @@ if ($_GET["opcao"] == 'removeFoto') {
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -72,7 +72,7 @@ if ($_GET["opcao"] == 'validacao') {
     ?>
     <table align="center" id="form" width="100%">
         <tr>
-            <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Voltar</a></td>
+            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Voltar</a></td>
             <td align="right"><input type="submit" name="liberar" id="liberar" value="Liberar"></td>
         </tr>
         <tr>
@@ -133,7 +133,7 @@ if ($_GET["opcao"] == 'validacao') {
             $('#remover').click(function (event) {
                 $.Zebra_Dialog('<strong>Deseja remover as fotos selecionadas?</strong>', {
                     'type': 'question',
-                    'title': '<?php print $TITLE; ?>',
+                    'title': '<?= $TITLE ?>',
                     'buttons': ['Sim', 'Não'],
                     'onClose': function (caption) {
                         if (caption == 'Sim') {
@@ -142,7 +142,7 @@ if ($_GET["opcao"] == 'validacao') {
                                 selected.push($(this).val());
                             });
 
-                            $('#index').load('<?php print $SITE; ?>?opcao=validacao&delete=' + selected);
+                            $('#index').load('<?= $SITE ?>?opcao=validacao&delete=' + selected);
                         }
                     }
                 });
@@ -151,7 +151,7 @@ if ($_GET["opcao"] == 'validacao') {
             $('#liberar').click(function (event) {
                 $.Zebra_Dialog('<strong>Deseja prosseguir com o desbloqueio?</strong>', {
                     'type': 'question',
-                    'title': '<?php print $TITLE; ?>',
+                    'title': '<?= $TITLE ?>',
                     'buttons': ['Sim', 'Não'],
                     'onClose': function (caption) {
                         if (caption == 'Sim') {
@@ -160,7 +160,7 @@ if ($_GET["opcao"] == 'validacao') {
                                 selected.push($(this).val());
                             });
 
-                            $('#index').load('<?php print $SITE; ?>?opcao=validacao&insert=' + selected);
+                            $('#index').load('<?= $SITE ?>?opcao=validacao&insert=' + selected);
                         }
                     }
                 });
@@ -214,14 +214,14 @@ if (dcrip($_GET["nome"])) {
     $sqlAdicional = ' AND nome like :nome ';
 }
 ?>
-<link rel="stylesheet" type="text/css" href="<?php print VIEW; ?>/css/aba.css" media="screen" />
-<script src="<?php print VIEW; ?>/js/aba.js"></script>
+<link rel="stylesheet" type="text/css" href="<?= VIEW ?>/css/aba.css" media="screen" />
+<script src="<?= VIEW ?>/js/aba.js"></script>
 
 <script>
 
         $('#form_padrao').html5form({
             method: 'POST',
-            action: '<?php print $SITE; ?>',
+            action: '<?= $SITE ?>',
             responseDiv: '#index',
             colorOn: '#000',
             colorOff: '#999',
@@ -247,21 +247,21 @@ if (dcrip($_GET["nome"])) {
                     <tr>
                         <td align="right">Nome: </td>
                         <td><input type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 250pt" id="nome" name="nome" maxlength="45" value="<?= $nome ?>"/>
-                            <a href="#" id="setNome" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
+                            <a href="#" id="setNome" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' /></a>
                     </tr>
                     <tr>
                         <td align="right">Prontuario: </td>
                         <td><input type="text" <?php if ($codigo) print "readonly"; ?> id="prontuario" autocomplete="off" name="prontuario" maxlength="45" value="<?= $prontuario ?>"/>
-                            <a href="#" id="setProntuario" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
+                            <a href="#" id="setProntuario" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' /></a>
                     </tr>
                     <tr>
                         <td align="right">Senha: </td>
-                        <td><input type="password" name="senha" id="senha" autocomplete="off" maxlength="20" value="<?php echo $senha; ?>"/></td>
+                        <td><input type="password" name="senha" id="senha" autocomplete="off" maxlength="20" value="<?= $senha ?>"/></td>
                     </tr>
                     <tr>
                         <td align="right">Estado: </td>
                         <td>
-                            <select <?php if ($NOT_PERM) print "disabled"; ?> name="estado" id="estado" value="<?php echo $estado; ?>">
+                            <select <?php if ($NOT_PERM) print "disabled"; ?> name="estado" id="estado" value="<?= $estado ?>">
                                 <option></option>
                                 <?php
                                 foreach ($estados->listRegistros() as $reg) {
@@ -287,12 +287,12 @@ if (dcrip($_GET["nome"])) {
                     </tr>
                     <tr>
                         <td align="right">Email: </td>
-                        <td><input type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 300pt" name="email" maxlength="100" value="<?php echo $email; ?>"/></td>
+                        <td><input type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 300pt" name="email" maxlength="100" value="<?= $email ?>"/></td>
                     </tr>
                     <tr><td></td><td>
                             <input type="hidden" name="opcao" value="InsertOrUpdate" />
                             <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                                    <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
+                                    <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
                                 </tr></table>
                         </td></tr>
                 </table>
@@ -302,13 +302,13 @@ if (dcrip($_GET["nome"])) {
                 <table width="492" border="0">
                     <tr>
                         <td width="70" align="right">CPF: </td>
-                        <td width="406"><input id="cpf" <?php if ($NOT_PERM) print "readonly"; ?> type="text" name="cpf" maxlength="14" value="<?php echo $cpf; ?>"/></td>
+                        <td width="406"><input id="cpf" <?php if ($NOT_PERM) print "readonly"; ?> type="text" name="cpf" maxlength="14" value="<?= $cpf ?>"/></td>
                         <td align="right">RG: </td>
-                        <td><input type="text" size="20" <?php if ($NOT_PERM) print "readonly"; ?> name="rg" maxlength="14" value="<?php echo $rg; ?>"/></td>
+                        <td><input type="text" size="20" <?php if ($NOT_PERM) print "readonly"; ?> name="rg" maxlength="14" value="<?= $rg ?>"/></td>
                     </tr>
                     <tr>
                         <td align="right">Naturalidade: </td>
-                        <td><select <?php if ($NOT_PERM) print "disabled"; ?> name="estadoNaturalidade" id="estadoNaturalidade" value="<?php echo $estadoNaturalidade; ?>">
+                        <td><select <?php if ($NOT_PERM) print "disabled"; ?> name="estadoNaturalidade" id="estadoNaturalidade" value="<?= $estadoNaturalidade ?>">
                                 <option></option>
                                 <?php
                                 foreach ($estados->listRegistros() as $reg) {
@@ -319,7 +319,7 @@ if (dcrip($_GET["nome"])) {
                                 }
                                 ?>
                             </select>
-                            <select <?php if ($NOT_PERM) print "disabled"; ?> name="naturalidade" id="naturalidade" value="<?php echo $naturalidade; ?>">
+                            <select <?php if ($NOT_PERM) print "disabled"; ?> name="naturalidade" id="naturalidade" value="<?= $naturalidade ?>">
                                 <?php
                                 $sqlNaturalidade = ' AND c.codigo = :codigo ';
                                 $paramsNaturalidade['codigo'] = $naturalidade;
@@ -332,36 +332,36 @@ if (dcrip($_GET["nome"])) {
                                 ?>
                             </select></td>
                         <td align="right">Nascimento: </td>
-                        <td><input id="nascimento" <?php if ($NOT_PERM) print "readonly"; ?> type="text" style="width: 80pt" name="nascimento" maxlength="12" value="<?php echo $nascimento; ?>"/></td>
+                        <td><input id="nascimento" <?php if ($NOT_PERM) print "readonly"; ?> type="text" style="width: 80pt" name="nascimento" maxlength="12" value="<?= $nascimento ?>"/></td>
                     </tr>
                     <tr>
                         <td align="right">Endere&ccedil;o: </td>
-                        <td><input type="text" style="width: 260pt" <?php if ($NOT_PERM) print "readonly"; ?> name="endereco" maxlength="45" value="<?php echo $endereco; ?>"/></td>
+                        <td><input type="text" style="width: 260pt" <?php if ($NOT_PERM) print "readonly"; ?> name="endereco" maxlength="45" value="<?= $endereco ?>"/></td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                     </tr>
                     <tr>
                         <td align="right">Bairro: </td>
-                        <td><input type="text" style="width: 200pt" <?php if ($NOT_PERM) print "readonly"; ?> name="bairro" maxlength="45" value="<?php echo $bairro; ?>"/></td>
+                        <td><input type="text" style="width: 200pt" <?php if ($NOT_PERM) print "readonly"; ?> name="bairro" maxlength="45" value="<?= $bairro ?>"/></td>
                         <td align="right">CEP: </td>
-                        <td><input id="cep" type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 80pt" name="cep" maxlength="10" value="<?php echo $cep; ?>"/></td>
+                        <td><input id="cep" type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 80pt" name="cep" maxlength="10" value="<?= $cep ?>"/></td>
                     </tr>
                     <tr>
                         <td align="right">Telefone: </td>
-                        <td><input id="telefone" type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 80pt" name="telefone" maxlength="12" value="<?php echo $telefone; ?>"/></td>
+                        <td><input id="telefone" type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 80pt" name="telefone" maxlength="12" value="<?= $telefone ?>"/></td>
                         <td align="right">Celular: </td>
-                        <td><input id="celular" type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 80pt" name="celular" maxlength="12" value="<?php echo $celular; ?>"/></td>
+                        <td><input id="celular" type="text" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 80pt" name="celular" maxlength="12" value="<?= $celular ?>"/></td>
                     </tr>
                     <tr>
                         <td align="right">Observa&ccedil;&otilde;es: </td>
-                        <td><textarea name="observacoes" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 300pt" rows="5"><?php echo $observacoes; ?></textarea></td>
+                        <td><textarea name="observacoes" <?php if ($NOT_PERM) print "readonly"; ?> style="width: 300pt" rows="5"><?= $observacoes ?></textarea></td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                     </tr>
                     <tr><td></td><td>
                             <input type="hidden" name="opcao" value="InsertOrUpdate" />
                             <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                                    <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
+                                    <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
                                 </tr></table>
                         </td></tr>
                 </table>
@@ -415,7 +415,7 @@ if (dcrip($_GET["nome"])) {
                         </td>
                     </tr></table>
                 <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                        <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
+                        <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
                     </tr></table>
             </div>
     </form>
@@ -447,16 +447,16 @@ if (dcrip($_GET["nome"])) {
         }
         ?>
         <div align="center">
-            <form action="<?php print INC; ?>/processupload.inc.php" method="post" enctype="multipart/form-data" id="MyUploadForm" style="text-align: left">
-                <input type="hidden" name="codigo" value="<?php print $codigo; ?>"/>
+            <form action="<?= INC ?>/processupload.inc.php" method="post" enctype="multipart/form-data" id="MyUploadForm" style="text-align: left">
+                <input type="hidden" name="codigo" value="<?= $codigo ?>"/>
                 <input name="ImageFile" id="imageInput" type="file" accept="application/zip,image/*" />
 
-                <br><br><a href="javascript:$('#index').load('<?php print "$SITE?opcao=removeFoto&codigo=" . crip($codigo) . ""; ?>'); void(0);">Remover Foto</a>
+                <br><br><a href="javascript:$('#index').load('<?= $SITE ?>?opcao=removeFoto&codigo=<?= crip($codigo) ?>'); void(0);">Remover Foto</a>
             </form>
         </div>
 
         <table width="100%"><tr><td>&nbsp;</td>
-                <td align="right"><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar
+                <td align="right"><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar
                     </a></td>
             </tr></table>
     </div>
@@ -468,7 +468,7 @@ if (dcrip($_GET["nome"])) {
                 ?>
                 <td>Fotos bloqueadas: <?= $totalBloq[0]['total'] ?> 
                     <br><br>
-                    <a href="javascript:$('#index').load('<?php print $SITE . "?opcao=validacao"; ?>'); void(0);">Visualizar Fotos</a>
+                    <a href="javascript:$('#index').load('<?= $SITE ?>?opcao=validacao'); void(0);">Visualizar Fotos</a>
                 </td>
             </tr></table>
     </div>
@@ -504,7 +504,7 @@ require PATH . VIEW . '/paginacao.php';
         <th align="center" width="40">
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
-                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
             </a>
         </th>
     </tr>
@@ -567,9 +567,9 @@ require PATH . VIEW . '/paginacao.php';
         function atualizar(getLink) {
             var nome = encodeURIComponent($('#nome').val());
             var prontuario = encodeURIComponent($('#prontuario').val());
-            var URLS = '<?php print $SITE; ?>?nome=' + nome + '&prontuario=' + prontuario;
+            var URLS = '<?= $SITE ?>?nome=' + nome + '&prontuario=' + prontuario;
             if (!getLink)
-                $('#index').load(URLS + '&pesquisa=1&item=<?php print $item; ?>');
+                $('#index').load(URLS + '&pesquisa=1&item=<?= $item ?>');
             else
                 return URLS;
         }
@@ -598,7 +598,7 @@ require PATH . VIEW . '/paginacao.php';
             $(".item-excluir").click(function () {
                 $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                     'type': 'question',
-                    'title': '<?php print $TITLE; ?>',
+                    'title': '<?= $TITLE ?>',
                     'buttons': ['Sim', 'Não'],
                     'onClose': function (caption) {
                         if (caption == 'Sim') {
@@ -607,7 +607,7 @@ require PATH . VIEW . '/paginacao.php';
                                 selected.push($(this).val());
                             });
 
-                            $('#index').load(atualizar(1) + '&pesquisa=1&opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                            $('#index').load(atualizar(1) + '&pesquisa=1&opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                         }
                     }
                 });
@@ -630,7 +630,7 @@ require PATH . VIEW . '/paginacao.php';
                 var codigo = $(this).attr('id');
                 $('#nome').val('');
                 $('#prontuario').val('');
-                $('#index').load(atualizar(1) + '&pesquisa=1&codigo=' + codigo + '&item=<?php print $item; ?>');
+                $('#index').load(atualizar(1) + '&pesquisa=1&codigo=' + codigo + '&item=<?= $item ?>');
             });
 
             $('#setNome, #setProntuario').click(function () {
@@ -716,7 +716,7 @@ require PATH . VIEW . '/paginacao.php';
             {
                 $('#submit-btn').show(); //hide submit button
                 $('#loading-img').hide(); //hide submit button
-                $("#divFoto").attr("src", "<?php print INC; ?>/file.inc.php?type=pic&id=<?php print crip($codigo); ?>&timestamp=" + new Date().getTime());
+                $("#divFoto").attr("src", "<?= INC ?>/file.inc.php?type=pic&id=<?= crip($codigo) ?>&timestamp=" + new Date().getTime());
 
             }
 
@@ -735,7 +735,7 @@ require PATH . VIEW . '/paginacao.php';
                     var ftype = $('#imageInput')[0].files[0].type; // get file type
 
                     //Allowed file size is less than 1 MB (1048576)
-                    if (fsize ><?php print $max_file; ?>)
+                    if (fsize ><?= $max_file ?>)
                     {
                         $("#retorno").html("<b>" + bytesToSize(fsize) + "</b> Imagem muito grande, utilize um editor para diminuir o tamanho da foto!");
                         return false

@@ -79,7 +79,7 @@ if ($_GET['opcao'] == 'grafico') {
 require PERMISSAO;
 require SESSAO;
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 $tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2, 'turno' => 1);
@@ -512,10 +512,10 @@ $rel_assunto = null;
             tipo = 'ftd';
 
         if (impressao == 'pdf' || impressao == 'xls')
-            window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + '.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
+            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + '.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
                     + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor + '&assunto=' + assunto +
                     '&email=' + email + '&detalhada=' + det + '&tipoImpressao=' + impressao, '_blank');
         else
-            window.open('<?php print VIEW; ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno, '_blank');
+            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno, '_blank');
     }
 </script>

@@ -82,7 +82,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
                 <td>&nbsp;</td><td><input type="text" name="captcha_r" id="captcha_r" autocomplete="off" />  </td>
             </tr>
             <tr>
-                <td>&nbsp;</td><td><img src="<?php print CAPTCHA; ?>/captcha.php" width="133" height="49"></td>
+                <td>&nbsp;</td><td><img src="<?= CAPTCHA ?>/captcha.php" width="133" height="49"></td>
             </tr>
             <tr>
                 <td>&nbsp;</td><td><input type="submit" id='enviar' value="   Enviar   " disabled="disabled"  /></td>

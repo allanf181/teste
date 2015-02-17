@@ -85,7 +85,7 @@ $atrib = $att->listRegistros($params);
 $calculo = $atrib[0]['calculo'];
 $formula = $atrib[0]['formula'];
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 if ($calculo == 'peso')
@@ -189,13 +189,13 @@ if ($_GET['opcao'] == 'insert') {
             <center>
                 <h2>Cadastro de Avalia&ccedil;&atilde;o</h2>
                 <table>
-                    <tr><td align="right">Data: </td><td><input type="text" readonly size="10" id="data" name="data" value="<?php echo $data; ?>" />
+                    <tr><td align="right">Data: </td><td><input type="text" readonly size="10" id="data" name="data" value="<?= $data ?>" />
                             <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a>
                         </td></tr></td></tr>
-                    <tr><td align="right">Nome: </td><td><input style="width: 350px" type="text" id="nome" maxlength="145" name="nome" value="<?php echo $nome; ?>"/></td></tr>
-                    <tr><td align="right">Sigla: </td><td><input type="text" id="sigla" size="2" maxlength="2" name="sigla" value="<?php echo $sigla; ?>"/> <spam id="Siglas"></spam></td></tr>
+                    <tr><td align="right">Nome: </td><td><input style="width: 350px" type="text" id="nome" maxlength="145" name="nome" value="<?= $nome ?>"/></td></tr>
+                    <tr><td align="right">Sigla: </td><td><input type="text" id="sigla" size="2" maxlength="2" name="sigla" value="<?= $sigla ?>"/> <spam id="Siglas"></spam></td></tr>
                     <tr><td align="right">Tipo: </td><td>
-                            <select name="tipo" id="tipo" value="<?php echo $tipo; ?>">
+                            <select name="tipo" id="tipo" value="<?= $tipo ?>">
                                 <?php
                                 require CONTROLLER . "/tipoAvaliacao.class.php";
                                 $tipoAvaliacao = new TiposAvaliacoes();
@@ -226,7 +226,7 @@ if ($_GET['opcao'] == 'insert') {
                         $peso = number_format($res[0]['peso'], 2);
                         $peso = str_pad($peso, 5, "0", STR_PAD_LEFT);
                         ?>
-                        <tr><td align="right">Valor</td><td><input type="text" id="valor" style="width: 50px" <?php echo $enabled; ?> name="peso" value="<?= $peso ?>"/> (m&aacute;ximo <?= $maxPontos ?>)</td></tr>
+                        <tr><td align="right">Valor</td><td><input type="text" id="valor" style="width: 50px" <?= $enabled ?> name="peso" value="<?= $peso ?>"/> (m&aacute;ximo <?= $maxPontos ?>)</td></tr>
                         <?php
                     }
                     if ($tipoAval == 'substitutiva') {
@@ -238,8 +238,8 @@ if ($_GET['opcao'] == 'insert') {
                     ?>
 
                     <tr><td></td><td>
-                            <input type="hidden" name="atribuicao" value="<?php echo crip($atribuicao); ?>" />
-                            <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
+                            <input type="hidden" name="atribuicao" value="<?= crip($atribuicao) ?>" />
+                            <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
                             <input type="hidden" name="opcao" value="InsertOrUpdate" />
                             <input type="submit" disabled value="Salvar" id="salvar" />
                         </td></tr>
@@ -341,7 +341,7 @@ if ($_GET['opcao'] == '') {
                 <th width="150">Valor</th>
                 <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
                     <a href="#" class='item-excluir'>
-                        <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                        <img class='botao' src='<?= ICONS ?>/delete.png' />
                     </a>
                 </th>
             </tr>
@@ -498,7 +498,7 @@ print "</script>\n";
     $("#unlock").click(function () {
         $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
             'type': 'prompt',
-            'title': '<?php print $TITLE; ?>',
+            'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {
                 if (caption == 'Sim') {

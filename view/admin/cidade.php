@@ -79,7 +79,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     <form id="form_padrao">     
         <table align="center" width="100%" id="form">
             <tr><td align="right">Estado: </td><td>
-                    <select name="estado" id="estado" value="<?php echo $estado; ?>">
+                    <select name="estado" id="estado" value="<?= $estado ?>">
                         <option></option>
                         <?php
                         require CONTROLLER . '/estado.class.php';
@@ -94,12 +94,12 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         ?>
                     </select>
                 </td></tr>
-            <tr><td align="right">Nome: </td><td><input type="text" maxlength="145" name="nome" id="nome" value="<?php echo $nome; ?>"/></td></tr>
+            <tr><td align="right">Nome: </td><td><input type="text" maxlength="145" name="nome" id="nome" value="<?= $nome ?>"/></td></tr>
             <tr><td></td><td>
-                    <input type="hidden" value="<?php echo $codigo; ?>" name="codigo" />
+                    <input type="hidden" value="<?= $codigo ?>" name="codigo" />
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                            <td><input type="reset" value="Novo/Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?php print $SITE; ?>');
+                            <td><input type="reset" value="Novo/Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?= $SITE ?>');
                                             void(0);" /></td>
                         </tr></table>
                 </td></tr>
@@ -135,7 +135,7 @@ require PATH . VIEW . '/paginacao.php';
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
-                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
             </a>
         </th>
     </tr>
@@ -152,7 +152,7 @@ require PATH . VIEW . '/paginacao.php';
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>
-                    <img class='botao' src='<?php print ICONS; ?>/config.png' />
+                    <img class='botao' src='<?= ICONS ?>/config.png' />
                 </a>
             </td>
             <?php
@@ -164,9 +164,9 @@ require PATH . VIEW . '/paginacao.php';
 <script>
     function atualizar(getLink) {
         var estado = $('#estado').val();
-        var URLS = '<?php print $SITE; ?>?estado=' + estado;
+        var URLS = '<?= $SITE ?>?estado=' + estado;
         if (!getLink)
-            $('#index').load(URLS + '&item=<?php print $item; ?>');
+            $('#index').load(URLS + '&item=<?= $item ?>');
         else
             return URLS;
     }
@@ -188,7 +188,7 @@ require PATH . VIEW . '/paginacao.php';
         $(".item-excluir").click(function() {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function(caption) {
                     if (caption == 'Sim') {
@@ -197,7 +197,7 @@ require PATH . VIEW . '/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('#index').load(atualizar(1) + '&opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                        $('#index').load(atualizar(1) + '&opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                     }
                 }
             });

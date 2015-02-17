@@ -27,14 +27,14 @@ if (dcrip($_GET["curso"])) {
     $sqlAdicional .= ' AND c.codigo = :curso ';
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <table align="center" id="form" width="100%">
     <tr>
         <td align="right" style="width: 100px">Curso: </td>
         <td>
-            <select name="curso" id="curso" value="<?php echo $curso; ?>" style="width: 350px">
+            <select name="curso" id="curso" value="<?= $curso ?>" style="width: 350px">
                 <option></option>
                 <?php
                 require CONTROLLER . '/curso.class.php';
@@ -122,7 +122,7 @@ foreach ($dados as $reg) {
     function valida() {
         turma = $('#turma').val();
         curso = $('#curso').val();
-        $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso);
+        $('#index').load('<?= $SITE ?>?&turma=' + turma + '&curso=' + curso);
     }
 
     $('#turma, #curso').change(function() {

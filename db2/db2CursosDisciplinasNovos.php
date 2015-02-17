@@ -115,7 +115,7 @@ mysql_query($sql);
 if (!$LOCATION_CRON) {
 	?>
 	<script>
-		$('#db2CursosDisciplinasNovosRetorno').text('<?php print $i; ?> cursos processados | <?php print $j; ?> disciplinas processadas');
+		$('#db2CursosDisciplinasNovosRetorno').text('<?= $i ?> cursos processados | <?= $j ?> disciplinas processadas');
 	</script><?php
 } else {
 	$sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";

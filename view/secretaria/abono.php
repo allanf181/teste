@@ -35,7 +35,7 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["codigo"] = null;
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -79,7 +79,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -90,12 +90,12 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
-            <input type="hidden" value="<?php echo crip($codigo); ?>" name="codigo" id="codigo" />
+            <input type="hidden" value="<?= crip($codigo) ?>" name="codigo" id="codigo" />
             <tr>
                 <td style="width: 100px" align="right">Data: </td>
                 <td>
-                    <input type="text" size="10" value="<?php echo $dataInicio; ?>" name="dataInicio" id="dataInicio" />
-                    a <input type="text" size="10" value="<?php echo $dataFim; ?>" name="dataFim" id="dataFim" />
+                    <input type="text" size="10" value="<?= $dataInicio ?>" name="dataInicio" id="dataInicio" />
+                    a <input type="text" size="10" value="<?= $dataFim ?>" name="dataFim" id="dataFim" />
                 </td>
             </tr>
             <tr>
@@ -150,7 +150,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             <tr>
                 <td align="right">Aula: </td>
                 <td>
-                    <select name="aula" <?php print $disabled; ?> id="aula" style="width: 350px">
+                    <select name="aula" <?= $disabled ?> id="aula" style="width: 350px">
                         <option></option>
                         <?php
                         require CONTROLLER . '/turno.class.php';
@@ -200,7 +200,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                             <td>
                                 <input type="submit" value="Salvar" id="salvar" />
                             </td>
-                            <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
+                            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
                         </tr>
                     </table>
                 </td>
@@ -237,7 +237,7 @@ require PATH . VIEW . '/paginacao.php';
         <th th width="200">Tipo</th>
         <th>Aula/Disciplina</th>
         <th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
-            <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a>
+            <a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a>
         </th>
     </tr>
     <?php
@@ -247,16 +247,16 @@ require PATH . VIEW . '/paginacao.php';
         if ($reg['dataFim'] && $reg['dataFim'] != '00/00/0000')
             $reg['dataInicio'] = $reg['dataInicio'] . ' a ' . $reg['dataFim'];
         ?>
-        <tr <?php print $cdif; ?>>
-            <td><?php print $reg['dataInicio']; ?></td>
-            <td><?php print $reg['prontuario']; ?></td>
-            <td><?php print mostraTexto($reg['nome']); ?></td>
-            <td><a href="#" title="<?php print mostraTexto($reg['tipo']); ?>"><?php print $reg['sigla']; ?></a></td>
-            <td><?php print $reg['aula'] . ' / ' . $reg['disciplina']; ?></td>
+        <tr <?= $cdif ?>>
+            <td><?= $reg['dataInicio'] ?></td>
+            <td><?= $reg['prontuario'] ?></td>
+            <td><?= mostraTexto($reg['nome']) ?></td>
+            <td><a href="#" title="<?= mostraTexto($reg['tipo']) ?>"><?= $reg['sigla'] ?></a></td>
+            <td><?= $reg['aula'] . ' / ' . $reg['disciplina'] ?></td>
             <td align='center'>
-                <input type='checkbox' id='deletar' name='deletar[]' value='<?php print crip($reg['codigo']); ?>' />
-                <a href='#' title='Alterar' class='item-alterar' id='<?php print crip($reg['codigo']); ?>'>
-                    <img class='botao' src='<?php print ICONS; ?>/config.png' /></a>
+                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
+                <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>
+                    <img class='botao' src='<?= ICONS ?>/config.png' /></a>
             </td>
         </tr>
         <?php
@@ -271,9 +271,9 @@ require PATH . VIEW . '/paginacao.php';
         var dataFim = $('#dataFim').val();
         var aluno = $('#aluno').val();
         var atribuicao = $('#atribuicao').val();
-        var URLS = '<?php print $SITE; ?>?dataInicio=' + dataInicio + '&dataFim=' + dataFim + '&aluno=' + aluno + '&atribuicao=' + atribuicao;
+        var URLS = '<?= $SITE ?>?dataInicio=' + dataInicio + '&dataFim=' + dataFim + '&aluno=' + aluno + '&atribuicao=' + atribuicao;
         if (!getLink)
-            $('#index').load(URLS + '&item=<?php print $item; ?>');
+            $('#index').load(URLS + '&item=<?= $item ?>');
         else
             return URLS;
     }
@@ -301,7 +301,7 @@ require PATH . VIEW . '/paginacao.php';
 
         $("#dataInicio, #dataFim").datepicker({
             dateFormat: 'dd/mm/yy',
-            defaultDate: '<?php print date("d/m/Y"); ?>',
+            defaultDate: '<?= date("d/m/Y") ?>',
             dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
             dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
             dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
@@ -314,7 +314,7 @@ require PATH . VIEW . '/paginacao.php';
         $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function (caption) {
                     if (caption == 'Sim') {
@@ -323,7 +323,7 @@ require PATH . VIEW . '/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                     }
                 }
             });

@@ -40,7 +40,7 @@ $atribuicao = $_GET["atribuicao"];
 $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
 
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
@@ -76,7 +76,7 @@ $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
             <form id="form_padrao">
                 <table border="0" width="100%">
                     <tr><td align="left" style="width: 160px">Disciplinas equivalentes: </td><td>
-                            <select name="campoDisciplina" id="campoDisciplina" value="<?php echo $disciplina; ?>" >
+                            <select name="campoDisciplina" id="campoDisciplina" value="<?= $disciplina ?>" >
                                 <option></option>
                                 <?php
                                 $res = $arq->getArquivoEquivalente(dcrip($_GET["atribuicao"]));
@@ -174,7 +174,7 @@ if ($_GET['pagina'] == "inserir") {
                     if ($('#arquivo').val()) {
                         var fsize = $('#arquivo')[0].files[0].size; //get file size
 
-                        if (fsize ><?php print $max_file; ?>)
+                        if (fsize ><?= $max_file ?>)
                         {
                             $("#retorno").html("Arquivo muito grande, tamanho limite: <b> " + bytesToSize(fsize) + "</b>");
                             return false
@@ -227,7 +227,7 @@ if ($_GET['pagina'] == "inserir") {
                             <?php
                         } else {
                             ?>
-                            <a href="<?php print INC; ?>/file.inc.php?type=arquivo&id=<?= $codigo; ?>" target="_blank"><?= $arquivo ?></a>
+                            <a href="<?= INC ?>/file.inc.php?type=arquivo&id=<?= $codigo; ?>" target="_blank"><?= $arquivo ?></a>
                             <?php
                         }
                         ?>
@@ -262,7 +262,7 @@ if ($_GET['pagina'] == "inserir") {
             <th align="left" width="255">Arquivo</th>
             <th align="left" width="150">Data</th>
             <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
-                <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a>
+                <a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a>
             </th>
         </tr>
         <?php
@@ -341,7 +341,7 @@ $atribuicao = $_GET['atribuicao'];
             $(".item-excluir").click(function() {
                 $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                     'type': 'question',
-                    'title': '<?php print $TITLE; ?>',
+                    'title': '<?= $TITLE ?>',
                     'buttons': ['Sim', 'Não'],
                     'onClose': function(caption) {
                         if (caption == 'Sim') {
@@ -364,7 +364,7 @@ $atribuicao = $_GET['atribuicao'];
                 var codigo = $('#campoDisciplina').val();
                 $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, o material da disciplina escolhida ser&aacute; adicionado nessa disciplina. Deseja continuar?', {
                     'type': 'question',
-                    'title': '<?php print $TITLE; ?>',
+                    'title': '<?= $TITLE ?>',
                     'buttons': ['Sim', 'Não'],
                     'onClose': function(caption) {
                         if (caption == 'Sim') {

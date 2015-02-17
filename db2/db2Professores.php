@@ -92,7 +92,7 @@ if (!$LOCATION_CRON) {
 	mysql_query($sql);
 	?>
 	<script>
-  		$('#db2ProfessoresRetorno').text('<?php print $i; ?> importados, <?php print $j; ?> atualizados');
+  		$('#db2ProfessoresRetorno').text('<?= $i ?> importados, <?= $j ?> atualizados');
 	</script><?php
 } else {
 	$sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";

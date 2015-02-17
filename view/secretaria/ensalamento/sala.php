@@ -43,13 +43,13 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <script>
 
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -83,7 +83,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                                 <input type="submit" value="Salvar" id="salvar" />
                             </td>
                             <td>
-                                <a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a>
+                                <a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a>
                             </td>
                         </tr>
                     </table>

@@ -9,7 +9,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 <table width="100%" border="0" width="152" align="right" id='form'>
     <tr>
         <td width="250" align="right">Estado Civil:</td>
-        <td width="215"><select style="width:200px;" id="campoEstadoCivil" name="estadoCivil" value="<?php echo $estadoCivil; ?>">
+        <td width="215"><select style="width:200px;" id="campoEstadoCivil" name="estadoCivil" value="<?= $estadoCivil ?>">
                 <option value="">N&atilde;o declarado</option>
                 <?php
                 require CONTROLLER . '/estadoCivil.class.php';
@@ -24,15 +24,15 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
                 ?>
             </select></td>
         <td align="right">Estudou em escola p&uacute;blica: </td>
-        <td><select id="campoEscolaPublica" name="escolaPublica" value="<?php echo $escolaPublica; ?>">
+        <td><select id="campoEscolaPublica" name="escolaPublica" value="<?= $escolaPublica ?>">
                 <option value="">N&atilde;o declarado</option>
-                <option <?php echo ($escolaPublica == 'n') ? "selected='selected'" : ""; ?> value='n'>N&atilde;o</option>
-                <option <?php echo ($escolaPublica == 's') ? "selected='selected'" : ""; ?> value='s'>Sim</option>
+                <option <?= ($escolaPublica == 'n') ? "selected='selected'" : "" ?> value='n'>N&atilde;o</option>
+                <option <?= ($escolaPublica == 's') ? "selected='selected'" : "" ?> value='s'>Sim</option>
             </select></td>
     </tr>
     <tr>
         <td align="right">Qual a renda mensal bruta de sua fam&iacute;lia (soma dos rendimentos de todos que residem com você, incluindo você: </td>
-        <td><select id="campoRenda" style="width:200px;" name="renda" value="<?php echo $renda; ?>">
+        <td><select id="campoRenda" style="width:200px;" name="renda" value="<?= $renda ?>">
                 <option value="">N&atilde;o declarado</option>
                 <?php
                 require CONTROLLER . '/renda.class.php';
@@ -47,7 +47,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
                 ?>
             </select></td>
         <td align="right">Cor: </td>
-        <td><select id="campoRaca" style="width:200px;" name="raca" value="<?php echo $raca; ?>">
+        <td><select id="campoRaca" style="width:200px;" name="raca" value="<?= $raca ?>">
                 <option value=""></option>
                 <?php
                 require CONTROLLER . '/raca.class.php';
@@ -64,7 +64,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     </tr>
     <tr>
         <td align="right">Qual sua situa&ccedil;&atilde;o profissional atual: </td>
-        <td><select id="campoTrabalho" style="width:200px;" name="situacaoTrabalho" value="<?php echo $situacaoTrabalho; ?>">
+        <td><select id="campoTrabalho" style="width:200px;" name="situacaoTrabalho" value="<?= $situacaoTrabalho ?>">
                 <option value="">N&atilde;o declarado</option>
                 <?php
                 require CONTROLLER . '/situacaoTrabalho.class.php';
@@ -79,7 +79,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
                 ?>
             </select></td>
         <td align="right">Tempo de trabalho: </td>
-        <td><select id="campoTempo" style="width:200px;" name="tempo" value="<?php echo $tempo; ?>">
+        <td><select id="campoTempo" style="width:200px;" name="tempo" value="<?= $tempo ?>">
                 <option value="">N&atilde;o declarado</option>
                 <?php
                 require CONTROLLER . '/tempoPesquisa.class.php';
@@ -96,13 +96,13 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     </tr>
     <tr>
         <td align="right">Empresa: </td>
-        <td><input type="text" size="20" name="empresaTrabalha" maxlength="45" value="<?php echo $empresaTrabalha; ?>"/></td>
+        <td><input type="text" size="20" name="empresaTrabalha" maxlength="45" value="<?= $empresaTrabalha ?>"/></td>
         <td align="right">Cargo: </td>
-        <td><input type="text" size="20" name="cargoEmpresa" maxlength="45" value="<?php echo $cargoEmpresa; ?>"/></td>
+        <td><input type="text" size="20" name="cargoEmpresa" maxlength="45" value="<?= $cargoEmpresa ?>"/></td>
     </tr>
     <tr>
         <td align="right">Se trabalha, em qual característica se enquadra: </td>
-        <td><select id="campoTipoTrabalho" style="width:200px;" name="tipoTrabalho" value="<?php echo $tipoTrabalho; ?>">
+        <td><select id="campoTipoTrabalho" style="width:200px;" name="tipoTrabalho" value="<?= $tipoTrabalho ?>">
                 <option value="">N&atilde;o declarado</option>
                 <?php
                 require CONTROLLER . '/tipoTrabalho.class.php';
@@ -117,11 +117,11 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
                 ?>
             </select></td>
         <td align="right">Quantas pessoas residem com voc&ecirc;, incluindo voc&ecirc;?: </td>
-        <td><input type="text" size="2" name="numeroPessoasNaResidencia" maxlength="4" value="<?php echo $numeroPessoasNaResidencia; ?>"/></td>
+        <td><input type="text" size="2" name="numeroPessoasNaResidencia" maxlength="4" value="<?= $numeroPessoasNaResidencia ?>"/></td>
     </tr>
     <tr>
         <td align="right">Meio de transporte: </td>
-        <td><select id="campoMeioTransporte" style="width:200px;" name="meioTransporte" value="<?php echo $meioTransporte; ?>">
+        <td><select id="campoMeioTransporte" style="width:200px;" name="meioTransporte" value="<?= $meioTransporte ?>">
                 <option value="">N&atilde;o declarado</option>
                 <?php
                 require CONTROLLER . '/meioTransporte.class.php';
@@ -136,25 +136,25 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
                 ?>
             </select></td>
         <td align="right">Possui necessidades especiais: </td>
-        <td><select id="campoNecessidadesEspeciais" style="width:200px;" name="necessidadesEspeciais" value="<?php echo $necessidadesEspeciais; ?>">
+        <td><select id="campoNecessidadesEspeciais" style="width:200px;" name="necessidadesEspeciais" value="<?= $necessidadesEspeciais ?>">
                 <option value="">N&atilde;o declarado</option>
-                <option <?php echo ($necessidadesEspeciais == 'n') ? "selected='selected'" : ""; ?> value='n'>N&atilde;o</option>
-                <option <?php echo ($necessidadesEspeciais == 's') ? "selected='selected'" : ""; ?> value='s'>Sim</option>
+                <option <?= ($necessidadesEspeciais == 'n') ? "selected='selected'" : "" ?> value='n'>N&atilde;o</option>
+                <option <?= ($necessidadesEspeciais == 's') ? "selected='selected'" : "" ?> value='s'>Sim</option>
             </select></td>
     </tr>
     <tr>
         <td align="right">Transporte Gratuito: </td>
-        <td><select id="campoTransporteGratuito" name="transporteGratuito" value="<?php echo $transporteGratuito; ?>">
+        <td><select id="campoTransporteGratuito" name="transporteGratuito" value="<?= $transporteGratuito ?>">
                 <option value="">N&atilde;o declarado</option>
-                <option <?php echo ($transporteGratuito == 'n') ? "selected='selected'" : ""; ?> value='n'>N&atilde;o</option>
-                <option <?php echo ($transporteGratuito == 's') ? "selected='selected'" : ""; ?> value='s'>Sim</option>
+                <option <?= ($transporteGratuito == 'n') ? "selected='selected'" : "" ?> value='n'>N&atilde;o</option>
+                <option <?= ($transporteGratuito == 's') ? "selected='selected'" : "" ?> value='s'>Sim</option>
             </select></td>
         <td align="right">Se possui necessidades especiais, quais: </td>
-        <td><textarea name="descricaoNecessidadesEspeciais"><?php echo $descricaoNecessidadesEspeciais; ?></textarea></td>
+        <td><textarea name="descricaoNecessidadesEspeciais"><?= $descricaoNecessidadesEspeciais ?></textarea></td>
     </tr>
     <tr><td colspan="4">
             <input type="hidden" name="opcao" value="InsertOrUpdate" />
             <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                    <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Novo/Limpar</a></td>
+                    <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
                 </tr></table>    
 </table>

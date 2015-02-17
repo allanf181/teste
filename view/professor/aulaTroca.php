@@ -12,7 +12,7 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <?php
 if ((!$_GET['opcao'] && !$_POST["opcao"]) || $_GET["menu"]) {
     ?>
@@ -216,7 +216,7 @@ if ($_GET['opcao'] == 'getTroca') {
                 </tr>                
                 <tr>
                     <td align="right">Motivo: </td>
-                    <td><textarea maxlength="500" rows="5" cols="80" id="motivo" name="motivo" style="width: 600px; height: 60px"><?php echo $atividade; ?></textarea>
+                    <td><textarea maxlength="500" rows="5" cols="80" id="motivo" name="motivo" style="width: 600px; height: 60px"><?= $atividade ?></textarea>
                     </td>
                 </tr>
                 <tr>
@@ -240,7 +240,7 @@ if ($_GET['opcao'] == 'getTroca') {
                     </td>
                 </tr>
                 <tr><td></td><td>
-                        <input type="hidden" name="codigo" value="<?php echo $codigo; ?>" />
+                        <input type="hidden" name="codigo" value="<?= $codigo ?>" />
                         <input type="hidden" name="opcao" value="InsertOrUpdate" />
                         <input type="submit" disabled value="Salvar" id="salvar" />
                     </td></tr>
@@ -462,7 +462,7 @@ if (in_array($COORD, $_SESSION["loginTipo"]) && !$_GET['opcao']) {
 
         $.Zebra_Dialog('<strong>Parecer: ' + texto + '<br><br>Por favor, informe o parecer:</strong>', {
             'type': 'prompt',
-            'title': '<?php print $TITLE; ?>',
+            'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {
                 if (caption == 'Sim') {

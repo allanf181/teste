@@ -123,8 +123,8 @@ if ($_GET["opcao"] == 'recuperar' || $_GET["opcao"] == 'alterar') {
                                 <input type='password' id='cf_senha' name="confSenha" value='' />
                             </div>
                             <div id='result3'></div>
-                            <input type='hidden' id='has_chv' name="chave" value='<?php print $recuperar; ?>' />
-                            <input type='hidden' id='prontuario_grv' name="prontuario" value='<?php print $prontuario; ?>' />
+                            <input type='hidden' id='has_chv' name="chave" value='<?= $recuperar ?>' />
+                            <input type='hidden' id='prontuario_grv' name="prontuario" value='<?= $prontuario ?>' />
                         </td>
                     </tr>
                     <input type='hidden' id='opcao' name="opcao" value="alterarToBanco" />
@@ -140,7 +140,7 @@ if ($_GET["opcao"] == 'recuperar' || $_GET["opcao"] == 'alterar') {
                     </tr>
                     <tr>
                         <td>
-                            <img src="<?php print CAPTCHA; ?>/captcha.php" width="133" height="49">
+                            <img src="<?= CAPTCHA ?>/captcha.php" width="133" height="49">
                         </td>
                     </tr>
                     <tr>
@@ -153,7 +153,7 @@ if ($_GET["opcao"] == 'recuperar' || $_GET["opcao"] == 'alterar') {
         </form>
     </div>
 
-    <script src="<?php print VIEW; ?>/js/passwordStrenghtMeter.js" type="text/javascript"></script>
+    <script src="<?= VIEW ?>/js/passwordStrenghtMeter.js" type="text/javascript"></script>
 
     <script>
         jQuery(document).ready(function () {

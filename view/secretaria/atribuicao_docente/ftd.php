@@ -12,7 +12,7 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -156,11 +156,11 @@ require PATH . VIEW . '/paginacao.php';
     function FTD(codigo, nome) {
         $.Zebra_Dialog('<strong>Confirma a solicitação de correção na FTD de ' + nome + '? \n\n Motivo:</strong>', {
             'type': 'prompt',
-            'title': '<?php print $TITLE; ?>',
+            'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption, valor) {
                 if (caption == 'Sim') {
-                    $('#index').load('<?php print $SITE; ?>?opcao=controleFTD&codigo=' + codigo + '&solicitacao=' + encodeURIComponent(valor));
+                    $('#index').load('<?= $SITE ?>?opcao=controleFTD&codigo=' + codigo + '&solicitacao=' + encodeURIComponent(valor));
                 }
             }
         });
@@ -173,11 +173,11 @@ require PATH . VIEW . '/paginacao.php';
 
         $.Zebra_Dialog(modo, {
             'type': 'question',
-            'title': '<?php print $TITLE; ?>',
+            'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption) {
                 if (caption == 'Sim') {
-                    $('#index').load('<?php print $SITE; ?>?opcao=controleFTD&codigo=' + codigo + '&conferido=' + checked);
+                    $('#index').load('<?= $SITE ?>?opcao=controleFTD&codigo=' + codigo + '&conferido=' + checked);
                 } else {
                     document.getElementById(codigo).checked = !checked;
                 }

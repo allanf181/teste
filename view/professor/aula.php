@@ -12,7 +12,7 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 $atribuicao = dcrip($_GET["atribuicao"]);
@@ -97,10 +97,10 @@ if ($_GET['opcao'] == 'insert') {
                         </select>
                     </td>
                 </tr>
-                <tr><td align="right">Data: </td><td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?php echo $data; ?>" />
+                <tr><td align="right">Data: </td><td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?= $data ?>" />
                         <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a></td></tr>
-                <tr><td align="right">Quantidade: </td><td><input style="width: 50px" <?php if ($codigo) print 'readonly'; ?> type="text" maxlength="4" id="quantidade" name="quantidade" value="<?php echo $quantidade; ?>" /></td></tr>
-                <tr><td align="right">Bases/Conhecimentos Desenvolvidos: </td><td><textarea maxlength="400" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"><?php echo $conteudo; ?></textarea></td></tr>
+                <tr><td align="right">Quantidade: </td><td><input style="width: 50px" <?php if ($codigo) print 'readonly'; ?> type="text" maxlength="4" id="quantidade" name="quantidade" value="<?= $quantidade ?>" /></td></tr>
+                <tr><td align="right">Bases/Conhecimentos Desenvolvidos: </td><td><textarea maxlength="400" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"><?= $conteudo ?></textarea></td></tr>
                 <tr>
                     <td align="right">Atividades:</td>
                     <td>
@@ -123,15 +123,15 @@ if ($_GET['opcao'] == 'insert') {
                             }
                             ?>
                         </select>
-                        <br /><textarea maxlength="400" rows="5" cols="80" id="atividade" name="atividade" style="width: 600px; height: 60px"><?php echo $atividade; ?></textarea>
+                        <br /><textarea maxlength="400" rows="5" cols="80" id="atividade" name="atividade" style="width: 600px; height: 60px"><?= $atividade ?></textarea>
                     </td>
                 </tr>
-                <tr><td align="right">Anota&ccedil;&atilde;o de Aula: </td><td><textarea maxlength="500" rows="5" cols="80" id="anotacao" name="anotacao" style="width: 600px; height: 60px"><?php echo $anotacao; ?></textarea></td></tr>
+                <tr><td align="right">Anota&ccedil;&atilde;o de Aula: </td><td><textarea maxlength="500" rows="5" cols="80" id="anotacao" name="anotacao" style="width: 600px; height: 60px"><?= $anotacao ?></textarea></td></tr>
                 <tr><td align="right" colspan="2">A anota&ccedil;&atilde;o de aula n&atilde;o entra no di&aacute;rio, apenas o conte&uacute;do.</td></tr>
 
                 <tr><td></td><td>
-                        <input type="hidden" name="atribuicao" value="<?php echo $atribuicao; ?>" />
-                        <input type="hidden" name="codigo" value="<?php echo $codigo; ?>" />
+                        <input type="hidden" name="atribuicao" value="<?= $atribuicao ?>" />
+                        <input type="hidden" name="codigo" value="<?= $codigo ?>" />
                         <input type="hidden" name="opcao" value="InsertOrUpdate" />
                         <input type="submit" disabled value="Salvar" id="salvar" />
                     </td></tr>
@@ -154,7 +154,7 @@ if ($_GET['opcao'] == '') {
 
     <?php if ($res[0]['aulasDadas']) { ?>
         <table id="listagem" border="0" align="center">
-            <tr class="listagem_tr"><th align="center" width="40">#</th><th align="center" width="100">Data</th><th align='center' width="50">Qtd</th><th align='center'>Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+            <tr class="listagem_tr"><th align="center" width="40">#</th><th align="center" width="100">Data</th><th align='center' width="50">Qtd</th><th align='center'>Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a></th></tr>
             <?php
             $i = count($res);
             foreach ($res as $reg) {
@@ -324,7 +324,7 @@ print "</script>\n";
     $("#unlock").click(function () {
         $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
             'type': 'prompt',
-            'title': '<?php print $TITLE; ?>',
+            'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {
                 if (caption == 'Sim') {

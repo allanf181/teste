@@ -33,7 +33,7 @@ extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <br />
-<a class='nav professores_item' id='diario' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= $_GET['atribuicao'] ?>'>
+<a class='nav professores_item' id='diario' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= $_GET['atribuicao'] ?>'>
     <img src='<?=ICONS?>/icon-printer.gif'><h3>Clique aqui para imprimir o di&aacute;rio.</h3>
 </a>
 <br />
@@ -60,11 +60,11 @@ extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
     <form id="form_padrao">
         <h2>Competências Desenvolvidas:</h2>
         <div class='fundo_listagem'>
-            <textarea <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> maxlength='1500' id='competencias' name='competencias'><?php print $competencias; ?></textarea>
+            <textarea <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> maxlength='1500' id='competencias' name='competencias'><?= $competencias ?></textarea>
         </div>
         <h2>Observações a serem incluídas no diário da disciplina:</h2>
         <div class='fundo_listagem'>
-            <textarea <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> maxlength='1500' id='observacoes' name='observacoes'><?php print $observacoes; ?></textarea>
+            <textarea <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> maxlength='1500' id='observacoes' name='observacoes'><?= $observacoes ?></textarea>
         </div>
         <input type='hidden' value='<?= $_GET['atribuicao'] ?>' name='atribuicao' id='atribuicao' />
         <input type='hidden' name='opcao' value='InsertOrUpdate' />

@@ -50,7 +50,7 @@ require PATH . VIEW . '/paginacao.php';
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
-                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
             </a>
         </th>
     </tr>

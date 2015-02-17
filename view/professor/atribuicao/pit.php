@@ -131,7 +131,7 @@ if (!$VALIDO && $disabled)
 if ($VALIDO)
     mensagem('OK', 'VALID_FORM', $solicitante);
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <br />
@@ -621,7 +621,7 @@ $hor3 = explode(',', $horario3);
     $('#form_padrao').submit(function () {
         var options = {
             target: '#index',
-            url: '<?php print $SITE; ?>',
+            url: '<?= $SITE ?>',
             type: 'POST',
             data: {enviar: enviar},
         };

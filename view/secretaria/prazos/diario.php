@@ -36,8 +36,8 @@ if ($_GET["opcao"] == 'controleDiario') {
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -75,7 +75,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     <tr>
         <td align="right" style="width: 100px">Curso: </td>
         <td>
-            <select name="curso" id="curso" value="<?php echo $curso; ?>" style="width: 350px">
+            <select name="curso" id="curso" value="<?= $curso ?>" style="width: 350px">
                 <option></option>
                 <?php
                 require CONTROLLER . '/curso.class.php';
@@ -232,7 +232,7 @@ if (!empty($curso)) {
             turma = $('#turma').val();
             curso = $('#curso').val();
             professor = $('#professor').val();
-            $('#index').load('<?php print $SITE; ?>?&turma=' + turma + '&curso=' + curso + '&professor=' + professor);
+            $('#index').load('<?= $SITE ?>?&turma=' + turma + '&curso=' + curso + '&professor=' + professor);
         }
 
         $('#turma, #curso, #professor').change(function() {
@@ -268,7 +268,7 @@ if (!empty($curso)) {
                         $('input:checkbox:checked').each(function() {
                             selected.push($(this).val());
                         });
-                        $('#index').load('<?php print $SITE; ?>?opcao=controleDiario&curso=' + curso + '&turma=' + turma + '&motivo=' + encodeURIComponent(valor) + '&professor=' + professor + '&botao=' + botao + '&codigo=' + selected);
+                        $('#index').load('<?= $SITE ?>?opcao=controleDiario&curso=' + curso + '&turma=' + turma + '&motivo=' + encodeURIComponent(valor) + '&professor=' + professor + '&botao=' + botao + '&codigo=' + selected);
                     }
                 }
             });

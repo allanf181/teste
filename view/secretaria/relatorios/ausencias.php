@@ -61,7 +61,7 @@ if (!empty($_GET["mes"])) {
         foreach ($res as $pront => $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
             ?>
-            <tr <?php print $cdif; ?>>
+            <tr <?= $cdif ?>>
                 <td align='center'><?= $pront ?></td>
                 <td>
                     <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codigo']) ?>&timestamp=<?= time() ?>' class='screenshot'>

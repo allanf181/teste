@@ -32,7 +32,7 @@ function conectBd2() {
     mysql_select_db($bdMigracao);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -300,10 +300,10 @@ print "<div id=\"html5form\" class=\"main\">\n";
 print "<form action=\"$SITE\" method=\"post\" id=\"form_padrao\">\n";
 ?>
 <table align="center" align="left" id="form" width="100%" border="0">
-    <input type="hidden" name="campoCodigo" value="<?php echo $codigo; ?>" />
+    <input type="hidden" name="campoCodigo" value="<?= $codigo ?>" />
     <tr><td align="center" style="width: 100px" colspan="2">Destino</td></tr>
     <tr><td align="right" style="width: 100px">Turma: </td><td>
-            <select name="campoTurma" id="campoTurma" value="<?php echo $turma; ?>" style="width: 650px">
+            <select name="campoTurma" id="campoTurma" value="<?= $turma ?>" style="width: 650px">
                 <option></option>
 <?php
 $resultado = mysql_query("select distinct t.codigo, t.numero, c.nome, m.nome, m.codigo 
@@ -331,7 +331,7 @@ while ($linha = mysql_fetch_array($resultado)) {
 //                        echo $sql;
                 ?>
     <tr><td align="right" style="width: 100px">Atribuição: </td><td>
-            <select name="campoAtribuicao" id="campoAtribuicao" value="<?php echo $atribuicao; ?>" style="width: 650px">
+            <select name="campoAtribuicao" id="campoAtribuicao" value="<?= $atribuicao ?>" style="width: 650px">
                 <option></option>
     <?php
     $resultado = mysql_query($sql);
@@ -353,7 +353,7 @@ while ($linha = mysql_fetch_array($resultado)) {
         </td></tr>
     <tr><td align="center" style="width: 100px" colspan="2">Origem</td></tr>
     <tr><td align="right" style="width: 100px">Turma: </td><td>
-            <select name="campoTurma2" id="campoTurma2" value="<?php echo $turma2; ?>" style="width: 650px">
+            <select name="campoTurma2" id="campoTurma2" value="<?= $turma2 ?>" style="width: 650px">
                 <option></option>
 <?php
 include INC . "/mysqlMigracao.php";
@@ -381,7 +381,7 @@ while ($linha = mysql_fetch_array($resultado)) {
 //                        echo $sql;
                 ?>
     <tr><td align="right" style="width: 100px">Atribuição: </td><td>
-            <select name="campoAtribuicao2" id="campoAtribuicao2" value="<?php echo $atribuicao2; ?>" style="width: 650px">
+            <select name="campoAtribuicao2" id="campoAtribuicao2" value="<?= $atribuicao2 ?>" style="width: 650px">
                 <option></option>
     <?php
     include INC . "/mysqlMigracao.php";
@@ -402,7 +402,7 @@ while ($linha = mysql_fetch_array($resultado)) {
     ?>
             </select>
         </td></tr>
-    <tr><td>&nbsp;</td><td><input type="button" value="Importar" id="importar" /><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">&nbsp;Limpar</a></td></tr>
+    <tr><td>&nbsp;</td><td><input type="button" value="Importar" id="importar" /><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">&nbsp;Limpar</a></td></tr>
 
 </table>
 
@@ -483,10 +483,10 @@ mysql_close($conexao);
             var turma2 = $('#campoTurma2').val();
             var atribuicao = $('#campoAtribuicao').val();
             var atribuicao2 = $('#campoAtribuicao2').val();
-            var URLS = '<?php print $SITE; ?>?turma=' + turma + "&atribuicao=" + atribuicao + "&turma2=" + turma2 + "&atribuicao2=" + atribuicao2;
+            var URLS = '<?= $SITE ?>?turma=' + turma + "&atribuicao=" + atribuicao + "&turma2=" + turma2 + "&atribuicao2=" + atribuicao2;
             //        alert(URLS);
             if (!getLink)
-                $('#index').load(URLS + '&item=<?php print $item; ?>');
+                $('#index').load(URLS + '&item=<?= $item ?>');
             else
                 return URLS;
         }
@@ -504,11 +504,11 @@ mysql_close($conexao);
                 var codigo = $(this).attr('id');
                 $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, ser&atilde;o exclu&iacute;das as avalia&ccedil;&otilde;es, notas e ensalamentos gerados para essa atribui&ccedil;&atilde;o. Deseja continuar com a exclus&atilde;o?</strong>', {
                     'type': 'prompt',
-                    'title': '<?php print $TITLE; ?>',
+                    'title': '<?= $TITLE ?>',
                     'buttons': ['Sim', 'Não'],
                     'onClose': function(caption, valor) {
                         if (caption == 'Sim') {
-                            $('#index').load(atualizar(1) + '&opcao=delete&codigo=' + codigo + '&item=<?php print $item; ?>');
+                            $('#index').load(atualizar(1) + '&opcao=delete&codigo=' + codigo + '&item=<?= $item ?>');
                         }
                     }
                 });

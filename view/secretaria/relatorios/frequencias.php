@@ -58,7 +58,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     .noslim { background-color: #e1f2d0; }
 </style>
 
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <table align="center" width="100%" id='form'>

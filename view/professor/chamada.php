@@ -16,10 +16,10 @@ require SESSAO;
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <br />
-<a class='nav professores_item' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/chamada.php?atribuicao=<?= $_GET['atribuicao'] ?>'>
+<a class='nav professores_item' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/chamada.php?atribuicao=<?= $_GET['atribuicao'] ?>'>
     <img src='<?=ICONS?>/files/pdf.png'><h3>Imprimir no formato PDF</h3>
 </a>
 <br />
-<a class='nav professores_item' target='_blank' href='<?php print VIEW; ?>/secretaria/relatorios/inc/chamadaPlanilha.php?atribuicao=<?= $_GET['atribuicao'] ?>'>
+<a class='nav professores_item' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/chamadaPlanilha.php?atribuicao=<?= $_GET['atribuicao'] ?>'>
     <img src='<?=ICONS?>/files/xls.png'><h3>Imprimir no formato de planilha eletr&ocirc;nica</h3>
 </a>

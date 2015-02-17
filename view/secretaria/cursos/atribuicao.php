@@ -25,8 +25,8 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["codigo"] = null;
 }
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -47,7 +47,7 @@ if (dcrip($_GET["professor"])) {
 
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -106,7 +106,7 @@ if (dcrip($_GET["professor"])) {
                         <tr>
                             <td>&nbsp;</td>
                             <td align="right">
-                                <a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a>
+                                <a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a>
                             </td>
                         </tr>
                     </table>
@@ -157,7 +157,7 @@ require PATH . VIEW . '/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         $disc = $reg['bimestre'] . '['. $reg['turno'] .']';
         ?>
-        <tr <?php print $cdif; ?>>
+        <tr <?= $cdif ?>>
             <td><?= $reg['numero'] ?></td>
             <td>
                 <a title='Clique aqui para abrir o Di&aacute;rio desta disciplina. <br><?= $reg['disciplina'] . $disc?>' target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'>

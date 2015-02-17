@@ -199,7 +199,7 @@ if (!$LOCATION_CRON) {
     mysql_query($sql);
     ?>
     <script>
-        $('#db2AtribuicoesRetorno').text('<?php print $j; ?> registros processados...');
+        $('#db2AtribuicoesRetorno').text('<?= $j ?> registros processados...');
     </script><?php
 } else {
     $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";

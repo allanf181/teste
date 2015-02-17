@@ -93,7 +93,7 @@ if (dcrip($_GET["professor"])) {
     $sqlAdicional .= ' AND f.pessoa = :professor ';
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <table align="center" width="100%" id="form">
@@ -139,7 +139,7 @@ if (dcrip($_GET["professor"])) {
         <td>
             <table width="100%">
                 <tr>
-                    <td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td>
+                    <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a></td>
                 </tr>
             </table>
         </td>
@@ -289,7 +289,7 @@ require PATH . VIEW . '/paginacao.php';
     function change(codigo, nome) {
         $.Zebra_Dialog('<strong>Confirma a solicitação de correção na <?=$tabela?> de ' + nome + '? <br><br>Descrever a solicitação:</strong>', {
             'type': 'prompt',
-            'title': '<?php print $TITLE; ?>',
+            'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {
                 if (caption == 'Sim') {

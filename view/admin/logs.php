@@ -12,7 +12,7 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 
@@ -48,15 +48,15 @@ if ($_GET["filtro"]) {
             <tr>
                 <td align="right" style="width: 100px">Data: </td>
                 <td>
-                    <input value="<?php echo $data; ?>" type="text" name="data" id="data" onChange="$('#index').load('<?php print $SITE; ?>?filtro=<?php echo $filtro; ?>&data=' + this.value);">
+                    <input value="<?= $data ?>" type="text" name="data" id="data" onChange="$('#index').load('<?= $SITE ?>?filtro=<?= $filtro ?>&data=' + this.value);">
                 </td>
             </tr>
             <tr>
                 <td align="right">Filtro: </td>
                 <td>
-                    <input value="<?php echo $filtro; ?>" type="text" value="<?php echo $filtro; ?>" name=filtro" id=filtro" onblur="$('#index').load('<?php print $SITE; ?>?data=<?php echo $data; ?>&filtro=' + encodeURIComponent(this.value));" />
-                    <a href="#" title="Buscar"><img class="botao" style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' id="atualizaData" /></a>
-                    &nbsp;&nbsp;<a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a>
+                    <input value="<?= $filtro ?>" type="text" value="<?= $filtro ?>" name=filtro" id=filtro" onblur="$('#index').load('<?= $SITE ?>?data=<?= $data ?>&filtro=' + encodeURIComponent(this.value));" />
+                    <a href="#" title="Buscar"><img class="botao" style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' id="atualizaData" /></a>
+                    &nbsp;&nbsp;<a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a>
                 </td>
             </tr>
         </table>

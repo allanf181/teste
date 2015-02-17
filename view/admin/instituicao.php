@@ -33,7 +33,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 }
 ?> 
 
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -45,7 +45,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -68,11 +68,11 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
         </ul>
         <div class="tab_container">
             <input type="hidden" name="opcao" value="InsertOrUpdate" />
-            <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
+            <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
             <div class="cont_tab fundo_listagem" id="Dados">
                 <table align="center" width="60%">
-                    <tr><td align="left">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="200" value="<?php echo $nome; ?>"/></td></tr>
-                    <tr><td align="left">Cidade: </td><td><input type="text" name="cidade" id="cidade" maxlength="200" value="<?php echo $cidade; ?>"/></td></tr>
+                    <tr><td align="left">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="200" value="<?= $nome ?>"/></td></tr>
+                    <tr><td align="left">Cidade: </td><td><input type="text" name="cidade" id="cidade" maxlength="200" value="<?= $cidade ?>"/></td></tr>
                 </table>
                 <br><input type="submit" value="Salvar" id="salvar" />
 
@@ -81,7 +81,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
             <div class="cont_tab fundo_listagem" id="Dados2">
                 <table align="center" width="60%">
                     <tr><td colspan="2"><p align="center">Tipos (Pap&eacute;is)</p></td></tr>
-                    <tr><td align="left">Administrador: </td><td><select name="adm" value="<?php echo $adm; ?>">
+                    <tr><td align="left">Administrador: </td><td><select name="adm" value="<?= $adm ?>">
                                 <option></option>
                                 <?php
                                 require CONTROLLER . '/tipo.class.php';
@@ -96,7 +96,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                                 ?>
                             </select>
                         </td></tr>
-                    <tr><td align="left">Ger&ecirc;ncia Educacional: </td><td><select name="ged" value="<?php echo $ged; ?>">
+                    <tr><td align="left">Ger&ecirc;ncia Educacional: </td><td><select name="ged" value="<?= $ged ?>">
                                 <option></option>
                                 <?php
                                 foreach ($res as $reg) {
@@ -108,7 +108,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                                 ?>
                             </select>
                         </td></tr>
-                    <tr><td align="left">Coordena&ccedil;&atilde;o: </td><td><select name="coord" value="<?php echo $coord; ?>">
+                    <tr><td align="left">Coordena&ccedil;&atilde;o: </td><td><select name="coord" value="<?= $coord ?>">
                                 <option></option>
                                 <?php
                                 foreach ($res as $reg) {
@@ -120,7 +120,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                                 ?>
                             </select>
                         </td></tr>
-                    <tr><td align="left">Doc&ecirc;ncia: </td><td><select name="prof" value="<?php echo $prof; ?>">
+                    <tr><td align="left">Doc&ecirc;ncia: </td><td><select name="prof" value="<?= $prof ?>">
                                 <option></option>
                                 <?php
                                 foreach ($res as $reg) {
@@ -132,7 +132,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                                 ?>
                             </select>
                         </td></tr>
-                    <tr><td align="left">Secretaria: </td><td><select name="sec" value="<?php echo $sec; ?>">
+                    <tr><td align="left">Secretaria: </td><td><select name="sec" value="<?= $sec ?>">
                                 <option></option>
                                 <?php
                                 foreach ($res as $reg) {
@@ -144,7 +144,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                                 ?>
                             </select>
                         </td></tr>
-                    <tr><td align="left">Disc&ecirc;ncia : </td><td><select name="aluno" value="<?php echo $aluno; ?>">
+                    <tr><td align="left">Disc&ecirc;ncia : </td><td><select name="aluno" value="<?= $aluno ?>">
                                 <option></option>
                                 <?php
                                 foreach ($res as $reg) {
@@ -167,7 +167,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                 <table align="left" width="100%">
                     <tr><td colspan="2"><b>Prazo para Altera&ccedil;&atilde;o do Di&aacute;rio</b></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
-                    <tr><td valign="top">Quantidade de dias: </td><td><input style="width: 50px" type="text" name="limiteAltDiarioProf" id="limiteAltDiarioProf" value="<?php echo $limiteAltDiarioProf; ?>" maxlength="3" />
+                    <tr><td valign="top">Quantidade de dias: </td><td><input style="width: 50px" type="text" name="limiteAltDiarioProf" id="limiteAltDiarioProf" value="<?= $limiteAltDiarioProf ?>" maxlength="3" />
                             <br>(Deixar 0 para desabilitar)</td></tr>
                     <tr><td colspan="2"><hr></td></tr>
                     <tr><td colspan="2">Limite de dias para altera&ccedil;&atilde;o do di&aacute;rio ap&oacute;s data fim da atribui&ccedil;&atilde;o ou inser&ccedil;&atilde;o de aula ap&oacute;s a data real da aula. <br><br>Definir a quantidade de dias n&atilde;o implica na liberac&atilde;o autom&aacute;tica ap&oacute;s vencimento do prazo. &Eacute; necess&aacute;rio liberar o di&aacute;rio para altera&ccedil;&atilde;o no menu "Prazos" e informar o motivo da libera&ccedil;&atilde;o.</td></tr>
@@ -179,12 +179,12 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
             <div class="cont_tab fundo_listagem" id="Dados4">
                 <table align="left" width="100%">
                     <tr><td colspan="2"><h3><b>Digita Notas</b></h3></td></tr>
-                    <tr><td>Sigla do Campus: </td><td><input style="width: 50px" type="text" name="campiDigitaNotas" id="campiDigitaNotas" value="<?php echo $campiDigitaNotas; ?>" maxlength="2" /></td></tr>
+                    <tr><td>Sigla do Campus: </td><td><input style="width: 50px" type="text" name="campiDigitaNotas" id="campiDigitaNotas" value="<?= $campiDigitaNotas ?>" maxlength="2" /></td></tr>
                     <tr><td colspan="2">Ap&oacute;s cadastro da sigla, o WebDi&aacute;rio consegue exportar para o DigitaNotas as notas finalizadas pelos di&aacute;rios.</td></tr>
                     <tr><td colspan="2"><hr></td></tr>
 
                     <tr><td colspan="2"><h3><b>Senha</b></h3></td></tr>
-                    <tr><td>Altera&ccedil;&atilde;o de senha: </td><td><input style="width: 50px" type="text" name="diasAlterarSenha" id="diasAlterarSenha" value="<?php echo $diasAlterarSenha; ?>" maxlength="3" />
+                    <tr><td>Altera&ccedil;&atilde;o de senha: </td><td><input style="width: 50px" type="text" name="diasAlterarSenha" id="diasAlterarSenha" value="<?= $diasAlterarSenha ?>" maxlength="3" />
                             Limite de dias para altera&ccedil;&atilde;o de senha. <br>(Deixar 0 para desabilitar)</td></tr>
                     <tr><td colspan="2"><hr></td></tr>
 
@@ -211,17 +211,17 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                     <tr><td colspan="2"><h3><b>Autentica&ccedil;&atilde;o LDAP</b></h3></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
                     <tr><td width="400"><b>Ativar LDAP para autentica&ccedil;&atilde;o:</b> </td><td><input type='checkbox' <?php if ($ldap_ativado != '') print "checked"; ?> id='ldap_ativado' name='ldap_ativado' value='1' /></td></tr>
-                    <tr><td><b>Usu&aacute;rio Administrador do Dom&iacute;nio</b><br>(Ex. AD(MS): Administrador@dominio.com)<br>(OpenLDAP: cn=admin,dc=dominio,dc=com): </td><td><input type="text" name="ldap_user" id="ldap_user" maxlength="50" value="<?php echo $ldap_user; ?>" /></td></tr>
-                    <tr><td><b>Senha:</b> </td><td><input type="text" name="ldap_password" id="ldap_password" maxlength="50" value="<?php echo $ldap_password; ?>" /></td></tr>
+                    <tr><td><b>Usu&aacute;rio Administrador do Dom&iacute;nio</b><br>(Ex. AD(MS): Administrador@dominio.com)<br>(OpenLDAP: cn=admin,dc=dominio,dc=com): </td><td><input type="text" name="ldap_user" id="ldap_user" maxlength="50" value="<?= $ldap_user ?>" /></td></tr>
+                    <tr><td><b>Senha:</b> </td><td><input type="text" name="ldap_password" id="ldap_password" maxlength="50" value="<?= $ldap_password ?>" /></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
-                    <tr><td><b>BASE DN</b> <br>(Ex. DC=ifsp,DC=local): </td><td><input type="text" name="ldap_basedn" id="ldap_basedn" maxlength="200" value="<?php echo $ldap_basedn; ?>" /></td></tr>
-                    <tr><td><b>FILTER DN</b> <br>(Ex. AD(MS): sAMAccountName)<br>(OpenLDAP: sn ou cn) </td><td><input type="text" name="ldap_filter" id="ldap_filter" maxlength="50" value="<?php echo $ldap_filter; ?>" /></td></tr>
-                    <tr><td><b>Dom&iacute;nio</b> <br>(Ex. ldap://ifsp.local e ldaps://ifsp.local para SSL): </td><td><input type="text" name="ldap_dominio" id="ldap_dominio" maxlength="200" value="<?php echo $ldap_dominio; ?>" /></td></tr>
-                    <tr><td><b>Porta</b> <br>(Ex. 389 -> NO SSL e 636 -> SSL): </td><td><input type="text" name="ldap_porta" id="ldap_porta" maxlength="5" value="<?php echo $ldap_porta; ?>" /></td></tr>
+                    <tr><td><b>BASE DN</b> <br>(Ex. DC=ifsp,DC=local): </td><td><input type="text" name="ldap_basedn" id="ldap_basedn" maxlength="200" value="<?= $ldap_basedn ?>" /></td></tr>
+                    <tr><td><b>FILTER DN</b> <br>(Ex. AD(MS): sAMAccountName)<br>(OpenLDAP: sn ou cn) </td><td><input type="text" name="ldap_filter" id="ldap_filter" maxlength="50" value="<?= $ldap_filter ?>" /></td></tr>
+                    <tr><td><b>Dom&iacute;nio</b> <br>(Ex. ldap://ifsp.local e ldaps://ifsp.local para SSL): </td><td><input type="text" name="ldap_dominio" id="ldap_dominio" maxlength="200" value="<?= $ldap_dominio ?>" /></td></tr>
+                    <tr><td><b>Porta</b> <br>(Ex. 389 -> NO SSL e 636 -> SSL): </td><td><input type="text" name="ldap_porta" id="ldap_porta" maxlength="5" value="<?= $ldap_porta ?>" /></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
-                    <tr><td><b>Cache</b> <br>(Quantidade de dias que o sistema armazena em cache a autenti&ccedil;&atilde;o do usu&aacute;rio, evitando m&uacute;ltiplos acessos ao LDAP) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_cache" id="ldap_cache" value="<?php echo $ldap_cache; ?>" /></td></tr>
+                    <tr><td><b>Cache</b> <br>(Quantidade de dias que o sistema armazena em cache a autenti&ccedil;&atilde;o do usu&aacute;rio, evitando m&uacute;ltiplos acessos ao LDAP) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_cache" id="ldap_cache" value="<?= $ldap_cache ?>" /></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
-                    <tr><td><b>LDAP DROP LEFT</b> <br>(Quantidade de caracteres que dever&atilde;o ser ignorados no momento da autentica&ccedil;&atilde;o, contando a partir da esquerda) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_drop_left" id="ldap_drop_left" value="<?php echo $ldap_drop_left; ?>" /></td></tr>
+                    <tr><td><b>LDAP DROP LEFT</b> <br>(Quantidade de caracteres que dever&atilde;o ser ignorados no momento da autentica&ccedil;&atilde;o, contando a partir da esquerda) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_drop_left" id="ldap_drop_left" value="<?= $ldap_drop_left ?>" /></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
 
                 </table>

@@ -19,7 +19,7 @@ require PERMISSAO;
     $aviso = new Avisos();
     $res = $aviso->getAvisoAtribuicao($aluno, $atribuicao);
     ?>
-    <script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+    <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
     <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
     <div class='fundo_listagem'>
     <table width="100%" align="center" style="border: 0px solid black">
@@ -31,8 +31,8 @@ require PERMISSAO;
         foreach ($res as $reg) {
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
             ?>
-    <tr <?php print $cdif; ?>><td align='left'><?php print dataPTBR($reg['Data']); ?></td>
-            <td align='left'><?php print nl2br($reg['Conteudo']); ?></td>
+    <tr <?= $cdif ?>><td align='left'><?= dataPTBR($reg['Data']) ?></td>
+            <td align='left'><?= nl2br($reg['Conteudo']) ?></td>
             <?php
             $i++;
         }

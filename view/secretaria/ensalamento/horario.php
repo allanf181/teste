@@ -22,7 +22,7 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["codigo"] = null;
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 // PAGINACAO

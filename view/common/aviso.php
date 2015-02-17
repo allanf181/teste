@@ -26,7 +26,7 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["codigo"] = null;
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <script type="text/javascript" src="<?= VIEW ?>/js/AutocompleteList/src/jquery.tokeninput.js"></script>
@@ -47,7 +47,7 @@ if ($_GET["opcao"] == 'delete') {
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '<?= $DIV ?>',
         colorOn: '#000',
         colorOff: '#999',
@@ -58,11 +58,11 @@ if ($_GET["opcao"] == 'delete') {
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
-            <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
+            <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
             <tr><td align="right">Para: </td><td><input type="text" id="to" name="to" /></td></tr>
             <tr><td></td><td align="left"><font size='1'><?= $para ?> Deixe em branco para enviar para todos.</font></td></tr>
             <tr><td align="right" style="width: 120px">Aviso: </td> 
-                <td><textarea rows="5" cols="60" maxlength='500' id='conteudo' name='conteudo'><?php print $conteudo; ?></textarea></tr>
+                <td><textarea rows="5" cols="60" maxlength='500' id='conteudo' name='conteudo'><?= $conteudo ?></textarea></tr>
             <tr><td></td><td>
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
@@ -97,7 +97,7 @@ require PATH . VIEW . '/paginacao.php';
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
-                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
             </a>
         </th>
     </tr>
@@ -150,7 +150,7 @@ require PATH . VIEW . '/paginacao.php';
         $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function (caption) {
                     if (caption == 'Sim') {
@@ -159,7 +159,7 @@ require PATH . VIEW . '/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('<?= $DIV ?>').load('<?php print $SITE; ?>&opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                        $('<?= $DIV ?>').load('<?= $SITE ?>&opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                     }
                 }
             });

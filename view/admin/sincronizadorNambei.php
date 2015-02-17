@@ -18,7 +18,7 @@ $atualizacao = new Atualizacoes();
 require CONTROLLER . "/log.class.php";
 $log = new Logs();
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <script>

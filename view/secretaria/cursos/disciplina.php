@@ -21,7 +21,7 @@ if ($_GET["opcao"] == 'delete') {
     $_GET["curso"] = null;
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
 
 <?php
@@ -46,7 +46,7 @@ if ($_GET["nomeDisciplina"]) {
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -58,7 +58,7 @@ if ($_GET["nomeDisciplina"]) {
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
             <tr><td align="right" style="width: 100px">Curso: </td><td>
-                    <select name="curso" id="curso" value="<?php echo $curso; ?>">
+                    <select name="curso" id="curso" value="<?= $curso ?>">
                         <option></option>
                         <?php
                         require CONTROLLER . '/curso.class.php';
@@ -73,13 +73,13 @@ if ($_GET["nomeDisciplina"]) {
                         ?>
                     </select>
                 </td></tr>
-            <tr><td align="right">N&uacute;mero: </td><td><input type="text" name="numeroDisciplina" maxlength="45" id="numeroDisciplina" value="<?php echo $numeroDisciplina; ?>" />
-                    <a href="#" id="setNumero" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png' /></a>
+            <tr><td align="right">N&uacute;mero: </td><td><input type="text" name="numeroDisciplina" maxlength="45" id="numeroDisciplina" value="<?= $numeroDisciplina ?>" />
+                    <a href="#" id="setNumero" title="Buscar"><img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' /></a>
                 </td></tr>
-            <tr><td align="right">Nome: </td><td><input type="text" name="nomeDisciplina" maxlength="45" id="nomeDisciplina" value="<?php echo $nomeDisciplina; ?>" />
-                    <a href="#" id="setNome"><img class='botao' style="width:15px;height:15px;" src='<?php print ICONS; ?>/search.png'/></a>
+            <tr><td align="right">Nome: </td><td><input type="text" name="nomeDisciplina" maxlength="45" id="nomeDisciplina" value="<?= $nomeDisciplina ?>" />
+                    <a href="#" id="setNome"><img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png'/></a>
                 </td></tr>
-            <tr><td><a href="javascript:$('#index').load('<?php print $SITE; ?>'); void(0);">Limpar</a></td></tr>
+            <tr><td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a></td></tr>
         </table>
     </form>
     <?php
@@ -111,7 +111,7 @@ if ($_GET["nomeDisciplina"]) {
             <th>Curso</th>	      
             <th align="center" width="40">
                 <input type='checkbox' id="select-all" value="" />
-                <a href="#" class='item-excluir'><img class='botao' src='<?php print ICONS; ?>/delete.png' /></a></th></tr>
+                <a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a></th></tr>
         <?php
         // efetuando a consulta para listagem
         $i = $item;
@@ -141,7 +141,7 @@ if ($_GET["nomeDisciplina"]) {
             var curso = encodeURIComponent($('#curso').val());
             var nome = encodeURIComponent($('#nomeDisciplina').val());
             var numero = encodeURIComponent($('#numeroDisciplina').val());
-            var URLS = '<?php print $SITE; ?>?';
+            var URLS = '<?= $SITE ?>?';
 
             if (curso != "")
                 URLS += '&curso=' + curso;
@@ -153,7 +153,7 @@ if ($_GET["nomeDisciplina"]) {
                 URLS += '&numeroDisciplina=' + numero;
 
             if (!getLink)
-                $('#index').load(URLS + '&item=<?php print $item; ?>');
+                $('#index').load(URLS + '&item=<?= $item ?>');
             else
                 return URLS;
         }
@@ -163,7 +163,7 @@ if ($_GET["nomeDisciplina"]) {
             $(".item-excluir").click(function() {
                 $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                     'type': 'question',
-                    'title': '<?php print $TITLE; ?>',
+                    'title': '<?= $TITLE ?>',
                     'buttons': ['Sim', 'Não'],
                     'onClose': function(caption) {
                         if (caption == 'Sim') {
@@ -172,7 +172,7 @@ if ($_GET["nomeDisciplina"]) {
                                 selected.push($(this).val());
                             });
 
-                            $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                            $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                         }
                     }
                 });

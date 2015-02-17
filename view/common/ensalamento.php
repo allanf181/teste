@@ -5,8 +5,8 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     die;
 }
 ?>
-<script src="<?php print VIEW; ?>/js/screenshot/main.js" type="text/javascript"></script>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <?php
 
 if (!class_exists('Ensalamentos'))

@@ -15,7 +15,7 @@ require SESSAO;
 require CONTROLLER . '/notaFinal.class.php';
 $nota = new NotasFinais();
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <?php
@@ -55,7 +55,7 @@ if (dcrip($_GET["disciplina"])) {
     <tr>
         <td align="right" style="width: 100px">Curso: </td>
         <td>
-            <select name="curso" id="curso" value="<?php echo $curso; ?>" style="width: 350px">
+            <select name="curso" id="curso" value="<?= $curso ?>" style="width: 350px">
                 <option></option>
                 <?php
                 require CONTROLLER . '/curso.class.php';
@@ -129,7 +129,7 @@ if (!empty($curso) && !empty($turma)) {
             <th align="center" width="50">&nbsp;&nbsp;
                 <input type="checkbox" id="select-all" value="">
                 <a href="#" class='item-excluir'>
-                    <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                    <img class='botao' src='<?= ICONS ?>/delete.png' />
                 </a>
             </th>            
         </tr>

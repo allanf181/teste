@@ -43,13 +43,13 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 }
 ?>
-<script src="<?php print VIEW; ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?php print $SITE; ?>',
+        action: '<?= $SITE ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -60,14 +60,14 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
-            <input type="hidden" name="codigo" value="<?php echo crip($codigo); ?>" />
+            <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
             <tr>
                 <td align="right">Nome: </td>
-                <td><input type="text" name="nome" id="nome" maxlength="145" disabled value="<?php echo $nome; ?>"/></td>
+                <td><input type="text" name="nome" id="nome" maxlength="145" disabled value="<?= $nome ?>"/></td>
             </tr>
             <tr>
                 <td align="right">Nome Alternativo: </td>
-                <td><input type="text" maxlength="145" style="width: 400px" title="Nome alternativo utilizado no atestado de matrícula." name="nomeAlternativo" id="nomeAlternativo" value="<?php echo $nomeAlternativo; ?>"/></td>
+                <td><input type="text" maxlength="145" style="width: 400px" title="Nome alternativo utilizado no atestado de matrícula." name="nomeAlternativo" id="nomeAlternativo" value="<?= $nomeAlternativo ?>"/></td>
             </tr>            
             <tr>
                 <td>&nbsp;</td>
@@ -76,7 +76,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     <table width="100%">
                         <tr>
                             <td><input type="submit" value="Salvar" id="salvar" class="submit" /></td>
-                            <td><input type="reset" value="Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?php print $SITE; ?>');
+                            <td><input type="reset" value="Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?= $SITE ?>');
                                             void(0);"></td>
                         </tr>
                     </table>
@@ -107,7 +107,7 @@ require PATH . VIEW . '/paginacao.php';
         <th align="left">Modalidade</th>
         <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
-                <img class='botao' src='<?php print ICONS; ?>/delete.png' />
+                <img class='botao' src='<?= ICONS ?>/delete.png' />
             </a>
         </th>
     </tr>
@@ -118,14 +118,14 @@ require PATH . VIEW . '/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         $codigo = crip($reg['codigo']);
         ?>
-        <tr <?php print $cdif; ?>>
-            <td align='center'><?php print $i; ?></td>
-            <td><?php print $reg['curso']; ?></td>
-            <td><?php print $reg['modalidade']; ?></td>
+        <tr <?= $cdif ?>>
+            <td align='center'><?= $i ?></td>
+            <td><?= $reg['curso'] ?></td>
+            <td><?= $reg['modalidade'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>
-                    <img class='botao' src='<?php print ICONS; ?>/config.png' />
+                    <img class='botao' src='<?= ICONS ?>/config.png' />
                 </a>
             </td>
         </tr>
@@ -141,7 +141,7 @@ require PATH . VIEW . '/paginacao.php';
         $(".item-excluir").click(function() {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
-                'title': '<?php print $TITLE; ?>',
+                'title': '<?= $TITLE ?>',
                 'buttons': ['Sim', 'Não'],
                 'onClose': function(caption) {
                     if (caption == 'Sim') {
@@ -150,7 +150,7 @@ require PATH . VIEW . '/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('#index').load('<?php print $SITE; ?>?opcao=delete&codigo=' + selected + '&item=<?php print $item; ?>');
+                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                     }
                 }
             });
@@ -158,7 +158,7 @@ require PATH . VIEW . '/paginacao.php';
 
         $(".item-alterar").click(function() {
             var codigo = $(this).attr('id');
-            $('#index').load('<?php print $SITE; ?>?codigo=' + codigo);
+            $('#index').load('<?= $SITE ?>?codigo=' + codigo);
         });
 
         $('#select-all').click(function(event) {
