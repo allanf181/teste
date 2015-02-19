@@ -156,6 +156,7 @@ require PATH . VIEW . '/system/paginacao.php';
     function FTD(codigo, nome) {
         $.Zebra_Dialog('<strong>Confirma a solicitação de correção na FTD de ' + nome + '? \n\n Motivo:</strong>', {
             'type': 'prompt',
+            'promptInput': '<textarea rows="2" cols="30" name="Zebra_valor" maxlength="200" id="Zebra_valor"></textarea>',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function(caption, valor) {

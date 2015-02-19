@@ -3,9 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/Z:/academico/view/system/home.php</file>
+            <file>file:/Z:/academico/view/secretaria/bolsas/bolsaChat.php</file>
+            <file>file:/Z:/academico/view/aluno/chat.php</file>
             <file>file:/Z:/academico/index.php</file>
             <file>file:/Z:/academico/inc/config.system.php</file>
+            <file>file:/Z:/academico/controller/chat.class.php</file>
+            <file>file:/Z:/academico/view/aluno/aluno.php</file>
+            <file>file:/Z:/academico/controller/bolsa.class.php</file>
+            <file>file:/Z:/academico/view/secretaria/bolsas/base.php</file>
+            <file>file:/Z:/academico/view/common/chat.php</file>
+            <file>file:/Z:/academico/view/secretaria/bolsas/bolsa.php</file>
             <file>file:/Z:/academico/lib/migration/migrations/academico/20150217000001_Academico50.php</file>
+            <file>file:/Z:/academico/view/professor/chat.php</file>
         </group>
     </open-files>
 </project-private>

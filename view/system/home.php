@@ -100,7 +100,9 @@ require CONTROLLER . "/bolsa.class.php";
             defineFoto();
             // Mostra e altera o Email
             defineEmail();
-
+            //Verificar se a senha expirou
+            checkSenha();
+            
             // Verifica se o aluno preencheu o sócioEconômico
             if (in_array($ALUNO, $_SESSION["loginTipo"])) {
                 socioEconomico();
@@ -199,13 +201,19 @@ function senhaInfo() {
     $pessoa = new Pessoas();
     // INFOS DE SENHA
     $res = $pessoa->infoPassword($user);
-    if ($res['dataSenha']) {
-        ?>
-        <a href="javascript:$('#index').load('<?= VIEW ?>/system/senha.php?opcao=alterar');void(0);" title='&Uacute;ltima altera&ccedil;&atilde;o da senha: <?= formata($res['dataSenha']) ?><br>Clique aqui para alterar sua senha!'>
-            <img style='width: 40px' src='<?= IMAGES ?>/senha.png' />
-        </a>
-        <?php
-    }
+    ?>
+    <a href="javascript:$('#index').load('<?= VIEW ?>/system/senha.php?opcao=alterar');void(0);" title='&Uacute;ltima altera&ccedil;&atilde;o da senha: <?= $res['dataSenha'] ?><br>Clique aqui para alterar sua senha!'>
+        <img style='width: 40px' src='<?= IMAGES ?>/senha.png' />
+    </a>
+    <?php
+}
+
+function checkSenha() {
+    global $user;
+
+    $pessoa = new Pessoas();
+    // INFOS DE SENHA
+    $res = $pessoa->infoPassword($user);
 
     if ($res['dias']) {
         if (($res['data'] >= $res['dias'])) {

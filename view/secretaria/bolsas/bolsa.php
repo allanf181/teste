@@ -67,7 +67,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
         $params['professor'] = $_SESSION["loginCodigo"];
         $sqlAdicional = " AND p.codigo = :professor ";
     } else if (in_array($ALUNO, $_SESSION["loginTipo"])) {
-        $params['aluno'] = $_SESSION["loginCodigo"];        
+        $params['aluno'] = $_SESSION["loginCodigo"];
         $sqlAdicional = " AND b.codigo IN (SELECT ba.bolsa FROM BolsasAlunos ba WHERE ba.aluno = :aluno) ";
     } else {
         ?>
@@ -245,8 +245,33 @@ require PATH . VIEW . '/system/paginacao.php';
         });
 
         $(".item-print").click(function () {
+            function preparaInput() {
+                var resultado = '<br>Mês: ';
+                resultado += '<select id="Zebra_valor" name="Zebra_valor" value="<?= $mes ?>">';
+                <?php
+                foreach (array("Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro") as $n => $nomeMes) {
+                    ?>
+                    resultado += "<option value='<?= crip($n) ?>'><?= $nomeMes ?></option>\n";
+                    <?php
+                }
+                ?>
+                resultado += "</select>";
+                return resultado;
+            }
+            
             var codigo = $(this).attr('id');
-            window.open('<?= VIEW ?>/secretaria/relatorios/inc/bolsa.php?codigo=' + codigo);
+            $.Zebra_Dialog('<strong>Selecione o mês de impressão do Relatório de Atividades da Bolsa:</strong>', {
+                'type': 'prompt',
+                'promptInput': preparaInput(),
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function (caption, valor) {
+                    if (caption == 'Sim') {
+                        window.open('<?= VIEW ?>/secretaria/relatorios/inc/bolsa.php?codigo=' + codigo + '&mes=' + valor);
+                        //$('#index').load('<?= $SITE ?>?opcao=change&codigo=' + codigo + '&solicitacao=' + encodeURIComponent(valor));
+                    }
+                }
+            });
         });
 
         $(".item-excluir").click(function () {

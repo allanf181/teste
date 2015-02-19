@@ -85,7 +85,7 @@ require SESSAO;
 $tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2, 'turno' => 1);
 $tipo['atendimento'] = array('nome' => 'Atendimento');
 $tipo['atvAcadEmica'] = array('nome' => 'Atividades Acadêmicas', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
-$tipo['bolsa'] = array('nome' => 'Bolsas', 'bolsa' => 1);
+$tipo['bolsa'] = array('nome' => 'Bolsas', 'bolsa' => 1, 'mes' => 1);
 $tipo['docente'] = array('nome' => 'Atribuição Docente', 'curso' => 2, 'turma' => 1);
 $tipo['boletim'] = array('nome' => 'Boletim Individual', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
 $tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' => 1, 'fechamento' => 1, 'turno' => 1);
@@ -115,6 +115,7 @@ $rel_disciplina = null;
 $rel_professor = null;
 $rel_aluno = null;
 $rel_data = null;
+$rel_mes = null;
 $rel_assunto = null;
 $rel_bolsa = null;
 ?>
@@ -137,6 +138,7 @@ $rel_bolsa = null;
                         $rel_professor = $v['professor'];
                         $rel_aluno = $v['aluno'];
                         $rel_data = $v['data'];
+                        $rel_mes = $v['mes'];
                         $rel_assunto = $v['assunto'];
                         $rel_bolsa = $v['bolsa'];
                     }
@@ -392,6 +394,26 @@ $rel_bolsa = null;
         <?php
     }
 
+    if ($rel_mes) {
+        ?>
+        <tr>
+            <td align="right" style="width: 100px">M&ecirc;s:</td>
+            <td>
+                <select id="mes" name="mes" value='<?= $mes ?>'>
+                    <?php
+                    foreach (array("Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro") as $n => $nomeMes) {
+                        $selected = "";
+                        if ($n == $mes)
+                            $selected = "selected='selected'";
+                        echo "<option $selected value='".crip($n)."'>$nomeMes</option>\n";
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <?php
+    }
+
     if ($rel_assunto) {
         ?>
         <tr>
@@ -514,6 +536,7 @@ if ($relatorio == 'docente' || $relatorio == 'lancamentos' || $relatorio == 'fre
         var disciplina = $('#disciplina').val();
         var situacao = $('#situacao').val();
         var data = $('#data').val();
+        var mes = $('#mes').val();
         var professor = $('#professor').val();
         var assunto = encodeURIComponent($('#assunto').val());
         var codigo = $('#bolsa').val();
@@ -535,7 +558,7 @@ if ($relatorio == 'docente' || $relatorio == 'lancamentos' || $relatorio == 'fre
             tipo = 'ftd';
 
         if (impressao == 'pdf' || impressao == 'xls')
-            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + '.php?codigo=' + codigo + '&curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
+            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + '.php?codigo=' + codigo + '&curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&mes=' + mes + '&situacao=' + situacao
                     + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor + '&assunto=' + assunto +
                     '&email=' + email + '&detalhada=' + det + '&tipoImpressao=' + impressao, '_blank');
         else

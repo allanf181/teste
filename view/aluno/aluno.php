@@ -37,6 +37,10 @@ if ($_GET["atribuicao"]) {
         $numeroBimestre = $res['bimestre'];
         $bimestre = abreviar($res['bimestre'] . "&ordm; BIMESTRE", 100);
     }
+
+    require CONTROLLER . "/bolsa.class.php";
+    $bolsa = new Bolsas();
+    $bolsista = $bolsa->checkBolsista($res['codDisciplina'], 'foto');
     ?>
     <h2><?= abreviar($res['disciplina'] . ": " . $res['turma'] . "/" . $res['curso'], 150) ?></h2>
     <div style="float: left">
@@ -54,7 +58,7 @@ if ($_GET["atribuicao"]) {
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/arquivo.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>    
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/ensalamento.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aviso.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/chat.php?atribuicao=<?= crip($atribuicao) ?>&codDisciplina=<?= crip($res['codDisciplina']) ?>');void(0);"><div id="imageChat"><img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat (Atendimento)</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/chat.php?atribuicao=<?= crip($atribuicao) ?>&codDisciplina=<?= crip($res['codDisciplina']) ?>&origem=<?= ($bolsista)?crip("bolsista"):"" ?>&timestamp=<?= time() ?>');void(0);"><div id="imageChat"><img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>&origem=<?= ($bolsista)?crip("bolsista"):"" ?>' /></div>Chat (Atendimento)</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/atvAcadEmica.php?aluno=<?= crip($aluno) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/atvAcadEmicas.png' /><br />Atividades Acad&ecirc;micas</a></td>
 
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/boletim.php?turma=<?= crip($res['turmaCodigo']) ?>&aluno=<?= crip($aluno) ?>&bimestre=<?= crip($numeroBimestre) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/boletim.png' /><br />Boletim Escolar</a></td>
@@ -81,11 +85,7 @@ if ($_GET["atribuicao"]) {
             </td>
             <td colspan="4" align='left' valign="top">
                 <b>BOLSITA(AS): </b><br />
-                <?php
-                require CONTROLLER . "/bolsa.class.php";
-                $bolsa = new Bolsas();
-                print $bolsa->checkBolsista($res['codDisciplina'], 'foto');
-                ?>
+                <?= $bolsista ?>
             </td>
         </tr>
         <tr>

@@ -70,18 +70,24 @@ if ($type == 'chat') {
 
     $params = array(':prontuario' => $_SESSION['loginProntuario']);
     if (dcrip($_GET['atribuicao'])) {
+        $params = array(':prontuario' => $_SESSION['loginProntuario']);
         $sqlAdicional = ' AND c.atribuicao = :atribuicao ';
         $params[':atribuicao'] = dcrip($_GET['atribuicao']);
     }
+    if (dcrip($_GET['origem'])) {
+        $params = array(':prontuario' => $_SESSION['loginProntuario']);
+        $sqlAdicional = " AND c.origem = :origem ";
+        $params[':origem'] = dcrip($_GET['origem']);
+    }
     $message = $chat->qdeMessage($params, $sqlAdicional);
-    
+
     list($width, $height, $type, $attr) = getimagesize(PATH . IMAGES . "chat.png");
     $imgPng = imageCreateFromPng(PATH . IMAGES . "chat.png");
     imageAlphaBlending($imgPng, true);
     imageSaveAlpha($imgPng, true);
     $cor = imagecolorallocate($imgPng, 255, 0, 0);
     $font = imageloadfont(PATH . VIEW . "/css/fonts/chat.gdf");
-    imagestring($imgPng, $font, $width-45, 0, urldecode($message), $cor);
+    imagestring($imgPng, $font, $width - 45, 0, urldecode($message), $cor);
 
     header("Content-type: image/png");
     imagePng($imgPng);

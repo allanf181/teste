@@ -84,7 +84,8 @@ class Pessoas extends Generic {
         $bd = new database();
         $sql = "SELECT DATEDIFF(NOW(), dataSenha) as data,"
                 . "(SELECT diasAlterarSenha FROM Instituicoes) as dias, "
-                . "dataSenha, senha, PASSWORD(prontuario) as pront "
+                . "date_format(dataSenha, '%d/%m/%Y') as dataSenha, "
+                . "senha, PASSWORD(prontuario) as pront "
                 . "FROM Pessoas WHERE codigo = :cod";
         $params = array(':cod' => $codigo);
         $res = $bd->selectDB($sql, $params);

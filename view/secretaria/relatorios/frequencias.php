@@ -74,7 +74,6 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                     echo "<option $selected value='$n'>$nomeMes</option>\n";
                 }
                 ?>
-
             </select>
         </td>
     </tr>

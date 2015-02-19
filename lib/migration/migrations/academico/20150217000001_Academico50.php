@@ -5,6 +5,19 @@ require "inc/config.inc.php";
 class Academico50 extends Ruckusing_Migration_Base {
 
     public function up() {
+        // ADD COLUMN ON CHAT
+        $result = $this->select_all("SELECT * 
+                                    FROM information_schema.COLUMNS 
+                                    WHERE 
+                                        TABLE_SCHEMA = '" . MY_DB . "'
+                                    AND TABLE_NAME = 'Chat' 
+                                    AND COLUMN_NAME = 'origem'");
+        if (!$result)
+            $this->execute("ALTER TABLE  `Chat` ADD  `origem` VARCHAR( 45 ) NULL AFTER  `atribuicao` ;");
+
+        // ALTER TABLE ON CHAT
+        $this->execute("ALTER TABLE  `Chat` CHANGE  `atribuicao`  `atribuicao` INT( 11 ) NULL ;");
+
         // ADD COLUMN ON INSTITUICOES
         $result = $this->select_all("SELECT * 
                                     FROM information_schema.COLUMNS 
@@ -132,14 +145,14 @@ class Academico50 extends Ruckusing_Migration_Base {
                 . " OR nome = 'Servico Socio pedagogico' ");
         if ($result) {
             $this->execute("UPDATE Instituicoes SET ssp=" . $result[0]['codigo']);
-            $this->execute("UPDATE `academico`.`Permissoes` SET `permissao` = 'view/secretaria/relatorios/atendimento.php,view/secretaria/relatorios/ausencias.php,view/secretaria/relatorios/boletim.php,view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/bolsas/bolsa.php,view/secretaria/bolsas/bolsaAluno.php,view/secretaria/bolsas/bolsaDisciplina.php,view/secretaria/bolsas/bolsaRelatorio.php,view/secretaria/calendario.php,view/secretaria/socioEconomico.php,view/admin/usoSistema.php', `nome` = 'Atendimento ao Aluno,Aus&ecirc;ncias,Boletim do Aluno,Boletim Turma,Frequ&ecirc;ncias,Relat&oacute;rios (em PDF),Bolsas,Alunos,Disciplinas,Relat&oacute;rios,Calend&aacute;rio,Socioecon&ocirc;mico,Uso do Sistema', `menu` = 'view/secretaria/relatorios/atendimento.php,view/secretaria/relatorios/ausencias.php,view/secretaria/relatorios/boletim.php,view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/bolsas/bolsa.php,view/secretaria/bolsas/bolsaAluno.php,view/secretaria/bolsas/bolsaDisciplina.php,view/secretaria/bolsas/bolsaRelatorio.php,view/secretaria/calendario.php,view/secretaria/socioEconomico.php,view/admin/usoSistema.php' WHERE `Permissoes`.`tipo` = ".$result[0]['codigo']);
+            $this->execute("UPDATE `academico`.`Permissoes` SET `permissao` = 'view/secretaria/relatorios/atendimento.php,view/secretaria/relatorios/ausencias.php,view/secretaria/relatorios/boletim.php,view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/bolsas/bolsa.php,view/secretaria/bolsas/bolsaAluno.php,view/secretaria/bolsas/bolsaDisciplina.php,view/secretaria/bolsas/bolsaRelatorio.php,view/secretaria/calendario.php,view/secretaria/socioEconomico.php,view/admin/usoSistema.php', `nome` = 'Atendimento ao Aluno,Aus&ecirc;ncias,Boletim do Aluno,Boletim Turma,Frequ&ecirc;ncias,Relat&oacute;rios (em PDF),Bolsas,Alunos,Disciplinas,Relat&oacute;rios,Calend&aacute;rio,Socioecon&ocirc;mico,Uso do Sistema', `menu` = 'view/secretaria/relatorios/atendimento.php,view/secretaria/relatorios/ausencias.php,view/secretaria/relatorios/boletim.php,view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/bolsas/bolsa.php,view/secretaria/bolsas/bolsaAluno.php,view/secretaria/bolsas/bolsaDisciplina.php,view/secretaria/bolsas/bolsaRelatorio.php,view/secretaria/calendario.php,view/secretaria/socioEconomico.php,view/admin/usoSistema.php' WHERE `Permissoes`.`tipo` = " . $result[0]['codigo']);
         } else {
             $codSSP = $this->execute("INSERT INTO Tipos VALUES(NULL, 'Sociopedagógico', '1')");
             $this->execute("INSERT INTO `Permissoes` (`codigo`, `tipo`, `permissao`, `nome`, `menu`) VALUES
                             (NULL, $codSSP, 'view/secretaria/relatorios/atendimento.php,view/secretaria/relatorios/ausencias.php,view/secretaria/relatorios/boletim.php,view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/bolsas/bolsa.php,view/secretaria/bolsas/bolsaAluno.php,view/secretaria/bolsas/bolsaDisciplina.php,view/secretaria/bolsas/bolsaRelatorio.php,view/secretaria/calendario.php,view/secretaria/socioEconomico.php,view/admin/usoSistema.php', 'Atendimento ao Aluno,Aus&ecirc;ncias,Boletim do Aluno,Boletim Turma,Frequ&ecirc;ncias,Relat&oacute;rios (em PDF),Bolsas,Alunos,Disciplinas,Relat&oacute;rios,Calend&aacute;rio,Socioecon&ocirc;mico,Uso do Sistema', 'view/secretaria/relatorios/atendimento.php,view/secretaria/relatorios/ausencias.php,view/secretaria/relatorios/boletim.php,view/secretaria/relatorios/boletimTurma.php,view/secretaria/relatorios/frequencias.php,view/secretaria/relatorios/listagem.php,view/secretaria/bolsas/bolsa.php,view/secretaria/bolsas/bolsaAluno.php,view/secretaria/bolsas/bolsaDisciplina.php,view/secretaria/bolsas/bolsaRelatorio.php,view/secretaria/calendario.php,view/secretaria/socioEconomico.php,view/admin/usoSistema.php')
                             ");
         }
-        
+
         //ADD BOLSAS PARA ALUNO, PROFESSOR, ADM, SEC E GED
         $result = $this->select_all("SELECT prof,aluno,adm,sec,ged FROM Instituicoes");
         $prof = $result[0]['prof'];
@@ -173,8 +186,8 @@ class Academico50 extends Ruckusing_Migration_Base {
                         $P['nome'][] = 'Relat&oacute;rios';
                     }
                 }
-                
-                if ($P['tipo'] == $adm || $P['tipo'] == $sec || $P['tipo'] == $ged ) {
+
+                if ($P['tipo'] == $adm || $P['tipo'] == $sec || $P['tipo'] == $ged) {
                     if (!in_array($bolsa, $P['permissao'])) {
                         $P['permissao'][] = $bolsa;
                         $P['menu'][] = $bolsa;
@@ -204,7 +217,7 @@ class Academico50 extends Ruckusing_Migration_Base {
                 $this->execute("UPDATE Permissoes SET menu='$M1',permissao='$P1',nome='$N1' WHERE codigo = " . $P['codigo']);
             }
         }
-        
+
         // ATUALIZAR VERSAO ATUAL
         $this->execute("UPDATE Instituicoes SET versao='433', versaoAtual='433'");
         printf("<br>Patch Academico50: OK");

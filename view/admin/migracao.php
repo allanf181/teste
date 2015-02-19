@@ -503,7 +503,7 @@ mysql_close($conexao);
             $(".item-excluir").click(function() {
                 var codigo = $(this).attr('id');
                 $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, ser&atilde;o exclu&iacute;das as avalia&ccedil;&otilde;es, notas e ensalamentos gerados para essa atribui&ccedil;&atilde;o. Deseja continuar com a exclus&atilde;o?</strong>', {
-                    'type': 'prompt',
+                    'type': 'question',
                     'title': '<?= $TITLE ?>',
                     'buttons': ['Sim', 'Não'],
                     'onClose': function(caption, valor) {

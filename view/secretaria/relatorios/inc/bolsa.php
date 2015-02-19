@@ -51,7 +51,10 @@ foreach ($resDisc as $reg)
 $pdf->SetFont($fonte, 'B', $tamanho + 5);
 $pdf->Image(PATH . IMAGES . "/logo.png", 12, 12, 60);
 $pdf->Cell(85, 20, "", 1, 0, 'C', false);
-$pdf->Cell(190, 20, utf8_decode("RELATÓRIO DE ATIVIDADES - BOLSAS"), 1, 0, 'C', true);
+$pdf->Cell(190, 10, utf8_decode("RELATÓRIO DE ATIVIDADES - BOLSAS"), 1, 0, 'C', false);
+$pdf->Ln();
+$pdf->Cell(85, 20, "", 0, 0, 'C', false);
+$pdf->Cell(190, 10, utf8_decode("Mês: " . ucfirst(meses(dcrip($_GET["mes"])+1))), 1, 0, 'C', true);
 $pdf->Ln();
 $pdf->Cell(275, 5, utf8_decode(""), 0, 0, 'C', false);
 $pdf->Ln();
@@ -102,7 +105,11 @@ $pdf->Ln();
 
 $pdf->SetFont($fonte, '', $tamanho + 2);
 $i = 0;
+
+$params['mes'] = str_pad(dcrip($_GET["mes"])+1, 2, "0", STR_PAD_LEFT);
+$sqlAdicional .= " AND DATE_FORMAT(br.data, '%m') = :mes ";
 $sqlAdicional .= ' ORDER BY br.data ASC ';
+
 foreach ($bolsaRelatorio->listRelatorios($params, $sqlAdicional) as $reg) {
     if ($i % 2 == 0)
         $pdf->SetFillColor(240, 240, 240);

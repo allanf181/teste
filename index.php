@@ -1,11 +1,16 @@
 <?php
 include_once "inc/config.inc.php";
 ?>
-<!DOCTYPE html>
-<html lang="pt-br" manifest="manifest.appcache">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>&nbsp;</title>
-        <meta charset=utf-8 />
+        <meta http-equiv="Content-Language" content="pt-br" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="1" />
+        <meta http-equiv="pragma" content="no-cache" />
         <link rel="shortcut icon" type="image/x-icon" href="<?= ICONS ?>/favicon.ico" />
         <!-- CSS SITE -->        
         <link type="text/css" rel="stylesheet" href="<?= VIEW ?>/css/estilo.css" media="screen" />

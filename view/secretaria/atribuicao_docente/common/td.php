@@ -289,6 +289,7 @@ require PATH . VIEW . '/system/paginacao.php';
     function change(codigo, nome) {
         $.Zebra_Dialog('<strong>Confirma a solicitação de correção na <?=$tabela?> de ' + nome + '? <br><br>Descrever a solicitação:</strong>', {
             'type': 'prompt',
+            'promptInput': '<textarea rows="2" cols="30" name="Zebra_valor" maxlength="200" id="Zebra_valor"></textarea>',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {
@@ -298,7 +299,7 @@ require PATH . VIEW . '/system/paginacao.php';
             }
         });
     }
-    ;
+    
     function conf(checked, nome, codigo) {
         if (!checked)
             modo = '<strong>Confirma abrir a <?=$tabela?> de ' + nome + '?</strong>';

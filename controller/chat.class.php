@@ -5,7 +5,7 @@ if (!class_exists('Generic'))
 
 class Chat extends Generic {
 
-    public function getMessage($codigo, $atribuicao, $para, $first) {
+    public function getMessage($codigo, $atribuicao, $para, $first, $origem) {
         $bd = new database();
 
         if ($first)
@@ -20,10 +20,10 @@ class Chat extends Generic {
                 p.nome, c.mensagem, c.codigo, c.prontuario
                 FROM Chat c, Pessoas p
                 WHERE p.prontuario = c.prontuario
-                AND atribuicao = :atr
+                AND (atribuicao = :atr OR origem = :origem)
                 $sqlAdicional
                 ORDER BY data ASC";
-        $params = array(':cod' => $codigo, ':atr' => $atribuicao, ':para' => $para);
+        $params = array(':cod' => $codigo, ':atr' => $atribuicao, ':para' => $para, ':origem' => $origem);
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
@@ -40,22 +40,22 @@ class Chat extends Generic {
         }
     }
 
-    public function haveMessage($codigo, $atribuicao) {
+    public function haveMessage($codigo, $atribuicao, $origem) {
         $bd = new database();
 
         $sql = "SELECT (SELECT COUNT(*) 
                         FROM Chat c1 
-                        WHERE c1.atribuicao = :atr
+                        WHERE (c1.atribuicao = :atr OR c1.origem = :origem)
                         AND c1.para = :cod
                         AND c1.visualizado = ''
                         AND c1.prontuario = c.prontuario) as total, 
                 c.prontuario, p.nome
                 FROM Chat c, Pessoas p
                 WHERE p.prontuario = c.prontuario
-                AND c.atribuicao = :atr
+                AND (c.atribuicao = :atr OR c.origem = :origem)
                 AND c.para = :cod                
                 GROUP BY c.prontuario";
-        $params = array(':cod' => $codigo, ':atr' => $atribuicao);
+        $params = array(':cod' => $codigo, ':atr' => $atribuicao, ':origem' => $origem);
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
@@ -96,6 +96,7 @@ class Chat extends Generic {
     public function listMessage($params, $sqlAdicional = null) {
         $bd = new database();
 
+        // CHATS DE ATRIBUICOES
         $sql = "SELECT COUNT(*) as total, 
                     t.numero as turma, d.numero as disciplina
                     FROM Chat c, Atribuicoes a, Turmas t, Disciplinas d
@@ -112,9 +113,54 @@ class Chat extends Generic {
             foreach ($res as $reg) {
                 $new_res .= $reg["total"] . ' mensagem(ns) na disciplina ' . $reg["disciplina"] . ' [' . $reg["turma"] . ']<br>';
             }
+        }
+
+        // CHATS DE OUTROS LUGARES
+        $sql = "SELECT COUNT(*) as total, c.origem
+                    FROM Chat c
+                    WHERE c.para = :prontuario
+                    AND c.visualizado = '' $sqlAdicional
+                    GROUP BY c.prontuario";
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            foreach ($res as $reg) {
+                $new_res .= $reg["total"] . ' mensagem(ns) ('.$reg["origem"].')<br>';
+            }
             return $new_res;
+        }
+
+        return 'Voc&ecirc; n&atilde;o tem mensagens novas';
+    }
+
+    public function listMessageBolsa($codigo, $origem) {
+        $bd = new database();
+
+        $sql = "SELECT p.prontuario, p.nome, p.codigo
+            FROM Chat c, Pessoas p 
+            WHERE c.prontuario = p.prontuario
+            AND ( (c.atribuicao NOT IN (SELECT m1.atribuicao 
+                                        FROM Matriculas m1 
+                                        WHERE m1.aluno = :codigo)
+                    AND c.atribuicao IN (SELECT a1.codigo 
+                                    FROM Atribuicoes a1, BolsasAlunos ba1, BolsasDisciplinas bd1 
+                                    WHERE bd1.bolsa = ba1.bolsa 
+                                    AND bd1.disciplina = a1.disciplina 
+                                    AND ba1.aluno = :codigo)
+                )
+                OR (origem = :origem)
+                )
+            GROUP BY p.prontuario 
+            ORDER BY p.nome";
+
+        $params = array('codigo' => $codigo, 'origem' => $origem);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
         } else {
-            return 'Voc&ecirc; n&atilde;o tem mensagens novas';
+            return false;
         }
     }
 

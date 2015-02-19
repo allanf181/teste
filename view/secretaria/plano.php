@@ -314,6 +314,7 @@ if (!empty($curso)) {
     function change(codigo, nome, curso, professor, turma, atribuicao) {
         $.Zebra_Dialog('<strong>Confirma a solicitação de correção do plano de ensino de ' + nome + '?<br><br>Motivo:</strong>', {
             'type': 'prompt',
+            'promptInput': '<textarea rows="2" cols="30" name="Zebra_valor" maxlength="200" id="Zebra_valor"></textarea>',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {

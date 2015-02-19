@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Cadastro de bolsas de ensino.
+//Cadastro de relatórios de atividades de bolsas de ensino.
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -117,8 +117,11 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <?php
                         foreach ($bolsas->listBolsas($paramsRestrict, $sqlAdicionalRestrict) as $reg) {
                             $selected = "";
-                            if ($reg['codigo'] == $bolsa)
+                            if ($reg['codigo'] == $bolsa) {
                                 $selected = "selected";
+                                $inicioCalendar = dataPTBR($reg['dataInicio']);
+                                $fimCalendar = dataPTBR($reg['dataFim']);
+                            }
                             print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['titulo'] . " [" . $reg['professor'] . "]</option>";
                         }
                         ?>
@@ -275,7 +278,9 @@ require PATH . VIEW . '/system/paginacao.php';
         monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
         monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
         nextText: 'Próximo',
-        prevText: 'Anterior'
+        prevText: 'Anterior',
+            minDate: '<?= $inicioCalendar ?>',
+            maxDate: '<?= $fimCalendar ?>'
     });
 
     function valida() {

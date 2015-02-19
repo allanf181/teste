@@ -462,6 +462,7 @@ if (in_array($COORD, $_SESSION["loginTipo"]) && !$_GET['opcao']) {
 
         $.Zebra_Dialog('<strong>Parecer: ' + texto + '<br><br>Por favor, informe o parecer:</strong>', {
             'type': 'prompt',
+            'promptInput': '<textarea rows="2" cols="30" name="Zebra_valor" maxlength="200" id="Zebra_valor"></textarea>',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {

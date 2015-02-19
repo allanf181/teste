@@ -17,7 +17,8 @@ class Bolsas extends Generic {
 
         $sql = "SELECT b.codigo, b.titulo, p.nome as professor, b.observacao,
                 CONCAT(date_format(b.dataInicio, '%d/%m/%Y'), ' - ',
-                date_format(b.dataFim, '%d/%m/%Y') ) as duracao
+                date_format(b.dataFim, '%d/%m/%Y') ) as duracao,
+                b.dataInicio, b.dataFim
 		FROM Bolsas b, Pessoas p
 		WHERE b.professor = p.codigo";
 

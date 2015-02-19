@@ -5,7 +5,6 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     die;
 }
 
-
 require CONTROLLER . "/chat.class.php";
 $chat = new Chat();
 
@@ -14,6 +13,10 @@ if ($_POST["opcao"] == 'insertMessage') {
     unset($_POST['opcao']);
     $_POST['prontuario'] = $_SESSION['loginProntuario'];
     $_POST['data'] = date('Y-m-d H:m:i');
+
+    if ($_POST['origem'])
+        unset($_POST['atribuicao']);
+
     $res = $chat->insertOrUpdate($_POST);
     if ($res['STATUS'] == 'OK')
         print '<font size="1"><b>' . $_SESSION['loginNome'] . ' diz...</b></font><br>' . $_POST['mensagem'] . '<br><br>';
@@ -21,22 +24,19 @@ if ($_POST["opcao"] == 'insertMessage') {
 }
 
 if ($_POST["opcao"] == 'loadMessages') {
-    $res = $chat->getMessage($_SESSION['loginProntuario'], dcrip($_POST['atribuicao']), $_POST['para'], $_POST['first']);
+    $res = $chat->getMessage($_SESSION['loginProntuario'], dcrip($_POST['atribuicao']), $_POST['para'], $_POST['first'], $_POST['origem']);
     print $res;
     die;
 }
 
 if ($_GET["opcao"] == 'alunos') {
-    $res = $chat->haveMessage($_SESSION['loginProntuario'], dcrip($_GET['atribuicao']));
+    $res = $chat->haveMessage($_SESSION['loginProntuario'], dcrip($_GET['atribuicao']), dcrip($_GET['origem']));
     print json_encode($res);
     die;
 }
 
 require SESSAO;
 ?>
-<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
-
-<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
 <script>
     $('#form_padrao').html5form({
@@ -48,6 +48,10 @@ require SESSAO;
         messages: 'br'
     })
 </script>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
+
+<script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 
 <div id="html5form" class="main">
     <form id="form_padrao">
@@ -65,72 +69,109 @@ require SESSAO;
                     $professor = new Professores();
                     $params = array('atribuicao' => dcrip($_GET["atribuicao"]), 'tipo' => $PROFESSOR);
                     $sqlAdicional = ' AND pr.atribuicao = :atribuicao ';
-                    foreach ($professor->listProfessores($params, $sqlAdicional) as $reg) {
-                        if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
-                            print '<b>Professor: </b><div style="cursor: pointer; cursor: hand;" class="aluno" id="' . $reg["prontuario"] . '">
-                                [' . $reg["prontuario"] . '] ' . $reg["nome"] . '
-                               </div>
-                               ';
-                            print '<p id="T' . $reg["prontuario"] . '"></p>';
-                            print "<hr>";
+                    if ($resProf = $professor->listProfessores($params, $sqlAdicional)) {
+                        print '<b>Professor(es): </b>';
+                        foreach ($resProf as $reg) {
+                            if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
+                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario']);
+                                print '<p id="T' . $reg["prontuario"] . '"></p>';
+                                print "<hr>";
+                            }
                         }
                     }
-                    
-                    print '<br><b>Bolsistas: </b>';
-                    require CONTROLLER . "/bolsa.class.php";
-                    $bolsa = new Bolsas();
-                    foreach ($bolsa->checkBolsista(dcrip($_GET['codDisciplina']),null) as $reg) {
-                        if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
-                            print '<div style="cursor: pointer; cursor: hand;" class="aluno" id="' . $reg["prontuario"] . '">
-                                [' . $reg["prontuario"] . '] ' . $reg["nome"] . '
-                               </div>
-                               ';
-                            print '<p id="T' . $reg["prontuario"] . '"></p>';
-                            print "<hr>";
-                        }
-                    }
-                    
-                    print '<br><b>Alunos: </b>';
+
                     require CONTROLLER . "/aula.class.php";
                     $aulaFreq = new Aulas();
                     $params = array('atribuicao' => dcrip($_GET["atribuicao"]));
                     $sqlAdicional = ' WHERE a.codigo=:atribuicao GROUP BY al.codigo ORDER BY al.nome ';
-                    foreach ($aulaFreq->listAlunosByAula($params, $sqlAdicional) as $reg) {
-                        if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
-                            print '<div style="cursor: pointer; cursor: hand;" class="aluno" id="' . $reg["prontuario"] . '">
-                                [' . $reg["prontuario"] . '] ' . $reg["aluno"] . '
-                               </div>
-                               ';
-                            print '<p id="T' . $reg["prontuario"] . '"></p>';
-                            print "<hr>";
+                    if ($resAluno = $aulaFreq->listAlunosByAula($params, $sqlAdicional)) {
+                        print '<br><b>Aluno(s): </b>';
+                        foreach ($resAluno as $reg) {
+                            $alunos[] = $reg['prontuario'];
+                            if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
+                                print printUser($reg['codAluno'], $reg['aluno'], $reg['prontuario']);
+                                print '<p id="T' . $reg["prontuario"] . '"></p>';
+                                print "<hr>";
+                            }
+                        }
+                    }
+
+                    require CONTROLLER . "/bolsa.class.php";
+                    $bolsa = new Bolsas();
+                    if ($resBolsista = $bolsa->checkBolsista(dcrip($_GET['codDisciplina']), null)) {
+                        foreach ($resBolsista as $reg) {
+                            $bolsistas[] = $reg['prontuario'];
+                            if ($_SESSION['loginProntuario'] != $reg['prontuario'] && !in_array($reg['prontuario'], $alunos)) {
+                                if ($k == 0) {
+                                    print '<br><b>Bolsista(s): </b>';
+                                    $k = 1;
+                                }
+                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario']);
+                                print '<p id="T' . $reg["prontuario"] . '"></p>';
+                                print "<hr>";
+                            }
+                        }
+                    }
+
+                    if ($resBolsa = $chat->listMessageBolsa($_SESSION['loginCodigo'], dcrip($_GET['origem']))) {
+                        foreach ($resBolsa as $reg) {
+                            if ($_SESSION['loginProntuario'] != $reg['prontuario'] && !in_array($reg['prontuario'], $bolsistas)) {
+                                if ($k == 0) {
+                                    print '<br><b>Contatos Bolsa: </b>';
+                                    $k = 1;
+                                }
+                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario']);
+                                print '<p id="T' . $reg["prontuario"] . '"></p>';
+                                print "<hr>";
+                            }
                         }
                     }
                     ?>
                 </td>
                 <td>&nbsp;</td>
                 <td width="450" valign="top">
-                    <div class="message_box" style="width: 450px; height: 300px; overflow-y: scroll;"></div> 
-                    <textarea rows="2" cols="30" maxlength='500' id='conteudo' name='conteudo'><?= $mensagem ?></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>&nbsp;</td>
-                <td>
                     <input type="hidden" name="first" id="first" value="0" />
-                    <table width="100%">
+                    <input type="hidden" name="origem" id="origem" value="" />
+                    <table width="100%" border="0">
                         <tr>
+                            <td colspan="2">
+                                <div class="message_box" style="width: 450px; height: 300px; overflow-y: scroll;"></div> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea rows="2" cols="40" maxlength='500' id='conteudo' name='conteudo'><?= $mensagem ?></textarea>
+                            </td>
                             <td>
                                 <input type="submit" value="Enviar" id="salvar" />
                             </td>
                         </tr>
-                    </table> 
+                    </table>
                 </td>
-            </tr> 
+            </tr>
         </table>
     </form>
 </div>
 
+<?php
+
+function printUser($codigo, $nome, $prontuario) {
+    $linha = '                          <table>
+                                        <tr>
+                                        <td>
+                                        <a href="#" rel=' . INC . '/file.inc.php?type=pic&id=' . crip($codigo) . '&timestamp=' . time() . ' class="screenshot" title=' . $nome . '">
+                                        <img style="width: 25px; height: 25px" alt="Embedded Image" src=' . INC . '/file.inc.php?type=pic&id=' . crip($codigo) . '&timestamp=' . time() . ' />
+                                        </a>
+                                        </td>
+                                        <td>
+                                        <div style="cursor: pointer; cursor: hand;" class="bolsista" id="' . $prontuario . '">[' . $prontuario . '] ' . $nome . '</div>
+                                        </td>
+                                        </tr>
+                                        </table>
+                                        ';
+    return $linha;
+}
+?>
 <script>
     var load_data = null;
     clearInterval(interval1);
@@ -142,7 +183,7 @@ require SESSAO;
     function haveMessage() {
         $.ajax({
             url: '<?= $SITE ?>',
-            data: {'opcao': 'alunos', 'atribuicao': '<?= $_GET['atribuicao'] ?>'},
+            data: {'opcao': 'alunos', 'atribuicao': '<?= $_GET['atribuicao'] ?>', 'origem': '<?= $_GET['origem'] ?>'},
             dataType: 'json',
             success: function (data)
             {
@@ -167,9 +208,10 @@ require SESSAO;
     $("#salvar").click(function () {
         var imessage = $('#conteudo').val();
         var ipara = $('#first').val();
+        var iorigem = $('#origem').val();
         if (ipara != 0 && imessage != 0) {
             var iatribuicao = '<?= $_GET['atribuicao'] ?>';
-            post_data = {'opcao': 'insertMessage', 'mensagem': imessage, 'atribuicao': iatribuicao, 'para': ipara};
+            post_data = {'opcao': 'insertMessage', 'mensagem': imessage, 'atribuicao': iatribuicao, 'para': ipara, 'origem': iorigem};
             $.post('<?= $SITE ?>', post_data, function (data) {
                 var audioElement = document.createElement('audio');
                 audioElement.setAttribute('src', '<?= VIEW ?>/css/som/msgSent.wav');
@@ -190,7 +232,7 @@ require SESSAO;
         load_data.para = $('#first').val();
         load_data.first = 0;
         $.post('<?= $SITE ?>', load_data, function (data) {
-            if (data) {
+            if (data && data.length > 5) {
                 $(data).hide().appendTo('.message_box').fadeIn();
                 var scrolltoh = $('.message_box')[0].scrollHeight;
                 $('.message_box').scrollTop(scrolltoh);
@@ -204,28 +246,37 @@ require SESSAO;
 
     $(document).ready(function () {
         $(".aluno").click(function () {
-            $('.message_box').html('');
-            var iatribuicao = '<?= $_GET['atribuicao'] ?>';
             var ipara = $(this).attr('id');
-            $('#first').val(ipara);
-            $('#' + ipara).css("font-weight", "normal");
-            $('#T' + ipara).html('');
-            $('#nomeAluno').html($('#' + ipara).html());
-            $('#nomeAluno').css("font-weight", "bold");
-            load_data = {'opcao': 'loadMessages', 'atribuicao': iatribuicao, 'para': ipara, 'first': 1};
-            $.post('<?= $SITE ?>', load_data, function (data) {
-                if (data) {
-                    $(data).hide().appendTo('.message_box').fadeIn();
-                    var scrolltoh = $('.message_box')[0].scrollHeight;
-                    $('.message_box').scrollTop(scrolltoh);
-                }
-            });
+            loadMessages(ipara, '', '<?= $_GET['atribuicao'] ?>');
+        });
 
-            clearInterval(interval);
-            interval = setInterval("monitor();", 5000);
-
-            $('#imageChat').html("<img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= $_GET['atribuicao'] ?>' />");
-
+        $(".bolsista").click(function () {
+            var ipara = $(this).attr('id');
+            $('#origem').val('bolsista');
+            loadMessages(ipara, 'bolsista', '');
         });
     });
+
+    function loadMessages(ipara, origem, atribuicao) {
+        $('.message_box').html('');
+        $('#first').val(ipara);
+        $('#' + ipara).css("font-weight", "normal");
+        $('#T' + ipara).html('');
+        $('#nomeAluno').html($('#' + ipara).html());
+        $('#nomeAluno').css("font-weight", "bold");
+        load_data = {'opcao': 'loadMessages', 'atribuicao': atribuicao, 'para': ipara, 'first': 1, 'origem': origem};
+        $.post('<?= $SITE ?>', load_data, function (data) {
+            if (data) {
+                $(data).hide().appendTo('.message_box').fadeIn();
+                var scrolltoh = $('.message_box')[0].scrollHeight;
+                $('.message_box').scrollTop(scrolltoh);
+            }
+        });
+
+        clearInterval(interval);
+        interval = setInterval("monitor();", 5000);
+
+        $('#imageChat').html("<img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= $_GET['atribuicao'] ?>' />");
+
+    }
 </script>
