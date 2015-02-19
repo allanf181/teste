@@ -69,11 +69,15 @@ require SESSAO;
                     $professor = new Professores();
                     $params = array('atribuicao' => dcrip($_GET["atribuicao"]), 'tipo' => $PROFESSOR);
                     $sqlAdicional = ' AND pr.atribuicao = :atribuicao ';
+                    $k = 0;
                     if ($resProf = $professor->listProfessores($params, $sqlAdicional)) {
-                        print '<b>Professor(es): </b>';
                         foreach ($resProf as $reg) {
                             if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
-                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario']);
+                                if ($k == 0) {
+                                    print '<br><b>Professor(es): </b>';
+                                    $k = 1;
+                                }
+                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario'], 'aluno');
                                 print '<p id="T' . $reg["prontuario"] . '"></p>';
                                 print "<hr>";
                             }
@@ -84,12 +88,13 @@ require SESSAO;
                     $aulaFreq = new Aulas();
                     $params = array('atribuicao' => dcrip($_GET["atribuicao"]));
                     $sqlAdicional = ' WHERE a.codigo=:atribuicao GROUP BY al.codigo ORDER BY al.nome ';
+                    $k = 0;
                     if ($resAluno = $aulaFreq->listAlunosByAula($params, $sqlAdicional)) {
                         print '<br><b>Aluno(s): </b>';
                         foreach ($resAluno as $reg) {
                             $alunos[] = $reg['prontuario'];
                             if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
-                                print printUser($reg['codAluno'], $reg['aluno'], $reg['prontuario']);
+                                print printUser($reg['codAluno'], $reg['aluno'], $reg['prontuario'], 'aluno');
                                 print '<p id="T' . $reg["prontuario"] . '"></p>';
                                 print "<hr>";
                             }
@@ -101,12 +106,13 @@ require SESSAO;
                     if ($resBolsista = $bolsa->checkBolsista(dcrip($_GET['codDisciplina']), null)) {
                         foreach ($resBolsista as $reg) {
                             $bolsistas[] = $reg['prontuario'];
+                            $k = 0;
                             if ($_SESSION['loginProntuario'] != $reg['prontuario'] && !in_array($reg['prontuario'], $alunos)) {
                                 if ($k == 0) {
                                     print '<br><b>Bolsista(s): </b>';
                                     $k = 1;
                                 }
-                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario']);
+                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario'], 'bolsista');
                                 print '<p id="T' . $reg["prontuario"] . '"></p>';
                                 print "<hr>";
                             }
@@ -115,12 +121,13 @@ require SESSAO;
 
                     if ($resBolsa = $chat->listMessageBolsa($_SESSION['loginCodigo'], dcrip($_GET['origem']))) {
                         foreach ($resBolsa as $reg) {
+                            $k = 0;
                             if ($_SESSION['loginProntuario'] != $reg['prontuario'] && !in_array($reg['prontuario'], $bolsistas)) {
                                 if ($k == 0) {
                                     print '<br><b>Contatos Bolsa: </b>';
                                     $k = 1;
                                 }
-                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario']);
+                                print printUser($reg['codigo'], $reg['nome'], $reg['prontuario'], 'bolsista');
                                 print '<p id="T' . $reg["prontuario"] . '"></p>';
                                 print "<hr>";
                             }
@@ -155,7 +162,7 @@ require SESSAO;
 
 <?php
 
-function printUser($codigo, $nome, $prontuario) {
+function printUser($codigo, $nome, $prontuario, $tipo) {
     $linha = '                          <table>
                                         <tr>
                                         <td>
@@ -164,7 +171,7 @@ function printUser($codigo, $nome, $prontuario) {
                                         </a>
                                         </td>
                                         <td>
-                                        <div style="cursor: pointer; cursor: hand;" class="bolsista" id="' . $prontuario . '">[' . $prontuario . '] ' . $nome . '</div>
+                                        <div style="cursor: pointer; cursor: hand;" class="' . $tipo . '" id="' . $prontuario . '">[' . $prontuario . '] ' . $nome . '</div>
                                         </td>
                                         </tr>
                                         </table>

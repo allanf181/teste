@@ -96,6 +96,7 @@ class Chat extends Generic {
     public function listMessage($params, $sqlAdicional = null) {
         $bd = new database();
 
+        $new_res = null;
         // CHATS DE ATRIBUICOES
         $sql = "SELECT COUNT(*) as total, 
                     t.numero as turma, d.numero as disciplina
@@ -120,6 +121,7 @@ class Chat extends Generic {
                     FROM Chat c
                     WHERE c.para = :prontuario
                     AND c.visualizado = '' $sqlAdicional
+                    AND c.origem <> ''
                     GROUP BY c.prontuario";
 
         $res = $bd->selectDB($sql, $params);
@@ -128,8 +130,9 @@ class Chat extends Generic {
             foreach ($res as $reg) {
                 $new_res .= $reg["total"] . ' mensagem(ns) ('.$reg["origem"].')<br>';
             }
-            return $new_res;
         }
+
+        if ($new_res) return $new_res;
 
         return 'Voc&ecirc; n&atilde;o tem mensagens novas';
     }
