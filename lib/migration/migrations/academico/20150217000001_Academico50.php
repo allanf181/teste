@@ -140,6 +140,71 @@ class Academico50 extends Ruckusing_Migration_Base {
                             ");
         }
         
+        //ADD BOLSAS PARA ALUNO, PROFESSOR, ADM, SEC E GED
+        $result = $this->select_all("SELECT prof,aluno,adm,sec,ged FROM Instituicoes");
+        $prof = $result[0]['prof'];
+        $aluno = $result[0]['aluno'];
+        $adm = $result[0]['adm'];
+        $sec = $result[0]['sec'];
+        $ged = $result[0]['ged'];
+
+        $result = $this->select_all("SELECT codigo,tipo,nome,menu,permissao FROM Permissoes WHERE tipo IN ($aluno,$prof,$adm,$sec,$ged)");
+
+        if ($result) {
+            $bolsa = 'view/secretaria/bolsas/bolsa.php';
+            $bolsaAluno = 'view/secretaria/bolsas/bolsaAluno.php';
+            $bolsaDisciplina = 'view/secretaria/bolsas/bolsaDisciplina.php';
+            $bolsaRelatorio = 'view/secretaria/bolsas/bolsaRelatorio.php';
+
+            foreach ($result as $P) {
+                $P['permissao'] = explode(",", $P['permissao']);
+                $P['menu'] = explode(",", $P['menu']);
+                $P['nome'] = explode(",", $P['nome']);
+
+                if ($P['tipo'] == $prof || $P['tipo'] == $aluno) {
+                    if (!in_array($bolsa, $P['permissao'])) {
+                        $P['permissao'][] = $bolsa;
+                        $P['menu'][] = $bolsa;
+                        $P['nome'][] = 'Bolsas';
+                    }
+                    if (!in_array($bolsaRelatorio, $P['permissao'])) {
+                        $P['permissao'][] = $bolsaRelatorio;
+                        $P['menu'][] = $bolsaRelatorio;
+                        $P['nome'][] = 'Relat&oacute;rios';
+                    }
+                }
+                
+                if ($P['tipo'] == $adm || $P['tipo'] == $sec || $P['tipo'] == $ged ) {
+                    if (!in_array($bolsa, $P['permissao'])) {
+                        $P['permissao'][] = $bolsa;
+                        $P['menu'][] = $bolsa;
+                        $P['nome'][] = 'Bolsas';
+                    }
+                    if (!in_array($bolsaAluno, $P['permissao'])) {
+                        $P['permissao'][] = $bolsaAluno;
+                        $P['menu'][] = $bolsaAluno;
+                        $P['nome'][] = 'Alunos';
+                    }
+                    if (!in_array($bolsaDisciplina, $P['permissao'])) {
+                        $P['permissao'][] = $bolsaDisciplina;
+                        $P['menu'][] = $bolsaDisciplina;
+                        $P['nome'][] = 'Disciplinas';
+                    }
+                    if (!in_array($bolsaRelatorio, $P['permissao'])) {
+                        $P['permissao'][] = $bolsaRelatorio;
+                        $P['menu'][] = $bolsaRelatorio;
+                        $P['nome'][] = 'Relat&oacute;rios';
+                    }
+                }
+
+                $P1 = implode(",", $P['permissao']);
+                $M1 = implode(",", $P['menu']);
+                $N1 = implode(",", $P['nome']);
+
+                $this->execute("UPDATE Permissoes SET menu='$M1',permissao='$P1',nome='$N1' WHERE codigo = " . $P['codigo']);
+            }
+        }
+        
         // ATUALIZAR VERSAO ATUAL
         $this->execute("UPDATE Instituicoes SET versao='433', versaoAtual='433'");
         printf("<br>Patch Academico50: OK");
