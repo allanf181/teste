@@ -45,7 +45,7 @@ class Atribuicoes extends Generic {
                 c.fechamento as fechamento, a.observacoes as observacoes, a.competencias as competencias,
                 m.codigo as codModalidade, m.nome as modalidade, d.ch as CH, a.aulaPrevista as aulaPrevista,
                 IF(a.prazo, date_format(a.prazo, '%H:%i de %d/%m/%Y'), '') as prazoFormat,
-                DATEDIFF(NOW(), a.dataInicio) as diarioAberto,
+                DATEDIFF(NOW(), a.dataInicio) as diarioAberto, d.codigo as codDisciplina,
                 DATEDIFF(a.prazo, NOW()) as prazoDiff,
                 date_format( a.dataInicio, '%d/%m/%Y') as dataInicioFormat,
                 date_format( DATE_ADD(a.dataFim, INTERVAL $LIMITE_DIARIO_PROF DAY), '%d/%m/%Y') as dataFimFormat,

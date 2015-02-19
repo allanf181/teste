@@ -55,9 +55,40 @@ class Bolsas extends Generic {
 
         if ($res[0]['total']) {
             $t = $res[0]['total'];
-            if ($tipo == 'aluno') $resp = "Você está participando de $t bolsa(s) nesse semestre.";
-            if ($tipo == 'professor') $resp = "Você está supervisionando $t bolsa(s) nesse semestre.";
+            if ($tipo == 'aluno')
+                $resp = "Você está participando de $t bolsa(s) nesse semestre.";
+            if ($tipo == 'professor')
+                $resp = "Você está supervisionando $t bolsa(s) nesse semestre.";
             return $resp;
+        }
+
+        return false;
+    }
+
+    public function checkBolsista($disciplina, $foto) {
+        $bd = new database();
+
+        $sql = "SELECT p.codigo, p.nome, p.prontuario
+		FROM Bolsas b, BolsasAlunos ba, BolsasDisciplinas bd, Pessoas p
+		WHERE b.codigo = ba.bolsa
+                AND b.codigo = bd.bolsa
+                AND ba.aluno = p.codigo
+                AND bd.disciplina = :disciplina
+                AND CURDATE() between dataInicio and dataFim";
+
+        $params = array('disciplina' => $disciplina);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            foreach ($res as $reg) {
+                $new_res .= "<a href='#' rel='" . INC . "/file.inc.php?type=pic&id=" . crip($reg['codigo']) . "&timestamp=" . time() . "' class='screenshot' title='" . $reg['nome'] . "'>
+                                <img style='width: 25px; height: 25px' alt='Embedded Image' src='" . INC . "/file.inc.php?type=pic&id=" . crip($reg['codigo']) . "&timestamp=" . time() . "' />
+                           </a>" . $reg['nome'] . "<br>";
+            }
+            if ($foto)
+                return $new_res;
+
+            return $res;
         }
 
         return false;

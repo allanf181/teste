@@ -11,7 +11,6 @@ require MENSAGENS;
 require FUNCOES;
 require SESSAO;
 require PERMISSAO;
-
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
@@ -55,7 +54,7 @@ if ($_GET["atribuicao"]) {
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/arquivo.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>    
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/ensalamento.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aviso.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/chat.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><div id="imageChat"><img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat (Atendimento)</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/chat.php?atribuicao=<?= crip($atribuicao) ?>&codDisciplina=<?= crip($res['codDisciplina']) ?>');void(0);"><div id="imageChat"><img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat (Atendimento)</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/atvAcadEmica.php?aluno=<?= crip($aluno) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/atvAcadEmicas.png' /><br />Atividades Acad&ecirc;micas</a></td>
 
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/boletim.php?turma=<?= crip($res['turmaCodigo']) ?>&aluno=<?= crip($aluno) ?>&bimestre=<?= crip($numeroBimestre) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/boletim.png' /><br />Boletim Escolar</a></td>
@@ -65,17 +64,35 @@ if ($_GET["atribuicao"]) {
                 <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/planoEnsino.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
             <?php } ?>
         </tr>
-        <tr><td colspan="9" align='center'>
+        <tr>
+            <td colspan="9" align='center'>
                 <hr>
-                PROFESSOR(ES): <br />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" align='left' valign="top">
+                <b>PROFESSOR(ES): </b><br />
                 <?php
                 require CONTROLLER . "/professor.class.php";
                 $professor = new Professores();
 
                 print $professor->getProfessor($atribuicao, 1, '<br>', 1, 1);
                 ?>
+            </td>
+            <td colspan="4" align='left' valign="top">
+                <b>BOLSITA(AS): </b><br />
+                <?php
+                require CONTROLLER . "/bolsa.class.php";
+                $bolsa = new Bolsas();
+                print $bolsa->checkBolsista($res['codDisciplina'], 'foto');
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="9" align='center'>
                 <hr>
-        </tr></tr>
+            </td>
+        </tr>
     </table>
     <?php
     if ($codModalidade != 1004 && $codModalidade != 1006 && $codModalidade != 1007 && ($bimestre == 4 || $bimestre == 0))

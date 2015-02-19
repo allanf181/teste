@@ -75,8 +75,22 @@ require SESSAO;
                             print "<hr>";
                         }
                     }
-
-                    print '<b>Alunos: </b>';
+                    
+                    print '<br><b>Bolsistas: </b>';
+                    require CONTROLLER . "/bolsa.class.php";
+                    $bolsa = new Bolsas();
+                    foreach ($bolsa->checkBolsista(dcrip($_GET['codDisciplina']),null) as $reg) {
+                        if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
+                            print '<div style="cursor: pointer; cursor: hand;" class="aluno" id="' . $reg["prontuario"] . '">
+                                [' . $reg["prontuario"] . '] ' . $reg["nome"] . '
+                               </div>
+                               ';
+                            print '<p id="T' . $reg["prontuario"] . '"></p>';
+                            print "<hr>";
+                        }
+                    }
+                    
+                    print '<br><b>Alunos: </b>';
                     require CONTROLLER . "/aula.class.php";
                     $aulaFreq = new Aulas();
                     $params = array('atribuicao' => dcrip($_GET["atribuicao"]));
@@ -94,7 +108,7 @@ require SESSAO;
                     ?>
                 </td>
                 <td>&nbsp;</td>
-                <td width="450">
+                <td width="450" valign="top">
                     <div class="message_box" style="width: 450px; height: 300px; overflow-y: scroll;"></div> 
                     <textarea rows="2" cols="30" maxlength='500' id='conteudo' name='conteudo'><?= $mensagem ?></textarea>
                 </td>
@@ -118,12 +132,6 @@ require SESSAO;
 </div>
 
 <script>
-    $(document).keypress(function (e) {
-        if (e.which == 13) {
-            $("#salvar").click();
-        }
-    });
-
     var load_data = null;
     clearInterval(interval1);
     var hasMessage = 0;
