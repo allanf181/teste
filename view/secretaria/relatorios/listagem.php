@@ -58,13 +58,13 @@ if ($_GET['opcao'] == 'grafico') {
         $params['ano'] = $ANO;
         $params['semestre'] = $SEMESTRE;
         require CONTROLLER . '/aula.class.php';
-        $aula = new Aulas();        
+        $aula = new Aulas();
         print $aula->listLAToJSON($params, $sqlAdicional);
         exit;
     }
     if ($_GET['relatorio'] == 'frequencia' && $_GET['curso'] && $_GET['turma']) {
         require CONTROLLER . '/frequencia.class.php';
-        $frequencia = new Frequencias();        
+        $frequencia = new Frequencias();
         print $frequencia->getLFToJSON($params, $sqlAdicional);
         exit;
     }
@@ -85,6 +85,7 @@ require SESSAO;
 $tipo['alunos'] = array('nome' => 'Alunos', 'curso' => 2, 'turma' => 2, 'turno' => 1);
 $tipo['atendimento'] = array('nome' => 'Atendimento');
 $tipo['atvAcadEmica'] = array('nome' => 'Atividades Acadêmicas', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
+$tipo['bolsa'] = array('nome' => 'Bolsas', 'bolsa' => 1);
 $tipo['docente'] = array('nome' => 'Atribuição Docente', 'curso' => 2, 'turma' => 1);
 $tipo['boletim'] = array('nome' => 'Boletim Individual', 'curso' => 1, 'turma' => 1, 'aluno' => 1);
 $tipo['boletimTurma'] = array('nome' => 'Boletim Turma', 'curso' => 1, 'turma' => 1, 'fechamento' => 1, 'turno' => 1);
@@ -115,6 +116,7 @@ $rel_professor = null;
 $rel_aluno = null;
 $rel_data = null;
 $rel_assunto = null;
+$rel_bolsa = null;
 ?>
 <table border="0" width="100%" id="form" width="100%">
     <tr>
@@ -136,6 +138,7 @@ $rel_assunto = null;
                         $rel_aluno = $v['aluno'];
                         $rel_data = $v['data'];
                         $rel_assunto = $v['assunto'];
+                        $rel_bolsa = $v['bolsa'];
                     }
                     ?>
                     <option <?= $selected ?> value="<?= $k ?>"><?= $v['nome'] ?></option>
@@ -366,6 +369,29 @@ $rel_assunto = null;
         <?php
     }
 
+    if ($rel_bolsa) {
+        ?>
+        <tr><td>Bolsas: </td>
+            <td>
+                <select name="bolsa" id="bolsa" value="<?= $bolsa ?>">
+                    <option></option>
+                    <?php
+                    require CONTROLLER . '/bolsa.class.php';
+                    $bolsas = new Bolsas();
+                    $sqlAdicionalBolsa = " AND $ANO between str_to_date(dataInicio, '%Y') and str_to_date(dataFim, '%Y') ";
+                    foreach ($bolsas->listBolsas(null, $sqlAdicionalBolsa) as $reg) {
+                        $selected = "";
+                        if ($reg['codigo'] == $bolsa)
+                            $selected = "selected";
+                        print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['titulo'] . " [" . $reg['professor'] . "]</option>";
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <?php
+    }
+
     if ($rel_assunto) {
         ?>
         <tr>
@@ -399,65 +425,61 @@ $rel_assunto = null;
 </table>
 
 <div id="container"></div>
-<script src="<?= VIEW ?>/js/highcharts/highcharts.js" type="text/javascript"></script>
-<script src="<?= VIEW ?>/js/highcharts/exporting.js" type="text/javascript"></script>
-
 
 <?php
-    if ($relatorio == 'docente' || $relatorio == 'lancamentos' 
-            || $relatorio == 'frequencia' || $relatorio == 'matriculasTotais') {
+if ($relatorio == 'docente' || $relatorio == 'lancamentos' || $relatorio == 'frequencia' || $relatorio == 'matriculasTotais') {
     ?>
     <script>
-                        var options = {
-                            chart: {
-                                renderTo: 'chart',
-                            },
-                            credits: {
-                                enabled: false
-                            },
-                            title: {},
-                            xAxis: {
-                                categories: [{}],
-                                title: {},
-                            },
-                            yAxis: {
-                                title: {},
-                            },
-                            tooltip: {
-                                formatter: function () {
-                                    var s = '<b>' + this.x + '</b>';
+        var options = {
+            chart: {
+                renderTo: 'chart',
+            },
+            credits: {
+                enabled: false
+            },
+            title: {},
+            xAxis: {
+                categories: [{}],
+                title: {},
+            },
+            yAxis: {
+                title: {},
+            },
+            tooltip: {
+                formatter: function () {
+                    var s = '<b>' + this.x + '</b>';
 
-                                    $.each(this.points, function (i, point) {
-                                        s += '<br/>' + point.series.name + ': ' + point.y;
-                                    });
+                    $.each(this.points, function (i, point) {
+                        s += '<br/>' + point.series.name + ': ' + point.y;
+                    });
 
-                                    return s;
-                                },
-                                shared: true
-                            },
-                            series: [{}, {}]
-                        };
-                        
-                        var curso = $('#curso').val();
-                        var turma = $('#turma').val();
+                    return s;
+                },
+                shared: true
+            },
+            series: [{}, {}]
+        };
 
-                        $.ajax({
-                            url: "<?= VIEW ?>/secretaria/relatorios/listagem.php?opcao=grafico&relatorio=<?= $relatorio ?>&curso=" + curso + "&turma=" + turma,
-                            data: 'show=impression',
-                            type: 'post',
-                            dataType: "json",
-                            success: function (data) {
-                                options.xAxis.categories = data.item1;
-                                options.series[0].name = data.item2Name;
-                                options.series[0].data = data.item2;
-                                options.series[1].name = data.item3Name;
-                                options.series[1].data = data.item3;
-                                options.title.text = data.title;
-                                options.xAxis.title.text = data.titleX;
-                                options.yAxis.title.text = data.titleY;
-                                $('#container').highcharts(options);
-                            }
-                        });
+        var curso = $('#curso').val();
+        var turma = $('#turma').val();
+
+        $.ajax({
+            url: "<?= VIEW ?>/secretaria/relatorios/listagem.php?opcao=grafico&relatorio=<?= $relatorio ?>&curso=" + curso + "&turma=" + turma,
+            data: 'show=impression',
+            type: 'post',
+            dataType: "json",
+            success: function (data) {
+                options.xAxis.categories = data.item1;
+                options.series[0].name = data.item2Name;
+                options.series[0].data = data.item2;
+                options.series[1].name = data.item3Name;
+                options.series[1].data = data.item3;
+                options.title.text = data.title;
+                options.xAxis.title.text = data.titleX;
+                options.yAxis.title.text = data.titleY;
+                $('#container').highcharts(options);
+            }
+        });
     </script>
     <?php
 }
@@ -494,6 +516,7 @@ $rel_assunto = null;
         var data = $('#data').val();
         var professor = $('#professor').val();
         var assunto = encodeURIComponent($('#assunto').val());
+        var codigo = $('#bolsa').val();
 
         var rg = $('#alunos_rg').is(':checked');
         var cpf = $('#alunos_cpf').is(':checked');
@@ -512,7 +535,7 @@ $rel_assunto = null;
             tipo = 'ftd';
 
         if (impressao == 'pdf' || impressao == 'xls')
-            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + '.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
+            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + '.php?codigo=' + codigo + '&curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&situacao=' + situacao
                     + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor + '&assunto=' + assunto +
                     '&email=' + email + '&detalhada=' + det + '&tipoImpressao=' + impressao, '_blank');
         else

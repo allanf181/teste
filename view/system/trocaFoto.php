@@ -15,7 +15,7 @@ if ($tmp = $_GET['foto']) {
     die;
 }
 
-require '../inc/config.inc.php';
+require '../../inc/config.inc.php';
 
 require VARIAVEIS;
 require FUNCOES;
@@ -71,7 +71,7 @@ if ($name) {
     print "<input type=\"hidden\" name=\"fileType\" id=\"filePath\" value=\"$type\" />\n";
     print "<input type=\"submit\" name=\"submit\" id='1' value=\"Salvar\" />\n";
     if ($tmp)
-        print "<br><img src=\"" . VIEW . "/trocaFoto.php?foto=$foto\" id=\"photo\" style='max-width:300px'>";
+        print "<br><img src=\"" . VIEW . "/system/trocaFoto.php?foto=$foto\" id=\"photo\" style='max-width:300px'>";
 } else {
     print "<form id=\"cropimage\" method=\"post\" enctype=\"multipart/form-data\">\n";
     print "<input type=\"file\" name=\"ImageFile\" id=\"ImageFile\" value=\"\" />\n";

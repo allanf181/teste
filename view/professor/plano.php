@@ -62,10 +62,10 @@ if ($_GET['pagina']) {
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
 <ul class="tabs">
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=entregarPlano'); void(0);">Entregar Plano</a></li>	
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoEnsino'); void(0);">Plano de Ensino</a></li>
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoAula'); void(0);">Plano de Aula</a></li>
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoCopiar'); void(0);">Copiar Plano</a></li>
+    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=entregarPlano');void(0);">Entregar Plano</a></li>	
+    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoEnsino');void(0);">Plano de Ensino</a></li>
+    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoAula');void(0);">Plano de Aula</a></li>
+    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoCopiar');void(0);">Copiar Plano</a></li>
     <li><a target="_blank" href="<?= VIEW; ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= $atribuicao; ?>"><img src="<?= ICONS; ?>/icon-printer.gif" width="30"></a></li>
 </ul>
 <div class="tab_container" id="form">
@@ -340,7 +340,7 @@ if ($_GET['pagina'] == "planoAula") {
                 </tr>
             </table>
             <table width="100%"><tr><td><input type="submit" <?= $disabled; ?> value="Salvar" /></td>
-                    <td><a href="javascript:$('#professor').load('<?= "$SITE?pagina=planoAula&atribuicao=" . $_GET['atribuicao']; ?>'); void(0);">Novo/Limpar</a></td>
+                    <td><a href="javascript:$('#professor').load('<?= "$SITE?pagina=planoAula&atribuicao=" . $_GET['atribuicao']; ?>');void(0);">Novo/Limpar</a></td>
                 </tr></table>	
             <br><br>
 

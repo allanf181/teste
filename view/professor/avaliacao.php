@@ -158,7 +158,7 @@ if ($_GET['opcao'] == 'insert') {
 
             if ($('#data').val() != "" && $('#tipo').val() != null &&
                     $('#nome').val() != "" && $('#sigla').val() != "" <?= $P ?>)
-                $('#salvar').enable();
+                $('#salvar').removeAttr('disabled');
             else
                 $('#salvar').attr('disabled', 'disabled');
         }
@@ -246,7 +246,7 @@ if ($_GET['opcao'] == 'insert') {
                 </table>
         </form>
     </div>
-    <br><div style='margin: auto'><a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='voltar' title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
+    <br><div style='margin: auto'><a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>');void(0);" class='voltar' title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
     <?php
 }
 
@@ -377,7 +377,7 @@ if ($_GET['opcao'] == '') {
                 $titleAval = strtoupper($reg['recuperacao']);
                 ?>
                 <tr <?= $cdif ?>><td><?= $i-- ?></td>
-                    <td><a class='nav' title='Clique aqui para lan&ccedil;ar as notas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/nota.php?atribuicao=<?= crip($atribuicao) ?>&avaliacao=<?= crip($reg['codigo']) ?>'); void(0);"><?= $reg['dataFormatada'] ?></a></td>
+                    <td><a class='nav' title='Clique aqui para lan&ccedil;ar as notas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/nota.php?atribuicao=<?= crip($atribuicao) ?>&avaliacao=<?= crip($reg['codigo']) ?>');void(0);"><?= $reg['dataFormatada'] ?></a></td>
                     <td><?= $reg['nome'] ?></td>
                     <td><?= $reg['sigla'] ?></td>
                     <td><?= $$reg['tipo'] . $sub ?> </td>
@@ -390,7 +390,7 @@ if ($_GET['opcao'] == '') {
                     } else {
                         ?>
                         <td align='center' width="20"><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
-                            <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= crip(round($totalPesoOrPonto - $reg['peso'], 2)) ?>&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip($reg['tipo']) ?>&final=<?= crip($reg['final']) ?>'); void(0);" class='nav' title='Alterar'>
+                            <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= crip(round($totalPesoOrPonto - $reg['peso'], 2)) ?>&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip($reg['tipo']) ?>&final=<?= crip($reg['final']) ?>');void(0);" class='nav' title='Alterar'>
                                 <img class='botao' src='<?= ICONS ?>/config.png' /></a>
                         </td>
                         <?php
@@ -404,9 +404,9 @@ if ($_GET['opcao'] == '') {
         <?php if ((($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4))) { ?>
             <?php if ($_SESSION['dataExpirou'] == 0) {
                 ?>
-                <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&final=<?= crip($final) ?>&tipo=<?= crip($tipoIns) ?>'); void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
-                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>'); void(0);" title="Cadastrar Ponto Extra (adicionado na m&eacute;dia)"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
-                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva') ?>'); void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
+                <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&final=<?= crip($final) ?>&tipo=<?= crip($tipoIns) ?>');void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
+                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>');void(0);" title="Cadastrar Ponto Extra (adicionado na m&eacute;dia)"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
+                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva') ?>');void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
                 <?php
             } else {
                 ?>

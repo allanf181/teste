@@ -5,7 +5,7 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //0
 
-require '../inc/config.inc.php';
+require '../../inc/config.inc.php';
 require FUNCOES;
 require MENSAGENS;
 require VARIAVEIS;
@@ -42,7 +42,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?= VIEW ?>/email.php',
+        action: '<?= VIEW ?>/system/email.php',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -62,7 +62,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
                     <strong>Caso necess&aacute;rio, tentaremos responder o mais breve poss&iacute;vel.</strong>
                 </td>
             </tr>
-            <tr><td>&nbsp;</td><td align="right"><a href="javascript:$('#index').load('home.php'); void(0);">VOLTAR</a></td></tr>
+            <tr><td>&nbsp;</td><td align="right"><a href="javascript:$('#index').load('<?= VIEW ?>/system/home.php');void(0);">VOLTAR</a></td></tr>
             <tr>
                 <td width="20px" align="right">Nome: </td>
                 <td><input type='text' id='nome' name="nome" value='' size='60' /></td>
@@ -95,7 +95,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
     $(document).ready(function () {
         $('#nome, #email, #conteudo, #captcha_r').keypress(function () {
             if ($('#nome').val() != "" && $('#email').val() != "" && $('#conteudo').val() != "" && $('#captcha_r').val() != "")
-                $('#enviar').enable();
+                $('#enviar').removeAttr('disabled');
             else
                 $('#enviar').attr('disabled', 'disabled');
         });

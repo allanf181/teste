@@ -57,7 +57,7 @@ $totalRegistros = count($atendimento->listAtendimento($params, $sqlAdicional));
 
 $SITENAV = $SITE . '?';
 
-require(PATH . VIEW . '/paginacao.php');
+require(PATH . VIEW . '/system/paginacao.php');
 
 ?>
 

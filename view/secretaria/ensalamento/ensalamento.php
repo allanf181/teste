@@ -75,7 +75,7 @@ if (dcrip($_GET["turma"])) {
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%">
                         <tr>
-                            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a></td>
+                            <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Limpar</a></td>
                         </tr>
                     </table>
                 </td>
@@ -115,7 +115,7 @@ $params['turma'] = crip($turma);
 
 $SITENAV = $SITE . "?" . mapURL($params);
 
-require(PATH . VIEW . '/paginacao.php');
+require(PATH . VIEW . '/system/paginacao.php');
 ?>	
 <table id="listagem" border="0" align="center">
     <tr>

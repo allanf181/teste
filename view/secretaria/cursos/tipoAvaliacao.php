@@ -37,7 +37,7 @@ $res = $tipoAval->listAvaliacoesModalidades($params, $sqlAdicional, $item, $iten
 $totalRegistros = $tipoAval->count();
 
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="1" align="center">

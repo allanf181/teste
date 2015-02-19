@@ -20,7 +20,7 @@ if (isset($_SESSION['timeout']) && $_SESSION['timeout'] + $TIMEOUT * 60 < time()
     ?>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#index').load('<?= VIEW ?>/logoff.php');
+            $('#index').load('<?= VIEW ?>/system/logoff.php');
         });
     </script>
     <?php

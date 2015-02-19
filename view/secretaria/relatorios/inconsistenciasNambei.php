@@ -56,7 +56,7 @@ if ($_GET["filtro"]) {
                 <td>
                     <input value="<?= $filtro ?>" type="text" value="<?= $filtro ?>" name=filtro" id=filtro" onblur="$('#index').load('<?= $SITE ?>?data=<?= $data ?>&filtro=' + encodeURIComponent(this.value));" />
                     <a href="#" title="Buscar"><img class="botao" style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' id="atualizaData" /></a>
-                    &nbsp;&nbsp;<a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a>
+                    &nbsp;&nbsp;<a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Limpar</a>
                 </td>
             </tr>
         </table>
@@ -83,7 +83,7 @@ $params['filtro'] = urlencode($filtro);
 
 $SITENAV = $SITE . "?" . mapURL($params);
 
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">

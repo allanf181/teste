@@ -15,8 +15,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 
     $_POST['pessoa'] = crip($_SESSION['loginCodigo']);
     $ret = $aviso->insertOrUpdateAvisos($_POST);
-
-    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    mensagem('OK', 'AVISO', $ret);
 }
 
 // DELETE
@@ -66,7 +65,7 @@ if ($_GET["opcao"] == 'delete') {
             <tr><td></td><td>
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                            <td><a href="javascript:$('<?= $DIV ?>').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td> 
+                            <td><a href="javascript:$('<?= $DIV ?>').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td> 
                         </tr></table> 
                 </td></tr> 
         </table>
@@ -85,7 +84,7 @@ $res = $aviso->listAvisos($params, $item, $itensPorPagina);
 
 $totalRegistros = count($aviso->listAvisos($params));
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
@@ -136,7 +135,7 @@ require PATH . VIEW . '/paginacao.php';
         if ($('#conteudo').val() == "") {
             $('#salvar').attr('disabled', 'disabled');
         } else {
-            $('#salvar').enable();
+            $('#salvar').removeAttr('disabled');
         }
     }
 

@@ -200,7 +200,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                             <td>
                                 <input type="submit" value="Salvar" id="salvar" />
                             </td>
-                            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
+                            <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
                         </tr>
                     </table>
                 </td>
@@ -227,7 +227,7 @@ $params['aluno'] = crip($params['aluno']);
 $params['atribuicao'] = $_GET['atribuicao'];
 $SITENAV = $SITE . "?" . mapURL($params);
 
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center">
     <tr>
@@ -279,11 +279,11 @@ require PATH . VIEW . '/paginacao.php';
     }
 
     function valida() {
-        tipo = $("input[@name='tipo']:checked");
+        tipo = $("input[id='tipo']:checked");
         if ($('#aluno').val() != "" && $('#dataInicio').val() != ""
                 && $('#motivo').val() != "" && tipo.length > 0
                 && ($('#atribuicao').val() != "" || $('#aula').val() != "")) {
-            $('#salvar').enable();
+            $('#salvar').removeAttr('disabled');
         } else {
             $('#salvar').attr('disabled', 'disabled');
         }

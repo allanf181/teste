@@ -66,13 +66,13 @@ if ($_GET["opcao"] == 'validacao') {
         $ret = $pessoa->desloqueioFoto($_GET['insert']);
     if ($_GET["delete"])
         $ret = $pessoa->removeFoto($_GET['delete']);
-    
+
     if ($ret)
         mensagem('OK', 'TRUE_UPDATE');
     ?>
     <table align="center" id="form" width="100%">
         <tr>
-            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Voltar</a></td>
+            <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Voltar</a></td>
             <td align="right"><input type="submit" name="liberar" id="liberar" value="Liberar"></td>
         </tr>
         <tr>
@@ -87,7 +87,7 @@ if ($_GET["opcao"] == 'validacao') {
                 <th width="40" align="center"><input type='checkbox' checked id='select-all' name='select-all' class='campoTodos' value='' /></th></tr>
             <?php
             $res = $pessoa->countBloqPic();
-            $i=1;
+            $i = 1;
             if ($res[0]['total']) {
                 foreach ($res as $reg) {
                     $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
@@ -292,7 +292,7 @@ if (dcrip($_GET["nome"])) {
                     <tr><td></td><td>
                             <input type="hidden" name="opcao" value="InsertOrUpdate" />
                             <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                                    <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
+                                    <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
                                 </tr></table>
                         </td></tr>
                 </table>
@@ -361,7 +361,7 @@ if (dcrip($_GET["nome"])) {
                     <tr><td></td><td>
                             <input type="hidden" name="opcao" value="InsertOrUpdate" />
                             <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                                    <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
+                                    <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
                                 </tr></table>
                         </td></tr>
                 </table>
@@ -415,7 +415,7 @@ if (dcrip($_GET["nome"])) {
                         </td>
                     </tr></table>
                 <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                        <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
+                        <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
                     </tr></table>
             </div>
     </form>
@@ -438,7 +438,6 @@ if (dcrip($_GET["nome"])) {
         ?>
         Tamanho m&aacute;ximo do arquivo: <?= ini_get('upload_max_filesize') ?><br>
 
-        <script type="text/javascript" src="js/jquery.form.min.js"></script>
         <?php
         if ($codigo) {
             ?>
@@ -451,12 +450,12 @@ if (dcrip($_GET["nome"])) {
                 <input type="hidden" name="codigo" value="<?= $codigo ?>"/>
                 <input name="ImageFile" id="imageInput" type="file" accept="application/zip,image/*" />
 
-                <br><br><a href="javascript:$('#index').load('<?= $SITE ?>?opcao=removeFoto&codigo=<?= crip($codigo) ?>'); void(0);">Remover Foto</a>
+                <br><br><a href="javascript:$('#index').load('<?= $SITE ?>?opcao=removeFoto&codigo=<?= crip($codigo) ?>');void(0);">Remover Foto</a>
             </form>
         </div>
 
         <table width="100%"><tr><td>&nbsp;</td>
-                <td align="right"><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar
+                <td align="right"><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar
                     </a></td>
             </tr></table>
     </div>
@@ -468,7 +467,7 @@ if (dcrip($_GET["nome"])) {
                 ?>
                 <td>Fotos bloqueadas: <?= $totalBloq[0]['total'] ?> 
                     <br><br>
-                    <a href="javascript:$('#index').load('<?= $SITE ?>?opcao=validacao'); void(0);">Visualizar Fotos</a>
+                    <a href="javascript:$('#index').load('<?= $SITE ?>?opcao=validacao');void(0);">Visualizar Fotos</a>
                 </td>
             </tr></table>
     </div>
@@ -492,7 +491,7 @@ $totalRegistros = count($pessoa->listRegistros($params, $sqlAdicional, null, nul
 $params['prontuario'] = crip($prontuario);
 $params['nome'] = crip($nome);
 $SITENAV = $SITE . '?' . mapURL($params);
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
@@ -560,7 +559,7 @@ require PATH . VIEW . '/paginacao.php';
             $('#prontuario').val() == "") {
                 $('#salvar').attr('disabled', 'disabled');
             } else {
-                $('#salvar').enable();
+                $('#salvar').removeAttr('disabled');
             }
         }
 
@@ -700,7 +699,7 @@ require PATH . VIEW . '/paginacao.php';
             });
 
             var options = {
-                target: '#output, <?php if (!$codigo) print "#retorno"; ?>', // target element(s) to be updated with server response 
+                target: '#output <?php if (!$codigo) print ",#retorno"; ?>', // target element(s) to be updated with server response 
                 beforeSubmit: beforeSubmit, // pre-submit callback 
                 success: afterSuccess, // post-submit callback 
                 resetForm: true        // reset the form after successful submit 

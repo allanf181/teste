@@ -1,4 +1,5 @@
 <?php
+
 // SETANDO O ANO E SEMESTRE ATUAL.
 if (empty($_SESSION["ano"]) || empty($_SESSION["semestre"])) {
     $_SESSION["ano"] = date('Y');
@@ -31,6 +32,7 @@ if ($res = $instituicao->listRegistros()) {
     $COORD = $res[0]['coord'];
     $ALUNO = $res[0]['aluno'];
     $PROFESSOR = $res[0]['prof'];
+    $SSP = $res[0]['ssp'];
     $ENVIOFOTO = $res[0]['envioFoto'];
     $VERSAO = $res[0]['versao'];
     $VERSAOAT = $res[0]['versaoAtual'];
@@ -40,5 +42,15 @@ if ($res = $instituicao->listRegistros()) {
     $LDAP_CACHE = $res[0]['ldap_cache'];
     $LDAP_DROP_LEFT = $res[0]['ldap_drop_left'];
     $EMAIL = $res[0]['email_account'];
+    $LINK_RECUPERAR_SENHA = $res[0]['link_recuperar_senha'];
+
+    //INFORMAR O SISTEMA TODOS OS PAPÉIS EXISTENTES.
+    $PAPEIS = array('GED' => 'Ger&ecirc;ncia Educacional',
+        'ADM' => 'Administrador',
+        'SEC' => 'Secretaria',
+        'COORD' => 'Coordenador',
+        'ALUNO' => 'Aluno',
+        'PROFESSOR' => 'Professor',
+        'SSP' => 'Servi&ccedil;o Sociopedag&oacute;gico');
 }
 ?>

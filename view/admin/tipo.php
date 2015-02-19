@@ -78,7 +78,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     <table width="100%">
                         <tr>
                             <td><input type="submit" value="Salvar" id="salvar" /></td>
-                            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
+                            <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
                         </tr>
                     </table>
                 </td>
@@ -99,7 +99,7 @@ $res = $tipo->listRegistros($params, null, $item, $itensPorPagina);
 
 $totalRegistros = $tipo->count();
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
@@ -141,7 +141,7 @@ require PATH . VIEW . '/paginacao.php';
         if ($('#nome').val() == "") {
             $('#salvar').attr('disabled', 'disabled');
         } else {
-            $('#salvar').enable();
+            $('#salvar').removeAttr('disabled');
         }
     }
     $(document).ready(function() {

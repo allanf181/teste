@@ -338,7 +338,7 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" onclick="return valores('AtvD<?= $t ?>');" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
                                 <th><input class="atividade" <?= $disabled ?> type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
@@ -564,7 +564,7 @@ $hor3 = explode(',', $horario3);
         });
     });
     
-    $(function () {
+    function valores(campo) {
         var availableTags = [
             "Atendimento ao aluno",
             "Atendimento do NDE",
@@ -575,8 +575,8 @@ $hor3 = explode(',', $horario3);
             "Supervisão ou orientação de estágio",
             "Supervisão ou orientação de trabalhos acadêmicos"
         ];
-        $("input:[id^=AtvD]").autocomplete({
+        $("#" + campo).autocomplete({
             source: availableTags
         });
-    });    
+    }    
 </script>

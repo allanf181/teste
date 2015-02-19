@@ -117,7 +117,7 @@ if (dcrip($_GET["tipo"]))
                         <br /><table id='listagem' style="width:400px; border: 1px solid black;">
                             <tr>
                                 <td colspan="2" align="right">
-                                    <a href="#" onClick="hide('showCopia');">Cancelar</a>
+                                    <a href="#" onClick="$('#showCopia').hide();">Cancelar</a>
                                 </td>
                             </tr>
                             <tr>
@@ -150,7 +150,7 @@ if (dcrip($_GET["tipo"]))
                         $perms = $permissao->listaPermissoes(array(dcrip($tipo)), 'permissao');
 
                         // Listando os diretórios dentro da VIEW.
-                        $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html|\/common\/';
+                        $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html|\/common\/|\/system\/';
                         $cdir = dirToArray(PATH . LOCATION . '/view/', $regex);
                         krsort($cdir);
                         $i = 0;

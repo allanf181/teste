@@ -5,7 +5,7 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //0
 
-require '../inc/config.inc.php';
+require '../../inc/config.inc.php';
 require FUNCOES;
 require MENSAGENS;
 require VARIAVEIS;
@@ -17,20 +17,49 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
 }
 
+if ($LINK_RECUPERAR_SENHA) {
+    ?>
+    <script>
+        $(document).ready(function() {
+            location.replace('<?= $LINK_RECUPERAR_SENHA ?>');
+        });
+    </script>
+    <?php
+    die;
+}
+
 if ($LDAP_ATIVADO) {
     mensagem('INFO', 'LDAP_ATIVADO');
     die;
 }
+
 // Instância a classe login
 $login = new login();
+
+// ENVIANDO A CHAVE DE RECUPERAR SENHA
+if (isset($_GET["opcao"]) && $_GET["opcao"] == 'recuperar') {
+    $prontuario = $_GET["campoLogin"];
+    if (!$LDAP_ATIVADO) {
+        if ($prontuario) {
+            if ($login->recuperaSenha($prontuario)) {
+                mensagem('OK', 'EMAIL_ENVIADO');
+            } else {
+                mensagem('ERRO', 'EMAIL_NAO_CADASTRADO');
+            }
+        } else {
+            mensagem('INFO', 'PRONTUARIO_VAZIO');
+        }
+    } else {
+        mensagem('INFO', 'LDAP_ATIVADO');
+    }
+}
 
 if (isset($_POST["opcao"]) && $_POST["opcao"] == 'alterarToBanco') {
     $senha = addslashes($_POST["senhaAtual"]);
     $senhaNova = addslashes($_POST["senhaNova"]);
-    $prontuario = addslashes($_POST["prontuario"]);
+    $prontuario = addslashes(base64_decode($_POST["prontuario"]));
     $chave = addslashes($_POST["chave"]);
 
-    $_SESSION["cripto"] = genRandomString();
     if ($_SESSION['session_textoCaptcha'] == $_POST["captcha_r"]) {
         if ($login->alteraSenha($prontuario, $senha, $senhaNova, $chave)) {
             @session_unset($_SESSION_NAME);
@@ -51,13 +80,13 @@ if (isset($_POST["opcao"]) && $_POST["opcao"] == 'alterarToBanco') {
     if ($senha)
         $_GET["opcao"] = 'alterar';
     if ($chave)
-        $_GET["opcao"] = 'recuperar';
+        $_GET["opcao"] = 'recuperarPorChave';
 }
 
-if ($_GET["opcao"] == 'recuperar') {
+if ($_GET["opcao"] == 'recuperarPorChave') {
     print "<h2>Recupera&ccedil;&atilde;o de Senha</h2>\n";
-    $recuperar = addslashes($_GET['est']);
-    $prontuario = addslashes($_GET['p']);
+    $recuperar = addslashes($_GET['key']);
+    $prontuario = addslashes($_GET['prt']);
 }
 
 if ($_GET["opcao"] == 'alterar') {
@@ -71,12 +100,12 @@ if ($_GET["opcao"] == 'alterar') {
         print "<p>&Uacute;ltima altera&ccedil;&atilde;o da senha: " . formata($data) . "</p><br />\n";
 }
 
-if ($_GET["opcao"] == 'recuperar' || $_GET["opcao"] == 'alterar') {
+if ($_GET["opcao"] == 'recuperarPorChave' || $_GET["opcao"] == 'alterar') {
     ?>
     <script>
         $('#form_padrao').html5form({
             method: 'POST',
-            action: '<?= VIEW ?>/senha.php',
+            action: '<?= VIEW ?>/system/senha.php',
             responseDiv: '#index',
             colorOn: '#000',
             colorOff: '#999',

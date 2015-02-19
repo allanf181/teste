@@ -1,8 +1,12 @@
 <?php
-include_once "inc/config.inc.php";
+include_once "../../inc/config.inc.php";
 require VARIAVEIS;
 require SESSAO;
 
+// verifica se não está sendo chamado diretamente.
+if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
+    header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
+}
 ?>
 
 <h2>Equipe WebDi&aacute;rio</h2>
@@ -59,6 +63,18 @@ require SESSAO;
 </table>
 
 </center>
+
+<br />
+<b>Vers&atilde;o 1.433</b>
+<br> - Adi&ccedil;&atilde;o de Link Externo para recupera&ccedil;&atilde;o de senha (ADMIN --> INSTITUI&Ccedil;&Otilde;ES).
+<br> - Upgrade e adapta&ccedil;&atilde;o do site para JQUERY 2.1.3
+<br> - Organiza&ccedil;&atilde;o do INDEX e reorganiza&ccedil;&atilde;o de pastas.
+<br> - Cria&ccedil;&atilde;o do novo tipo de papel Sociopedag&oacute;gico.
+<br> - Aviso no HOME para informar caso algum papel n&atilde;o esteja cadastrado.
+<br> - Adicionado Sistema de Bolsas para controle de atividades.
+<br> - Aviso no HOME para informar o aluno ou professor participante de bolsa.
+
+<br />
 <br />
 <b>Vers&atilde;o 1.432</b>
 <br> - Adi&ccedil;&atilde;o do CHAT para atendimento e suporte aos alunos.
@@ -284,4 +300,4 @@ require SESSAO;
 <br> - Hor&aacute;rio de atendimento do professor na tela do aluno.</li>
 <br>
 <br>
-<a href="">Voltar</a>
+<a href="javascript:$('#index').load('<?= VIEW ?>/system/home.php');void(0);">VOLTAR</a>

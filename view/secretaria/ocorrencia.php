@@ -170,7 +170,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                             <td>
                                 <input type="submit" value="Salvar" id="salvar" />
                             </td>
-                            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
+                            <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
                         </tr>
                     </table>
                 </td>
@@ -201,7 +201,7 @@ $totalRegistros = count($ocorrencia->listOcorrencias($params, $sqlAdicional));
 $params = array('aluno' => crip($params['aluno']));
 $SITENAV = $SITE . "?" . mapURL($params);
 
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center">
     <tr>
@@ -276,7 +276,7 @@ require PATH . VIEW . '/paginacao.php';
 
     function valida() {
         if ($('#aluno').val() != "" && ($('#descricao').val() != "")) {
-            $('#salvar').enable();
+            $('#salvar').removeAttr('disabled');
         } else {
             $('#salvar').attr('disabled', 'disabled');
         }

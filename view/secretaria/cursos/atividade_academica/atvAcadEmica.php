@@ -145,7 +145,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                                 <input type="submit" value="Salvar" id="salvar" />
                             </td>
                             <td>
-                                <a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a>
+                                <a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a>
                             </td>
                         </tr>
                     </table>
@@ -180,7 +180,7 @@ $totalRegistros = count($atv->listAtividades($params, $sqlAdicional, null, null)
 
 $params['curso'] = crip($curso);
 $SITENAV = $SITE . "?" . mapURL($params);
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
@@ -236,7 +236,7 @@ require PATH . VIEW . '/paginacao.php';
         if ($('#curso').val() == "" || $('#CHTotal').val() == "") {
             $('#salvar').attr('disabled', 'disabled');
         } else {
-            $('#salvar').enable();
+            $('#salvar').removeAttr('disabled');
         }
     }
 

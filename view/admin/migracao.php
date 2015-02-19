@@ -402,7 +402,7 @@ while ($linha = mysql_fetch_array($resultado)) {
     ?>
             </select>
         </td></tr>
-    <tr><td>&nbsp;</td><td><input type="button" value="Importar" id="importar" /><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">&nbsp;Limpar</a></td></tr>
+    <tr><td>&nbsp;</td><td><input type="button" value="Importar" id="importar" /><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">&nbsp;Limpar</a></td></tr>
 
 </table>
 
@@ -447,7 +447,7 @@ if ($ultimo % $itensPorPagina > 0)
 
 $SITENAV = $SITE . "?turma=" . crip($turma) . "&disciplina=" . crip($disciplina) . "&professor=" . crip($professor);
 
-require "../navegacao.php";
+require "../system/navegacao.php";
 ?>
 
 <table id="listagem" border="0" align="center">
@@ -475,7 +475,7 @@ if ($resultado) {
 mysql_close($conexao);
 ?>
 
-    <?php require "../navegacao.php"; ?>
+    <?php require "../system/navegacao.php"; ?>
 
     <script>
         function atualizar(getLink) {

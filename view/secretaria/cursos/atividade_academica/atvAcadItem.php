@@ -149,7 +149,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                                 <input type="submit" value="Salvar" id="salvar" />
                             </td>
                             <td>
-                                <a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a>
+                                <a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a>
                             </td>
                             <td>
                                 <a href='#' title='Importar itens pré-cadastrados para a atividade selecionada.' class='item-importar' id='<?= crip($atvAcademica) ?>'>
@@ -191,7 +191,7 @@ $totalRegistros = count($atvItem->listItens($params, $sqlAdicional, null, null))
 
 $params['atvAcademica'] = crip($atvAcademica);
 $SITENAV = $SITE . "?" . mapURL($params);
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
@@ -246,7 +246,7 @@ require PATH . VIEW . '/paginacao.php';
                 || $('#CHLimite').val() == "") {
             $('#salvar').attr('disabled', 'disabled');
         } else {
-            $('#salvar').enable();
+            $('#salvar').removeAttr('disabled');
         }
     }
 

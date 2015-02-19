@@ -79,7 +79,7 @@ if ($_GET["nomeDisciplina"]) {
             <tr><td align="right">Nome: </td><td><input type="text" name="nomeDisciplina" maxlength="45" id="nomeDisciplina" value="<?= $nomeDisciplina ?>" />
                     <a href="#" id="setNome"><img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png'/></a>
                 </td></tr>
-            <tr><td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a></td></tr>
+            <tr><td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Limpar</a></td></tr>
         </table>
     </form>
     <?php
@@ -99,7 +99,7 @@ if ($_GET["nomeDisciplina"]) {
     
     $SITENAV = $SITE . "?" . mapURL($params);
 
-    require(PATH . VIEW . '/paginacao.php');
+    require(PATH . VIEW . '/system/paginacao.php');
     ?>
 
     <table id="listagem" border="0" align="center">
@@ -134,7 +134,7 @@ if ($_GET["nomeDisciplina"]) {
         ?>
     </table>
 
-    <?php require(PATH . VIEW . '/paginacao.php'); ?>
+    <?php require(PATH . VIEW . '/system/paginacao.php'); ?>
 
     <script>
         function atualizar(getLink) {

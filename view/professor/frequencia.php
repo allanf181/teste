@@ -86,7 +86,7 @@ $dadosAula = $aulaFreq->getAula($aula);
                     <td>
                         <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot nav' title='<?= mostraTexto($reg['aluno']) ?>'>
                             <img class='foto_lista' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' /></a>
-                        <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>'); void(0);"><?= mostraTexto($reg['aluno']) ?></a>
+                        <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>');void(0);"><?= mostraTexto($reg['aluno']) ?></a>
                     </td>
                     <?php
                     $frequencia = $freq->getFrequencia($reg['matricula'], $atribuicao);
@@ -146,7 +146,7 @@ $dadosAula = $aulaFreq->getAula($aula);
 </div>
 <br>
 <div style='margin: auto'>
-    <a href="javascript:$('#professor').load('<?= VIEW ?>/professor/aula.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='voltar' title='Voltar' >
+    <a href="javascript:$('#professor').load('<?= VIEW ?>/professor/aula.php?atribuicao=<?= crip($atribuicao) ?>');void(0);" class='voltar' title='Voltar' >
         <img class='botao' src='<?= ICONS ?>/left.png'/>
     </a>
 </div>

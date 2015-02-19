@@ -108,7 +108,7 @@ if ($_GET["atribuicao"]) {
         ?>
         <h2><?= abreviar("$disciplina [$subturma]: $turma/$curso", 150) ?></h2>
         <div style="float: left">
-            <a title='IN&Iacute;CIO' href="javascript:$('#index').load('<?= VIEW; ?>/professor/professor.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);">
+            <a title='IN&Iacute;CIO' href="javascript:$('#index').load('<?= VIEW; ?>/professor/professor.php?atribuicao=<?= crip($atribuicao) ?>');void(0);">
                 <img src='<?= ICONS ?>/home.png'>
             </a>
         </div>
@@ -121,21 +121,21 @@ if ($_GET["atribuicao"]) {
         ?>
 
         <tr valign="top" align='center'>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/aula.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/aulas.png' /><br />Aulas</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/diario.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chamada.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/chamada.png' /><br />Lista de Chamada</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/aula.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/aulas.png' /><br />Aulas</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/diario.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chamada.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/chamada.png' /><br />Lista de Chamada</a></td>
             <?php
             if ($bimestreNome == "SEMESTRAL" || $bimestreNome == "1º BIMESTRE" || $bimestreNome == "ANUAL") {
                 ?>
-                <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/plano.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
+                <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/plano.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
                 <?php
             }
             ?>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/aviso.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos para Turma</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chat.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><div id="imageChat"><img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat (Atendimento)</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/ensalamento.php?turma=<?= crip($turmaCodigo) ?>&subturma=<?= crip($subturma) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/arquivo.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);"><img style='width: 70px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/aviso.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos para Turma</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chat.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><div id="imageChat"><img style='width: 70px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat (Atendimento)</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/ensalamento.php?turma=<?= crip($turmaCodigo) ?>&subturma=<?= crip($subturma) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/arquivo.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 70px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>
         </tr>
         <tr><td colspan="9"><hr></td></tr>
     </table>

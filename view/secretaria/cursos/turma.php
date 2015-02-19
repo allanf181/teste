@@ -39,7 +39,7 @@ $res = $turma->listTurmas($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($turma->listTurmas($params, $sqlAdicional, null, null));
 
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">

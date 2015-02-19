@@ -155,6 +155,6 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     <tr><td colspan="4">
             <input type="hidden" name="opcao" value="InsertOrUpdate" />
             <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
-                    <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td>
+                    <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
                 </tr></table>    
 </table>

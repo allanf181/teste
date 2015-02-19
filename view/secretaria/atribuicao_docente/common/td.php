@@ -139,7 +139,7 @@ if (dcrip($_GET["professor"])) {
         <td>
             <table width="100%">
                 <tr>
-                    <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a></td>
+                    <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Limpar</a></td>
                 </tr>
             </table>
         </td>
@@ -164,7 +164,7 @@ $res = $dados->listTDs($params, $sqlAdicional, null, null);
 $totalRegistros = count($dados->listTDs($params, $sqlAdicional, null, null));
 
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center" width="100%">
     <tr>

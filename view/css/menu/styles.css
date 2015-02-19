@@ -1,4 +1,16 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700);
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(JZKeOuBrn4kERxqtaUH3VtXRa8TVwTICgirnJhmVJw.woff2) format('woff2'), url(cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), url(k3k702ZOKiLJc3WVjuplzOgdm0LZdjqr5-oayXSOefg.woff2) format('woff2'), url(k3k702ZOKiLJc3WVjuplzHhCUOGz7vYGh680lGh-uXM.woff) format('woff');
+}
+
 #cssmenu,
 #cssmenu ul,
 #cssmenu ul li,
@@ -38,10 +50,6 @@
   background: -o-linear-gradient(top, #00913d 0%, #e1f2d0 150%);
   background: -ms-linear-gradient(top, #00913d 0%, #e1f2d0 150%);
   background: linear-gradient(to bottom, #00913d 0%, #e1f2d0 150%);
-}
-#cssmenu > ul {
-  background: url('images/bg.png');
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.05);
 }
 #cssmenu.align-right > ul > li {
   float: right;

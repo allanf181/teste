@@ -207,7 +207,7 @@ if (dcrip($_GET["bimestre"])) {
 
             if ($_SESSION['LINK']) {
                 ?>
-                <br><div style='margin: auto'><a href="javascript:$('#<?= $_SESSION['VOLTAR'] ?>').load('<?= $_SESSION['LINK'] ?>'); void(0);" title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
+                <br><div style='margin: auto'><a href="javascript:$('#<?= $_SESSION['VOLTAR'] ?>').load('<?= $_SESSION['LINK'] ?>');void(0);" title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
                 <?php
             }
             ?>

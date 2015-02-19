@@ -118,6 +118,12 @@ require SESSAO;
 </div>
 
 <script>
+    $(document).keypress(function (e) {
+        if (e.which == 13) {
+            $("#salvar").click();
+        }
+    });
+
     var load_data = null;
     clearInterval(interval1);
     var hasMessage = 0;
@@ -168,6 +174,8 @@ require SESSAO;
                 alert(err.statusText);
             });
         }
+        document.getElementById("conteudo").focus();
+
     });
 
     function monitor() {

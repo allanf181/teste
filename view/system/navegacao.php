@@ -20,7 +20,7 @@ if (isset($_GET["ordem"]))
                
                 if ($item!=$primeiro){
                 ?>
-                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $primeiro ?>&ordem=<?= $ordem ?>'); void(0);" title="primeiro"><img class="botao" src="<?= ICONS ?>/rewind.png" /></a>
+                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $primeiro ?>&ordem=<?= $ordem ?>');void(0);" title="primeiro"><img class="botao" src="<?= ICONS ?>/rewind.png" /></a>
                 <?php    
                 } else {
                 ?>
@@ -29,7 +29,7 @@ if (isset($_GET["ordem"]))
                 } // fecha o if
                 if ($item!=$anterior){
                 ?>
-                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $anterior ?>&ordem=<?= $ordem ?>'); void(0);" title="anterior"><img class="botao" src="<?= ICONS ?>/wleft.png" /></a>
+                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $anterior ?>&ordem=<?= $ordem ?>');void(0);" title="anterior"><img class="botao" src="<?= ICONS ?>/wleft.png" /></a>
                 <?php    
                 } else {
                 ?>
@@ -47,14 +47,14 @@ if (isset($_GET["ordem"]))
 	                    $size = ($pagina == $pagAtual) ?  4 : 2;
 	                    $pagina++;
 	                    //$pagina = str_pad($pagina, strlen(intval($ultimo/$itensPorPagina)), 0, STR_PAD_LEFT);
-	                	print "<font size=\"$size\"><a href=\"javascript:$('#index').load('$SITENAV&item=".($i+1)."&ordem=$ordem'); void(0);\" title=\"Página $pagina\">$pagina</a></font>\n";
+	                	print "<font size=\"$size\"><a href=\"javascript:$('#index').load('$SITENAV&item=".($i+1)."&ordem=$ordem');void(0);\" title=\"Página $pagina\">$pagina</a></font>\n";
 					}
                 }
                 // FIM DOS NUMEROS DE PAGINAS
                 
                 if ($item!=$proximo){
                 ?>
-                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $proximo ?>&ordem=<?= $ordem ?>'); void(0);" title="próximo"><img class="botao" src="<?= ICONS ?>/wright.png" /></a>
+                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $proximo ?>&ordem=<?= $ordem ?>');void(0);" title="próximo"><img class="botao" src="<?= ICONS ?>/wright.png" /></a>
                 <?php    
                 } else {
                 ?>
@@ -63,7 +63,7 @@ if (isset($_GET["ordem"]))
                 } // fecha o if
                 if ($item!=$ultimo){
                 ?>
-                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $ultimo ?>&ordem=<?= $ordem ?>'); void(0);" title="último"><img class="botao" src="<?= ICONS ?>/fastforward.png" /></a>
+                    <a class="nav" href="javascript:$('#index').load('<?= $SITENAV ?>&item=<?= $ultimo ?>&ordem=<?= $ordem ?>');void(0);" title="último"><img class="botao" src="<?= ICONS ?>/fastforward.png" /></a>
                 <?php    
                 } else {
                 ?>

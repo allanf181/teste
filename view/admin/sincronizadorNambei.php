@@ -54,7 +54,7 @@ $log = new Logs();
         </tr>
         <tr>
             <td colspan="3" align="center">
-                <a id="atualizar" href="javascript:$('#index').load('<?= $SITE ?>'); void(0);" title="Atualizar Resumos">
+                <a id="atualizar" href="javascript:$('#index').load('<?= $SITE ?>');void(0);" title="Atualizar Resumos">
                     <img class="botao" src="<?= ICONS ?>/sync.png" />
                 </a>
             </td>

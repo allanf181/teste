@@ -1,21 +1,11 @@
 <?php
-include_once "inc/config.inc.php";
+include_once "../../inc/config.inc.php";
 
 require VARIAVEIS;
 require FUNCOES;
+require SESSAO;
 
 $user = $_SESSION["loginCodigo"];
-
-require CONTROLLER . "/log.class.php";
-
-// GERANDO GRAFICO DE ACESSOS
-if ($_GET['opcao'] == 'grafico' && $_GET['relatorio'] == 'lastAccess') {
-    $log = new Logs();
-    print $log->getLOGINToJSON($user, 'acesso');
-    exit;
-}
-
-require SESSAO;
 
 // verifica se não está sendo chamado diretamente.
 if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
@@ -46,31 +36,56 @@ require CONTROLLER . "/atendimento.class.php";
 require CONTROLLER . "/coordenador.class.php";
 require CONTROLLER . "/ocorrencia.class.php";
 require CONTROLLER . "/chat.class.php";
+require CONTROLLER . "/log.class.php";
+require CONTROLLER . "/bolsa.class.php";
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 
 <table border="0" width='100%'>
     <tr>
-        <td colspan="2">
-            <font size="4"><b>WebDi&aacute;rio</b></font>
-            <br><a class="link" title='O que h&aacute; de novo...' href="javascript:$('#index').load('creditos.php'); void(0);">
-                <font size="1">Vers&atilde;o 1.<?= $VERSAO ?></font>
-            </a>
-        </td>
-        <td align="right">
-            <table border="0">
+        <td colspan="3">
+            <table border="0" width='100%'>
                 <tr>
                     <td>
+                        <font size="4"><b>WebDi&aacute;rio</b></font>
+                        <br><a class="link" title='O que h&aacute; de novo...' href="javascript:$('#index').load('<?= VIEW ?>/system/creditos.php');void(0);">
+                            <font size="1">Vers&atilde;o 1.<?= $VERSAO ?></font>
+                        </a>
+                    </td>
+                    <td width='162'>
                         <?php
-                        if (in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
-                            chat();
-                        }
+                        showLastAccess();
                         ?>
                     </td>
-                    <td width='20'>&nbsp;</td>                    
-                    <td>
-                        <a title='Clique aqui para enviar sugest&otilde;es ou reportar problemas' href="javascript:$('#index').load('<?= VIEW ?>/email.php'); void(0);">
+                    <?php
+                    if (in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
+                        ?>
+                        <td width='50'>&nbsp;</td>
+                        <td width='20'>
+                            <?php
+                            bolsa();
+                            ?>
+                        </td>
+                        <td width='20'>&nbsp;</td>
+                        <td width='20'>
+                            <?php
+                            chat();
+                            ?>
+                        </td>
+                        <?php
+                    }
+                    ?>
+                    <td width='20'>&nbsp;</td>
+                    <td width='20'>
+                        <?php
+                        // Informações de Senha
+                        senhaInfo();
+                        ?>
+                    </td>
+                    <td width='20'>&nbsp;</td>                  
+                    <td width='20'>
+                        <a title='Clique aqui para enviar sugest&otilde;es ou reportar problemas' href="javascript:$('#index').load('<?= VIEW ?>/system/email.php');void(0);">
                             <img style='width: 40px' src="<?= ICONS ?>/bug.png">
                         </a>
                     </td>
@@ -79,17 +94,12 @@ require CONTROLLER . "/chat.class.php";
         </td>
     </tr>
     <tr>
-        <td colspan="3">&nbsp;</td>
-    </tr>
-    <tr>
         <td colspan="2" valign="top">
             <?php
             // Mostra e altera a foto do usuário
             defineFoto();
             // Mostra e altera o Email
             defineEmail();
-            // Informações de Senha
-            senhaInfo();
 
             // Verifica se o aluno preencheu o sócioEconômico
             if (in_array($ALUNO, $_SESSION["loginTipo"])) {
@@ -106,6 +116,7 @@ require CONTROLLER . "/chat.class.php";
                 // Verifica se o coordenador tem trocas para validar
                 checkCoordHasCursoArea(0);
                 checkBloqueioFoto();
+                checkPapeis();
             }
 
             if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
@@ -151,10 +162,26 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     checaLibTD();
 }
 
-// MOSTRA AS ESTATISTICAS DOS ULTIMOS ACESSOS
-showLastAccess();
-
 ///////////////////////// FUNCOES ////////////////////////////////////
+function bolsa() {
+    global $ALUNO, $PROFESSOR;
+
+    $bolsa = new Bolsas();
+
+    if (in_array($ALUNO, $_SESSION["loginTipo"]))
+        $tipo = 'aluno';
+    if (in_array($PROFESSOR, $_SESSION["loginTipo"]))
+        $tipo = 'professor';
+
+    if ($message = $bolsa->checkBolsas($_SESSION['loginCodigo'], $tipo)) {
+        ?>
+        <a title='<?= $message ?>' href="javascript:$('#index').load('<?= VIEW ?>/secretaria/bolsas/bolsa.php');void(0);">
+            <img style='width: 40px' src='<?= IMAGES ?>/bolsa.png' />
+        </a>
+        <?php
+    }
+}
+
 function chat() {
     $chat = new Chat();
     $params = array(':prontuario' => $_SESSION['loginProntuario']);
@@ -170,13 +197,12 @@ function senhaInfo() {
     global $user;
 
     $pessoa = new Pessoas();
-// INFOS DE SENHA
+    // INFOS DE SENHA
     $res = $pessoa->infoPassword($user);
     if ($res['dataSenha']) {
         ?>
-        <br><br>
-        <a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);" title='Clique aqui para alterar sua senha!'>
-            &Uacute;ltima altera&ccedil;&atilde;o da senha: <?= formata($res['dataSenha']) ?>
+        <a href="javascript:$('#index').load('<?= VIEW ?>/system/senha.php?opcao=alterar');void(0);" title='&Uacute;ltima altera&ccedil;&atilde;o da senha: <?= formata($res['dataSenha']) ?><br>Clique aqui para alterar sua senha!'>
+            <img style='width: 40px' src='<?= IMAGES ?>/senha.png' />
         </a>
         <?php
     }
@@ -184,7 +210,7 @@ function senhaInfo() {
     if ($res['dias']) {
         if (($res['data'] >= $res['dias'])) {
             ?>
-            <br><br><p>Aten&ccedil;&atilde;o, sua sua est&aacute; expirada. <a href="javascript:$('#index').load('<?= VIEW ?>/senha.php?opcao=alterar'); void(0);">Clique aqui</a> e efetue a troca.
+            <br><br><p>Aten&ccedil;&atilde;o, sua sua est&aacute; expirada. <a href="javascript:$('#index').load('<?= VIEW ?>/system/senha.php?opcao=alterar');void(0);">Clique aqui</a> e efetue a troca.
                 <?php
             } else {
                 $diaAlteracao = $res['dias'] - $res['data'];
@@ -202,7 +228,7 @@ function defineFoto() {
 
     $pessoa = new Pessoas();
 
-// REMOVER FOTO
+    // REMOVER FOTO
     if (isset($_GET['removerFoto']))
         $pessoa->removeFoto($user);
 
@@ -264,7 +290,7 @@ function checkCoordHasCursoArea($coord) {
         $resp1 = "Aten&ccedil;&atilde;o Coordenador, sua &aacute;rea de atua&ccedil;&atilde;o n&atilde;o foi definida. Solicitar ao respons&aacute;vel o cadastro para acesso a FPA, PIT e RIT de seus professores.";
         $resp2 = "Aten&ccedil;&atilde;o Coordenador, seu curso de atua&ccedil;&atilde;o n&atilde;o foi definido. Solicitar ao respons&aacute;vel o cadastro para acesso aos Di&aacute;rios, Planos de Ensino/Aula, FPA, PIT e RIT de seus professores.";
     } else {
-        $link .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/secretaria/cursos/coordenador.php'); void(0);\">Clique aqui para definir</a>";
+        $link .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/secretaria/cursos/coordenador.php');void(0);\">Clique aqui para definir</a>";
         $resp1 = "Aten&ccedil;&atilde;o, as &aacute;reas de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidas. $link";
         $resp2 = "<br>Aten&ccedil;&atilde;o, os cursos de atua&ccedil;&atilde;o dos coordenadores n&atilde;o foram definidos. $link";
         print "<br />";
@@ -291,7 +317,7 @@ function checkBloqueioFoto() {
     if ($res) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, h&aacute; fotos de alunos bloqueadas aguardando valida&ccedil;&atilde;o.</font>
-        <br><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/pessoa.php?opcao=validacao'); void(0);">Clique aqui para validar</a>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/pessoa.php?opcao=validacao');void(0);">Clique aqui para validar</a>
         <?php
     }
 
@@ -310,11 +336,24 @@ function checkBloqueioFoto() {
     }
 }
 
+function checkPapeis() {
+    global $PAPEIS, $GED, $ADM, $SEC, $COORD, $ALUNO, $PROFESSOR, $SSP;
+
+    foreach ($PAPEIS as $p => $n) {
+        if (!$$p) {
+            ?>
+            <font size="2" color="red">Aten&ccedil;&atilde;o, o papel de <?= $n ?> n&atilde;o foi definido.</font>
+            <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php');void(0);">Clique aqui para definir</a>
+            <?php
+        }
+    }
+}
+
 function defineEmail() {
     global $user, $_GET;
 
     $pessoa = new Pessoas();
-// ALTERACAO DE EMAIL
+    // ALTERACAO DE EMAIL
     if (isset($_GET['email']) && $user) {
         if ($_GET['email'] == 'undefined')
             $_GET['email'] = null;
@@ -328,17 +367,17 @@ function defineEmail() {
 
     if (!$userDados[0]['email']) {
         ?>
-        <br>Email: <input type="text" size="60" maxlength="100" name="email" id="email" value="" />
+        <br>E-mail: <input type="text" size="40" maxlength="100" name="email" id="email" value="" />
         <img src="<?= ICONS ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
         <?php
     } else {
         ?>
-        <br>Email: <?= $userDados[0]['email'] ?></a>
+        <br>E-mail: <?= $userDados[0]['email'] ?></a>
         &nbsp;<img src="<?= ICONS ?>/remove.png" id="send-email" title='Remover Email' style="width: 15px; height: 15px">
         <?php
     }
     ?>
-    <br><font size="1">Mantenha seu email sempre atualizado para avisos e recupera&ccedil;&atilde;o de senha.</font>
+    <br><font size="1">E-mail utilizado para avisos e recupera&ccedil;&atilde;o de senha.</font>
     <?php
 }
 
@@ -349,14 +388,14 @@ function socioEconomico() {
     if ($nome = $aluno->hasSocioEconomico($user)) {
         ?>
         <br><br><font size="2" color="red">Ol&aacute; <?= $nome ?>, seu question&aacute;rio Socioecon&ocirc;mico est&aacute; incompleto.</font>
-        <br><a href="javascript:$('#index').load('<?= VIEW ?>/aluno/socioEconomico.php'); void(0);" title='Socioencon&ocirc;mico'>Clique aqui para responder</a>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/aluno/socioEconomico.php');void(0);" title='Socioencon&ocirc;mico'>Clique aqui para responder</a>
         <?php
     }
 }
 
 function checaSistema() {
     global $VERSAOAT, $VERSAO, $SITE_TITLE, $SITE_CIDADE, $DIGITANOTAS;
-// Checa a versão atual.
+    // Checa a versão atual.
     if (!$VERSAOAT || $VERSAO < $VERSAOAT) {
         if (updateDataBase()) {
             ?>
@@ -381,29 +420,29 @@ function checaSistema() {
         }
     }
 
-// Verifica se o CRON está sendo executado.
+    // Verifica se o CRON está sendo executado.
     $log = new Logs();
     if ($log->hasCronActive()) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: o script de sincroniza&ccedil;&atilde;o nunca foi executado ou n&atilde;o est&aacute; sendo executado diariamente.</font>
-        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/sincronizadorNambei.php'); void(0);">Clique aqui para verificar</a>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/sincronizadorNambei.php');void(0);">Clique aqui para verificar</a>
         <?php
     }
 
-// Verifica se o nome e cidade no sistema estão preenchidos.
+    // Verifica se o nome e cidade no sistema estão preenchidos.
     if (!$SITE_TITLE || !$SITE_CIDADE) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: nome da institui&ccedil;&atilde;o e a cidade devem ser preenchidos.</font>
-        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php'); void(0);">Clique aqui para preencher</a>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php');void(0);">Clique aqui para preencher</a>
         <?php
     }
 
-// Verifica se a sigla do campus foi preenchida
-// Utilizada pela DigitaNotas
+    // Verifica se a sigla do campus foi preenchida
+    // Utilizada pela DigitaNotas
     if (!$DIGITANOTAS) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: a sigla da institui&ccedil;&atilde;o deve ser preenchida para que as notas sejam exportadas automaticamente para o DigitaNotas.</font>
-        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php'); void(0);">Clique aqui para preencher</a>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/admin/instituicao.php');void(0);">Clique aqui para preencher</a>
         <?php
     }
 }
@@ -412,7 +451,7 @@ function defineLattes() {
     global $_GET, $user;
 
     $pessoa = new Pessoas();
-// ALTERACAO DO LATTES
+    // ALTERACAO DO LATTES
     if (isset($_GET['lattes'])) {
         if ($_GET['lattes'] == 'undefined')
             $_GET['lattes'] = null;
@@ -424,7 +463,7 @@ function defineLattes() {
     $userDados = $pessoa->listRegistros($params);
     if (!$userDados[0]['lattes']) {
         ?>
-        <br><br>Lattes: <input type="text" size="50" maxlength="200" name="lattes" id="lattes" value="" />
+        <br><br>Lattes: <input type="text" size="40" maxlength="200" name="lattes" id="lattes" value="" />
         <img src="<?= ICONS ?>/accept.png" id="send-lattes" style="width: 20px; height: 20px">
         <?php
     } else {
@@ -448,7 +487,7 @@ function checaTrocaAula() {
         foreach ($res as $reg) {
             ?>
             <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, voc&ecirc; tem uma solicita&ccedil;&atilde;o de troca de aula.</font>
-            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php'); void(0);">Clique aqui para analisar</a>
+            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php');void(0);">Clique aqui para analisar</a>
             <?php
         }
     }
@@ -457,7 +496,7 @@ function checaTrocaAula() {
 function checaTD() {
     global $user, $ANO, $SEMESTRE;
 
-// Verificando se há correções para a FPA, PIT e RIT
+    // Verificando se há correções para a FPA, PIT e RIT
     $tdDados = new TDDados();
     $sqlAdicional = ' AND f.pessoa = :cod ';
     $params = array(':cod' => $user);
@@ -466,7 +505,7 @@ function checaTD() {
         foreach ($res as $reg) {
             ?>
             <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em sua <?= $reg['modelo'] ?> (<?= $reg['semestre'] . '/' . $reg['ano'] ?>): <br><?= $reg['solicitacao'] ?></font>
-            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/<?= strtolower($reg['modelo']) ?>.php'); void(0);">Clique aqui para corrigir</a>
+            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/<?= strtolower($reg['modelo']) ?>.php');void(0);">Clique aqui para corrigir</a>
             <?php
         }
     }
@@ -476,7 +515,7 @@ function checaPlanoEnsino() {
     global $user;
 
     $plano = new PlanosEnsino();
-// Verificando se há correções para o Plano de Ensino.
+    // Verificando se há correções para o Plano de Ensino.
     $sqlAdicional = "AND pr.professor = :cod ";
     $params = array('cod' => $user);
     $res = $plano->hasChangePE($params, $sqlAdicional);
@@ -484,7 +523,7 @@ function checaPlanoEnsino() {
         foreach ($res as $reg) {
             ?>
             <br><br><font size="2" color="red">Aten&ccedil;&atilde;o: <?= $reg['solicitante'] ?>, solicitou corre&ccedil;&atilde;o em seu Plano de Ensino de <?= $reg['disciplina'] ?>: <br><?= $reg['solicitacao'] ?></font>
-            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/professor.php?atribuicao=<?= crip($reg['atribuicao']) ?>'); void(0);">Clique aqui para corrigir</a>
+            <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/professor.php?atribuicao=<?= crip($reg['atribuicao']) ?>');void(0);">Clique aqui para corrigir</a>
             <?php
         }
     }
@@ -494,14 +533,14 @@ function checaAtendimentoAluno() {
     global $user, $ANO, $SEMESTRE;
 
     $atendimento = new Atendimento();
-// Verificando se o professor digitou o horário de atendimento ao aluno.
+    // Verificando se o professor digitou o horário de atendimento ao aluno.
     $sqlAdicional = ' WHERE pessoa = :pessoa AND ano = :ano AND semestre = :semestre ';
     $params = array('pessoa' => $user, 'ano' => $ANO, 'semestre' => $SEMESTRE);
     $res = $atendimento->listRegistros($params, $sqlAdicional, null, null);
     if (!$res || !$res[0]['horario']) {
         ?>
         <br><br><font size="2" color="red">Aten&ccedil;&atilde;o, digite seu hor&aacute;rio de atendimento para divulga&ccedil;&atilde;o aos alunos. </font>
-        <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/atendimento.php'); void(0);">Clique aqui para digitar</a>
+        <br><a href="javascript:$('#index').load('<?= VIEW ?>/professor/atribuicao/atendimento.php');void(0);">Clique aqui para digitar</a>
         <?php
     }
 }
@@ -509,25 +548,33 @@ function checaAtendimentoAluno() {
 function avisos() {
     global $user;
 
-// SISTEMA DE AVISOS
+    // SISTEMA DE AVISOS
     $aviso = new Avisos();
     $res = $aviso->getAvisoGeral($user);
-    if ($res) {
-        ?>
-        <td width="300" valign="top">
+    ?>
+    <td width="300" valign="top">
+        <?php
+        if ($res) {
+            ?>
             <div style="width: 400px; height: 400px; overflow-y: scroll;">
                 <table border="0" id="form" width="100%">
-                    <tr><td colspan="2">Avisos Gerais</td></tr>
+                    <tr>
+                        <td colspan="2">Avisos Gerais</td>
+                    </tr>
                     <?php
                     foreach ($res as $reg) {
                         list($codigo, $nome) = @explode('#', $reg['Pessoa']);
                         $disc = ($reg['disciplina']) ? " - " . $reg['disciplina'] : "";
                         ?>
-                        <tr><td colspan="2"><h2><?= $nome ?></h2></td></tr>
-                        <tr><td valign="top" width="50">
+                        <tr>
+                            <td colspan="2"><h2><?= $nome ?></h2></td>
+                        </tr>
+                        <tr>
+                            <td valign="top" width="50">
                                 <img alt="foto" style="width: 50px; height: 50px" src="<?= INC ?>/file.inc.php?type=pic&id=<?= crip($codigo) ?>" />
                             </td>
-                            <td valign="top"><font size='1'><?= $reg['Data'] . $disc ?></font><br><?= $reg['Conteudo'] ?></a>
+                            <td valign="top">
+                                <font size='1'><?= $reg['Data'] . $disc ?></font><br><?= $reg['Conteudo'] ?></a>
                             </td>
                         </tr>
                         <?php
@@ -535,16 +582,18 @@ function avisos() {
                     ?>
                 </table>
             </div>
-        </td>
-        <?php
-    }
+            <?php
+        }
+        ?>
+    </td>
+    <?php
 }
 
 function listaTrocaAula() {
     global $PROFESSOR, $ALUNO, $_SESSION;
 
     if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
-// Verificando se o Professor tem aulas trocadas vigentes
+        // Verificando se o Professor tem aulas trocadas vigentes
         $params = array('professor' => $_SESSION['loginCodigo']);
         $sqlAdicional = " AND (professor = :professor OR professorSub = :professor) "
                 . " AND coordenadorAceite = 'S' "
@@ -552,7 +601,7 @@ function listaTrocaAula() {
     }
 
     if (in_array($ALUNO, $_SESSION["loginTipo"])) {
-// Verificando se o Aluno tem aulas trocadas vigentes
+        // Verificando se o Aluno tem aulas trocadas vigentes
         $params = array('aluno' => $_SESSION['loginCodigo']);
         $sqlAdicional = " AND atribuicao IN (SELECT atribuicao FROM Matriculas WHERE aluno = :aluno) "
                 . " AND coordenadorAceite = 'S' "
@@ -598,7 +647,7 @@ function listaTrocaCoord() {
 
     $_SESSION['regAnterior'] = null;
 
-// Verificando Troca de Aulas
+    // Verificando Troca de Aulas
     $aulaTroca = new AulasTrocas();
 
     $params = array('coord' => $_SESSION['loginCodigo']);
@@ -632,7 +681,7 @@ function listaTrocaCoord() {
                     <td width='120'><a href='#' title='<?= $reg['curso'] ?>'><?= $reg['disciplina'] ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['motivo'] ?></a></td>
                     <td><?= $reg['dataPedido'] ?></td>
-                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php'); void(0);" title='Clique aqui para analisar'>
+                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/professor/aulaTroca.php');void(0);" title='Clique aqui para analisar'>
                             <?= $reg['dataTrocaFormatada'] ?></a>
                     </td>                    
                 </tr>
@@ -679,7 +728,7 @@ function checaLibDiario() {
                     <td width='120'><a href='#' title='<?= $reg['curso'] . '<br>' . $reg['disciplina'] ?>'><?= abreviar($reg['disciplina'], 30) ?></a></td>
                     <td><a href='#' title='<?= $title ?>'><?= $reg['solicitacao'] ?></a></td>
                     <td><?= $reg['dataSolicitacao'] ?></td>
-                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codPessoa']) ?>'); void(0);" title='Clique aqui para liberar'>
+                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/prazos/diario.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codPessoa']) ?>');void(0);" title='Clique aqui para liberar'>
                             Liberar</a>
                     </td>                    
                 </tr>
@@ -723,7 +772,7 @@ function checaLibPlanoEnsino() {
                     <td><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1) ?></td>
                     <td><?= $reg['disciplina'] . $reg['subturma'] ?></td>
                     <td>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/plano.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codProfessor']) ?>'); void(0);" title='Clique aqui para validar'>
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/plano.php?curso=<?= crip($reg['codCurso']) ?>&turma=<?= crip($reg['codTurma']) ?>&professor=<?= crip($reg['codProfessor']) ?>');void(0);" title='Clique aqui para validar'>
                             Validar
                         </a>
                     </td>
@@ -766,7 +815,7 @@ function checaLibTD() {
                     <td><?= $reg['modelo'] ?></td>
                     <td><?= $reg['semestre'] . '/' . $reg['ano'] ?></td>
                     <td>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?= crip($reg['pessoa']) ?>'); void(0);">
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?= crip($reg['pessoa']) ?>');void(0);">
                             Validar
                         </a>
                     </td>
@@ -812,7 +861,7 @@ function checkOcorrencia() {
                     <td><?= $reg['data'] ?></td>
                     <td>&nbsp;<a href="#" title="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 70) ?></a></td>
                     <td>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/ocorrencia.php?aluno=<?= crip($reg['codAluno']) ?>'); void(0);" title='Clique aqui para validar'>
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/ocorrencia.php?aluno=<?= crip($reg['codAluno']) ?>');void(0);" title='Clique aqui para validar'>
                             Visualizar
                         </a>
                     </td>
@@ -827,93 +876,52 @@ function checkOcorrencia() {
 }
 
 function showLastAccess() {
+    global $user;
+
+    $log = new Logs();
     ?>
-    <br />
-    <br />
-    <hr />
-    <div id="container" style="position: static; min-width: 310px; height: 300px; margin: 0 auto"></div>
-    <script src="<?= VIEW ?>/js/highcharts/highcharts.js" type="text/javascript"></script>
-    <script src="<?= VIEW ?>/js/highcharts/exporting.js" type="text/javascript"></script>
-
-    <script>
-        var options = {
-            chart: {
-                type: 'column',
-            },
-            credits: {
-                enabled: false
-            },
-            title: {},
-            xAxis: {
-                categories: [{}],
-                title: {},
-            },
-            yAxis: {
-                title: {},
-            },
-            tooltip: {
-                formatter: function () {
-                    var s = '<b>' + this.x + '</b>';
-
-                    $.each(this.points, function (i, point) {
-                        s += '<br/>' + point.series.name + ': ' + point.y;
-                    });
-
-                    return s;
-                },
-                shared: true
-            },
-            series: [{}]
-        };
-
-        $.ajax({
-            url: "home.php?opcao=grafico&relatorio=lastAccess",
-            data: 'show=impression',
-            type: 'post',
-            dataType: "json",
-            success: function (data) {
-                options.xAxis.categories = data.item1;
-                options.series[0].name = data.item2Name;
-                options.series[0].data = data.item2;
-                options.title.text = data.title;
-                options.xAxis.title.text = data.titleX;
-                options.yAxis.title.text = data.titleY;
-                $('#container').highcharts(options);
-            }
-        });
-    </script>
+    <font size="1"><b><?= $log->getLastAccess($user) ?></b><font>
     <?php
 }
 ?>
 <script>
     $(document).ready(function () {
+        $(document).keypress(function (e) {
+            if (e.which == 13) {
+                if ($('#email').val())
+                    $('#send-email').click();
+                if ($('#lattes').val())
+                    $('#send-lattes').click();
+            }
+        });
+
         $('#send-lattes').click(function () {
             var lattes = encodeURIComponent($('#lattes').val());
-            $('#index').load('home.php?lattes=' + lattes);
+            $('#index').load('<?= VIEW ?>/system/home.php?lattes=' + lattes);
         });
         $('#send-email').click(function () {
             var email = encodeURIComponent($('#email').val());
-            $('#index').load('home.php?email=' + email);
+            $('#index').load('<?= VIEW ?>/system/home.php?email=' + email);
         });
 
         $('#remover-foto').click(function () {
-            $('#index').load('home.php?removerFoto=<?= crip($user) ?>');
+            $('#index').load('<?= VIEW ?>/system/home.php?removerFoto=<?= crip($user) ?>');
 
-        });
+                    });
 
-        $('#adiciona-foto').click(function () {
-            new $.Zebra_Dialog('<strong>Recorte a foto, se desejar.</strong>', {
-                source: {'iframe': {
-                        'src': '<?= VIEW ?>/trocaFoto.php',
-                        'height': 350
-                    }
-                },
-                width: 500,
-                title: 'Troque a Foto',
-                onClose: function () {
-                    $('#index').load('home.php');
-                }
-            });
-        });
-    });
+                    $('#adiciona-foto').click(function () {
+                        new $.Zebra_Dialog('<strong>Recorte a foto, se desejar.</strong>', {
+                            source: {'iframe': {
+                                    'src': '<?= VIEW ?>/system/trocaFoto.php',
+                                    'height': 350
+                                }
+                            },
+                            width: 500,
+                            title: 'Troque a Foto',
+                            onClose: function () {
+                                $('#index').load('<?= VIEW ?>/system/home.php');
+                            }
+                        });
+                    });
+                });
 </script>

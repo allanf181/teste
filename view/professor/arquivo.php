@@ -45,8 +45,8 @@ $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
 <ul class="tabs">
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=inserir'); void(0);">Inserir Material</a></li>
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=copiar'); void(0);">Copiar Material</a></li>
+    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=inserir');void(0);">Inserir Material</a></li>
+    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=copiar');void(0);">Copiar Material</a></li>
 </ul>
 <div class="tab_container" id="form">
     <?php
@@ -136,8 +136,6 @@ if ($_GET['pagina'] == "inserir") {
     $max_file = ini_get('upload_max_filesize') * 1024 * 1024;
     print "Tamanho m&aacute;ximo do arquivo: " . ini_get('upload_max_filesize') . "<br>";
     ?>
-
-    <script type="text/javascript" src="js/jquery.form.min.js"></script>
     <script type="text/javascript">
             $(document).ready(function() {
 
@@ -237,7 +235,7 @@ if ($_GET['pagina'] == "inserir") {
 
             </table>
             <table width="100%"><tr><td><input type="submit" id="salvar" value="Salvar" /></td>
-                    <td><a href="javascript:$('#professor').load('<?= "$SITE?pagina=inserir&atribuicao=$atribuicao"; ?>'); void(0);">Novo/Limpar</a></td>
+                    <td><a href="javascript:$('#professor').load('<?= "$SITE?pagina=inserir&atribuicao=$atribuicao"; ?>');void(0);">Novo/Limpar</a></td>
                 </tr></table>	
             <br>
         </form>

@@ -128,7 +128,7 @@ if ($_SESSION['dataExpirou'])
                     <td><a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot nav' title='<?= mostraTexto($reg['aluno']) ?>'>
                             <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' />
                         </a>
-                        <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>'); void(0);"><?= mostraTexto($reg['aluno']) ?></a>
+                        <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>');void(0);"><?= mostraTexto($reg['aluno']) ?></a>
                     </td>
                     <td align='center'>
                         <?php
@@ -224,7 +224,7 @@ if ($_SESSION['dataExpirou'])
 
 <br>
 <div style='margin: auto'>
-    <a href="javascript:$('#professor').load('<?= VIEW ?>/professor/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='voltar' title='Voltar' >
+    <a href="javascript:$('#professor').load('<?= VIEW ?>/professor/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>');void(0);" class='voltar' title='Voltar' >
         <img class='botao' src='<?= ICONS ?>/left.png'/>
     </a>
 </div>

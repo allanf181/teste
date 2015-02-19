@@ -49,31 +49,22 @@ class Logs extends Generic {
 
     // LISTA OS LOGS ANTERIORES
     // USADO POR: HOME.PHP
-    public function getLOGINToJSON($pessoa) {
+    public function getLastAccess($pessoa) {
         $bd = new database();
 
-        $sql = "SELECT COUNT(*) as total, url, "
-                . "(SELECT date_format(data, '%d/%m/%Y às %H:%i') FROM Logs WHERE pessoa = :pessoa ORDER BY data DESC LIMIT 1,1) as last "
+        $sql = "SELECT date_format(data, '%d/%m/%Y às %H:%i') as data "
                 . "FROM Logs "
                 . "WHERE ORIGEM = 'LOGIN' "
                 . "AND pessoa = :pessoa "
-                . "GROUP BY url LIMIT 20";
+                . "ORDER BY data DESC LIMIT 1";
 
         $params = array('pessoa' => $pessoa);
         $res = $bd->selectDB($sql, $params);
 
-        if ($res) {
-            foreach ($res as $reg) {
-                $item1[] = $reg['url'];
-                $item2[] = intval($reg['total']);
-            }
-        }
-
-        $graph_data = array('item1Name' => 'Data', 'item1' => $item1,
-            'item2Name' => 'Acessos', 'item2' => $item2,
-            'title' => 'Seus Acessos (por IP)', 'titleY' => 'Quantidade', 'titleX' => 'Último acesso: '.$res[0]['last']);
-
-        return json_encode($graph_data);
+        if ($res)
+            return '&Uacute;ltimo acesso: <br> '.$res[0]['data'];
+        else
+            return 'Primeiro acesso.';
     }
 
 }

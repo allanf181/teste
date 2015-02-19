@@ -53,7 +53,7 @@ $res = $ftd->listFTDs($params, $item, $itensPorPagina, $sqlAdicional);
 $totalRegistros = count($ftd->listFTDs($params, null, null, $sqlAdicional));
 
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center" width="100%">
     <tr><th align="center" width="40">#</th><th>Professor</th><th>Entregue</th>

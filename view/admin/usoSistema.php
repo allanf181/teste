@@ -12,9 +12,6 @@ require FUNCOES;
 require PERMISSAO;
 require SESSAO;
 ?>
-<script src="<?= VIEW ?>/js/highcharts/highcharts.js" type="text/javascript"></script>
-<script src="<?= VIEW ?>/js/highcharts/exporting.js" type="text/javascript"></script>
-
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 
@@ -85,7 +82,7 @@ $res = $atribuicao->getDadosUsoSistema($params, null, $item, $itensPorPagina);
 $totalRegistros = count($atribuicao->getDadosUsoSistema($params, null, null, null));
 
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center">
     <tr>

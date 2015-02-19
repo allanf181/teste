@@ -40,11 +40,11 @@ if ($_POST) {
     $_POST['ano'] = dcrip($_POST['pano']);
 
     $_GET['pano'] = $_POST['pano'];
-    $_GET['psemestre'] = $_POST['psemestre'];    
+    $_GET['psemestre'] = $_POST['psemestre'];
     unset($_POST['pano']);
     unset($_POST['psemestre']);
 
-    if(!$_POST['regime'] || !$_POST['duracaoAula'] || !$_POST['area']) {
+    if (!$_POST['regime'] || !$_POST['duracaoAula'] || !$_POST['area']) {
         mensagem('NOK', 'EMPTY_REG');
     } else {
         $ret = $dados->insertOrUpdateFPA($_POST);
@@ -477,7 +477,7 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="atividade ui-widget" <?= $disabled ?> type="text" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
+                                <th><input class="atividade ui-widget" <?= $disabled ?> type="text" onclick="return valores('AtvD<?= $t ?>');" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
                                 <th><input class="atividade" <?= $disabled ?> type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
@@ -558,7 +558,7 @@ if ($VALIDO)
     var totalHoras = 0;
     callFunction();
     calcIntervalo();
-    
+
     function calcComponente() {
         total = 0;
         if ($("input[id=duracaoAula]:radio:checked").val()) {
@@ -726,7 +726,7 @@ if ($VALIDO)
             return false;
         }
     });
-        
+
     $("input:text,.componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
         callFunction();
     });
@@ -825,7 +825,7 @@ if ($VALIDO)
         return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
     }
 
-    $(function () {
+    function valores(campo) {
         var availableTags = [
             "Atendimento ao aluno",
             "Atendimento do NDE",
@@ -836,8 +836,8 @@ if ($VALIDO)
             "Supervisão ou orientação de estágio",
             "Supervisão ou orientação de trabalhos acadêmicos"
         ];
-        $("input:[id^=AtvD]").autocomplete({
+        $("#" + campo).autocomplete({
             source: availableTags
         });
-    });
+    }
 </script>

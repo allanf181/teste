@@ -5,9 +5,14 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //0
 
-require '../inc/config.inc.php';
+require '../../inc/config.inc.php';
 require VARIAVEIS;
-    
+
+// verifica se não está sendo chamado diretamente.
+if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
+    header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
+}
+
 @session_unset($_SESSION_NAME);
 @session_destroy($_SESSION_NAME); 
 

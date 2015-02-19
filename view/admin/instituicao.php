@@ -156,6 +156,18 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                                 ?>
                             </select>
                         </td></tr>
+                    <tr><td align="left">Servi&ccedil;o Sociopedag&oacute;gico: </td><td><select name="ssp" value="<?= $ssp ?>">
+                                <option></option>
+                                <?php
+                                foreach ($res as $reg) {
+                                    $selected = "";
+                                    if ($reg['codigo'] == $ssp)
+                                        $selected = "selected";
+                                    echo "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </td></tr>                     
                     <tr><td></td><td>
                         </td></tr>
                 </table>
@@ -186,6 +198,11 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                     <tr><td colspan="2"><h3><b>Senha</b></h3></td></tr>
                     <tr><td>Altera&ccedil;&atilde;o de senha: </td><td><input style="width: 50px" type="text" name="diasAlterarSenha" id="diasAlterarSenha" value="<?= $diasAlterarSenha ?>" maxlength="3" />
                             Limite de dias para altera&ccedil;&atilde;o de senha. <br>(Deixar 0 para desabilitar)</td></tr>
+                    <tr><td colspan="2"><hr></td></tr>
+
+                    <tr><td colspan="2"><h3><b>Link Externo para<br> Recupera&ccedil;&atilde;o de Senha</b></h3></td></tr>
+                    <tr><td colspan="2">Aten&ccedil;&atilde;o, quando informado um link externo, o usu&aacute;rio ao clicar em "Recuperar Senha" na tela inicial, ser&aacute; redirecionado para o link aqui informado.<br /><br /></td></tr>
+                    <tr><td>Link Externo: </td><td><input type="text" name="link_recuperar_senha" size="60" maxlength="255" id="link_recuperar_senha" value="<?= $link_recuperar_senha ?>" /></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
 
                     <tr><td colspan="2"><h3><b>Recupera&ccedil;&atilde;o de Senha</b></h3></td></tr>
@@ -233,24 +250,24 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
     </form>
 
     <script>
-        function valida() {
-            if ($('#limiteInsAulaProf').val() > 5) {
-                $('#limiteInsAulaProf').val('5');
-            }
-
-            if ($('#nome').val() == "") {
-                $('#salvar').attr('disabled', 'disabled');
-            } else {
-                $('#salvar').enable();
-            }
+    function valida() {
+        if ($('#limiteInsAulaProf').val() > 5) {
+            $('#limiteInsAulaProf').val('5');
         }
 
-        $(document).ready(function () {
+        if ($('#nome').val() == "") {
+            $('#salvar').attr('disabled', 'disabled');
+        } else {
+            $('#salvar').removeAttr('disabled');
+        }
+    }
+
+    $(document).ready(function () {
+        valida();
+        $('#nome,#limiteInsAulaProf').change(function () {
             valida();
-            $('#nome,#limiteInsAulaProf').change(function () {
-                valida();
-            });
         });
+    });
 
     </script>
 </script>

@@ -72,7 +72,7 @@ if (dcrip($_GET["turma"])) {
                         <tr>
                             <td>&nbsp;</td>
                             <td align="right">
-                                <a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Limpar</a>
+                                <a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Limpar</a>
                             </td>
                         </tr>
                     </table>
@@ -99,7 +99,7 @@ $totalRegistros = count($professor->getProfessoresByTurma($params, $sqlAdicional
 $params['turma'] = crip($params['turma']);
 
 $SITENAV = $SITE . '?' . mapURL($params);
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 <table id="listagem" border="0" align="center">
     <tr>

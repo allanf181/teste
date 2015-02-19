@@ -31,7 +31,7 @@ $situacoes = new Situacoes();
 
     $totalRegistros = $situacoes->count();
     $SITENAV = $SITE . '?';
-    require PATH . VIEW . '/paginacao.php';
+    require PATH . VIEW . '/system/paginacao.php';
     ?>
 
     <table id="listagem" border="0" align="center">

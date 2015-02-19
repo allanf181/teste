@@ -21,19 +21,19 @@ if ((!$_GET['opcao'] && !$_POST["opcao"]) || $_GET["menu"]) {
         <table width="90%" align="center" border="0">
             <tr>
                 <td valign="top" align="center" width="90">
-                    <a class='nav professores_item' href="javascript:$('#troca').load('<?= VIEW ?>/professor/aulaTroca.php?opcao=getTroca'); void(0);">
+                    <a class='nav professores_item' href="javascript:$('#troca').load('<?= VIEW ?>/professor/aulaTroca.php?opcao=getTroca');void(0);">
                         <img style='width: 80px' src='<?= IMAGES; ?>/trocaaula.png' />
                         <br />Solicitar Troca/Reposi&ccedil;&atilde;o
                     </a>
                 </td>
                 <td valign="top" align="center" width="90">
-                    <a class='nav professores_item' href="javascript:$('#troca').load('<?= VIEW ?>/professor/aulaTroca.php?opcao=pendente'); void(0);">
+                    <a class='nav professores_item' href="javascript:$('#troca').load('<?= VIEW ?>/professor/aulaTroca.php?opcao=pendente');void(0);">
                         <img style='width: 80px' src='<?= IMAGES; ?>/trocapendencia.png' />
                         <br />Trocas Solicitadas para Voc&ecirc;
                     </a>
                 </td>
                 <td valign="top" align="center" width="90">
-                    <a class='nav professores_item' href="javascript:$('#troca').load('<?= VIEW ?>/professor/aulaTroca.php?opcao=listTroca'); void(0);">
+                    <a class='nav professores_item' href="javascript:$('#troca').load('<?= VIEW ?>/professor/aulaTroca.php?opcao=listTroca');void(0);">
                         <img style='width: 80px' src='<?= IMAGES; ?>/trocas.png' />
                         <br />Trocas/Reposi&ccedil;&otilde;es que Voc&ecirc; Solicitou
                     </a>
@@ -42,7 +42,7 @@ if ((!$_GET['opcao'] && !$_POST["opcao"]) || $_GET["menu"]) {
                 if (in_array($COORD, $_SESSION["loginTipo"])) {
                     ?>
                     <td valign="top" align="center" width="90">
-                        <a class='nav professores_item' href="javascript:$('#troca').load('<?= VIEW ?>/professor/aulaTroca.php?opcao=validacao'); void(0);">
+                        <a class='nav professores_item' href="javascript:$('#troca').load('<?= VIEW ?>/professor/aulaTroca.php?opcao=validacao');void(0);">
                             <img style='width: 80px' src='<?= IMAGES; ?>/validacao.png' />
                             <br />Valida&ccedil;&atilde;o de Trocas
                         </a>
@@ -475,7 +475,7 @@ if (in_array($COORD, $_SESSION["loginTipo"]) && !$_GET['opcao']) {
     valida();
     function valida() {
         if ($('#data').val() != "" && $('#conteudo').val() != "" && $('#quantidade').val() != "")
-            $('#salvar').enable();
+            $('#salvar').removeAttr('disabled');
         else
             $('#salvar').attr('disabled', 'disabled');
     }

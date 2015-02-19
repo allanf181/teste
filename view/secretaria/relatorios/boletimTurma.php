@@ -276,7 +276,7 @@ if ($turma && $fechamento) {
                         if ($bimestre != 'final' && $fechamento == 'b')
                             $bimestreLink = '&bimestre=' . crip($bimestre);
                         ?>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/relatorios/boletim.php?aluno=<?= crip($c) ?>&turma=<?= crip($turma) . $bimestreLink ?>'); void(0);"><?= mostraTexto($nome) ?></a>
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/relatorios/boletim.php?aluno=<?= crip($c) ?>&turma=<?= crip($turma) . $bimestreLink ?>');void(0);"><?= mostraTexto($nome) ?></a>
                     </td>
                     <?php
                     foreach ($disciplinas as $dCodigo => $dMatricula) {
@@ -414,7 +414,7 @@ $_SESSION['LINK'] = VIEW . "/secretaria/relatorios/boletimTurma.php?turma=" . cr
                 $('#wrap').css('background', null);
                 $('#wrap').css('width', '1024px');
                 $('body').css('background', '#e1f2d0 url(<?= IMAGES; ?>/bg.jpg) repeat-y top center');
-                $('.right').css('width', '794px');
+                $('.right').css('width', '95%');
                 $('#maximizar').text(textoLink);
                 $('#titulo').css('width', '100%');
                 $('.alunoNome').hide('fast');

@@ -138,7 +138,7 @@ if ($_GET['opcao'] == 'insert') {
             </table>
         </form>
     </div>
-    <br><div style='margin: auto'><a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='voltar' title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
+    <br><div style='margin: auto'><a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>');void(0);" class='voltar' title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
     <?php
 }
 if ($_GET['opcao'] == '') {
@@ -161,7 +161,7 @@ if ($_GET['opcao'] == '') {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?= $cdif ?>><td><?= $i-- ?></td>
-                    <td><a class='nav' title='Clique aqui para lan&ccedil;ar as faltas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/frequencia.php?atribuicao=<?= crip($atribuicao) ?>&aula=<?= crip($reg['codigo']) ?>'); void(0);"><?= $reg['data_formatada'] ?></a></td>
+                    <td><a class='nav' title='Clique aqui para lan&ccedil;ar as faltas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/frequencia.php?atribuicao=<?= crip($atribuicao) ?>&aula=<?= crip($reg['codigo']) ?>');void(0);"><?= $reg['data_formatada'] ?></a></td>
                     <td><?= $reg['quantidade'] ?></td><td><?= htmlspecialchars($reg['conteudo']) ?></td>
                     <?php
                     if ($_SESSION['dataExpirou']) {
@@ -171,7 +171,7 @@ if ($_GET['opcao'] == '') {
                     } else {
                         ?>
                         <td align='center' width="20"><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
-                            <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&atribuicao=<?= crip($atribuicao) ?>'); void(0);" class='nav' title='Alterar'>
+                            <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&atribuicao=<?= crip($atribuicao) ?>');void(0);" class='nav' title='Alterar'>
                                 <img class='botao' src='<?= ICONS ?>/config.png' />
                             </a>
                         </td>
@@ -186,7 +186,7 @@ if ($_GET['opcao'] == '') {
     <center>    
         <?php if (!$_SESSION['dataExpirou']) {
             ?>
-            <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>'); void(0);" title="Cadastrar Nova">
+            <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>');void(0);" title="Cadastrar Nova">
                 <img class='botao' src='<?= ICONS ?>/add.png' /></a>
             <?php
         } else {
@@ -231,7 +231,7 @@ print "</script>\n";
     valida();
     function valida() {
         if ($('#data').val() != "" && $('#conteudo').val() != "" && $('#quantidade').val() != "")
-            $('#salvar').enable();
+            $('#salvar').removeAttr('disabled');
         else
             $('#salvar').attr('disabled', 'disabled');
     }

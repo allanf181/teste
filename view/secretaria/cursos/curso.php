@@ -77,7 +77,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <tr>
                             <td><input type="submit" value="Salvar" id="salvar" class="submit" /></td>
                             <td><input type="reset" value="Limpar" id="salvar" class="submit" onclick="javascript:$('#index').load('<?= $SITE ?>');
-                                            void(0);"></td>
+                                           void(0);"></td>
                         </tr>
                     </table>
                 </td>
@@ -97,7 +97,7 @@ if (isset($_GET['item']))
 $res = $cursos->listCursos($params, null, $item, $itensPorPagina);
 $totalRegistros = count($res = $cursos->listCursos($params, null, null, null));
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">

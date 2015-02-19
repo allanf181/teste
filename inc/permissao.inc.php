@@ -27,8 +27,8 @@ if (isset($_SESSION["loginTipo"])) {
 } else {
     print "<script type=\"text/javascript\">\n ";
     print "    $(document).ready(function() { \n";
-    print "     $('#menuEsquerdo').load('view/login.php'); \n";
-    print "     $('#index').load('home.php'); \n";
+    print "     $('#menuEsquerdo').load('". VIEW ."/login.php'); \n";
+    print "     $('#index').load('". VIEW ."/system/home.php'); \n";
     print "    }); \n";
     print " </script>\n";
   die;

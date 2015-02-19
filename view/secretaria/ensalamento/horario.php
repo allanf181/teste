@@ -36,7 +36,7 @@ $res = $horario->listRegistros($params, null, $item, $itensPorPagina);
 
 $totalRegistros = $horario->count();
 $SITENAV = $SITE . '?';
-require PATH . VIEW . '/paginacao.php';
+require PATH . VIEW . '/system/paginacao.php';
 ?>
 
 <table id="listagem" border="0" align="center">
