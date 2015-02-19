@@ -91,7 +91,7 @@ if ($_GET["opcao"] == 'recuperarPorChave') {
 
 if ($_GET["opcao"] == 'alterar') {
     print "<h2>Altera&ccedil;&atilde;o de Senha</h2>\n";
-    $prontuario = $_SESSION["loginProntuario"];
+    $prontuario = base64_encode($_SESSION["loginProntuario"]);
 
     $data = "mais de $diasAlterarSenha dias";
     if ($_SESSION["loginDataSenha"] != "0000-00-00 00:00:00")
