@@ -154,6 +154,7 @@ class Chat extends Generic {
                 )
                 OR (origem = :origem)
                 )
+            AND origem <> ''
             GROUP BY p.prontuario 
             ORDER BY p.nome";
 
