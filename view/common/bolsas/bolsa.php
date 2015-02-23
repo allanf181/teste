@@ -1,16 +1,17 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Cadastro de bolsas de ensino.
+//
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
-//1
+//0
 
-require '../../../inc/config.inc.php';
-require VARIAVEIS;
-require MENSAGENS;
-require FUNCOES;
-require PERMISSAO;
-require SESSAO;
+$SITE_RAIZ = end(explode('/', $_SESSION['SITE_RAIZ']));
+$PHP_SELF = substr(end(explode('/', $_SERVER['PHP_SELF'])), 0, strlen(end($SITE_RAIZ))-4).'.php';
+
+if (!$SITE_RAIZ || $SITE_RAIZ =! $PHP_SELF) {
+    print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
+    die;
+}
 
 require CONTROLLER . "/bolsa.class.php";
 $bolsa = new Bolsas();
@@ -53,7 +54,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?= $SITE ?>',
+        action: '<?= $_SESSION['SITE_RAIZ'] ?>',
         responseDiv: '#index',
         colorOn: '#000',
         colorOff: '#999',
@@ -178,10 +179,10 @@ require PATH . VIEW . '/system/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
-            <td><a href="#" title="<?= $reg['titulo'] ?>"><?= abreviar(mostraTexto($reg['titulo']), 30) ?></a></td>
-            <td><a href="#" title="<?= $reg['professor'] ?>"><?= abreviar(mostraTexto($reg['professor']), 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['titulo'] ?>' title="T&iacute;tulo"><?= abreviar(mostraTexto($reg['titulo']), 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['professor'] ?>' title="Professor"><?= abreviar(mostraTexto($reg['professor']), 30) ?></a></td>
             <td><?= $reg['duracao'] ?></td>
-            <td><a href="#" title="<?= $reg['observacao'] ?>"><?= abreviar(mostraTexto($reg['observacao']), 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['observacao'] ?>' title="Observa&ccedil;&atilde;o"><?= abreviar(mostraTexto($reg['observacao']), 30) ?></a></td>
             <td>
                 &nbsp;
                 <?php
@@ -194,7 +195,7 @@ require PATH . VIEW . '/system/paginacao.php';
                     <?php
                 }
                 ?>
-                <a href='#' class='item-print' id='<?= crip($reg['codigo']) ?>' title='Imprimir Relat&oacute;rio'>
+                <a href='#' class='item-print' id='<?= crip($reg['codigo']) ?>' data-placement="top" title='Imprimir Relat&oacute;rio'>
                     <img style="width: 40px" src='<?= ICONS ?>/icon-printer.gif' />
                 </a>
             </td>
@@ -268,7 +269,6 @@ require PATH . VIEW . '/system/paginacao.php';
                 'onClose': function (caption, valor) {
                     if (caption == 'Sim') {
                         window.open('<?= VIEW ?>/secretaria/relatorios/inc/bolsa.php?codigo=' + codigo + '&mes=' + valor);
-                        //$('#index').load('<?= $SITE ?>?opcao=change&codigo=' + codigo + '&solicitacao=' + encodeURIComponent(valor));
                     }
                 }
             });

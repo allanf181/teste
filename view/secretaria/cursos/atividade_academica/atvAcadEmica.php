@@ -207,8 +207,8 @@ require PATH . VIEW . '/system/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
-            <td><a href="#" title="<?= $reg['nome'] ?>"><?= abreviar(mostraTexto($reg['nome']), 30) ?></a></td>
-            <td><a href="#" title="<?= $reg['curso'] ?>"><?= abreviar(mostraTexto($reg['curso']), 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['nome'] ?>' title="Nome"><?= abreviar(mostraTexto($reg['nome']), 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['curso'] ?>' title="Curso"><?= abreviar(mostraTexto($reg['curso']), 30) ?></a></td>
             <td><?= $reg['CHTotal'] ?>h</td>
             <td>[<?= $reg['CHminSem'].'h/'.$reg['CHmaxSem'] ?>h]</td>
             <td><?= $reg['CHTotal'] ?>h</td>

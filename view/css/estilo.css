@@ -284,21 +284,6 @@ li{
     margin-right: 100px;
 }
 
-.tooltip {
-    z-index: 9998;
-    display:none;
-    position:absolute;
-    border:1px solid #333;
-    background-color:#161616;
-    border-radius:5px;
-    padding:10px;
-    color:#fff;
-    font-size:12px Arial;
-    white-space:pre-wrap;
-    min-width: 50px;
-    max-width: 400px;
-}
-
 #screenshot{
     z-index: 9999;
     position:absolute;
@@ -904,4 +889,42 @@ div.flash {
 
 #listagemTroca tr:hover{
     background: #009540;
+}
+
+.avisos {
+    z-index: 1;
+    width: 400px; 
+    max-height: 200px; 
+    overflow-y: scroll;
+    -moz-border-radius:7px;
+    -webkit-border-radius:7px;
+    border-radius:7px;
+}
+
+.boxHome {
+    z-index: 1;
+    overflow: auto;
+    position: relative;
+    padding: 10px;
+    background: #FFF;
+    margin: 10px;
+    width: 400px;
+    max-width: 97%;
+    height: 230px;
+    -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
+}
+
+#loaderChat {
+    font-weight: bold;
+    position:absolute;
+    width:230px;
+    height:20px;
+    z-index:15;
+    top:80%;
+    left:60%;
+    margin:-100px 0 0 -150px;
+    background:#CCC;
+    -moz-border-radius:7px;
+    -webkit-border-radius:7px;
+    border-radius:7px;
 }

@@ -61,14 +61,21 @@ if ($_GET['pagina']) {
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
-<ul class="tabs">
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=entregarPlano');void(0);">Entregar Plano</a></li>	
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoEnsino');void(0);">Plano de Ensino</a></li>
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoAula');void(0);">Plano de Aula</a></li>
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoCopiar');void(0);">Copiar Plano</a></li>
-    <li><a target="_blank" href="<?= VIEW; ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= $atribuicao; ?>"><img src="<?= ICONS; ?>/icon-printer.gif" width="30"></a></li>
-</ul>
 <div class="tab_container" id="form">
+    <table>
+        <tr>
+            <td>
+                <ul class="tabs">
+                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=entregarPlano');void(0);">Entregar Plano</a></li>	
+                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoEnsino');void(0);">Plano de Ensino</a></li>
+                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoAula');void(0);">Plano de Aula</a></li>
+                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoCopiar');void(0);">Copiar Plano</a></li>
+                    <li><a target="_blank" href="<?= VIEW; ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= $atribuicao; ?>"><img src="<?= ICONS; ?>/icon-printer.gif" width="30"></a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <br>
     <?php
     if ($_GET['pagina'] == "entregarPlano") {
         ?>

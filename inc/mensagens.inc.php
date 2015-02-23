@@ -103,7 +103,7 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $ERRO_MANY_TRY = "Tentativas restantes: " . $OPT;
     $ERRO_USER_OR_PASS_INVALID = "Usu&aacute;rio ou senha inv&aacute;lidos.";
     $ERRO_CAPTCHA = "Caracetes inv&aacute;lidos. Tente novamente.</font>";
-    $OK_EMAIL_ENVIADO = "As instru&ccedil;&otilde;es para recupera&ccedil;&atilde;o de senha foram enviadas para seu e-mail!";
+    $OK_EMAIL_ENVIADO = "As instru&ccedil;&otilde;es para recupera&ccedil;&atilde;o de senha foram enviadas para ".$OPT;
     $ERRO_EMAIL_NAO_CADASTRADO = "E-mail n&atilde;o cadastrado ou prontu&aacute;rio n&atilde;o localizado.";
     $INFO_PRONTUARIO_VAZIO = "Por favor, digite o prontu&aacute;rio!";
 
@@ -133,6 +133,8 @@ function mensagem($TIPO, $MSG, $OPT = null) {
 
     $OK_AVISO = 'Total de avisos inseridos: '.$OPT;
 
+    $NOK_QUESTIONARIO_CLOSE = 'Aten&ccedil;&atilde;o, o Questin&aacute;rio est&aacute; fechado nesse momento para altera&ccedil;&atilde;o.';
+    
     // CODIGOS DE ERROS - PDO/MYSQL
     if ($OPT) {
         if ($OPT == 23000 && ($MSG == 'UPDATE' || $MSG == 'INSERT')) {

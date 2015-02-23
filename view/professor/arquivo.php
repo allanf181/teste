@@ -24,9 +24,9 @@ if ($_GET['pagina'] == 'down') {
 
     $down = $arqLogs->listArquivosLogs(dcrip($_GET["codigo"]));
     print "<br>";
-    $n=1;
+    $n = 1;
     foreach ($down as $d)
-        print $n++.": ".$d['nome'] . '<br>';
+        print $n++ . ": " . $d['nome'] . '<br>';
     die;
 }
 
@@ -38,17 +38,22 @@ if ($_POST['atribuicao'])
 $atribuicao = $_GET["atribuicao"];
 
 $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
-
 ?>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <link rel="stylesheet" type="text/css" href="<?= VIEW; ?>/css/aba.css" media="screen" />
 
-<ul class="tabs">
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=inserir');void(0);">Inserir Material</a></li>
-    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=copiar');void(0);">Copiar Material</a></li>
-</ul>
 <div class="tab_container" id="form">
+    <table>
+        <tr>
+            <td>
+                <ul class="tabs">
+                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=inserir');void(0);">Inserir Material</a></li>
+                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=copiar');void(0);">Copiar Material</a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
     <?php
     if ($_GET['pagina'] == "copiar") {
         ?>
@@ -106,7 +111,7 @@ if ($_GET['pagina'] == "inserir") {
         unset($_POST['opcao']);
         unset($_POST['pagina']);
         $tipo = $_GET['pagina'];
-       
+
         $ret = $arq->insertOrUpdateArquivo($_POST, $local);
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
         if ($_POST['codigo'])
@@ -137,67 +142,67 @@ if ($_GET['pagina'] == "inserir") {
     print "Tamanho m&aacute;ximo do arquivo: " . ini_get('upload_max_filesize') . "<br>";
     ?>
     <script type="text/javascript">
-            $(document).ready(function() {
+        $(document).ready(function () {
 
-                $('#salvar').change(function() {
-                    $('#MyUploadForm').submit();
-                });
-
-                var options = {
-                    target: '#professor', // target element(s) to be updated with server response 
-                    beforeSubmit: beforeSubmit, // pre-submit callback 
-                    success: afterSuccess, // post-submit callback 
-                    resetForm: true        // reset the form after successful submit 
-                };
-
-                $('#MyUploadForm').submit(function() {
-                    $(this).ajaxSubmit(options);
-                    // always return false to prevent standard browser submit and page navigation 
-                    return false;
-                });
+            $('#salvar').change(function () {
+                $('#MyUploadForm').submit();
             });
 
-            function afterSuccess()
+            var options = {
+                target: '#professor', // target element(s) to be updated with server response 
+                beforeSubmit: beforeSubmit, // pre-submit callback 
+                success: afterSuccess, // post-submit callback 
+                resetForm: true        // reset the form after successful submit 
+            };
+
+            $('#MyUploadForm').submit(function () {
+                $(this).ajaxSubmit(options);
+                // always return false to prevent standard browser submit and page navigation 
+                return false;
+            });
+        });
+
+        function afterSuccess()
+        {
+            $('#submit-btn').show(); //hide submit button
+            $('#loading-img').hide(); //hide submit button
+        }
+
+        function beforeSubmit() {
+            //check whether browser fully supports all File API
+            if (window.File && window.FileReader && window.FileList && window.Blob)
             {
-                $('#submit-btn').show(); //hide submit button
-                $('#loading-img').hide(); //hide submit button
-            }
-
-            function beforeSubmit() {
-                //check whether browser fully supports all File API
-                if (window.File && window.FileReader && window.FileList && window.Blob)
-                {
-                    if (!$('#descricao').val())
-                        return false;
-                    if ($('#arquivo').val()) {
-                        var fsize = $('#arquivo')[0].files[0].size; //get file size
-
-                        if (fsize ><?= $max_file ?>)
-                        {
-                            $("#retorno").html("Arquivo muito grande, tamanho limite: <b> " + bytesToSize(fsize) + "</b>");
-                            return false
-                        }
-                    }
-                    $('#submit-btn').hide(); //hide submit button
-                    $('#loading-img').show(); //hide submit button
-                    $("#retorno").html("");
-                }
-                else
-                {
-                    //Output error to older unsupported browsers that doesn't support HTML5 File API
-                    $("#retorno").html("Por favor, atualize seu browser para suportar essa função!");
+                if (!$('#descricao').val())
                     return false;
-                }
-            }
+                if ($('#arquivo').val()) {
+                    var fsize = $('#arquivo')[0].files[0].size; //get file size
 
-            //function to format bites bit.ly/19yoIPO
-            function bytesToSize(bytes) {
-                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-                if (bytes == 0)
-                    return '0 Bytes';
-                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-                return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+                    if (fsize ><?= $max_file ?>)
+                    {
+                        $("#retorno").html("Arquivo muito grande, tamanho limite: <b> " + bytesToSize(fsize) + "</b>");
+                        return false
+                    }
+                }
+                $('#submit-btn').hide(); //hide submit button
+                $('#loading-img').show(); //hide submit button
+                $("#retorno").html("");
             }
+            else
+            {
+                //Output error to older unsupported browsers that doesn't support HTML5 File API
+                $("#retorno").html("Por favor, atualize seu browser para suportar essa função!");
+                return false;
+            }
+        }
+
+        //function to format bites bit.ly/19yoIPO
+        function bytesToSize(bytes) {
+            var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes == 0)
+                return '0 Bytes';
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+        }
 
     </script>
     <div align="center">
@@ -229,7 +234,7 @@ if ($_GET['pagina'] == "inserir") {
                             <?php
                         }
                         ?>
-                            <div id='retorno'></div>
+                        <div id='retorno'></div>
                     </td>
                 </tr>
 
@@ -252,68 +257,68 @@ if ($_GET['pagina'] == "inserir") {
     <br />
 
     <div align="center">
-    <table id="listagem" border="0" align="center">
-        <tr>
-            <th align="center" width="30">#</th>
-            <th align="center" width="200">Descri&ccedil;&atilde;o</th>
-            <th align="left" width="255">Link</th>
-            <th align="left" width="255">Arquivo</th>
-            <th align="left" width="150">Data</th>
-            <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
-                <a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a>
-            </th>
-        </tr>
-        <?php
-        // efetuando a consulta para listagem
-        $i = 1;
-        foreach ($res as $reg) {
-            $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
-            if ($reg['arquivo'])
-                $path_parts = pathinfo($reg['arquivo']);
-            ?>
-            <tr <?= $cdif ?>><td align='left'><?= $i++ ?></td>
-                <td><a href="#" title="<?=$reg['descricao']?>"><?= abreviar(nl2br(mostraTexto($reg['descricao'])),25) ?></a></td>
-                <td>
-                    <?php if ($reg['link']) {
-                        ?>
-                        <img class='botao' src='<?= ICONS . 'files/internet.png' ?>' />
-                        <?php
-                    }
-                    ?>                    
-                    <a title="<?=$reg['link']?>" href="<?= $reg['link'] ?>" target="_blank"><?= abreviar($reg['link'],25) ?></a>
-                </td>
-                <td>
-                    <?php
-                    if ($reg['arquivo']) {
-                        if (strlen($reg['arquivo']) > 25)
-                            $fileName = abreviar($reg['arquivo'],25).$path_parts['extension'];
-                        else
-                            $fileName = $reg['arquivo'];
-                        ?>
-                        <a title="Clique aqui para abrir o arquivo." href="<?= INC ?>/file.inc.php?type=arquivo&id=<?= crip($reg['codigo']) ?>" target="_blank">
-                            <?php
-                            if (is_file(PATH . ICONS . 'files/' . $path_parts['extension'] . '.png')) {
-                                $fileIcon = 'files/' . $path_parts['extension'] . '.png';
-                            } else {
-                                $fileIcon = 'files/file.png';
-                            }
-                            ?>
-                            <img class='botao' src='<?= ICONS . $fileIcon ?>' /></a>
-                            <a title='Clique aqui para visualizar quem fez download desse arquivo.' href="#" class='item-down' id='<?= crip($reg['codigo']) ?>'><?= $fileName ?></a>                            
-                        <?php
-                    }
-                    ?>
-                </td>
-                <td><?= $reg['data'] ?></td>
-                <td align='center'><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
-                    <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>
-                        <img class='botao' src='<?= ICONS ?>/config.png' /></a>
-                </td>
+        <table id="listagem" border="0" align="center">
+            <tr>
+                <th align="center" width="30">#</th>
+                <th align="center" width="200">Descri&ccedil;&atilde;o</th>
+                <th align="left" width="255">Link</th>
+                <th align="left" width="255">Arquivo</th>
+                <th align="left" width="150">Data</th>
+                <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
+                    <a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a>
+                </th>
             </tr>
             <?php
-        }
-        ?>
-    </table>
+            // efetuando a consulta para listagem
+            $i = 1;
+            foreach ($res as $reg) {
+                $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
+                if ($reg['arquivo'])
+                    $path_parts = pathinfo($reg['arquivo']);
+                ?>
+                <tr <?= $cdif ?>><td align='left'><?= $i++ ?></td>
+                    <td><a href="#" data-placement="top" title='Descri&ccedil;&atilde;o' data-content="<?= $reg['descricao'] ?>"><?= abreviar(nl2br(mostraTexto($reg['descricao'])), 25) ?></a></td>
+                    <td>
+                        <?php if ($reg['link']) {
+                            ?>
+                            <img class='botao' src='<?= ICONS . 'files/internet.png' ?>' />
+                            <?php
+                        }
+                        ?>                    
+                        <a data-placement="top" title="Link" data-content="<?= $reg['link'] ?>" href="<?= $reg['link'] ?>" target="_blank"><?= abreviar($reg['link'], 25) ?></a>
+                    </td>
+                    <td>
+                        <?php
+                        if ($reg['arquivo']) {
+                            if (strlen($reg['arquivo']) > 25)
+                                $fileName = abreviar($reg['arquivo'], 25) . $path_parts['extension'];
+                            else
+                                $fileName = $reg['arquivo'];
+                            ?>
+                            <a data-placement="top" title="Arquivo" data-content="Clique aqui para abrir o arquivo." href="<?= INC ?>/file.inc.php?type=arquivo&id=<?= crip($reg['codigo']) ?>" target="_blank">
+                                <?php
+                                if (is_file(PATH . ICONS . 'files/' . $path_parts['extension'] . '.png')) {
+                                    $fileIcon = 'files/' . $path_parts['extension'] . '.png';
+                                } else {
+                                    $fileIcon = 'files/file.png';
+                                }
+                                ?>
+                                <img class='botao' src='<?= ICONS . $fileIcon ?>' /></a>
+                            <a data-placement="top" title="Downloaders" data-content='Clique aqui para visualizar quem fez download desse arquivo.' href="#" class='item-down' id='<?= crip($reg['codigo']) ?>'><?= $fileName ?></a>                            
+                            <?php
+                        }
+                        ?>
+                    </td>
+                    <td><?= $reg['data'] ?></td>
+                    <td align='center'><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
+                        <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>
+                            <img class='botao' src='<?= ICONS ?>/config.png' /></a>
+                    </td>
+                </tr>
+                <?php
+            }
+            ?>
+        </table>
     </div>
     <br /><br /><br />
     <?php
@@ -323,79 +328,79 @@ $atribuicao = $_GET['atribuicao'];
 ?>
 <script>
 
-        $(document).ready(function() {
-            $('#descricao').maxlength({
-                events: [], // Array of events to be triggerd    
-                maxCharacters: 200, // Characters limit   
-                status: true, // True to show status indicator bewlow the element    
-                statusClass: "status", // The class on the status div  
-                statusText: "caracteres restando", // The status text  
-                notificationClass: "notification", // Will be added when maxlength is reached  
-                showAlert: false, // True to show a regular alert message    
-                alertText: "Limite de caracteres excedido!", // Text in alert message   
-                slider: true // True Use counter slider    
-            });
+    $(document).ready(function () {
+        $('#descricao').maxlength({
+            events: [], // Array of events to be triggerd    
+            maxCharacters: 200, // Characters limit   
+            status: true, // True to show status indicator bewlow the element    
+            statusClass: "status", // The class on the status div  
+            statusText: "caracteres restando", // The status text  
+            notificationClass: "notification", // Will be added when maxlength is reached  
+            showAlert: false, // True to show a regular alert message    
+            alertText: "Limite de caracteres excedido!", // Text in alert message   
+            slider: true // True Use counter slider    
+        });
 
-            $(".item-excluir").click(function() {
-                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
-                    'type': 'question',
-                    'title': '<?= $TITLE ?>',
-                    'buttons': ['Sim', 'Não'],
-                    'onClose': function(caption) {
-                        if (caption == 'Sim') {
-                            var selected = [];
-                            $('input:checkbox:checked').each(function() {
-                                selected.push($(this).val());
-                            });
-                            $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=inserir&opcao=delete&codigo=' + selected + '&item=<?= $item; ?>');
-                        }
+        $(".item-excluir").click(function () {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function (caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function () {
+                            selected.push($(this).val());
+                        });
+                        $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=inserir&opcao=delete&codigo=' + selected + '&item=<?= $item; ?>');
                     }
-                });
-            });
-
-            $(".item-alterar").click(function() {
-                var codigo = $(this).attr('id');
-                $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=inserir&codigo=' + codigo);
-            });
-
-            $("#item-copiar").click(function() {
-                var codigo = $('#campoDisciplina').val();
-                $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, o material da disciplina escolhida ser&aacute; adicionado nessa disciplina. Deseja continuar?', {
-                    'type': 'question',
-                    'title': '<?= $TITLE ?>',
-                    'buttons': ['Sim', 'Não'],
-                    'onClose': function(caption) {
-                        if (caption == 'Sim') {
-                            $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=copiar&codigoCopy=' + codigo);
-                        }
-                    }
-                });
-            });
-
-            $('#select-all').click(function(event) {
-                if (this.checked) {
-                    // Iterate each checkbox
-                    $(':checkbox').each(function() {
-                        this.checked = true;
-                    });
-                } else {
-                    $(':checkbox').each(function() {
-                        this.checked = false;
-                    });
                 }
             });
+        });
 
-            $('.item-down').click(function(event) {
-                var codigo = $(this).attr('id');
-                new $.Zebra_Dialog('<strong>Pessoas que fizeram download do arquivo:</strong>', {
-                    source: {'iframe': {
-                            'src': '<?= VIEW ?>/professor/arquivo.php?pagina=down&codigo=' + codigo,
-                            'height': 350
-                        }
-                    },
-                    width: 500,
-                    title: 'Visualização de Downloads'
-                });
+        $(".item-alterar").click(function () {
+            var codigo = $(this).attr('id');
+            $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=inserir&codigo=' + codigo);
+        });
+
+        $("#item-copiar").click(function () {
+            var codigo = $('#campoDisciplina').val();
+            $.Zebra_Dialog('<strong>Aten&ccedil;&atilde;o, o material da disciplina escolhida ser&aacute; adicionado nessa disciplina. Deseja continuar?', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function (caption) {
+                    if (caption == 'Sim') {
+                        $('#professor').load('<?= "$SITE?atribuicao=$atribuicao"; ?>&pagina=copiar&codigoCopy=' + codigo);
+                    }
+                }
             });
         });
+
+        $('#select-all').click(function (event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function () {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+
+        $('.item-down').click(function (event) {
+            var codigo = $(this).attr('id');
+            new $.Zebra_Dialog('<strong>Pessoas que fizeram download do arquivo:</strong>', {
+                source: {'iframe': {
+                        'src': '<?= VIEW ?>/professor/arquivo.php?pagina=down&codigo=' + codigo,
+                        'height': 350
+                    }
+                },
+                width: 500,
+                title: 'Visualização de Downloads'
+            });
+        });
+    });
 </script>

@@ -102,7 +102,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 <td align="right">Curso: </td>
                 <td>
                     <select name="curso" id="curso" value="<?= $curso ?>">
-                        <option>Todos</option>
+                        <option value='NULL'>Todos</option>
                         <?php
                         require CONTROLLER . '/curso.class.php';
                         $cursos = new Cursos();
@@ -119,7 +119,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             <tr><td  style="width: 100px" align="right">Tipo: </td>
                 <td colspan="2" align="left" style="width: 100px"> 
                     <select name="tipo" id="tipo">
-                        <option>Todos</option>
+                        <option value='NULL'>Todos</option>
                         <?php
                         require CONTROLLER . '/tipo.class.php';
                         $tp = new Tipos();
@@ -140,7 +140,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 </td>
             </tr>
             <tr><td align="right">Ocorr&ecirc;ncia:</td><td><input type="text" size="50" maxlength="255" name="ocorrencia" id="ocorrencia" value="<?= $ocorrencia ?>" /></td>
-                <td rowspan="3"><a href="#" class='calendario'><img src="<?= VIEW ?>/css/images/horario.png" width="50%"></a></td>                
+                <td rowspan="3"><a href="#" data-placement="top" title="Clique para visualizar o calend&aacute;rio" class='calendario'><img src="<?= VIEW ?>/css/images/horario.png" width="50%"></a></td>                
             </tr>
             <tr><td align="right"></td><td>
                     <?php if ($diaLetivo) $checked = 'checked'; ?>
@@ -185,11 +185,11 @@ require PATH . VIEW . '/system/paginacao.php';
 
 <table id="listagem" border="0" align="center">
     <tr>
-        <th>Data</th>
-        <th>Ocorr&ecirc;ncia</th>
-        <th>Dia Letivo</th>
-        <th>Curso</th>
-        <th>Tipo</th>
+        <th width='200px'>Data</th>
+        <th width='200px'>Ocorr&ecirc;ncia</th>
+        <th width='80px'>Dia Letivo</th>
+        <th width='200px'>Curso</th>
+        <th width='200px'>Tipo</th>
         <th width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a>
         </th>
@@ -204,10 +204,10 @@ require PATH . VIEW . '/system/paginacao.php';
         ?>
         <tr <?= $cdif ?>>
             <td><?= $reg['dataInicio'] ?></td>
-            <td><?= mostraTexto($reg['ocorrencia']) ?></td>
+            <td><a href="#" data-placement="top" data-content="<?= $reg['ocorrencia'] ?>" title="Ocorr&ecirc;ncia"><?= abreviar($reg['ocorrencia'], 25) ?></a></td>
             <td><?= $reg['diaLetivoNome'] ?></td>
-            <td><?= $reg['cursoCal'] ?></td>
-            <td><?= $reg['tipoCal'] ?></td>
+            <td><a href="#" data-placement="top" data-content="<?= $reg['cursoCal'] ?>" title="Vis&iacute;vel para o curso"><?= abreviar($reg['cursoCal'], 25) ?></a></td>
+            <td><a href="#" data-placement="top" data-content="<?= $reg['tipoCal'] ?>" title="Vis&iacute;vel para o tipo"><?= abreviar($reg['tipoCal'], 25) ?></a></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>

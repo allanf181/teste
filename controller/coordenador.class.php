@@ -15,10 +15,13 @@ class Coordenadores extends Generic {
     public function checkIfCoordHasAreaCurso($params, $sqlAdicional) {
         $bd = new database();
        
-        $sql = "SELECT co.area, co.curso "
-                . "FROM Cursos c "
-                . "LEFT JOIN Coordenadores co "
-                . "ON co.curso = c.codigo ";
+        $sql = "SELECT co.area, co.curso
+                    FROM Cursos c
+                    LEFT JOIN Coordenadores co
+                    ON co.curso = c.codigo
+                    WHERE co.curso IN (SELECT t1.curso 
+                                    FROM Turmas t1 
+                                    WHERE ano = :ano) ";
         $sql .= $sqlAdicional;
         
         $res = $bd->selectDB($sql, $params);
@@ -39,7 +42,7 @@ class Coordenadores extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina ";
         
-        $sql = "SELECT c.nome, p.nome as coordenador, co.codigo,
+        $sql = "SELECT c.nome, p.nome as coordenador, co.codigo, c.codigo as codCurso,
                     IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
                         IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)   ) 
                     as curso,(SELECT nome FROM Areas WHERE codigo = co.area) as area

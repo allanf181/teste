@@ -8,7 +8,6 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <?php
-
 if (!class_exists('Ensalamentos'))
     require CONTROLLER . "/ensalamento.class.php";
 
@@ -21,9 +20,11 @@ $ensalamento = new Ensalamentos();
 $res = $ensalamento->getEnsalamento($codigo, $tipo, $ANO, $SEMESTRE, $subturma);
 
 foreach ($res as $reg) {
+    preg_match('#\[(.*?)\]#', $reg['horario'], $match);
     $reg['horario'] = str_ireplace("[$match[1]]", "", $reg['horario']);
-    $link = $reg['disciplina'] . '<br>Turma '.$reg['turma'].' ('.$reg['subturma'].') <br>' . $reg['professor'] . '<br>' . $reg['sala'];
-    $horas[$reg['diaSemana']][] = $prof->getProfessor($reg['atribuicao'], 0, ' ', 1, 1)."<br><a href='#' title='$link'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
+    $T = $match[1];
+    $link = 'Turma ' . $reg['turma'] . ' (' . $reg['subturma'] . ') <br>' . $reg['professor'] . '<br>' . $reg['sala'];
+    $horas[$T][$reg['diaSemana']][] = $prof->getProfessor($reg['atribuicao'], 0, ' ', 1, 1) . "<br><a href='#' data-placement='right' data-content='" . $link . "' title='" . $reg['disciplina'] . "'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
     $turmaNome = $reg['turma'];
 }
 
@@ -55,29 +56,32 @@ if ($atribuicao)
                 ?>
             </tr>
         </thead>
-        <tr align="center">
-            <?php
-            for ($i = 1; $i <= 7; $i++) {
-                $TA = '';
-                ?>
-                <td style='width: 10%' valign="top">
-                    <?php
-                    if (isset($horas[$i]))
-                        foreach ($horas[$i] as $disc) {
-                            preg_match('#\[(.*?)\]#', $disc, $match);
-                            $T = $match[1];
-                            if ($T != $TA) {
-                                print strtoupper($turnos[$T]) . "<hr>\n";
-                                $TA = $T;
-                            }
-                            print str_ireplace("[$match[1]]", "", $disc);
-                            print '<br>-----------------<br>';
-                        }
+        <?php
+        foreach ($horas as $tur => $diaSemana) {
+            ?>
+            <tr align="center">
+                <td colspan="7"><?= $turnos[$tur] ?></td>
+            </tr>
+            <tr align="center">
+                <?php
+                for ($i = 1; $i <= 7; $i++) {
                     ?>
+                    <td style='width: 10%' valign="top">
+                        <?php
+                        if (isset($horas[$tur][$i])) {
+                            foreach ($horas[$tur][$i] as $disc) {
+                                print str_ireplace("[$match[1]]", "", $disc);
+                                print '<br>-----------------<br>';
+                            }
+                        }
+                        ?>
+                    </td>
+                    <?php
+                }
+                ?>
                 </td>
                 <?php
             }
             ?>
-        </tr>
     </table>
 </center>

@@ -41,8 +41,8 @@ if (isset($_GET["opcao"]) && $_GET["opcao"] == 'recuperar') {
     $prontuario = $_GET["campoLogin"];
     if (!$LDAP_ATIVADO) {
         if ($prontuario) {
-            if ($login->recuperaSenha($prontuario)) {
-                mensagem('OK', 'EMAIL_ENVIADO');
+            if ($emailRetorno = $login->recuperaSenha($prontuario)) {
+                mensagem('OK', 'EMAIL_ENVIADO', $emailRetorno);
             } else {
                 mensagem('ERRO', 'EMAIL_NAO_CADASTRADO');
             }

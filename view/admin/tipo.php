@@ -15,6 +15,9 @@ require SESSAO;
 require CONTROLLER . "/tipo.class.php";
 $tipo = new Tipos();
 
+require CONTROLLER . "/pessoaTipo.class.php";
+$pessoaTipo = new PessoasTipos();
+
 // INSERT E UPDATE
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     unset($_POST['opcao']);
@@ -107,6 +110,7 @@ require PATH . VIEW . '/system/paginacao.php';
         <th align="center" width="40">#</th>
         <th align="left">Tipo</th>
         <th align="left">Altera&ccedil;&atilde;o do Ano/Semestre</th>
+        <th align="left">Quantidade de pessoas utilizando esse tipo</th>
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
@@ -118,12 +122,15 @@ require PATH . VIEW . '/system/paginacao.php';
     // efetuando a consulta para listagem
     $i = $item;
     foreach ($res as $reg) {
+        $total = $pessoaTipo->countTipoPessoa($reg['codigo']);
+
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         $codigo = crip($reg['codigo']);
         ?>
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
             <td><?= mostraTexto($reg['nome']) ?></td>
             <td><?= (!$reg['alteraAnoSem'])?'Não':'Sim' ?></td>
+            <td><?= $total ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>

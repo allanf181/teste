@@ -200,6 +200,7 @@ if (!empty($_GET["codigo"])) {
 if ($_GET["pesquisa"] == 1) {
     $_GET["prontuario"] = crip($_GET["prontuario"]);
     $_GET["nome"] = crip($_GET["nome"]);
+    $_GET["tipo"] = crip($_GET["tipo"]);
 }
 
 if (dcrip($_GET["prontuario"])) {
@@ -213,35 +214,40 @@ if (dcrip($_GET["nome"])) {
     $nome = dcrip($_GET["nome"]);
     $sqlAdicional = ' AND nome like :nome ';
 }
+
+if (dcrip($_GET["tipo"])) {
+    $params['tipo'] = dcrip($_GET["tipo"]);
+    $tipo = dcrip($_GET["tipo"]);
+    $sqlAdicional = ' AND codigo IN (SELECT pessoa FROM PessoasTipos t WHERE tipo = :tipo) ';
+}
 ?>
 <link rel="stylesheet" type="text/css" href="<?= VIEW ?>/css/aba.css" media="screen" />
 <script src="<?= VIEW ?>/js/aba.js"></script>
 
 <script>
 
-        $('#form_padrao').html5form({
-            method: 'POST',
-            action: '<?= $SITE ?>',
-            responseDiv: '#index',
-            colorOn: '#000',
-            colorOff: '#999',
-            messages: 'br'
-        })
+    $('#form_padrao').html5form({
+        method: 'POST',
+        action: '<?= $SITE ?>',
+        responseDiv: '#index',
+        colorOn: '#000',
+        colorOff: '#999',
+        messages: 'br'
+    })
 </script>
 
 <div id="html5form" class="main">
     <form id="form_padrao">
         <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
-        <input type="hidden" name="opcao" value="InsertOrUpdate" /> 
-        <ul class="tabs">
-            <li><a href="#Dados">Cadastro</a></li>
-            <li><a href="#Dados2">Contato</a></li>
-            <li><a href="#Dados3">SocioEcon&ocirc;mico</a></li>
-            <li><a href="#Dados4">Tipos</a></li>
-            <li><a href="#Dados5">Foto</a></li>
-            <li><a href="#Dados6">Desbloqueio de Fotos</a></li>
-        </ul>
+        <input type="hidden" name="opcao" value="InsertOrUpdate" />
         <div class="tab_container" id="form">
+            <ul class="tabs">
+                <li><a href="#Dados">Cadastro</a></li>
+                <li><a href="#Dados2">Contato</a></li>
+                <li><a href="#Dados4">Tipos</a></li>
+                <li><a href="#Dados5">Foto</a></li>
+                <li><a href="#Dados6">Desbloqueio de Fotos</a></li>
+            </ul>
             <div class="cont_tab" id="Dados">
                 <table border="0">
                     <tr>
@@ -367,21 +373,23 @@ if (dcrip($_GET["nome"])) {
                 </table>
             </div>
 
-            <div class="cont_tab" id="Dados3">
-                <?php
-                //COPIA DE:
-                require PATH . VIEW . '/common/socioEconomico.php';
-                ?>
-            </div>
-
             <div class="cont_tab" id="Dados4">
                 <table width="100%">
                     <tr><td>Aten&ccedil;&atilde;o: n&atilde;o remova o tipo de um aluno ou professor, pois o sistema n&atilde;o permite incluir esses tipos.</td></tr>
                 </table>
-                <table width="60%">
-                    <tr><td>&nbsp;<br>
+                <table width="60%" border="0">
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td rowspan="2" valign="top">
+                            <a href="#" data-placement="top" id="setTipo" title="Buscar por Tipo" data-content="Clique para buscar um tipo de pessoa.">
+                                <img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' />
+                            </a>
+                        </td>
+                    </tr>
                     <tr><td>Tipos Inseridos<br>
-                            <select id="tipo" size="6" multiple name="tipo[]" style="width: 200px;">
+                            <select id="tipo" size="6" multiple name="tipo[]" style="width: 300px;">
                                 <?php
                                 if (!in_array($ADM, $_SESSION["loginTipo"]))
                                     $restricaoADM = 'WHERE codigo <> (SELECT adm FROM Instituicoes)';
@@ -402,18 +410,20 @@ if (dcrip($_GET["nome"])) {
                             </select>
                         </td>
                         <td>
-                            <input type="text" id="btnLeft" readonly <?php if (in_array($ALUNO, $tipo)) print "disabled"; ?> style="width: 20px;" value="&lt;&lt;" /><br>
-                            <input type="text" id="btnRight" readonly <?php if (in_array($ALUNO, $tipo)) print "disabled"; ?> style="width: 20px;" value="&gt;&gt;" />
+                            <input type="text" id="btnLeft" readonly <?php if (in_array($ALUNO, $tipo)) print "disabled"; ?> style="width: 20px; cursor: pointer;" value="&lt;&lt;" /><br>
+                            <input type="text" id="btnRight" readonly <?php if (in_array($ALUNO, $tipo)) print "disabled"; ?> style="width: 20px; cursor: pointer;" value="&gt;&gt;" />
                         </td>
                         <td>Todos os Tipos<br>
-                            <select id="rightValues" size="6" multiple style="width: 200px;">
+                            <select id="rightValues" size="6" multiple style="width: 300px;">
                                 <?php
                                 foreach ($TPS as $TP_COD => $TP_NM)
                                     echo "<option value='$TP_COD'>$TP_NM</option>";
                                 ?>
                             </select>
                         </td>
-                    </tr></table>
+                    </tr>
+
+                </table>
                 <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
                         <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
                     </tr></table>
@@ -490,6 +500,7 @@ $totalRegistros = count($pessoa->listRegistros($params, $sqlAdicional, null, nul
 
 $params['prontuario'] = crip($prontuario);
 $params['nome'] = crip($nome);
+$params['tipo'] = crip($tipo);
 $SITENAV = $SITE . '?' . mapURL($params);
 require PATH . VIEW . '/system/paginacao.php';
 ?>
@@ -554,213 +565,241 @@ require PATH . VIEW . '/system/paginacao.php';
 
 <script>
 
-        function valida() {
-            if ($('#nome').val() == "" ||
+    function valida() {
+        if ($('#nome').val() == "" ||
 <?php if (!$codigo) print "$('#senha').val() == \"\" || "; ?>
-            $('#prontuario').val() == "") {
-                $('#salvar').attr('disabled', 'disabled');
-            } else {
-                $('#salvar').removeAttr('disabled');
-            }
+        $('#prontuario').val() == "") {
+            $('#salvar').attr('disabled', 'disabled');
+        } else {
+            $('#salvar').removeAttr('disabled');
         }
+    }
 
-        function atualizar(getLink) {
-            var nome = encodeURIComponent($('#nome').val());
-            var prontuario = encodeURIComponent($('#prontuario').val());
-            var URLS = '<?= $SITE ?>?nome=' + nome + '&prontuario=' + prontuario;
-            if (!getLink)
-                $('#index').load(URLS + '&pesquisa=1&item=<?= $item ?>');
-            else
-                return URLS;
-        }
-        $(document).ready(function () {
+    function atualizar(getLink) {
+        var nome = encodeURIComponent($('#nome').val());
+        var prontuario = encodeURIComponent($('#prontuario').val());
+        var URLS = '<?= $SITE ?>?nome=' + nome + '&prontuario=' + prontuario;
+        if (!getLink)
+            $('#index').load(URLS + '&pesquisa=1&item=<?= $item ?>');
+        else
+            return URLS;
+    }
+    $(document).ready(function () {
+        valida();
+        $('#nome, #prontuario, #senha').keyup(function () {
             valida();
-            $('#nome, #prontuario, #senha').keyup(function () {
-                valida();
-            });
+        });
 
-            $("#cpf").mask("999.999.999-99");
-            $("#phone").mask("(99) 9999-9999");
-            $("#celular").mask("(99) 99999-9999");
-            $("#cep").mask("99.999-999");
+        $("#cpf").mask("999.999.999-99");
+        $("#phone").mask("(99) 9999-9999");
+        $("#celular").mask("(99) 99999-9999");
+        $("#cep").mask("99.999-999");
 
-            $("#nascimento").datepicker({
-                dateFormat: 'dd/mm/yy',
-                dayNames: ['Domingo', 'Segunda', 'TerÃ§a', 'Quarta', 'Quinta', 'Sexta', 'SÃ¡bado'],
-                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'SÃ¡b', 'Dom'],
-                monthNames: ['Janeiro', 'Fevereiro', 'MarÃ§o', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                nextText: 'PrÃ³ximo',
-                prevText: 'Anterior'
-            });
+        $("#nascimento").datepicker({
+            dateFormat: 'dd/mm/yy',
+            dayNames: ['Domingo', 'Segunda', 'TerÃ§a', 'Quarta', 'Quinta', 'Sexta', 'SÃ¡bado'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'SÃ¡b', 'Dom'],
+            monthNames: ['Janeiro', 'Fevereiro', 'MarÃ§o', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            nextText: 'PrÃ³ximo',
+            prevText: 'Anterior'
+        });
 
-            $(".item-excluir").click(function () {
-                $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
-                    'type': 'question',
-                    'title': '<?= $TITLE ?>',
-                    'buttons': ['Sim', 'Não'],
-                    'onClose': function (caption) {
-                        if (caption == 'Sim') {
-                            var selected = [];
-                            $('input:checkbox:checked').each(function () {
-                                selected.push($(this).val());
-                            });
-
-                            $('#index').load(atualizar(1) + '&pesquisa=1&opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
-                        }
+        $("#setTipo").click(function () {
+            function preparaInput() {
+                var resultado = '<br>Tipos: ';
+                resultado += '<select id="Zebra_valor" name="Zebra_valor" value="<?= $mes ?>">';
+                <?php
+                foreach ($t->listRegistros() as $reg) {
+                    ?>
+                    resultado += "<option value='<?= ($reg['codigo']) ?>'><?= $reg['nome'] ?></option>\n";
+                    <?php
+                }
+                ?>
+                resultado += "</select>";
+                return resultado;
+            }
+            
+            $.Zebra_Dialog('<strong>Selecione o Tipo da pessoa para fazer a busca:</strong>', {
+                'type': 'prompt',
+                'promptInput': preparaInput(),
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function (caption, valor) {
+                    if (caption == 'Sim') {
+                        $('#index').load('<?= VIEW ?>/secretaria/pessoa.php?pesquisa=1&tipo=' + valor);
                     }
-                });
+                }
             });
+        });
+        
+        $(".item-excluir").click(function () {
+            $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
+                'type': 'question',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['Sim', 'Não'],
+                'onClose': function (caption) {
+                    if (caption == 'Sim') {
+                        var selected = [];
+                        $('input:checkbox:checked').each(function () {
+                            selected.push($(this).val());
+                        });
 
-            $('#select-all').click(function (event) {
-                if (this.checked) {
-                    // Iterate each checkbox
-                    $(':checkbox').each(function () {
-                        this.checked = true;
+                        $('#index').load(atualizar(1) + '&pesquisa=1&opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
+                    }
+                }
+            });
+        });
+
+        $('#select-all').click(function (event) {
+            if (this.checked) {
+                // Iterate each checkbox
+                $(':checkbox').each(function () {
+                    this.checked = true;
+                });
+            } else {
+                $(':checkbox').each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+
+        $(".item-alterar").click(function () {
+            var codigo = $(this).attr('id');
+            $('#nome').val('');
+            $('#prontuario').val('');
+            $('#index').load(atualizar(1) + '&pesquisa=1&codigo=' + codigo + '&item=<?= $item ?>');
+        });
+
+        $('#setNome, #setProntuario').click(function () {
+            atualizar();
+        });
+
+
+        $('#tipo option').prop('selected', true);
+
+        $("#btnLeft").click(function () {
+            var selectedItem = $("#rightValues option:selected");
+            $("#tipo").append(selectedItem);
+            $('#tipo option').prop('selected', true);
+        });
+
+        $("#btnRight").click(function () {
+            var selectedItem = $("#tipo option:selected");
+            $("#rightValues").append(selectedItem);
+            $('#tipo option').prop('selected', true);
+        });
+
+        $("#rightValues").change(function () {
+            var selectedItem = $("#rightValues option:selected");
+            $("#txtRight").val(selectedItem.text());
+        });
+
+        $(function () {
+            $('#estadoNaturalidade').change(function () {
+                if ($(this).val()) {
+                    $('#naturalidade').hide();
+                    $('.carregando').show();
+                    $.getJSON('<?= VIEW ?>/admin/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function (j) {
+                        var options = '<option value=""></option>';
+                        for (var i = 0; i < j.length; i++) {
+                            options += '<option value="' + j[i].codigo + '">' + j[i].nome + '</option>';
+                        }
+                        $('#naturalidade').html(options).show();
+                        $('.carregando').hide();
                     });
                 } else {
-                    $(':checkbox').each(function () {
-                        this.checked = false;
-                    });
+                    $('#naturalidade').html('<option value="">-- Escolha um estado --</option>');
                 }
             });
-
-            $(".item-alterar").click(function () {
-                var codigo = $(this).attr('id');
-                $('#nome').val('');
-                $('#prontuario').val('');
-                $('#index').load(atualizar(1) + '&pesquisa=1&codigo=' + codigo + '&item=<?= $item ?>');
-            });
-
-            $('#setNome, #setProntuario').click(function () {
-                atualizar();
-            });
-
-
-            $('#tipo option').prop('selected', true);
-
-            $("#btnLeft").click(function () {
-                var selectedItem = $("#rightValues option:selected");
-                $("#tipo").append(selectedItem);
-                $('#tipo option').prop('selected', true);
-            });
-
-            $("#btnRight").click(function () {
-                var selectedItem = $("#tipo option:selected");
-                $("#rightValues").append(selectedItem);
-                $('#tipo option').prop('selected', true);
-            });
-
-            $("#rightValues").change(function () {
-                var selectedItem = $("#rightValues option:selected");
-                $("#txtRight").val(selectedItem.text());
-            });
-
-            $(function () {
-                $('#estadoNaturalidade').change(function () {
-                    if ($(this).val()) {
-                        $('#naturalidade').hide();
-                        $('.carregando').show();
-                        $.getJSON('<?= VIEW ?>/admin/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function (j) {
-                            var options = '<option value=""></option>';
-                            for (var i = 0; i < j.length; i++) {
-                                options += '<option value="' + j[i].codigo + '">' + j[i].nome + '</option>';
-                            }
-                            $('#naturalidade').html(options).show();
-                            $('.carregando').hide();
-                        });
-                    } else {
-                        $('#naturalidade').html('<option value="">-- Escolha um estado --</option>');
-                    }
-                });
-            });
-
-            $(function () {
-                $('#estado').change(function () {
-                    if ($(this).val()) {
-                        $('#cidade').hide();
-                        $('.carregando').show();
-                        $.getJSON('<?= VIEW ?>/admin/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function (j) {
-                            var options = '<option value=""></option>';
-                            for (var i = 0; i < j.length; i++) {
-                                options += '<option value="' + j[i].codigo + '">' + j[i].nome + '</option>';
-                            }
-                            $('#cidade').html(options).show();
-                            $('.carregando').hide();
-                        });
-                    } else {
-                        $('#cidade').html('<option value="">-- Escolha um estado --</option>');
-                    }
-                });
-            });
-
-            $('#imageInput').change(function () {
-                $('#MyUploadForm').submit();
-            });
-
-            var options = {
-                target: '#output <?php if (!$codigo) print ",#retorno"; ?>', // target element(s) to be updated with server response 
-                beforeSubmit: beforeSubmit, // pre-submit callback 
-                success: afterSuccess, // post-submit callback 
-                resetForm: true        // reset the form after successful submit 
-            };
-
-            $('#MyUploadForm').submit(function () {
-                $(this).ajaxSubmit(options);
-                // always return false to prevent standard browser submit and page navigation 
-                return false;
-            });
-
-            function afterSuccess()
-            {
-                $('#submit-btn').show(); //hide submit button
-                $('#loading-img').hide(); //hide submit button
-                $("#divFoto").attr("src", "<?= INC ?>/file.inc.php?type=pic&id=<?= crip($codigo) ?>&timestamp=" + new Date().getTime());
-
-            }
-
-            //function to check file size before uploading.
-            function beforeSubmit() {
-                //check whether browser fully supports all File API
-                if (window.File && window.FileReader && window.FileList && window.Blob)
-                {
-                    if (!$('#imageInput').val()) //check empty input filed
-                    {
-                        $("#retorno").html("Foto não selecionada!");
-                        return false
-                    }
-
-                    var fsize = $('#imageInput')[0].files[0].size; //get file size
-                    var ftype = $('#imageInput')[0].files[0].type; // get file type
-
-                    //Allowed file size is less than 1 MB (1048576)
-                    if (fsize ><?= $max_file ?>)
-                    {
-                        $("#retorno").html("<b>" + bytesToSize(fsize) + "</b> Imagem muito grande, utilize um editor para diminuir o tamanho da foto!");
-                        return false
-                    }
-
-                    $('#submit-btn').hide(); //hide submit button
-                    $('#loading-img').show(); //hide submit button
-                    $("#retorno").html("");
-                }
-                else
-                {
-                    //Output error to older unsupported browsers that doesn't support HTML5 File API
-                    $("#retorno").html("Por favor, atualize seu browser para suportar essa função!");
-                    return false;
-                }
-            }
-
-            //function to format bites bit.ly/19yoIPO
-            function bytesToSize(bytes) {
-                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-                if (bytes == 0)
-                    return '0 Bytes';
-                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-                return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
-            }
-
         });
+
+        $(function () {
+            $('#estado').change(function () {
+                if ($(this).val()) {
+                    $('#cidade').hide();
+                    $('.carregando').show();
+                    $.getJSON('<?= VIEW ?>/admin/cidade.php?search=', {codigo: $(this).val(), ajax: 'true', ajaxCidade: 1}, function (j) {
+                        var options = '<option value=""></option>';
+                        for (var i = 0; i < j.length; i++) {
+                            options += '<option value="' + j[i].codigo + '">' + j[i].nome + '</option>';
+                        }
+                        $('#cidade').html(options).show();
+                        $('.carregando').hide();
+                    });
+                } else {
+                    $('#cidade').html('<option value="">-- Escolha um estado --</option>');
+                }
+            });
+        });
+
+        $('#imageInput').change(function () {
+            $('#MyUploadForm').submit();
+        });
+
+        var options = {
+            target: '#output <?php if (!$codigo) print ",#retorno"; ?>', // target element(s) to be updated with server response 
+            beforeSubmit: beforeSubmit, // pre-submit callback 
+            success: afterSuccess, // post-submit callback 
+            resetForm: true        // reset the form after successful submit 
+        };
+
+        $('#MyUploadForm').submit(function () {
+            $(this).ajaxSubmit(options);
+            // always return false to prevent standard browser submit and page navigation 
+            return false;
+        });
+
+        function afterSuccess()
+        {
+            $('#submit-btn').show(); //hide submit button
+            $('#loading-img').hide(); //hide submit button
+            $("#divFoto").attr("src", "<?= INC ?>/file.inc.php?type=pic&id=<?= crip($codigo) ?>&timestamp=" + new Date().getTime());
+
+        }
+
+        //function to check file size before uploading.
+        function beforeSubmit() {
+            //check whether browser fully supports all File API
+            if (window.File && window.FileReader && window.FileList && window.Blob)
+            {
+                if (!$('#imageInput').val()) //check empty input filed
+                {
+                    $("#retorno").html("Foto não selecionada!");
+                    return false
+                }
+
+                var fsize = $('#imageInput')[0].files[0].size; //get file size
+                var ftype = $('#imageInput')[0].files[0].type; // get file type
+
+                //Allowed file size is less than 1 MB (1048576)
+                if (fsize ><?= $max_file ?>)
+                {
+                    $("#retorno").html("<b>" + bytesToSize(fsize) + "</b> Imagem muito grande, utilize um editor para diminuir o tamanho da foto!");
+                    return false
+                }
+
+                $('#submit-btn').hide(); //hide submit button
+                $('#loading-img').show(); //hide submit button
+                $("#retorno").html("");
+            }
+            else
+            {
+                //Output error to older unsupported browsers that doesn't support HTML5 File API
+                $("#retorno").html("Por favor, atualize seu browser para suportar essa função!");
+                return false;
+            }
+        }
+
+        //function to format bites bit.ly/19yoIPO
+        function bytesToSize(bytes) {
+            var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes == 0)
+                return '0 Bytes';
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+        }
+
+    });
 </script>

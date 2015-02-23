@@ -13,19 +13,21 @@ include_once "inc/config.inc.php";
         <meta http-equiv="pragma" content="no-cache" />
         <link rel="shortcut icon" type="image/x-icon" href="<?= ICONS ?>/favicon.ico" />
         <!-- CSS SITE -->        
-        <link type="text/css" rel="stylesheet" href="<?= VIEW ?>/css/estilo.css" media="screen" />
+        <link type="text/css" rel="stylesheet" href="<?= VIEW ?>/css/estilo.min.css" media="screen" />
         <!-- CSS MENU -->
         <link type="text/css" rel="stylesheet" href="<?= VIEW ?>/css/menu/styles.css" media="screen" />
         <!-- CSS ALERT -->
         <link type="text/css" rel="stylesheet" href="<?= LIB ?>/Zebra_Dialog/public/css/flat/zebra_dialog.css" />
         <!-- CSS CALENDAR -->
         <link type="text/css" href="<?= VIEW ?>/js/jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" media="screen" />
-
+        <!-- CSS TOOLTIP -->
+        <link rel="stylesheet" href="<?= VIEW ?>/js/webui-popover/jquery.webui-popover.min.css" />
+        
         <!-- JS PADRAO -->
         <script type="text/javascript">!window.jQuery && document.write('<script type="text/javascript" src="<?= VIEW ?>/js/jquery-2.1.3.min.js"><\/script>')</script>
         <script type="text/javascript" src="<?= VIEW ?>/js/jquery.html5form-1.5-min.js"></script>
         <!-- JS TOOLTIP -->
-        <script type="text/javascript" src="<?= VIEW ?>/js/tooltip.js"></script>
+        <script src="<?= VIEW ?>/js/webui-popover/jquery.webui-popover.min.js"></script>
         <!-- JS MENU -->
         <script type="text/javascript" src="<?= VIEW ?>/js/menu/script.js"></script>
         <!-- JS MASKINPUT -->
@@ -161,12 +163,12 @@ include_once "inc/config.inc.php";
                             <div id='ano_semestre'>
                                 <span style="color: white">Ano:<input type="text" maxlength="4" style="width: 50px" value="<?= $_SESSION['ano'] ?>" name="campoAnoIndex" id="campoAnoIndex" /></span>
                                 <span style="color: white">Sem:<input type="text" maxlength="1" style="width: 50px" value="<?= $_SESSION['semestre'] ?>" name="campoSemestreIndex" id="campoSemestreIndex" /></span>
-                                <div id='botao_ano_semestre'><a href="#" id="setTroca"><img src="<?= ICONS ?>/change.png" /></a></div>&nbsp;
+                                <div id='botao_ano_semestre'><a href="#" id="setTroca" data-placement="right" data-content="Clique para trocar o semestre" title="Trocar semestre"><img src="<?= ICONS ?>/change.png" /></a></div>&nbsp;
                             </div>
                             <?php
                         }
                         ?>
-                        <span style="color: white">Ol&aacute; <a id="senhaTip" title="Para sua segurança, altere sua senha periodicamente (clique no seu nome)." href="javascript:$('#index').load('<?= VIEW ?>/system/senha.php?opcao=alterar');void(0);" style="color: white"><?= $nome ?></a></span>
+                        <span style="color: white">Ol&aacute; <a id="senhaTip" title="Troque sua senha" data-content="Para sua segurança, altere sua senha periodicamente." href="javascript:$('#index').load('<?= VIEW ?>/system/senha.php?opcao=alterar');void(0);" style="color: white"><?= $nome ?></a></span>
                         <a href="javascript:$('#index').load('<?= VIEW ?>/system/logoff.php');void(0);" style="color: white">(Sair)</a>
                     </div>
                 </div>

@@ -160,7 +160,7 @@ require PATH . VIEW . '/system/paginacao.php';
         <tr <?= $cdif ?>>
             <td><?= $reg['numero'] ?></td>
             <td>
-                <a title='Clique aqui para abrir o Di&aacute;rio desta disciplina. <br><?= $reg['disciplina'] . $disc?>' target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'>
+                <a data-placement="right" data-content='Clique aqui para abrir o Di&aacute;rio desta disciplina.' title="<?= $reg['disciplina'] .' '. $disc ?>" target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'>
                 <?= abreviar($reg['disciplina'], 30).$disc ?>
                 </a>
             </td>

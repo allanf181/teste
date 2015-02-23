@@ -282,7 +282,7 @@ function mapURL($array) {
 function updateDataBase() {
     try {
         $argv[2] = 1;
-        require 'lib/migration/ruckusWeb.php';
+        require PATH.LIB.'/migration/ruckusWeb.php';
         $argv[0] = 'db:migrate';
 
         $main = new Ruckusing_FrameworkRunner($db_config, $argv);

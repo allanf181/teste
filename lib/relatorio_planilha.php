@@ -69,7 +69,7 @@ if ($orientacao == 'L') {
 }
 
 header('Content-Type: application/vnd.ms-excel');
-header('Content-Disposition: attachment;filename="' . $titulo);
+header('Content-Disposition: attachment;filename="' . $titulo .'.xls');
 header('Cache-Control: max-age=0');
 header('Cache-Control: max-age=1');
 

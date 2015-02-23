@@ -24,7 +24,13 @@ $params = array('ano' => $ANO, 'semestre' => $SEMESTRE);
 $res = $atribuicao->getDadosUsoSistema($params);
 if ($res) {
     ?>
-    <div id="container" style="position: static; min-width: 310px; height: 300px; margin: 0 auto"></div>
+    <table width="100%" id="form">
+        <tr>
+            <td>
+                <div id="container" style="position: static; min-width: 310px; height: 300px; margin: 0 auto"></div>
+            </td>
+        </tr>
+    </table>
     <script>
         $(function () {
             $('#container').highcharts({

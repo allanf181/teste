@@ -52,37 +52,35 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
         messages: 'br'
     })
 </script>
-<link rel="stylesheet" type="text/css" href="view/css/aba.css" media="screen" />
-<script src="view/js/aba.js"></script>
-
+<link rel="stylesheet" type="text/css" href="<?= VIEW ?>/css/aba.css" media="screen" />
+<script src="<?= VIEW ?>/js/aba.js"></script>
 
 <div id="html5form" class="main">
     <form id="form_padrao">
-
-        <ul class="tabs">
-            <li><a href="#Dados">Local</a></li>
-            <li><a href="#Dados2">Pap&eacute;is</a></li>
-            <li><a href="#Dados3">Limites</a></li>
-            <li><a href="#Dados4">Configura&ccedil;&otilde;es</a></li>
-            <li><a href="#Dados5">LDAP</a></li>
-        </ul>
-        <div class="tab_container">
+        <div class="tab_container" id="form">
+            <ul class="tabs">
+                <li><a href="#Dados">Local</a></li>
+                <li><a href="#Dados2">Pap&eacute;is</a></li>
+                <li><a href="#Dados3">Limites</a></li>
+                <li><a href="#Dados4">Configura&ccedil;&otilde;es</a></li>
+                <li><a href="#Dados5">LDAP</a></li>
+            </ul>
             <input type="hidden" name="opcao" value="InsertOrUpdate" />
             <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
-            <div class="cont_tab fundo_listagem" id="Dados">
+            <div class="cont_tab" id="Dados">
                 <table align="center" width="60%">
-                    <tr><td align="left">Nome: </td><td><input type="text" name="nome" id="nome" maxlength="200" value="<?= $nome ?>"/></td></tr>
-                    <tr><td align="left">Cidade: </td><td><input type="text" name="cidade" id="cidade" maxlength="200" value="<?= $cidade ?>"/></td></tr>
+                    <tr><td align="left">Nome: </td><td><input type="text" name="nome" id="nome" size="60" maxlength="200" value="<?= $nome ?>"/></td></tr>
+                    <tr><td align="left">Cidade: </td><td><input type="text" name="cidade" id="cidade" size="60" maxlength="200" value="<?= $cidade ?>"/></td></tr>
                 </table>
                 <br><input type="submit" value="Salvar" id="salvar" />
 
             </div>
 
-            <div class="cont_tab fundo_listagem" id="Dados2">
+            <div class="cont_tab " id="Dados2">
                 <table align="center" width="60%">
                     <tr><td colspan="2"><p align="center">Tipos (Pap&eacute;is)</p></td></tr>
                     <tr><td align="left">Administrador: </td><td><select name="adm" value="<?= $adm ?>">
-                                <option></option>
+                                <option value="NULL"></option>
                                 <?php
                                 require CONTROLLER . '/tipo.class.php';
                                 $tipo = new Tipos();
@@ -97,7 +95,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                             </select>
                         </td></tr>
                     <tr><td align="left">Ger&ecirc;ncia Educacional: </td><td><select name="ged" value="<?= $ged ?>">
-                                <option></option>
+                                <option value="NULL"></option>
                                 <?php
                                 foreach ($res as $reg) {
                                     $selected = "";
@@ -109,7 +107,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                             </select>
                         </td></tr>
                     <tr><td align="left">Coordena&ccedil;&atilde;o: </td><td><select name="coord" value="<?= $coord ?>">
-                                <option></option>
+                                <option value="NULL"></option>
                                 <?php
                                 foreach ($res as $reg) {
                                     $selected = "";
@@ -121,7 +119,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                             </select>
                         </td></tr>
                     <tr><td align="left">Doc&ecirc;ncia: </td><td><select name="prof" value="<?= $prof ?>">
-                                <option></option>
+                                <option value="NULL"></option>
                                 <?php
                                 foreach ($res as $reg) {
                                     $selected = "";
@@ -133,7 +131,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                             </select>
                         </td></tr>
                     <tr><td align="left">Secretaria: </td><td><select name="sec" value="<?= $sec ?>">
-                                <option></option>
+                                <option value="NULL"></option>
                                 <?php
                                 foreach ($res as $reg) {
                                     $selected = "";
@@ -145,7 +143,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                             </select>
                         </td></tr>
                     <tr><td align="left">Disc&ecirc;ncia : </td><td><select name="aluno" value="<?= $aluno ?>">
-                                <option></option>
+                                <option value="NULL"></option>
                                 <?php
                                 foreach ($res as $reg) {
                                     $selected = "";
@@ -157,7 +155,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                             </select>
                         </td></tr>
                     <tr><td align="left">Servi&ccedil;o Sociopedag&oacute;gico: </td><td><select name="ssp" value="<?= $ssp ?>">
-                                <option></option>
+                                <option value="NULL"></option>
                                 <?php
                                 foreach ($res as $reg) {
                                     $selected = "";
@@ -175,7 +173,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
             </div>
 
-            <div class="cont_tab fundo_listagem" id="Dados3">
+            <div class="cont_tab" id="Dados3">
                 <table align="left" width="100%">
                     <tr><td colspan="2"><b>Prazo para Altera&ccedil;&atilde;o do Di&aacute;rio</b></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
@@ -188,7 +186,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
             </div>
 
-            <div class="cont_tab fundo_listagem" id="Dados4">
+            <div class="cont_tab" id="Dados4">
                 <table align="left" width="100%">
                     <tr><td colspan="2"><h3><b>Digita Notas</b></h3></td></tr>
                     <tr><td>Sigla do Campus: </td><td><input style="width: 50px" type="text" name="campiDigitaNotas" id="campiDigitaNotas" value="<?= $campiDigitaNotas ?>" maxlength="2" /></td></tr>
@@ -223,7 +221,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                 <br><input type="submit" value="Salvar" id="salvar" />
             </div>
 
-            <div class="cont_tab fundo_listagem" id="Dados5">
+            <div class="cont_tab" id="Dados5">
                 <table align="left" width="100%">
                     <tr><td colspan="2"><h3><b>Autentica&ccedil;&atilde;o LDAP</b></h3></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
@@ -248,8 +246,9 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
         </div>
     </form>
+</div>
 
-    <script>
+<script>
     function valida() {
         if ($('#limiteInsAulaProf').val() > 5) {
             $('#limiteInsAulaProf').val('5');
@@ -269,5 +268,5 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
         });
     });
 
-    </script>
+</script>
 </script>

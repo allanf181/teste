@@ -38,7 +38,7 @@ class Calendarios extends Generic {
             return false;
         }
     }
-    
+
     public function getFeriados() {
         $bd = new database();
 
@@ -47,9 +47,9 @@ class Calendarios extends Generic {
                 . "WHERE diaLetivo = 0";
 
         $res = $bd->selectDB($sql);
-        
+
         if ($res) {
-            foreach($res as $reg) {
+            foreach ($res as $reg) {
                 if ($reg['dataFim'] && $reg['dataFim']) {
                     $end = $reg['dataFim'];
                     $start = $reg['dataInicio'];
@@ -65,7 +65,57 @@ class Calendarios extends Generic {
         } else {
             return false;
         }
-    }    
+    }
+
+    // USADO POR: HOME.PHP
+    public function getEventos($pessoa, $ano) {
+        $bd = new database();
+        $sql = "SELECT c.ocorrencia,
+                  date_format(c.dataInicio, '%d/%m/%Y') as dataInicio,
+                  date_format(c.dataFim, '%d/%m/%Y') as dataFim
+                FROM Calendarios c 
+                    WHERE str_to_date(dataInicio, '%Y') >= :ano 
+                        AND (date_format(dataInicio, '%m') = date_format(CURDATE(), '%m')
+                            OR
+                            date_format(dataFim, '%m') = date_format(CURDATE(), '%m')
+                            )
+                        AND (( curso IS NULL 
+                          AND tipo IS NULL 
+                        )
+                        OR ( tipo IS NULL 
+                            AND curso IN (SELECT t.curso 
+                                FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
+                                WHERE t.codigo = a.turma 
+                                AND m.atribuicao = a.codigo 
+                                AND m.aluno = p.codigo 
+                                AND t.codigo = a.turma
+                                AND p.codigo = :cod )
+                            )
+                        OR ( curso IS NULL 
+                            AND tipo IN (SELECT pt.tipo 
+                                FROM Pessoas p, PessoasTipos pt 
+                                WHERE pt.pessoa = p.codigo
+                                AND p.codigo = :cod)
+                            )
+                    )
+                ORDER BY dataInicio DESC
+                LIMIT 5";
+
+        $params = array(':cod' => $pessoa, ':ano' => $ano);
+
+        $res = $bd->selectDB($sql, $params);
+        
+        if ($res) {
+            foreach ($res as $reg) {
+                $data = ($reg['dataFim'] && $reg['dataFim']!='00/00/0000')? $reg['dataInicio'].' a '.$reg['dataFim']:$reg['dataInicio'];
+                $new_res .= $data . ' - '. $reg['ocorrencia'] .'<br>';
+            }
+            return $new_res;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 ?>

@@ -182,7 +182,7 @@ if (!empty($turma)) {
                         foreach ($codAulas as $codAula => $n) {
                             if ($frequencias[$c][$codAula] > 0 && $frequencias[$c][$codAula] <= $codAulas)
                                 $cor = '#FFCCCC';
-                            $conteudo.= "<a href='#' title='" . mostraTexto($disciplinas[$codAula]) . "<br>" . mostraTexto($professores[$codAula]) . "<br>$n aulas' > (" . $frequencias[$c][$codAula] . ")</a>";
+                            $conteudo.= "<a href='#' data-placement='top' title='" . mostraTexto($disciplinas[$codAula]) . "' data-content='" . mostraTexto($professores[$codAula]) . "<br>$n aulas' > (" . $frequencias[$c][$codAula] . ")</a>";
                         }
                         ?>
                         <td align='center' bgcolor='<?= $cor ?>'><?= $conteudo ?></td>

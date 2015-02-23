@@ -65,6 +65,16 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 </center>
 
 <br />
+<b>Vers&atilde;o 1.434</b>
+<br> - Adi&ccedil;&atilde;o de Sistema de Question&aacute;rios
+<br> - Desvincula&ccedil;&atilde;o do Socioecon&ocirc;mico de Pessoa, registros transportados para Socioecon&ocirc;mico em Question&aacute;rios.
+<br> - Altera&ccedil;&atilde;o do ToolTip.
+<br> - Informe na HOME dos &uacute;ltimos eventos do calend&aacute;rio.
+<br> - Adi&ccedil;&atilde;o de campo em ADMIN-&gt;TIPOS mostrando a quantidade de usu&aacute;rios utilizando cada tipo.
+<br> - Corre&ccedil;&atilde;o do chamado: Defeito #271
+<br> - Adi&ccedil;&atilde;o de funcionalidade de busca por Tipo em Pessoas. Funcionalidade #273
+<br />
+<br />
 <b>Vers&atilde;o 1.433</b>
 <br> - Adi&ccedil;&atilde;o de Link Externo para recupera&ccedil;&atilde;o de senha (ADMIN --> INSTITUI&Ccedil;&Otilde;ES).
 <br> - Upgrade e adapta&ccedil;&atilde;o do site para JQUERY 2.1.3
@@ -73,7 +83,6 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 <br> - Aviso no HOME para informar caso algum papel n&atilde;o esteja cadastrado.
 <br> - Adicionado Sistema de Bolsas para controle de atividades.
 <br> - Aviso no HOME para informar o aluno ou professor participante de bolsa.
-
 <br />
 <br />
 <b>Vers&atilde;o 1.432</b>

@@ -50,7 +50,8 @@ if (dcrip($_GET["aluno"]) != "") {
 }
 
 $aula = dcrip($_GET["aula"]);
-$atribuicao = dcrip($_GET["atribuicao"]);
+if (dcrip($_GET["atribuicao"]) != 'NULL')
+    $atribuicao = dcrip($_GET["atribuicao"]);
 
 $dataInicio = $_GET['dataInicio'];
 $dataFim = $_GET['dataFim'];
@@ -126,7 +127,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                 <td align="right">Disciplina: </td>
                 <td>
                     <select name="atribuicao" id="atribuicao" style="width: 350px">
-                        <option></option>
+                        <option value="<?= crip('NULL') ?>"></option>
                         <?php
                         require CONTROLLER . '/atribuicao.class.php';
                         $att = new Atribuicoes();
@@ -251,7 +252,7 @@ require PATH . VIEW . '/system/paginacao.php';
             <td><?= $reg['dataInicio'] ?></td>
             <td><?= $reg['prontuario'] ?></td>
             <td><?= mostraTexto($reg['nome']) ?></td>
-            <td><a href="#" title="<?= mostraTexto($reg['tipo']) ?>"><?= $reg['sigla'] ?></a></td>
+            <td><a href="#" data-placement="top" data-content="<?= mostraTexto($reg['tipo']) ?>" title="Tipo"><?= $reg['sigla'] ?></a></td>
             <td><?= $reg['aula'] . ' / ' . $reg['disciplina'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />

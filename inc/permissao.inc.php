@@ -7,9 +7,10 @@ if (strpos($_SERVER["HTTP_REFERER"],"/$LOCATION/") == false) {
 
 // PERMISSOES DO ARQUIVO
 if (isset($_SESSION["loginTipo"])) {
-    require CONTROLLER . "/permissao.class.php";
+    if(!class_exists('Permissoes'))
+        require CONTROLLER . "/permissao.class.php";
     $permissao = new Permissoes();        
-
+   
     $LOCATION = substr(LOCATION, 1);
     $SITE = str_replace("/$LOCATION/", '', $_SERVER['PHP_SELF']);
     $TITLE='';
@@ -17,7 +18,7 @@ if (isset($_SESSION["loginTipo"])) {
   
     if ($TITLE) {
         $TITLE_DESCRICAO = $permissao->fileDescricao($SITE);
-        $TITLE_DESCRICAO = "<span class=\"help\"><a title=\"".$TITLE_DESCRICAO['descricaoArquivo']."\" href=\"#\"><img src=\"".ICONS."/help.png\"></a></span>";
+        $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"".$TITLE_DESCRICAO['descricaoArquivo']."\" href=\"#\"><img src=\"".ICONS."/help.png\"></a></span>";
     }
     
     if (!$TITLE) {

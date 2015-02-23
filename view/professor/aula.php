@@ -81,7 +81,7 @@ if ($_GET['opcao'] == 'insert') {
     require CONTROLLER . "/planoAula.class.php";
     $planoAula = new PlanosAula();
     $res = $planoAula->getConteudosAulas($atribuicao, $ANO, $SEMESTRE);
-    
+
     if (!$quantidade) $quantidade = $ensalamento->getQdeAulaDiaSemana($atribuicao, date("N"));
     ?>
     <div id="html5form" class="main">
@@ -166,7 +166,7 @@ if ($_GET['opcao'] == '') {
                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                 ?>
                 <tr <?= $cdif ?>><td><?= $i-- ?></td>
-                    <td><a class='nav' title='Clique aqui para lan&ccedil;ar as faltas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/frequencia.php?atribuicao=<?= crip($atribuicao) ?>&aula=<?= crip($reg['codigo']) ?>');void(0);"><?= $reg['data_formatada'] ?></a></td>
+                    <td><a class='nav' data-placement='top' title='Clique aqui para lan&ccedil;ar as faltas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/frequencia.php?atribuicao=<?= crip($atribuicao) ?>&aula=<?= crip($reg['codigo']) ?>');void(0);"><?= $reg['data_formatada'] ?></a></td>
                     <td><?= $reg['quantidade'] ?></td><td><?= htmlspecialchars($reg['conteudo']) ?></td>
                     <?php
                     if ($_SESSION['dataExpirou']) {

@@ -17,7 +17,9 @@ $aluno = $_SESSION["loginCodigo"];
 
 require CONTROLLER . "/aula.class.php";
 $aula = new Aulas();
-$res = $aula->listAulasAluno($aluno, $atribuicao);
+
+$params = array('atribuicao' => $atribuicao);
+$res = $aula->listAulasProfessor($atribuicao, 'ORDER BY a.data ASC, a.codigo');
 ?>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?=$TITLE_DESCRICAO?><?=$TITLE?></h2>
@@ -30,12 +32,13 @@ $res = $aula->listAulasAluno($aluno, $atribuicao);
         <?php
         $i = 0;
         foreach ($res as $reg) {
+            $dados = $aula->listAulasAluno($reg['codigo'], $aluno);
             $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
             ?>
             <tr <?= $cdif ?>>
-                <td align='left'><?= $reg['dataFormatada'] ?></td>
-                <td align='left'><?= $reg['conteudo'] ?></td>
-                <td align='center'><?= $reg['falta'] ?></td>
+                <td align='left'><?= $dados[0]['dataFormatada'] ?></td>
+                <td align='left'><?= $dados[0]['conteudo'] ?></td>
+                <td align='center'><?= $dados[0]['falta'] ?></td>
             </tr>
             <?php
             $i++;

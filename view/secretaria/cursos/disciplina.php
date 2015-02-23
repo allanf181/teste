@@ -123,7 +123,7 @@ if ($_GET["nomeDisciplina"]) {
                 <td align='left'><?= $reg['numero'] ?></td>
                 <td><?= (mostraTexto($reg['disciplina'])) ?></td>
                 <td><?= $reg['ch'] ?></td>
-                <td><a href='#' title='<?= $reg['curso'] ?> [<?= $reg['modalidade'] ?>]'><?= abreviar(mostraTexto($reg['curso']), 32) ?></a></td>
+                <td><a href='#' data-placement="top" data-content='<?= $reg['modalidade'] ?>' title='<?= $reg['curso'] ?>'><?= abreviar(mostraTexto($reg['curso']), 32) ?></a></td>
                 <td align='center'>
                     <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
                 </td>

@@ -9,7 +9,7 @@ class FrequenciasAbonos extends Generic {
     public function getFrequenciaAbono($aluno, $atribuicao, $data) {
         $bd = new database();
 
-        $sql = "SELECT f.tipo as sigla,
+        $sql = "SELECT f.tipo as sigla, f.motivo,
                 CASE f.tipo WHEN 'A' THEN 'Abono'
                 WHEN 'R' THEN 'Regime de Exerc&iacute;cios Domiciliares'
                 WHEN 'M' THEN 'Matr&iacute;cula ap&oacute;s inicio letivo'

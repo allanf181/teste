@@ -1,16 +1,27 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Cadastro de relatórios de atividades de bolsas de ensino.
+//
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
-//1
+//0
 
 require '../../../inc/config.inc.php';
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
-require PERMISSAO;
 require SESSAO;
+
+$SITE_RAIZ = end(explode('/', $_SESSION['SITE_RAIZ']));
+$PHP_SELF = substr(end(explode('/', $_SERVER['PHP_SELF'])), 0, strlen(end($SITE_RAIZ)) - 4) . '.php';
+
+if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF) {
+    print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
+    die;
+} else {
+    $SITE = 'view/common/bolsas/bolsaRelatorio.php';
+    $TITLE = 'Relat&oacute;rios';
+    $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"Cadastro de relat&oacute;rios de atividades de bolsas de ensino.\" href=\"#\"><img src=\"" . ICONS . "/help.png\"></a></span>";
+}
 
 require CONTROLLER . "/bolsa.class.php";
 $bolsas = new Bolsas();
@@ -174,7 +185,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                                 <input type="submit" value="Salvar" id="salvar" />
                             </td>
                             <td>
-                                <a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a>
+                                <a href="javascript:$('#index').load('<?= $_SESSION['SITE_RAIZ'] ?>');void(0);">Novo/Limpar</a>
                             </td>
                         </tr>
                     </table>
@@ -225,11 +236,11 @@ require PATH . VIEW . '/system/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
-            <td><a href="#" title="<?= $reg['titulo'] ?>"><?= abreviar(mostraTexto($reg['titulo']), 25) ?></a></td>
-            <td><a href="#" title="<?= $reg['aluno'] ?>"><?= abreviar(mostraTexto($reg['aluno']), 25) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['titulo'] ?>' title="Bolsa"><?= abreviar(mostraTexto($reg['titulo']), 25) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['aluno'] ?>' title="Aluno"><?= abreviar(mostraTexto($reg['aluno']), 25) ?></a></td>
             <td><?= $reg['data'] ?></td>
-            <td><a href="#" title="<?= $reg['assunto'] ?>"><?= abreviar(mostraTexto($reg['assunto']), 25) ?></a></td>
-            <td><a href="#" title="<?= $reg['descricao'] ?>"><?= abreviar(mostraTexto($reg['descricao']), 25) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['assunto'] ?>' title="Assunto"><?= abreviar(mostraTexto($reg['assunto']), 25) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['descricao'] ?>' title="Descri&ccedil;&atilde;o"><?= abreviar(mostraTexto($reg['descricao']), 25) ?></a></td>
             <td align='left'>
                 &nbsp;<input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>

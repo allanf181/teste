@@ -83,7 +83,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                             $selected = "";
                             if ($reg['codigo'] == $curso)
                                 $selected = "selected";
-                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['curso'] . " [" . $reg['codigo'] . "]</option>";
+                            print "<option $selected value='" . crip($reg['codigo']) . "'>[" . $reg['codigo'] . "] " . $reg['curso'] . "</option>";
                         }
                         ?>
                     </select>
@@ -122,12 +122,12 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <option></option>
                         <?php
                         require CONTROLLER . "/area.class.php";
-                        $area = new Areas();
-                        foreach ($area->listRegistros() as $reg) {
+                        $areas = new Areas();
+                        foreach ($areas->listRegistros() as $reg) {
                             $selected = "";
                             if ($reg['codigo'] == $area)
                                 $selected = "selected";
-                            print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                            print "<option $selected value='" . ($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
                         }
                         ?>
                     </select>
@@ -188,7 +188,7 @@ require PATH . VIEW . '/system/paginacao.php';
     foreach ($res as $reg) {
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
-        <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
+        <tr <?= $cdif ?>><td align='center'><?= $reg['codCurso'] ?></td>
             <td><?= mostraTexto($reg['curso']) ?></td>
             <td><?= mostraTexto($reg['coordenador']) ?></td>
             <td><?= mostraTexto($reg['area']) ?></td>

@@ -220,9 +220,9 @@ require PATH . VIEW . '/system/paginacao.php';
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
             <td><?= mostraTexto($reg['nome']) ?></td>
             <td><?= $reg['tipo'] ?></td>
-            <td><a href="#" title="<?= $reg['atividade'] ?>"><?= abreviar($reg['atividade'], 20) ?></a></td>
-            <td><a href="#" title="<?= $reg['comprovacao'] ?>"><?= abreviar($reg['comprovacao'], 20) ?></a></td>
-            <td><a href="#" title="<?= $reg['CH'] ?>"><?= abreviar($reg['CH'], 20) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['atividade'] ?>' title="Atividade"><?= abreviar($reg['atividade'], 20) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['comprovacao'] ?>' title="Comprova&ccedil;&atilde;o"><?= abreviar($reg['comprovacao'], 20) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['CH'] ?>' title="Carga Hor&aacute;ria"><?= abreviar($reg['CH'], 20) ?></a></td>
             <td><?= $reg['CHLimite'] ?>h</td>
             <td align='left'>
                 &nbsp;<input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />

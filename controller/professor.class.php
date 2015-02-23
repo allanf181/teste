@@ -24,7 +24,7 @@ class Professores extends Generic {
                            </a>";
                 
                 if ($lattes && $reg['lattes'])
-                    $r .= "<a title='Curr&iacute;culo Lattes' target='_blank' href='" . $reg['lattes'] . "'>";
+                    $r .= "<a title='Curr&iacute;culo Lattes' data-placement='right' data-content='Clique para visualizar' target='_blank' href='" . $reg['lattes'] . "'>";
                 
                 if ($abreviar && $nome)
                     $r .=  abreviar ($reg['nome'], $abreviar);

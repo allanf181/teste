@@ -24,7 +24,7 @@ if ($php53) {
     }
 }
 
-define('RUCKUSING_WORKING_BASE', 'lib/migration/');
+define('RUCKUSING_WORKING_BASE', PATH.LIB.'/migration/');
 $db_config = require RUCKUSING_WORKING_BASE . DIRECTORY_SEPARATOR . 'ruckusing.conf.php';
 
 if (isset($db_config['ruckusing_base'])) {

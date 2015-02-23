@@ -137,7 +137,13 @@ class login extends Generic {
 
                 $instituicao = new Instituicoes();
                 if ($instituicao->sendEmail($email, $assunto, $mensagem, $headers)) {
-                    return true;
+                    $mail_segments = explode("@", $res[0]['email']);
+                    if (strlen($mail_segments[0]) > 4) {
+                        $mail_segments[0] = substr($mail_segments[0], 0, 2) . str_repeat("*", strlen($mail_segments[0])-2);
+                    } else {
+                        $mail_segments[0] = str_repeat("*", strlen($mail_segments[0]));
+                    }
+                    return implode("@", $mail_segments);
                 }
             }
         }

@@ -1,25 +1,35 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // Tooltip only Text
-    $("a").hover(function() {
-        // Hover over code
-        var title = $(this).attr('title');
-        if (!title)
-            return false;
-        for (i=0; i<20; i++)
-            title = title.replace("<br>", " \n");  
-        $(this).data('tipText', title).removeAttr('title');
-        $('<p class="tooltip"></p>')
-                .text(title)
-                .appendTo('body')
-                .fadeIn('slow');
-    }, function() {
-        // Hover out code
-        $(this).attr('title', $(this).data('tipText'));
-        $('.tooltip').remove();
-    }).mousemove(function(e) {
-        var mousex = e.pageX + 20; //Get X coordinates
-        var mousey = e.pageY + 10; //Get Y coordinates
-        $('.tooltip')
-                .css({top: mousey, left: mousex})
+    $('a').each(function () {
+        if ($(this).attr("title") && $(this).attr("class") != 'screenshot') {
+            $(this).attr("data-title", $(this).attr("title"));
+            $(this).removeAttr("title");
+
+            if (!$(this).attr("data-placement")) {
+                $(this).attr("data-placement", 'bottom');
+            }
+            if (!$(this).attr("data-trigger")) {
+                $(this).attr("data-trigger", 'hover');
+            }
+            
+            $(this).attr("data-animation", 'pop');
+            $(this).addClass("newTooltip");
+        }
     });
+
+    var settings = {
+        placement: 'auto',
+        trigger: 'hover',
+        multi: true,
+        style: '',
+        delay: 300,
+        padding: true,
+        arrow: true,
+        delay: {
+            show: null,
+            hide: 300
+        },
+    };
+    $('.newTooltip').webuiPopover(settings);
+
 });

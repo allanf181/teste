@@ -244,7 +244,7 @@ $totalRegistros = count($atvRegistro->listSituacao($params, $sqlAdicional, null,
                     <img class="botao" src='<?= ICONS ?>/info.png' />
                 </a>
             </td>            
-            <td><a href="#" title="<?= $reg['atividade'] ?>"><?= abreviar($reg['atividade'], 20) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['atividade'] ?>' title="Atividade"><?= abreviar($reg['atividade'], 20) ?></a></td>
             <td><?= mostraTexto($reg['nome']) ?></td>
             <td><?= $reg['semAno'] ?></td>
             <td><?= $reg['CHSem'] . 'h/[' . $reg['CHminSem'] . '-' . $reg['CHmaxSem'] ?>]h</td>
@@ -305,9 +305,9 @@ require PATH . VIEW . '/system/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
-            <td><a href="#" title="<?= $reg['aNome'] ?>"><?= abreviar($reg['aNome'], 20) ?></a></td>
-            <td><a href="#" title="<?= $reg['atividade'] ?>"><?= abreviar($reg['atividade'], 20) ?></a></td>
-            <td><a href="#" title="<?= $reg['item'] ?>"><?= abreviar('[' . $reg['tipo'] . '] ' . $reg['item'], 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['aNome'] ?>' title="Aluno"><?= abreviar($reg['aNome'], 20) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['atividade'] ?>' title="Atividade"><?= abreviar($reg['atividade'], 20) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['item'] ?>' title="Item"><?= abreviar('[' . $reg['tipo'] . '] ' . $reg['item'], 30) ?></a></td>
             <td><?= $reg['semestre'] . '/' . $reg['ano'] ?></td>
             <td><?= $reg['CH'] ?></td>
             <td align='left'>

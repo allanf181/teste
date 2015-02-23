@@ -105,7 +105,7 @@ if (dcrip($_GET["tipo"]))
                 <td>
                     <?php if ($tipo) {
                         ?>
-                        <a href='#' title='Copiar' class='item-copiar'><img class='botao' src='<?= ICONS ?>/copiar.gif' /></a>
+                        <a href='#' title='Copiar Permiss&atilde;o' data-content='Permite replicar as permiss&otilde;es de um tipo para outro.' class='item-copiar'><img class='botao' src='<?= ICONS ?>/copiar.gif' /></a>
                         <?php
                     }
                     ?>
@@ -199,7 +199,7 @@ if (dcrip($_GET["tipo"]))
                                         ?>
                                         <td>
                                             <input type='checkbox' <?= $checkedPermissao ?> name='permissao[]' value='<?= $arquivo ?>' onclick="return libera('<?= $descricao['nome'] . $i ?>', this.checked);" />
-                                            <b><font size="1"><a href="#" title='<?= $descricao['descricaoArquivo'] ?><br><?= $descricao['descricaoLink'] ?>'><?= $descricao['nome'] ?></a></font></b>
+                                            <b><font size="1"><a href="#" data-placement="top" title='<?= $descricao['descricaoArquivo'] ?>' data-content='<?= $descricao['descricaoLink'] ?>'><?= $descricao['nome'] ?></a></font></b>
                                             <br><input type='checkbox' <?= $disabled ?> <?= $checkedLink ?> name='menu[<?= $arquivo ?>]' id="M_<?= $descricao['nome'] . $i ?>" value='<?= $arquivo ?>' />
                                             <font size="1"> - link vis&iacute;vel</font>
                                             <br><input type="text" <?= $disabled ?> name="nome[<?= $arquivo ?>]" id="<?= $descricao['nome'] . $i ?>" value="<?= $arquivoNomeMenu ?>" />

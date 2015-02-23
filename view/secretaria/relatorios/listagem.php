@@ -437,7 +437,14 @@ $rel_bolsa = null;
                 <a href="#" title="Imprimir em HTML" onclick="relatorio('html', '<?= $relatorio ?>')">
                     <img style="width: 30px" src="<?= ICONS ?>/files/htm.png" />
                 </a>
+            <?php } ?>
+            <?php if ($relatorio == 'alunos') { ?>
                 <a href="#" title="Imprimir em XLS" onclick="relatorio('xls', '<?= $relatorio ?>')">
+                    <img style="width: 30px" src="<?= ICONS ?>/files/xls.png" />
+                </a>        
+            <?php } ?>
+            <?php if ($relatorio == 'chamada') { ?>
+                <a href="#" title="Imprimir em XLS" onclick="relatorio('xls', 'chamadaPlanilha')">
                     <img style="width: 30px" src="<?= ICONS ?>/files/xls.png" />
                 </a>        
             <?php } ?>

@@ -20,7 +20,7 @@ $paramsCal = array('ano' => $ANO);
 $user = $_SESSION['loginCodigo'];
 $tipo = implode(',', $_SESSION["loginTipo"]);
 
-$sqlAdicionalCal = " AND (     (c.curso = 0 AND c.tipo = 0) 
+$sqlAdicionalCal = " AND (     (c.curso IS NULL AND c.tipo IS NULL) 
                             OR (c.curso IN (SELECT t.curso 
                                 FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
                                 WHERE t.codigo = a.turma 
@@ -34,20 +34,20 @@ $sqlAdicionalCal = " AND (     (c.curso = 0 AND c.tipo = 0)
                                 AND pr.atribuicao = a.codigo
                                 AND t.codigo = a.turma
                                 AND p.codigo = $user ) AND (c.tipo IN ($tipo)) )
-                            OR (c.curso = 0 AND (c.tipo IN ($tipo)) )
+                            OR (c.curso IS NULL AND (c.tipo IN ($tipo)) )
                             OR (c.curso IN (SELECT t.curso
                                 FROM Pessoas p, Atribuicoes a, Matriculas m, Turmas t 
                                 WHERE t.codigo = a.turma 
                                 AND m.atribuicao = a.codigo 
                                 AND m.aluno = p.codigo 
                                 AND t.codigo = a.turma
-                                AND p.codigo = $user ) AND c.tipo = 0)
+                                AND p.codigo = $user ) AND c.tipo IS NULL)
                             OR (c.curso IN (SELECT t.curso 
                                 FROM Pessoas p, Atribuicoes a, Professores pr, Turmas t
                                 WHERE p.codigo = pr.professor 
                                 AND pr.atribuicao = a.codigo
                                 AND t.codigo = a.turma
-                                AND p.codigo = $user ) AND c.tipo = 0)
+                                AND p.codigo = $user ) AND c.tipo IS NULL)
                          )";
 
 $resCal = $calendario->listCalendario($paramsCal, $sqlAdicionalCal);
@@ -130,7 +130,7 @@ for ($j = 1; $j <= 12; $j++) {
                                             } else
                                                 $font = '2';
                                             ?>
-                                            <td><a href='#' <?= $destaque ?> title='<?= $oNome ?>'><font size='<?= $font ?>'><?= $d++ ?></font></a></td>
+                                            <td><a href='#' <?= $destaque ?> title='Evento' data-content='<?= $oNome ?>'><font size='<?= $font ?>'><?= $d++ ?></font></a></td>
                                             <?php
                                             $oNome = "";
                                         }

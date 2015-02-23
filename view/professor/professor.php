@@ -232,14 +232,14 @@ if ($_GET["atribuicao"]) {
                             foreach ($res as $reg) {
                                 $title = $reg['solicitacao'];
 
-                                if (strlen($reg['solicitacao']) > 70)
-                                    $reg['solicitacao'] = abreviar($reg['solicitacao'], 70);
+                                if (strlen($reg['solicitacao']) > 40)
+                                    $reg['solicitacao'] = abreviar($reg['solicitacao'], 40);
                                 $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                                 ?>
                                 <tr <?= $cdif ?>>
                                     <td><?= $reg['dataSolicitacao'] ?></td>
                                     <td><?= $reg['solicitante'] ?></td>
-                                    <td><a href='#' title='<?= $title ?>'><?= $reg['solicitacao'] ?></a></td>
+                                    <td><a href='#' data-placement="top" title='Solicita&ccedil;&atilde;o' data-content='<?= $title ?>'><?= $reg['solicitacao'] ?></a></td>
                                     <td><?= $reg['dataConcessao'] ?></td>
                                     <?php
                                     $i--;

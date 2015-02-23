@@ -5,7 +5,6 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     die;
 }
 
-
 require CONTROLLER . "/aviso.class.php";
 $aviso = new Avisos();
 
@@ -58,16 +57,28 @@ if ($_GET["opcao"] == 'delete') {
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
             <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
-            <tr><td align="right">Para: </td><td><input type="text" id="to" name="to" /></td></tr>
-            <tr><td></td><td align="left"><font size='1'><?= $para ?> Deixe em branco para enviar para todos.</font></td></tr>
-            <tr><td align="right" style="width: 120px">Aviso: </td> 
-                <td><textarea rows="5" cols="60" maxlength='500' id='conteudo' name='conteudo'><?= $conteudo ?></textarea></tr>
-            <tr><td></td><td>
+            <tr>
+                <td align="right">Para: </td>
+                <td><input type="text" id="to" name="to" /></td>
+            </tr>
+            <tr><td></td>
+                <td align="left"><font size='1'><?= $para ?> Deixe em branco para enviar para todos.</font></td>
+            </tr>
+            <tr>
+                <td align="right" style="width: 120px">Aviso: </td> 
+                <td><textarea rows="5" cols="60" maxlength='500' id='conteudo' name='conteudo'><?= $conteudo ?></textarea></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
-                    <table width="100%"><tr><td><input type="submit" value="Salvar" id="salvar" /></td>
+                    <table width="100%">
+                        <tr><td><input type="submit" value="Salvar" id="salvar" /></td>
                             <td><a href="javascript:$('<?= $DIV ?>').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td> 
-                        </tr></table> 
-                </td></tr> 
+                        </tr>
+                    </table> 
+                </td>
+            </tr> 
         </table>
     </form>
 </div>
@@ -112,6 +123,8 @@ require PATH . VIEW . '/system/paginacao.php';
             $para = $reg['turma'];
         if ($reg['destinatario'])
             $para = $reg['destinatario'];
+        if ($reg['tipo'])
+            $para = $reg['tipo'];
 
         if (!$para)
             $para = 'Todos';

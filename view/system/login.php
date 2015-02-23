@@ -22,9 +22,9 @@ if ($_GET['key'] && $_GET['prt']) {
     $prt = $_GET['prt'];
     ?>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#index').load('<?= VIEW ?>/system/senha.php?opcao=recuperarPorChave&key=<?= $key ?>&prt=<?= $prt ?>');
-        });
+                });
     </script>
     <?php
 }
@@ -49,10 +49,10 @@ if ($prontuario && $senha) {
 
     if (!isset($erro_cap)) {
         if ($login->autentica($prontuario, $senha, $LDAP_ATIVADO, $LDAP_DROP_LEFT, $LDAP_CACHE)) {
-            
+
             // Guardando em sessão a chave randomica gerada para a função de cripto/decriptografia.
-            $_SESSION["cripto"] = genRandomString();            
-            
+            $_SESSION["cripto"] = genRandomString();
+
             print "Aguarde... redirecionando...";
             print "<script type=\"text/javascript\">\n";
             print "  location.reload(); \n";
@@ -65,6 +65,7 @@ if ($prontuario && $senha) {
     }
 }
 ?>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <div id='fundo_login'></div>
 <div id='form_login_logo'></div>
 <div id="" class="">
@@ -116,7 +117,7 @@ if ($prontuario && $senha) {
                 <td style='text-align: left'>
                     <input type="button"  id="entrar" value=" ENTRAR " />
                     &nbsp;
-                    <a style='color: black' href="#" onclick="return recuperarSenha();">Recuperar a Senha</a>
+                    <a style='color: black' href="#" data-content='A senha ser&aacute; enviada para seu e-mail de cadastro.' title='Recupera&ccedil;&atilde;o de Senha' onclick="return recuperarSenha();">Recuperar a Senha</a>
                 </td>
             </tr>
         </table>

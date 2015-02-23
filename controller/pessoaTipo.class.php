@@ -55,6 +55,22 @@ class PessoasTipos extends Generic {
         }
     }
 
+    // UTILIZADO POR: TIPOS.PHP
+    function countTipoPessoa($tipo) {
+        $bd = new database();
+
+        $sql = "SELECT COUNT(*) as total FROM PessoasTipos WHERE tipo = :tipo";
+        
+        $params = array(':tipo' => $tipo);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res[0]['total']) {
+            return $res[0]['total'];
+        } else {
+            return false;
+        }
+    }
+    
 }
 
 ?>

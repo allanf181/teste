@@ -16,7 +16,6 @@ Abstract class Generic {
         // decriptografa elementos que possam
         // estar criptografados dentro do Array
         $params = dcripArray($params);
-
         foreach (array_keys($params) as $key) {
             if ($key == 'codigo') {
                 $INS[] = 'NULL';
@@ -25,11 +24,17 @@ Abstract class Generic {
                 $COL[] = $key;
 
                 if ($key == 'senha') {
-                    $INS[] = 'PASSWORD(:' . $key.')';
-                    $UP[] = $key . '=PASSWORD(:' . $key.')';
+                    $INS[] = 'PASSWORD(:' . $key . ')';
+                    $UP[] = $key . '=PASSWORD(:' . $key . ')';
                 } else {
-                    $INS[] = ':' . $key;
-                    $UP[] = $key . '=:' . $key;
+                    if ($params[$key] != 'NULL') {
+                        $INS[] = ':' . $key;
+                        $UP[] = $key . '=:' . $key;
+                    } else {
+                        $INS[] = 'NULL';
+                        $UP[] = $key . '=NULL';
+                        unset($params[$key]);
+                    }
                 }
             }
         }
@@ -40,7 +45,7 @@ Abstract class Generic {
 
         if (!$table)
             $table = get_called_class();
-        
+
         if (!$params['codigo']) {
             $sql = "INSERT INTO $table ($COL) VALUES ($INS)";
             unset($params['codigo']);
@@ -77,7 +82,7 @@ Abstract class Generic {
         $table = get_called_class();
 
         $nav = null;
-        
+
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ",$itensPorPagina ";
 

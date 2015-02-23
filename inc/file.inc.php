@@ -2,6 +2,7 @@
 
 require 'config.inc.php';
 require FUNCOES;
+require VARIAVEIS;
 
 $type = $_GET['type'];
 $codigo = dcrip($_GET['id']);
@@ -68,10 +69,12 @@ if ($type == 'chat') {
     require CONTROLLER . "/chat.class.php";
     $chat = new Chat();
 
-    $params = array(':prontuario' => $_SESSION['loginProntuario']);
+    $params = array(':prontuario' => $_SESSION['loginProntuario'], ':ano' => $ANO);
+    $sqlAdicional = " AND str_to_date(:ano, '%Y') = str_to_date(c.data, '%Y') ";
+
     if (dcrip($_GET['atribuicao'])) {
-        $params = array(':prontuario' => $_SESSION['loginProntuario']);
-        $sqlAdicional = ' AND c.atribuicao = :atribuicao ';
+        $params = array(':prontuario' => $_SESSION['loginProntuario'], ':ano' => $ANO);
+        $sqlAdicional .= " AND c.atribuicao = :atribuicao ";
         $params[':atribuicao'] = dcrip($_GET['atribuicao']);
     }
     if (dcrip($_GET['origem'])) {
@@ -79,6 +82,7 @@ if ($type == 'chat') {
         $sqlAdicional = " AND c.origem = :origem ";
         $params[':origem'] = dcrip($_GET['origem']);
     }
+
     $message = $chat->qdeMessage($params, $sqlAdicional);
 
     list($width, $height, $type, $attr) = getimagesize(PATH . IMAGES . "chat.png");

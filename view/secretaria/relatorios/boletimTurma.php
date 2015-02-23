@@ -234,7 +234,7 @@ if ($turma && $fechamento) {
                     foreach ($disciplinasNomes[$bim] as $ddSigla) {
                         foreach ($ddSigla as $dSigla => $dNome) {
                             ?>
-                            <td align='center' style='width: 30px'><a title='<?= $dNome ?>'><?= $dSigla ?></a></td>
+                            <td align='center' style='width: 30px'><a data-placement="top" data-content='<?= $dNome ?>' title='Disciplina'><?= $dSigla ?></a></td>
                             <?php
                         }
                     }
@@ -269,14 +269,14 @@ if ($turma && $fechamento) {
                 <tr <?= $cdif ?>>
                     <td align='center'><?= $i ?></td>
                     <td>
-                        <a href="#" rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($c) ?>' class='screenshot nav' title='<?= mostraTexto($nome) ?>'>
+                        <a href="#" rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($c) ?>' class='screenshot' title='<?= mostraTexto($nome) ?>'>
                             <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($c) ?>'>
                         </a>
                         <?php
                         if ($bimestre != 'final' && $fechamento == 'b')
                             $bimestreLink = '&bimestre=' . crip($bimestre);
                         ?>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/relatorios/boletim.php?aluno=<?= crip($c) ?>&turma=<?= crip($turma) . $bimestreLink ?>');void(0);"><?= mostraTexto($nome) ?></a>
+                        <a title='Clique para ver o boletim do aluno' href="javascript:$('#index').load('<?= VIEW ?>/secretaria/relatorios/boletim.php?aluno=<?= crip($c) ?>&turma=<?= crip($turma) . $bimestreLink ?>');void(0);"><?= mostraTexto($nome) ?></a>
                     </td>
                     <?php
                     foreach ($disciplinas as $dCodigo => $dMatricula) {
@@ -285,7 +285,7 @@ if ($turma && $fechamento) {
                                 $dados = $nota->resultado($dMatricula[$c], $dCodigo);
                                 ?>
                                 <td align='center'>
-                                    <a title='<?= $disciplinasNomes2[$dCodigo] ?><br>Faltas: <?= $dados['faltas'] ?><br>Aulas Dadas: <?= $dados['auladada'] ?><br>Frequ&ecirc;ncia (Aulas Dadas): <?= arredondar($dados['frequencia']) ?>%<br>Frequ&ecirc;ncia (Aulas Previstas): <?= arredondar($dados['frequenciaPrevista']) ?>%'><font color='<?= $dados['color'] ?>'><?= $dados['media'] ?></font></a>
+                                    <a title='<?= $disciplinasNomes2[$dCodigo] ?>' data-content='Faltas: <?= $dados['faltas'] ?><br>Aulas Dadas: <?= $dados['auladada'] ?><br>Frequ&ecirc;ncia (Aulas Dadas): <?= arredondar($dados['frequencia']) ?>%<br>Frequ&ecirc;ncia (Aulas Previstas): <?= arredondar($dados['frequenciaPrevista']) ?>%'><font color='<?= $dados['color'] ?>'><?= $dados['media'] ?></font></a>
                                 </td>
                                 <?php
                             } else {

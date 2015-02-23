@@ -52,7 +52,7 @@ require SESSAO;
 
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
-
+<div id="loaderChat">&nbsp;Inicializando o Chat... aguarde...</div>
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table align="center" width="100%" id="form" border="0">
@@ -78,8 +78,6 @@ require SESSAO;
                                     $k = 1;
                                 }
                                 print printUser($reg['codigo'], $reg['nome'], $reg['prontuario'], 'aluno');
-                                print '<p id="T' . $reg["prontuario"] . '"></p>';
-                                print "<hr>";
                             }
                         }
                     }
@@ -95,8 +93,6 @@ require SESSAO;
                             $alunos[] = $reg['prontuario'];
                             if ($_SESSION['loginProntuario'] != $reg['prontuario']) {
                                 print printUser($reg['codAluno'], $reg['aluno'], $reg['prontuario'], 'aluno');
-                                print '<p id="T' . $reg["prontuario"] . '"></p>';
-                                print "<hr>";
                             }
                         }
                     }
@@ -113,8 +109,6 @@ require SESSAO;
                                     $k = 1;
                                 }
                                 print printUser($reg['codigo'], $reg['nome'], $reg['prontuario'], 'bolsista');
-                                print '<p id="T' . $reg["prontuario"] . '"></p>';
-                                print "<hr>";
                             }
                         }
                     }
@@ -128,8 +122,6 @@ require SESSAO;
                                     $k = 1;
                                 }
                                 print printUser($reg['codigo'], $reg['nome'], $reg['prontuario'], 'bolsista');
-                                print '<p id="T' . $reg["prontuario"] . '"></p>';
-                                print "<hr>";
                             }
                         }
                     }
@@ -163,19 +155,23 @@ require SESSAO;
 <?php
 
 function printUser($codigo, $nome, $prontuario, $tipo) {
-    $linha = '                          <table>
-                                        <tr>
-                                        <td>
-                                        <a href="#" rel=' . INC . '/file.inc.php?type=pic&id=' . crip($codigo) . '&timestamp=' . time() . ' class="screenshot" title=' . $nome . '">
-                                        <img style="width: 25px; height: 25px" alt="Embedded Image" src=' . INC . '/file.inc.php?type=pic&id=' . crip($codigo) . '&timestamp=' . time() . ' />
-                                        </a>
-                                        </td>
-                                        <td>
-                                        <div style="cursor: pointer; cursor: hand;" class="' . $tipo . '" id="' . $prontuario . '">[' . $prontuario . '] ' . $nome . '</div>
-                                        </td>
-                                        </tr>
-                                        </table>
-                                        ';
+    $linha = '<table width="100%" border="0">
+                <tr>
+                    <td width="25px">
+                        <a href="#" rel=' . INC . '/file.inc.php?type=pic&id=' . crip($codigo) . '&timestamp=' . time() . ' class="screenshot" title=' . $nome . '">
+                            <img style="width: 25px; height: 25px" alt="Embedded Image" src=' . INC . '/file.inc.php?type=pic&id=' . crip($codigo) . '&timestamp=' . time() . ' />
+                        </a>
+                    </td>
+                    <td>
+                        <div style="cursor: pointer; cursor: hand;" class="' . $tipo . '" id="' . $prontuario . '">[' . $prontuario . '] ' . $nome . '</div>
+                    </td>
+                    <td>
+                        <div id="T' . $prontuario . '"></div>
+                    </td>
+                </tr>
+             </table>';
+    $linha .= '';
+    $linha .= "<hr>";
     return $linha;
 }
 ?>
@@ -194,6 +190,7 @@ function printUser($codigo, $nome, $prontuario, $tipo) {
             dataType: 'json',
             success: function (data)
             {
+                $('#loaderChat').hide();
                 for (var i in data) {
                     if (data[i].prontuario != $('#first').val()) {
                         $('#' + data[i].prontuario).html(data[i].nome);

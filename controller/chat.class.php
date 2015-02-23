@@ -93,7 +93,7 @@ class Chat extends Generic {
         }
     }
 
-    public function listMessage($params, $sqlAdicional = null) {
+    public function listMessage($prontuario, $ano) {
         $bd = new database();
 
         $new_res = null;
@@ -105,9 +105,11 @@ class Chat extends Generic {
                     AND a.turma = t.codigo
                     AND a.disciplina = d.codigo
                     AND c.para = :prontuario
-                    AND c.visualizado = '' $sqlAdicional
+                    AND c.visualizado = ''
+                    AND str_to_date(:ano, '%Y') = str_to_date(data, '%Y') 
                     GROUP BY a.codigo";
 
+        $params = array(':prontuario' => $prontuario, ':ano' => $ano);
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
@@ -123,7 +125,8 @@ class Chat extends Generic {
                     AND c.visualizado = '' $sqlAdicional
                     AND c.origem <> ''
                     GROUP BY c.prontuario";
-
+        
+        $params = array(':prontuario' => $prontuario);
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
@@ -134,7 +137,7 @@ class Chat extends Generic {
 
         if ($new_res) return $new_res;
 
-        return 'Voc&ecirc; n&atilde;o tem mensagens novas';
+        return false;
     }
 
     public function listMessageBolsa($codigo, $origem) {

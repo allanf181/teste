@@ -1,16 +1,27 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Cadastra uma ou mais disciplinas para uma bolsa de ensino.
+//
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
-//1
+//0
 
 require '../../../inc/config.inc.php';
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
-require PERMISSAO;
 require SESSAO;
+
+$SITE_RAIZ = end(explode('/', $_SESSION['SITE_RAIZ']));
+$PHP_SELF = substr(end(explode('/', $_SERVER['PHP_SELF'])), 0, strlen(end($SITE_RAIZ)) - 4) . '.php';
+
+if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF) {
+    print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
+    die;
+} else {
+    $SITE = 'view/common/bolsas/bolsaDisciplina.php';
+    $TITLE = 'Disciplinas';
+    $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"Cadastra uma ou mais disciplinas para uma bolsa de ensino.\" href=\"#\"><img src=\"" . ICONS . "/help.png\"></a></span>";
+}
 
 require CONTROLLER . "/bolsa.class.php";
 $bolsas = new Bolsas();
@@ -163,9 +174,9 @@ require PATH . VIEW . '/system/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>><td align='center'><?= $i ?></td>
-            <td><a href="#" title="<?= $reg['titulo'] ?>"><?= abreviar(mostraTexto($reg['titulo']), 30) ?></a></td>
-            <td><a href="#" title="<?= $reg['disciplina'] ?>"><?= abreviar(mostraTexto($reg['disciplina']), 30) ?></a></td>
-            <td><a href="#" title="<?= $reg['curso'] ?>"><?= abreviar(mostraTexto($reg['curso']), 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['titulo'] ?>' title="Bolsa"><?= abreviar(mostraTexto($reg['titulo']), 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['disciplina'] ?>' title="Disciplina"><?= abreviar(mostraTexto($reg['disciplina']), 30) ?></a></td>
+            <td><a href="#" data-placement="top" data-content='<?= $reg['curso'] ?>' title="Curso"><?= abreviar(mostraTexto($reg['curso']), 30) ?></a></td>
             <td align='left'>
                 &nbsp;<input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= crip($reg['codigo']) ?>'>

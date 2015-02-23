@@ -33,14 +33,16 @@ class Bolsas extends Generic {
         return false;
     }
 
-    public function checkBolsas($codigo, $tipo) {
+    public function checkBolsas($codigo, $tipo, $ano) {
         $bd = new database();
 
         if ($tipo == 'professor') {
             $sql = "SELECT COUNT(*) as total
 		FROM Bolsas b
 		WHERE b.professor = :codigo
-                AND CURDATE() between dataInicio and dataFim";
+                AND str_to_date(:ano, '%Y') 
+                    between str_to_date(dataInicio, '%Y') 
+                    AND str_to_date(dataFim, '%Y')";
         }
 
         if ($tipo == 'aluno') {
@@ -48,18 +50,20 @@ class Bolsas extends Generic {
 		FROM Bolsas b, BolsasAlunos ba
 		WHERE b.codigo = ba.bolsa
                 AND ba.aluno = :codigo
-                AND CURDATE() between dataInicio and dataFim";
+                AND str_to_date(:ano, '%Y') 
+                    between str_to_date(dataInicio, '%Y') 
+                    AND str_to_date(dataFim, '%Y')";
         }
 
-        $params = array('codigo' => $codigo);
+        $params = array('codigo' => $codigo, 'ano' => $ano);
         $res = $bd->selectDB($sql, $params);
 
         if ($res[0]['total']) {
             $t = $res[0]['total'];
             if ($tipo == 'aluno')
-                $resp = "Você está participando de $t bolsa(s) nesse semestre.";
+                $resp = "Você está participando de $t bolsa(s).";
             if ($tipo == 'professor')
-                $resp = "Você está supervisionando $t bolsa(s) nesse semestre.";
+                $resp = "Você está supervisionando $t bolsa(s).";
             return $resp;
         }
 

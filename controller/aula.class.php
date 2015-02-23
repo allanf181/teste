@@ -11,7 +11,7 @@ class Aulas extends Frequencias {
 
     // LISTA OS CONTEUDOS DAS AULAS DO ALUNO
     // USADO POR: VIEW/ALUNO/AULA.PHP, VIEW/SECRETARIA/RELATORIOS/DIARIO.PHP
-    public function listAulasAluno($aula, $aluno, $sigla) {
+    public function listAulasAluno($aula, $aluno, $sigla = null) {
         $bd = new database();
 
         $sql = "SELECT (
@@ -135,7 +135,7 @@ class Aulas extends Frequencias {
     }
 
     // LISTA OS ALUNOS DE UMA AULA ESPECIFICA
-    // USADO POR: VIEW/PROFESSOR/FREQUENCIA.PHP
+    // USADO POR: VIEW/PROFESSOR/FREQUENCIA.PHP, VIEW/COMMON/CHAT.PHP
     public function listAlunosByAula($params, $sqlAdicional) {
         $bd = new database();
 
