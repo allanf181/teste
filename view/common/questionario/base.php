@@ -30,7 +30,7 @@ $totalRegistros = count($questionario->getAvisoQuestionarios());
             ?>
             <tr <?= $cdif ?>><td align='left'><?= $i ?></td>
             <td><?= $reg['dataCriacao'] ?></td>
-            <td><a href="javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioQuestao.php?questionario=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>');void(0)" data-placement="top" title="Nome" data-content="<?= $reg['nome'] ?>"><?= abreviar($reg['nome'], 20) ?></a></td>
+            <td><a href="#" data-placement="top" title="Nome" data-content="<?= $reg['nome'] ?>"><?= abreviar($reg['nome'], 20) ?></a></td>
             <td><a href="#" data-placement="top" title="Descri&ccedil;&atilde;o" data-content="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 20) ?></a></td>
             <td><?= $reg['dataFechamento'] ?></td>
             <td><?= $reg['valorTotal'] ?></td>
