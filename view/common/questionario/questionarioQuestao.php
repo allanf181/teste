@@ -15,7 +15,7 @@ require SESSAO;
 $SITE_RAIZ = end(explode('/', $_SESSION['SITE_RAIZ']));
 $PHP_SELF = substr(end(explode('/', $_SERVER['PHP_SELF'])), 0, strlen(end($SITE_RAIZ)) - 4) . '.php';
 
-if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF) {
+if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF || in_array($ALUNO, $_SESSION["loginTipo"])) {
     print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
     die;
 } else {

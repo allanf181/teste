@@ -9,6 +9,18 @@ require '../../../inc/config.inc.php';
 require VARIAVEIS;
 require FUNCOES;
 
+$SITE_RAIZ = end(explode('/', $_SESSION['SITE_RAIZ']));
+$PHP_SELF = substr(end(explode('/', $_SERVER['PHP_SELF'])), 0, strlen(end($SITE_RAIZ)) - 4) . '.php';
+
+if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF || in_array($ALUNO, $_SESSION["loginTipo"])) {
+    print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
+    die;
+} else {
+    $SITE = 'view/common/questionario/questionarioQuestaoItem.php';
+    $TITLE = 'Itens de Quest&otilde;es';
+    $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"Permite a inser&ccedil;&atilde;o itens de quest&otilde;es a questionarios criados anteriormente.\" href=\"#\"><img src=\"" . ICONS . "/help.png\"></a></span>";
+}
+
 require CONTROLLER . "/questionarioResposta.class.php";
 $resposta = new QuestionariosRespostas();
 
