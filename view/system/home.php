@@ -305,7 +305,7 @@ function showCoordCurso() {
     $sqlAdicional = ' AND p.codigo = :pessoa ';
     $res = $coordenador->listCoordenadores($params, $sqlAdicional);
     foreach ($res as $reg)
-        print "- " . $reg['curso'] . "<br>";
+        print "- " . $reg['curso'] . " [".$reg['codCurso']."]<br>";
 
     checkCoordHasCursoArea(1);
 }
