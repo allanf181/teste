@@ -92,10 +92,10 @@ class login extends Generic {
             if (!$notLog) {
                 $log = new Logs();
                 $paramsLog['url'] = getClientIP();
-                $paramsLog['data'] = date('Y-m-d H:i:s');
+                $paramsLog['data'] = 'NOW()';
                 $paramsLog['origem'] = 'LOGIN';
                 $paramsLog['pessoa'] = $res[0]['codigo'];
-                $log->insertOrUpdate($paramsLog);
+                $res = $log->insertOrUpdate($paramsLog);
             }
             return true;
         } else {

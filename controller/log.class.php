@@ -52,17 +52,17 @@ class Logs extends Generic {
     public function getLastAccess($pessoa) {
         $bd = new database();
 
-        $sql = "SELECT date_format(data, '%d/%m/%Y às %H:%i') as data "
-                . "FROM Logs "
-                . "WHERE ORIGEM = 'LOGIN' "
-                . "AND pessoa = :pessoa "
-                . "ORDER BY data DESC LIMIT 1";
+        $sql = "SELECT date_format(data, '%d/%m/%Y às %H:%i') as data
+                FROM Logs l
+                WHERE l.ORIGEM =  'LOGIN'
+                AND l.pessoa = :pessoa
+                ORDER BY  l.data DESC LIMIT 1";
 
         $params = array('pessoa' => $pessoa);
         $res = $bd->selectDB($sql, $params);
 
         if ($res)
-            return '&Uacute;ltimo acesso: <br> '.$res[0]['data'];
+            return '&Uacute;ltimo acesso: <br> ' . $res[0]['data'];
         else
             return 'Primeiro acesso.';
     }

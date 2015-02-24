@@ -26,15 +26,21 @@ Abstract class Generic {
                 if ($key == 'senha') {
                     $INS[] = 'PASSWORD(:' . $key . ')';
                     $UP[] = $key . '=PASSWORD(:' . $key . ')';
+                } else if ($params[$key] == 'NULL') {
+                    $INS[] = 'NULL';
+                    $UP[] = $key . '=NULL';
+                    unset($params[$key]);
+                } else if ($params[$key] == 'NOW()') {
+                    $INS[] = 'NOW()';
+                    $UP[] = $key . '=NOW()';
+                    unset($params[$key]);
+                } else if ($params[$key] == '--') { //datas vazias
+                    $INS[] = 'NULL';
+                    $UP[] = $key . '=NULL';
+                    unset($params[$key]);
                 } else {
-                    if ($params[$key] != 'NULL') {
-                        $INS[] = ':' . $key;
-                        $UP[] = $key . '=:' . $key;
-                    } else {
-                        $INS[] = 'NULL';
-                        $UP[] = $key . '=NULL';
-                        unset($params[$key]);
-                    }
+                    $INS[] = ':' . $key;
+                    $UP[] = $key . '=:' . $key;
                 }
             }
         }
