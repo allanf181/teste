@@ -215,7 +215,7 @@ function bolsa() {
         ?>
         <td width='20'>&nbsp;</td>
         <td width='20'>
-            <a title='Bolsas' data-content='<?= $message ?>' href="javascript:$('#index').load('<?= VIEW ?>/secretaria/bolsas/bolsa.php');void(0);">
+            <a title='Bolsas' data-content='<?= $message ?>' href="javascript:$('#index').load('<?= VIEW."/$tipo" ?>/bolsa.php');void(0);">
                 <img style='width: 40px' src='<?= IMAGES ?>/bolsa.png' />
             </a>
         </td>
