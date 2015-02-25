@@ -30,8 +30,9 @@ if (db2_stmt_error() == 42501) {
     print $ERRO;
 }
 
-print $ano;
-while ($row = db2_fetch_object($res)) {
+$row = db2_fetch_object($res);
+print_r($row);
+while ($row) {
 
     // VERIFICA SE O ALUNO EXISTE
     $sql = "select * from Pessoas where prontuario='$row->AL_PRONT'";
