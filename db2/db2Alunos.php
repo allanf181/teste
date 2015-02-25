@@ -81,7 +81,7 @@ while ($row = db2_fetch_object($res)) {
                 print "$REG <br>\n";
         }
     } else {
-        
+        print "D: $DEBUG";
         if ($DEBUG) 
             print $aluno->nome."$nome \n";
         
