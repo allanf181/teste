@@ -366,7 +366,7 @@ class Academico51 extends Ruckusing_Migration_Base {
                         $P['nome'][] = 'Bolsas';
                     }
                 }
-                
+
                 if ($P['tipo'] == $adm || $P['tipo'] == $sec || $P['tipo'] == $ged || $P['tipo'] == $ssp) {
                     if (!in_array($q1, $P['permissao'])) {
                         $P['permissao'][] = $q1;
@@ -497,6 +497,14 @@ class Academico51 extends Ruckusing_Migration_Base {
         $tabelas3[3]['pergunta'] = 'Se possui, descreva suas necessidades especiais';
 
         $result = $this->select_all("SELECT codigo,sexo,raca,estadoCivil,numeroPessoasNaResidencia,renda,situacaoTrabalho,tipoTrabalho,empresaTrabalha,cargoEmpresa,tempo,meioTransporte,transporteGratuito,necessidadesEspeciais,descricaoNecessidadesEspeciais,escolaPublica FROM Pessoas");
+
+        function mres($value) {
+            $search = array("\\", "\x00", "\n", "\r", "'", '"', "\x1a");
+            $replace = array("\\\\", "\\0", "\\n", "\\r", "\'", '\"', "\\Z");
+
+            return str_replace($search, $replace, $value);
+        }
+
         foreach ($result as $c) {
             foreach ($tabelas as $t) {
                 $reg_new = null;
@@ -530,7 +538,7 @@ class Academico51 extends Ruckusing_Migration_Base {
                     $reg_new = $this->select_all("SELECT qq.codigo FROM QuestionariosQuestoes qq "
                             . "WHERE qq.nome = '" . $t['pergunta'] . "'");
 
-                    $this->execute("INSERT INTO QuestionariosRespostas VALUES(NULL, '" . $c[$t['tabela']] . "', '" . $c['codigo'] . "', '" . $reg_new[0]['codigo'] . "' )");
+                    $this->execute("INSERT INTO QuestionariosRespostas VALUES(NULL, '" . mres($c[$t['tabela']]) . "', '" . $c['codigo'] . "', '" . $reg_new[0]['codigo'] . "' )");
                 }
             }
 
