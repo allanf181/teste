@@ -31,7 +31,7 @@ if (db2_stmt_error() == 42501) {
 }
 
 while ($row = db2_fetch_object($res)) {
-
+    print "ok";
     // VERIFICA SE O ALUNO EXISTE
     $sql = "select * from Pessoas where prontuario='$row->AL_PRONT'";
     $result = mysql_query($sql);
