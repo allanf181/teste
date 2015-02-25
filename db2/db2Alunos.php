@@ -30,9 +30,7 @@ if (db2_stmt_error() == 42501) {
     print $ERRO;
 }
 
-$row = db2_fetch_object($res);
-print_r($row);
-while ($row) {
+while ($row = db2_fetch_object($res)) {
 
     // VERIFICA SE O ALUNO EXISTE
     $sql = "select * from Pessoas where prontuario='$row->AL_PRONT'";
@@ -83,10 +81,6 @@ while ($row) {
                 print "$REG <br>\n";
         }
     } else {
-        print "D: $DEBUG";
-        if ($DEBUG) 
-            print $aluno->nome."$nome \n";
-        
         if (strcmp(addslashes($aluno->nome), $nome) != 0 || strcmp(addslashes($aluno->rg), $rg) != 0 || strcmp(addslashes($aluno->cpf), $cpf) != 0 || strcmp($aluno->email, $email) != 0 || strcmp(addslashes($aluno->observacoes), $observacoes) != 0 || strcmp(addslashes($aluno->endereco), $endereco) != 0 || strcmp(addslashes($aluno->bairro), $bairro) != 0 || strcmp($aluno->nascimento, $nascimento) != 0 || strcmp($aluno->naturalidade, $naturalidade) != 0 || strcmp(addslashes($aluno->cep), $cep) != 0 || $aluno->cidade != $cidade || strcmp(addslashes($aluno->telefone), $telefone) != 0 || strcmp(addslashes($aluno->celular), $celular) != 0 || $aluno->sexo != $sexo || strcmp(addslashes($aluno->ano1g), $ano1g) != 0 || strcmp(addslashes($aluno->escola1g), $escola1g) != 0
         ) {
             $sql = "UPDATE Pessoas
