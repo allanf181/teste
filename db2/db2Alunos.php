@@ -24,7 +24,8 @@ $db2 = "SELECT *
 		                AND (NH_VERSAOH = " . $ano . "01 OR NH_VERSAOH = " . $ano . "02)
 					)";
 
-print $db2;
+$res = db2_exec($conn, $db2);
+
 if (db2_stmt_error() == 42501) {
     $ERRO = "SEM ACESSO NA TABELA ALUNOS";
     mysql_query("INSERT INTO Logs VALUES (0, '" . addslashes($ERRO) . "', now(), 'CRON_ERRO', 1)");
