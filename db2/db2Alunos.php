@@ -29,9 +29,10 @@ if (db2_stmt_error() == 42501) {
     mysql_query("INSERT INTO Logs VALUES (0, '" . addslashes($ERRO) . "', now(), 'CRON_ERRO', 1)");
     print $ERRO;
 }
+    
+while ($row = db2_fetch_object($res)) {
     print "ok";
 
-while ($row = db2_fetch_object($res)) {
     // VERIFICA SE O ALUNO EXISTE
     $sql = "select * from Pessoas where prontuario='$row->AL_PRONT'";
     $result = mysql_query($sql);
