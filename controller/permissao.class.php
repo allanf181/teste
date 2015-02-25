@@ -72,7 +72,8 @@ class Permissoes extends Generic {
             return $P;
 
         // BUSCANDO A BASE DOS ARQUIVOS;
-        // ORDERNANDO O MENU        
+        // ORDERNANDO O MENU   
+        $P['menu'] = array_unique($P['menu']);
         array_multisort($P['menu'], SORT_ASC, SORT_STRING, $P['menu'], SORT_NUMERIC, SORT_DESC);
 
         $i = 0;

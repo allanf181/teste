@@ -5,15 +5,29 @@
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
 
+//DEFININDO OS LINKS E O INDEX
+if (!$_GET['index'])
+    $_GET['index'] = 'index';
+$BASE = '?atribuicao='.$_GET['atribuicao'].'&index='.$_GET['index'];
+$SITE .= $BASE;
+
+require_once CONTROLLER . "/questionario.class.php";
+$questionario = new Questionarios();
 
 // PAGINACAO
 $itensPorPagina = 20;
 $item = 1;
 $ordem = '';
 
-$res = $questionario->getAvisoQuestionarios($_SESSION['loginCodigo'], $sqlAdicional);
-$totalRegistros = count($questionario->getAvisoQuestionarios());
-?>	
+if (dcrip($_GET['atribuicao'])) {
+    $res = $questionario->getQuestionariosAtribuicao($_SESSION['loginCodigo'], dcrip($_GET['atribuicao']));
+} else {
+    $res = $questionario->getAvisoQuestionarios($_SESSION['loginCodigo']);
+}
+?>
+<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
+<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
+	
 <br /><table id="listagem" border="0" align="center" cellpadding = "5px">
     <tr><th align="left" width="40">#</th>
         <th>Criado em</th>
@@ -35,7 +49,7 @@ $totalRegistros = count($questionario->getAvisoQuestionarios());
             <td><?= $reg['dataFechamento'] ?></td>
             <td><?= $reg['valorTotal'] ?></td>
             <td>
-                <a data-placement="top" title="Visualizar Question&aacute;rio" data-content="Clique para visulizar ou responder o question&aacute;io se aberto." href="javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioVisualiza.php?questionario=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>&preview=aluno');void(0)">
+                <a data-placement="top" title="Visualizar Question&aacute;rio" data-content="Clique para visualizar ou responder o question&aacute;rio se aberto." href="javascript:$('#<?= $_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioVisualiza.php<?= $BASE ?>&questionario=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>&preview=aluno&base=<?=$_GET['base']?>');void(0)">
                     <img src = "<?= IMAGES . '/questionarioPreview.png' ?>" class='botao'/>
                 </a>
             </td>

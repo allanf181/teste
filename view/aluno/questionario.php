@@ -12,15 +12,12 @@ require FUNCOES;
 require SESSAO;
 require PERMISSAO;
 
-require_once CONTROLLER . "/questionario.class.php";
-$questionario = new Questionarios();
-
 $_SESSION['SITE_RAIZ'] = $SITE;
 
-?>
-<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
-<?php
+if(dcrip($_GET['atribuicao']))
+    $_GET['index'] = 'aluno';
+else
+    $_GET['index'] = 'index';
 
 // COPIA DE:
 require PATH.VIEW.'/common/questionario/base.php';

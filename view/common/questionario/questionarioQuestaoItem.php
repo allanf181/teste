@@ -24,6 +24,14 @@ if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF || in_array($ALUNO, $_SESSION["loginT
     $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"Permite a inser&ccedil;&atilde;o itens de quest&otilde;es a questionarios criados anteriormente.\" href=\"#\"><img src=\"" . ICONS . "/help.png\"></a></span>";
 }
 
+
+//DEFININDO OS LINKS E O INDEX
+if (!$_GET['index'])
+    $_GET['index'] = 'index';
+$BASE = '?atribuicao='.$_GET['atribuicao'].'&index='.$_GET['index'];
+$SITE .= $BASE;
+
+
 require CONTROLLER . "/questionarioQuestao.class.php";
 $questoes = new QuestionariosQuestoes();
 
@@ -79,7 +87,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     $('#form_padrao').html5form({
         method: 'POST',
         action: '<?= $SITE ?>',
-        responseDiv: '#index',
+        responseDiv: '<?= '#'.$_GET['index'] ?>',
         colorOn: '#000',
         colorOff: '#999',
         messages: 'br'
@@ -96,7 +104,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             </tr>
             <tr>
                 <td align="right">Valor: </td>
-                <td><input type = "text" id="campoValor" name="valor" value = "<?= $valor ?>"/></td>
+                <td><input type = "text" id="campoValor" name="valor" value = "<?= $valor ?>" onchange="validaItem(this)" /></td>
             </tr>
             <tr>
                 <td></td>
@@ -110,7 +118,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <tr>
                             <td><input type="submit" value="Salvar" id="salvar" /></td>
                             <td>
-                                <a href="javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioQuestaoItem.php?questao=<?= $_GET['questao'] ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>&questaoNome=<?= $_GET['questaoNome'] ?>'); void(0)">Novo/Limpar</a>
+                                <a href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioQuestaoItem.php<?= $BASE ?>&questao=<?= $_GET['questao'] ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>&questaoNome=<?= $_GET['questaoNome'] ?>'); void(0)">Novo/Limpar</a>
                             </td> 
                         </tr>
                     </table> 
@@ -133,7 +141,9 @@ $params['questao'] = dcrip($_GET['questao']);
 $res = $questoesItens->listQuestoesItens($params, null, $item, $itensPorPagina);
 
 $totalRegistros = count($questoesItens->listQuestoesItens($params));
-$SITENAV = $SITE . '?questao='.$_GET['questao'].'&questaoNome='.$_GET['questaoNome'].'&questionario='.$_GET['questionario'].'&questionarioNome='.$_GET['questionarioNome'];
+
+$DIV_SITE = '#'.$_GET['index'];
+$SITENAV = $SITE . '&questao='.$_GET['questao'].'&questaoNome='.$_GET['questaoNome'].'&questionario='.$_GET['questionario'].'&questionarioNome='.$_GET['questionarioNome'];
 require PATH . VIEW . '/system/paginacao.php';
 ?>
 
@@ -160,7 +170,7 @@ require PATH . VIEW . '/system/paginacao.php';
             <td><?= $reg['valor'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
-                <a class="item-alterar" href="javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioQuestaoItem.php?codigo=<?= crip($reg['codigo']) ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>&questao=<?= $_GET['questao'] ?>&questaoNome=<?= $_GET['questaoNome'] ?>'); void(0)" title = "Alterar">
+                <a class="item-alterar" href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioQuestaoItem.php<?= $BASE ?>&codigo=<?= crip($reg['codigo']) ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>&questao=<?= $_GET['questao'] ?>&questaoNome=<?= $_GET['questaoNome'] ?>'); void(0)" title = "Alterar">
                     <img class="botao" src="<?= ICONS . '/config.png' ?>" />
                 </a>
             </td>
@@ -171,6 +181,10 @@ require PATH . VIEW . '/system/paginacao.php';
     ?>
 </table>
 <script>
+    function validaItem(item) {
+        item.value = item.value.replace(",", ".");
+    }
+    
     function valida() {
         if ($('#campoNome').val() == "" || $('#campoDescricao').val() == "") {
             $('#salvar').attr('disabled', 'disabled');
@@ -198,7 +212,7 @@ require PATH . VIEW . '/system/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>&questao=<?= $_GET['questao'] ?>');
+                        $('<?= '#'.$_GET['index'] ?>').load('<?= $SITE ?>&opcao=delete&codigo=' + selected + '&item=<?= $item ?>&questao=<?= $_GET['questao'] ?>&questionario=<?= $_GET['questionario'] ?>');
                     }
                 }
             });

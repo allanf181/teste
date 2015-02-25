@@ -23,6 +23,14 @@ if ((!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF) && !$_SESSION['QUEST_VIEW']) {
     $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"Permite responder o question&aacute;rio. Perguntas com * s&atilde;o obrigat&oacute;rias.\" href=\"#\"><img src=\"" . ICONS . "/help.png\"></a></span>";
 }
 
+//DEFININDO OS LINKS E O INDEX
+if (!$_GET['index'])
+    $_GET['index'] = 'index';
+
+$BASE = '?atribuicao='.$_GET['atribuicao'].'&index='.$_GET['index'].'&base='.$_GET['base'].'&preview='.$_GET['preview'];
+$SITE .= $BASE;
+
+
 require_once CONTROLLER . "/questionario.class.php";
 $questionario = new Questionarios();
 
@@ -104,8 +112,8 @@ $resQuestionario = $questionario->listRegistros($params);
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
-        action: '<?= $SITE ?>?preview=<?= $_GET['preview'] ?>',
-                responseDiv: '#index',
+        action: '<?= $SITE ?>',
+                responseDiv: '<?= '#'.$_GET['index'] ?>',
                 colorOn: '#000',
                 colorOff: '#999',
                 messages: 'br'
@@ -217,11 +225,11 @@ $resQuestionario = $questionario->listRegistros($params);
                     }
                     if (!$_GET['preview']) {
                         ?>
-                    <td><a href="javascript:$('#index').load('<?= VIEW ?>/system/home.php'); void(0);">VOLTAR</a></td> 
+                    <td><a href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/system/home.php'); void(0);">VOLTAR</a></td> 
                     <?php
                 } else {
                     ?>	
-                    <td><a href="javascript:$('#index').load('<?= $_SESSION['SITE_RAIZ'] ?>'); void(0);">VOLTAR</a></td> 
+                    <td><a href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= $_SESSION['SITE_RAIZ'].$BASE ?>'); void(0);">VOLTAR</a></td> 
                     <?php
                 }
                 ?>

@@ -39,7 +39,7 @@ class Frequencias extends FrequenciasAbonos {
 
     // LISTA OS ALUNOS COM AUSENCIA ELEVADA
     // USADO POR: VIEW/RELATORIOS/AUSENCIA.PHP
-    public function listAusencias($mes, $ano) {
+    public function listAusencias($params, $sqlAdicional) {
         $bd = new database();
 
         $sql = "SELECT a.data, a.quantidade, p.prontuario, p.nome as aluno,
@@ -65,10 +65,10 @@ class Frequencias extends FrequenciasAbonos {
                 AND s.listar = 1
                 AND s.habilitar = 1
                 AND DATE_FORMAT(a.data, '%m') = :mes
-                AND DATE_FORMAT(a.data, '%Y') = :ano
-                ORDER BY p.nome";
+                AND DATE_FORMAT(a.data, '%Y') = :ano";
 
-        $params = array('ano' => $ano, 'mes' => str_pad($mes, 2, "0", STR_PAD_LEFT));
+        $sql .= $sqlAdicional;
+        
         $res = $bd->selectDB($sql, $params);
         foreach ($res as $reg) {
             if (strpos($reg['quantidade'], 'F') !== false) {

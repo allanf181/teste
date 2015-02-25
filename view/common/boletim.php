@@ -34,7 +34,8 @@ if (dcrip($_GET["bimestre"])) {
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <center>
-    <?php if (!in_array($ALUNO, $_SESSION["loginTipo"]) && !in_array($PROFESSOR, $_SESSION["loginTipo"])) { ?>
+    <?php if (!in_array($ALUNO, $_SESSION["loginTipo"]) && !in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"])) {
+        ?>
         <div id="html5form" class="main">
             <form id="form_padrao">
                 <table align="center" width="100%" id="form" border="0">
@@ -46,8 +47,15 @@ if (dcrip($_GET["bimestre"])) {
                                 <?php
                                 require CONTROLLER . '/turma.class.php';
                                 $turmas = new Turmas();
-                                $paramsTurma = array(':ano' => $ANO, ':semestre' => $SEMESTRE);
-                                foreach ($turmas->listTurmas($paramsTurma) as $reg) {
+
+                                if (in_array($COORD, $_SESSION["loginTipo"])) {
+                                    $paramsTurma['coord'] = $_SESSION['loginCodigo'];
+                                    $sqlAdicionalTurma = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
+                                }
+
+                                $paramsTurma[':ano'] = $ANO;
+                                $paramsTurma[':semestre'] = $SEMESTRE;
+                                foreach ($turmas->listTurmas($paramsTurma, $sqlAdicionalTurma) as $reg) {
                                     $selected = "";
                                     if ($reg['codTurma'] == $turma)
                                         $selected = "selected";
@@ -208,12 +216,12 @@ if (dcrip($_GET["bimestre"])) {
             if ($_SESSION['LINK']) {
                 ?>
                 <br><div style='margin: auto'><a href="javascript:$('#<?= $_SESSION['VOLTAR'] ?>').load('<?= $_SESSION['LINK'] ?>');void(0);" title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
-                <?php
-            }
-            ?>
-            <?php
-        }
-        ?>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                }
+                ?>
     </div>
 </center>
 

@@ -6,7 +6,6 @@
 //0
 
 require MENSAGENS;
-require FUNCOES;
 require SESSAO;
 
 $SITE_RAIZ = end(explode('/', $_SESSION['SITE_RAIZ']));
@@ -16,6 +15,13 @@ if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF || in_array($ALUNO, $_SESSION["loginT
     print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
     die;
 }
+
+//DEFININDO OS LINKS E O INDEX
+if (!$_GET['index'])
+    $_GET['index'] = 'index';
+$BASE = '?atribuicao='.$_GET['atribuicao'].'&index='.$_GET['index'];
+$SITE .= $BASE;
+
 
 require_once CONTROLLER . "/questionario.class.php";
 $questionario = new Questionarios();
@@ -39,7 +45,10 @@ if ($_GET['opcao'] == 'mudarSituacao') {
     $ret = $questionario->insertOrUpdate($paramsSituacao);
 
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-    unset($_GET);
+    unset($_GET['questionarioNome']);
+    unset($_GET['situacao']);
+    unset($_GET['opcao']);
+    unset($_GET['questionario']);
 }
 
 // INSERT E UPDATE DE COPIA
@@ -91,7 +100,8 @@ if (dcrip($_POST["codCopy"])) {
 // INSERT E UPDATE
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     unset($_POST['opcao']);
-
+    if (dcrip($_POST['atribuicao']))
+        $_POST['atribuicao'] = dcrip($_POST['atribuicao']);
     $_POST['criador'] = crip($_SESSION['loginCodigo']);
     $_POST['dataCriacao'] = dataMysql($_POST['dataCriacao']);
     $_POST['dataFechamento'] = ($_POST['dataFechamento']) ? dataMysql($_POST['dataFechamento']) : 'NULL';
@@ -130,7 +140,7 @@ $questionarioNome = dcrip($_GET['questionarioNome']);
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#to").tokenInput("<?= $_SESSION['SITE_RAIZ'] ?>?dados=1", {
+        $("#to").tokenInput("<?= $SITE ?>&dados=1", {
             theme: "facebook"
         });
     });
@@ -140,7 +150,7 @@ $questionarioNome = dcrip($_GET['questionarioNome']);
     $('#form_padrao').html5form({
         method: 'POST',
         action: '<?= $SITE ?>',
-        responseDiv: '#index',
+        responseDiv: '<?= '#'.$_GET['index'] ?>',
         colorOn: '#000',
         colorOff: '#999',
         messages: 'br'
@@ -185,17 +195,19 @@ if ($_GET['codigo'] && !dcrip($_GET['codCopy'])) {
         $html.= "</ul>";
     }
 }//fim se estiver setado $_GET['codigo']
+
+if (!dcrip($_GET['atribuicao'])) {
 ?>
 <table border = '0' width = '100%' id="form">
     <tr align = 'center' valign = 'top'>
         <td width = '33%' valign = 'top'>
-            <a class = 'nav questionario_item' href = "javascript:$('#index').load('<?= $_SESSION['SITE_RAIZ'] ?>');void(0)">
+            <a class = 'nav questionario_item' href = "javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= $SITE ?>');void(0)">
                 <img width = '48' src = "<?= IMAGES . '/questionario.png' ?>" title = 'Question&aacute;rios' class = 'menuQuestionario'/>
                 <br />Question&aacute;rios
             </a>
         </td>
         <td width = '33%' valign = 'top'>
-            <a class = 'nav questionario_item' href = "javascript:$('#index').load('<?= $_SESSION['SITE_RAIZ'] ?>?base=view');void(0)">
+            <a class = 'nav questionario_item' href = "javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= $SITE ?>&base=view');void(0)">
                 <img width = '48' src = "<?= IMAGES . '/boletim.png' ?>" class = 'menuQuestionario' />
                 <br />Question&aacute;rios endere&ccedil;ados para voc&ecirc;
             </a>
@@ -203,6 +215,8 @@ if ($_GET['codigo'] && !dcrip($_GET['codCopy'])) {
     </tr>
 </table>
 <?php
+}
+
 if ($_GET['base']) {
     // COPIA DE:
     require PATH . VIEW . '/common/questionario/base.php';
@@ -214,6 +228,7 @@ if ($_GET['base']) {
         <table align="center" width="100%" id="form" border="0">
             <input type = 'hidden' name = 'codigo' value = '<?= $_GET['codigo'] ?>'>
             <input type = 'hidden' name = 'codCopy' value = '<?= $_GET['codCopy'] ?>'>
+            <input type = 'hidden' name = 'atribuicao' value = '<?= $_GET['atribuicao'] ?>'>
             <tr>
                 <td align="right">Data de cria&ccedil;&atilde;o: </td>
                 <td><input type="text" readonly value = "<?= $dataCriacao ?>" id="campoDataCriacao" name="dataCriacao" /></td>
@@ -254,7 +269,7 @@ if ($_GET['base']) {
                     <table width="100%">
                         <tr>
                             <td><input type="submit" value="Salvar" id="salvar" /></td>
-                            <td><a href="javascript:$('#index').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td> 
+                            <td><a href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= $SITE ?>'); void(0);">Novo/Limpar</a></td> 
                         </tr>
                     </table> 
                 </td>
@@ -271,15 +286,20 @@ $ordem = '';
 if (isset($_GET['item']))
     $item = $_GET["item"];
 if (in_array($ADM, $_SESSION['loginTipo'])) {
-    $res = $questionario->listQuestionarios(null, $item, $itensPorPagina);
+    $res = $questionario->listQuestionarios(null, null, $item, $itensPorPagina);
     $totalRegistros = count($questionario->listQuestionarios());
 } else {
+    if (dcrip($_GET['atribuicao'])) {
+        $params['atribuicao'] = dcrip($_GET['atribuicao']);
+        $sqlAdicional = ' AND q.codigo IN (SELECT p.questionario FROM QuestionariosPessoas p WHERE p.atribuicao = :atribuicao) ';
+    }
     $params['criador'] = $_SESSION['loginCodigo'];
-    $res = $questionario->listQuestionarios($params, $item, $itensPorPagina);
-    $totalRegistros = count($questionario->listQuestionarios($params));
+    $res = $questionario->listQuestionarios($params, $sqlAdicional, $item, $itensPorPagina);
+    $totalRegistros = count($questionario->listQuestionarios($params, $sqlAdicional));
 }
 
-$SITENAV = $SITE . '?';
+$SITENAV = $SITE;
+$DIV_SITE = '#'.$_GET['index'];
 require PATH . VIEW . '/system/paginacao.php';
 ?>	
 <table id="listagem" border="0" align="center" cellpadding = "5px">
@@ -327,16 +347,16 @@ require PATH . VIEW . '/system/paginacao.php';
             }
             ?>
             <td><?= $dataCriacao ?></td>
-            <td><a href="javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioQuestao.php?questionario=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>');void(0)" data-placement="top" data-content="Clique para visualizar as quest&otilde;es" title="<?= $reg['nome'] ?>"><?= abreviar($reg['nome'], 20) ?></a></td>
+            <td><a href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioQuestao.php<?= $BASE ?>&questionario=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>');void(0)" data-placement="top" data-content="Clique para visualizar as quest&otilde;es" title="<?= $reg['nome'] ?>"><?= abreviar($reg['nome'], 20) ?></a></td>
             <td><a href="#" data-placement="top" title="Descri&ccedil;&atilde;o" data-content="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 20) ?></a></td>
             <td><?= $dataFechamento ?></td>
             <td><?= $reg['valorTotal'] ?></td>
             <td>
                 <?php require PATH . VIEW . "/common/questionario/questionarioMenu.php" ?>
-                <a data-placement="top" title="Pr&eacute;-visualiza&ccedil;&atilde;o" data-content="Clique para ver como o question&aacute;rio será visualizado." href="javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioVisualiza.php?questionario=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>&preview=preview');void(0)">
+                <a data-placement="top" title="Pr&eacute;-visualiza&ccedil;&atilde;o" data-content="Clique para ver como o question&aacute;rio será visualizado." href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioVisualiza.php<?= $BASE ?>&questionario=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>&preview=preview');void(0)">
                     <img src = "<?= IMAGES . '/questionarioPreview.png' ?>" class='botao'/>
                 </a>
-                <a data-placement="top" title="Copiar Question&aacute;rio" data-content="Clique para copiar esse question&aacute;rio para outro curso ou pessoa." href="javascript:$('#index').load('<?= $_SESSION['SITE_RAIZ'] ?>?codCopy=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>');void(0)">
+                <a data-placement="top" title="Copiar Question&aacute;rio" data-content="Clique para copiar esse question&aacute;rio para outro curso ou pessoa." href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= $SITE ?>&codCopy=<?= crip($reg['codigo']) ?>&questionarioNome=<?= crip($reg['nome']) ?>');void(0)">
                     <img src = "<?= IMAGES . '/questionarioCopia.png' ?>" class='botao'/>
                 </a>
             </td>
@@ -389,9 +409,9 @@ require PATH . VIEW . '/system/paginacao.php';
                 id = $(this).attr('id');
                 id = id.substr(0, 1).toUpperCase() + id.substr(1);
                 if ($(this).attr('id') == 'preview')
-                    $('#index').load('<?= VIEW ?>/common/questionario/questionarioVisualiza.php?questionario=' + $('input:checkbox:checked').val() + '&preview=preview');
+                    $('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioVisualiza.php<?= $BASE ?>&questionario=' + $('input:checkbox:checked').val() + '&preview=preview');
                 else
-                    $('#index').load('<?= VIEW ?>/common/questionario/questionarios' + id + '.php?questionario=' + $('input:checkbox:checked').val());
+                    $('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarios' + id + '.php<?= $BASE ?>&questionario=' + $('input:checkbox:checked').val());
             }
             else
             {
@@ -416,7 +436,7 @@ require PATH . VIEW . '/system/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
+                        $('<?= '#'.$_GET['index'] ?>').load('<?= $SITE ?>&opcao=delete&codigo=' + selected + '&item=<?= $item ?>');
                     }
                 }
             });
@@ -430,7 +450,7 @@ require PATH . VIEW . '/system/paginacao.php';
                 'buttons': ['Sim', 'Não'],
                 'onClose': function (caption) {
                     if (caption == 'Sim') {
-                        $('#index').load('<?= $SITE ?>?opcao=deletePessoa&pessoaCodigo=' + id + '&codigo=<?= $_GET["codigo"] ?>&item=<?= $item ?>');
+                        $('<?= '#'.$_GET['index'] ?>').load('<?= $SITE ?>&opcao=deletePessoa&pessoaCodigo=' + id + '&codigo=<?= $_GET["codigo"] ?>&item=<?= $item ?>');
                     }
                 }
             });

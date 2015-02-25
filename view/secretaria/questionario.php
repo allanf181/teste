@@ -49,8 +49,10 @@ foreach ($tipo->listRegistros() as $t)
 $para = 'Digite a pessoa, <a href="#" data-content="' . implode('<br>', $tipoNew) . '" title="Voc&ecirc; pode criar question&aacute;rios para um ou mais tipos de pessoas:">um tipo</a>, curso, ou turma para criar o question&aacute;rio.';
 
 require PERMISSAO;
+require FUNCOES;
 
 $_SESSION['SITE_RAIZ'] = $SITE;
+$INDEX = '#index';
 
 // COPIA DE:
 require PATH . VIEW . '/common/questionario/questionario.php';

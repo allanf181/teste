@@ -48,7 +48,7 @@ class Turmas extends Generic {
 	            WHERE t.curso = c.codigo 
 	            AND m.codigo = c.modalidade
 	            AND ano = :ano
-	            AND (semestre= :semestre OR semestre=0)";
+	            AND (semestre= :semestre OR semestre=0) ";
 
         $sql .= " $sqlAdicional ";
         

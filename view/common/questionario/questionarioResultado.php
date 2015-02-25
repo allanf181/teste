@@ -9,18 +9,6 @@ require '../../../inc/config.inc.php';
 require VARIAVEIS;
 require FUNCOES;
 
-$SITE_RAIZ = end(explode('/', $_SESSION['SITE_RAIZ']));
-$PHP_SELF = substr(end(explode('/', $_SERVER['PHP_SELF'])), 0, strlen(end($SITE_RAIZ)) - 4) . '.php';
-
-if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF || in_array($ALUNO, $_SESSION["loginTipo"])) {
-    print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
-    die;
-} else {
-    $SITE = 'view/common/questionario/questionarioQuestaoItem.php';
-    $TITLE = 'Itens de Quest&otilde;es';
-    $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"Permite a inser&ccedil;&atilde;o itens de quest&otilde;es a questionarios criados anteriormente.\" href=\"#\"><img src=\"" . ICONS . "/help.png\"></a></span>";
-}
-
 require CONTROLLER . "/questionarioResposta.class.php";
 $resposta = new QuestionariosRespostas();
 
@@ -56,7 +44,7 @@ require MENSAGENS;
 require SESSAO;
 
 $SITE_RAIZ = end(explode('/', $_SESSION['SITE_RAIZ']));
-$PHP_SELF = substr(end(explode('/', $_SERVER['PHP_SELF'])), 0, strlen(end($SITE_RAIZ))-4).'.php';
+$PHP_SELF = substr(end(explode('/', $_SERVER['PHP_SELF'])), 0, strlen(end($SITE_RAIZ)) - 4) . '.php';
 
 if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF) {
     print "<p>Who are you? <br />There's nothing here. <br /><br />;P</p>\n";
@@ -67,6 +55,11 @@ if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF) {
     $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"Permite visualizar e exportar as respostas dos question&aacute;rios.\" href=\"#\"><img src=\"" . ICONS . "/help.png\"></a></span>";
 }
 
+//DEFININDO OS LINKS E O INDEX
+if (!$_GET['index'])
+    $_GET['index'] = 'index';
+$BASE = '?atribuicao=' . $_GET['atribuicao'] . '&index=' . $_GET['index'];
+$SITE .= $BASE;
 ?>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?><?= ': ' . dcrip($_GET['questionarioNome']) ?></h2>
@@ -135,12 +128,12 @@ if ($pessoa != "") {
 
     $paramsGroup += $paramsPessoa;
     $sqlAdicionalGroup .= $sqlAdicionalPessoa;
-    
+
     $paramsList += $paramsPessoa;
     $sqlAdicionalList .= $sqlAdicional . $sqlAdicionalPessoa;
 }
 
-$SITENAV = $SITE . '?&relatorio=' . $_GET['relatorio'] . '&questionario=' . $_GET['questionario'] . '&questionarioNome=' . $_GET['questionarioNome'];
+$SITENAV = $SITE . $BASE . '&relatorio=' . $_GET['relatorio'] . '&questionario=' . $_GET['questionario'] . '&questionarioNome=' . $_GET['questionarioNome'];
 
 if ($_GET['relatorio'] == 'agrupamento') {
     $dados = $questao->listQuestoes($params);
@@ -150,6 +143,11 @@ if ($_GET['relatorio'] == 'agrupamento') {
             <tr>
                 <th align="center" style='width: 50%' colspan='4'><?= $reg['questaoNome'] ?></th>
             </tr>
+                <tr>
+                    <td align='center' style='width: 300px'>T&iacute;tulo</td>
+                    <td align='center' >Quantidade de Respostas</td>
+                    <td align='center' >Percentual de Respostas</td>
+                </tr>
             <?php
             $total = 0;
             $paramsGroup['questao'] = $reg['codigo'];
@@ -182,13 +180,14 @@ if ($_GET['relatorio'] == 'listagem') {
         $item = $_GET["item"];
 
     $res = $resposta->listRespostas($paramsList, $sqlAdicionalList, $item, $itensPorPagina);
-    $totalRegistros = count($resposta->listRespostas($params, $sqlAdicional));
+    $totalRegistros = count($resposta->listRespostas($resposta->listRespostas($paramsList, $sqlAdicionalList)));
 
+    $DIV_SITE = '#' . $_GET['index'];
     require PATH . VIEW . '/system/paginacao.php';
     ?>
     <table id="listagem" border="0" align="center">
         <tr>
-            <th colspan = "4">
+            <th colspan = "5">
         <center><?= $questionarioNome ?></center>
     </th>
     </tr>
@@ -197,8 +196,10 @@ if ($_GET['relatorio'] == 'listagem') {
         <th>Pessoa</th>
         <th>Questao</th>
         <th>Resposta</th>
+        <th>Valor da Quest&atilde;o</th>
     </tr>
     <?php
+    $i=1;
     foreach ($res as $reg) {//pessoas 
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
@@ -208,6 +209,7 @@ if ($_GET['relatorio'] == 'listagem') {
             <td width='120'><a href='#' data-placement="top" data-content='<?= $reg['pessoa'] ?>' title='Pessoa'><?= abreviar($reg['pessoa'], 30) ?></a></td>
             <td width='120'><a href='#' data-placement="top" data-content='<?= $reg['questao'] ?>' title='Questão'><?= abreviar($reg['questao'], 30) ?></a></td>
             <td width='120'><a href='#' data-placement="top" data-content='<?= $reg['resposta'] ?>' title='Resposta'><?= abreviar($reg['resposta'], 30) ?></a></td>
+            <td width='20'><?= $reg['valor'] ?></td>
         </tr>
         <?php
         $i++;
@@ -226,7 +228,7 @@ if ($_GET['relatorio'] == 'listagem') {
         var pessoa = $('#pessoa').val();
         var URLS = '<?= $SITENAV ?>&pessoa=' + pessoa;
         if (!getLink)
-            $('#index').load(URLS + '&item=<?= $item ?>');
+            $('<?= '#' . $_GET['index'] ?>').load(URLS + '&item=<?= $item ?>');
         else
             return URLS;
     }
@@ -236,10 +238,10 @@ if ($_GET['relatorio'] == 'listagem') {
     });
 
     $("#item-listagem").click(function () {
-        $('#index').load('<?= $SITENAV ?>&relatorio=listagem');
+        $('<?= '#' . $_GET['index'] ?>').load('<?= $SITENAV ?>&relatorio=listagem');
     });
 
     $("#item-agrupamento").click(function () {
-        $('#index').load('<?= $SITENAV ?>&relatorio=agrupamento');
+        $('<?= '#' . $_GET['index'] ?>').load('<?= $SITENAV ?>&relatorio=agrupamento');
     });
 </script>

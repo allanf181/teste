@@ -611,7 +611,7 @@ require PATH . VIEW . '/system/paginacao.php';
                 var resultado = '<br>Tipos: ';
                 resultado += '<select id="Zebra_valor" name="Zebra_valor" value="<?= $mes ?>">';
                 <?php
-                foreach ($t->listRegistros() as $reg) {
+                foreach ($t->listRegistros(null, ' ORDER BY nome ') as $reg) {
                     ?>
                     resultado += "<option value='<?= ($reg['codigo']) ?>'><?= $reg['nome'] ?></option>\n";
                     <?php

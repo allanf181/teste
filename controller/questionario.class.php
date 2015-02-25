@@ -56,6 +56,8 @@ class Questionarios extends Generic {
                 if (substr($dest, 0, 3) == 'TP:')
                     $params['tipo'] = crip(substr($dest, 3));
 
+                if ($_POST['atribuicao'])
+                    $params['atribuicao'] = $_POST['atribuicao'];
                 if ($questionarioPessoa->insertOrUpdate($params))
                     $resultado++;
             }
@@ -72,7 +74,7 @@ class Questionarios extends Generic {
     }
 
     // Lista os questionarios
-    public function listQuestionarios($params = null, $item = null, $itensPorPagina = null) {
+    public function listQuestionarios($params = null, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $table = get_called_class();
         $bd = new database();
 
@@ -87,6 +89,8 @@ class Questionarios extends Generic {
             $sql .= " WHERE q.codigo = :codigo";
         }
 
+        $sql .= $sqlAdicional;
+        
         $sql .= " ORDER BY dataCriacao DESC ";
 
         $sql .= "$nav";
@@ -179,6 +183,33 @@ class Questionarios extends Generic {
         }
     }
 
+        
+    public function getQuestionariosAtribuicao($codigo, $atribuicao) {
+        $bd = new database();
+
+        $sql = "SELECT date_format(q.dataCriacao, '%d/%m/%Y') as dataCriacao,
+                date_format(q.dataFechamento, '%d/%m/%Y') as dataFechamento,
+                q.valorTotal, q.descricao, q.situacao, q.codigo,
+                q.Nome as nome, DATEDIFF(q.dataFechamento, NOW()) as prazoDiff
+                FROM QuestionariosPessoas qp INNER JOIN Questionarios q 
+		ON(q.codigo = qp.questionario) 
+                    WHERE ( ( destinatario = :cod AND qp.atribuicao = :atribuicao )
+                        OR ( destinatario IS NULL AND qp.atribuicao = :atribuicao )
+                        )
+                GROUP BY q.codigo
+                ORDER BY q.dataCriacao DESC";
+
+        $params[':cod'] = $codigo;
+        $params[':atribuicao'] = $atribuicao;
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>

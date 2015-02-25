@@ -10,6 +10,19 @@ require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
+
+require_once CONTROLLER . "/questionario.class.php";
+$questionario = new Questionarios();
+
+require_once CONTROLLER . "/questionarioResposta.class.php";
+$resposta = new QuestionariosRespostas();
+
+if ($_GET["opcao"] == 'importNotas') {
+    $res = $resposta->listRespostasToJSON(dcrip($_GET["questionario"]));
+    print json_encode($res);
+    die;
+}
+
 require SESSAO;
 
 require CONTROLLER . "/nota.class.php";
@@ -26,7 +39,7 @@ $matricula = new Matriculas();
 
 require CONTROLLER . "/matriculaAlteracao.class.php";
 $ma = new MatriculasAlteracoes();
-
+    
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_GET["avaliacao"] = $_POST["avaliacao"];
     $_GET["atribuicao"] = $_POST["atribuicao"];
@@ -50,18 +63,28 @@ $resAval = $aval->getAvaliacao($avaliacao);
 $travaFinal = $resAval['final'];
 ?>
 <div id="etiqueta" align="center">
-    Curso: <?= $resAval['curso'] ?><br />
-    Turma: <?= $resAval['turma'] ?><br />
-    Semestre: <?= $resAval['semestre'] ?> / <?= $resAval['ano'] ?><br />
-    Notas para: <?= $resAval['nome'] ?> de <?= $resAval['dataFormat'] ?>
-    <?php if ($resAval['calculo'] == 'peso') { ?>
-        (peso: <?= $resAval['peso'] ?>)
-        <?php
-        $resAval['notaMaxima'] = '10';
-    }
-    ?>
-    <br> Nota m&aacute;xima permitida: <?= $resAval['notaMaxima'] ?>
-    <br />
+    <table width='80%'>
+        <tr>
+            <td>
+                Curso: <?= $resAval['curso'] ?><br />
+                Turma: <?= $resAval['turma'] ?><br />
+                Semestre: <?= $resAval['semestre'] ?> / <?= $resAval['ano'] ?><br />
+                Notas para: <?= $resAval['nome'] ?> de <?= $resAval['dataFormat'] ?>
+                <?php if ($resAval['calculo'] == 'peso') { ?>
+                    (peso: <?= $resAval['peso'] ?>)
+                    <?php
+                    $resAval['notaMaxima'] = '10';
+                }
+                ?>
+                <br> Nota m&aacute;xima permitida: <?= $resAval['notaMaxima'] ?>
+            </td>
+            <td width = '33%' valign = 'top' align='right'>
+                <a id="item-import" title='Importar resultado de um question&aacute;rio para Notas' data-content='Aten&ccedil;&atilde;o, as notas ser&atilde;o importadas apenas se o question&aacute;rio estiver desativado.' class = 'nav questionario_item' href = "#">
+                    <img width = '48' src = "<?= IMAGES . '/questionarioDownload.png' ?>" title = 'Question&aacute;rios' class = 'menuQuestionario'/>
+                </a>
+            </td>
+        </tr>
+    </table>
 </div>
 <br><hr>
 
@@ -136,7 +159,7 @@ if ($_SESSION['dataExpirou'])
                         if ($matSituacao['listar'] && $matSituacao['habilitar']) {
                             ?>
                             <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
-                            <input <?= $disabled ?> id='<?= $i ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
+                            <input <?= $disabled ?> id='A<?= $reg['codAluno'] ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
                             <?php
                             $situacao = array();
                             if ($reg['bimestre'] > 0) { // Busca as Notas dos Bimestres
@@ -171,7 +194,7 @@ if ($_SESSION['dataExpirou'])
                                 $trava = null;
                                 if ($travaFinal && !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                     ?>
-                                            <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
+                                                    <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
                                     <?php
                                 }
                             }
@@ -181,7 +204,7 @@ if ($_SESSION['dataExpirou'])
                             //TRAVANDO PARA RECUPERACAO
                             if (!$travaFinal && !$situacao[$reg['codAluno']] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                 ?>
-                                        <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
+                                                <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
                                 <?php
                             }
                         } else {
@@ -231,6 +254,9 @@ if ($_SESSION['dataExpirou'])
 <?php
 $_SESSION['VOLTAR'] = "professor";
 $_SESSION['LINK'] = VIEW . "/professor/nota.php?atribuicao=" . crip($atribuicao) . "&avaliacao=" . crip($avaliacao);
+
+$params['criador'] = $_SESSION['loginCodigo'];
+$res = $questionario->listQuestionarios($params);
 ?>
 <script>
     function validaItem(item) {
@@ -239,4 +265,47 @@ $_SESSION['LINK'] = VIEW . "/professor/nota.php?atribuicao=" . crip($atribuicao)
             item.value = '';
         }
     }
+
+    $("#item-import").click(function () {
+        function preparaInput() {
+            var resultado = '<br>Question&aacute;rio: ';
+            resultado += '<select id="Zebra_valor" name="Zebra_valor" value="">';
+            <?php
+            foreach ($res as $reg) {
+                ?>
+                resultado += "<option value='<?= crip($reg['codigo']) ?>'><?= $reg['nome'] ?></option>\n";
+                <?php
+            }
+            ?>
+            resultado += "</select>";
+            return resultado;
+        }
+
+        $.Zebra_Dialog('<strong>Selecione o question&aacute;rio para importar as notas:</strong>', {
+            'type': 'prompt',
+            'promptInput': preparaInput(),
+            'title': '<?= $TITLE ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function (caption, valor) {
+                if (caption == 'Sim') {
+                    importaNota(valor);
+                }
+            }
+        });
+        
+    function importaNota(valor) {
+        $.ajax({
+            url: '<?= $SITE ?>',
+            data: {'opcao': 'importNotas', 'questionario': valor},
+            dataType: 'json',
+            success: function (data)
+            {
+                for (var i in data) {
+                    alert(data[i].total);
+                    $('#A'+data[i].codAluno).val(data[i].total);
+                }
+            }
+        });
+    }
+    });
 </script>

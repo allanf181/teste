@@ -5,6 +5,39 @@ if (!class_exists('Generic'))
 
 class QuestionariosRespostas extends Generic {
 
+    public function listRespostasToJSON($codigo) {
+        $bd = new database();
+
+        $sql = "SELECT p.codigo as codPessoa,
+                (SELECT qi.valor FROM QuestionariosQuestoesItens qi
+                    WHERE qi.questao = qq.codigo 
+                    AND qi.nome = qr.resposta) as valor  
+                FROM QuestionariosRespostas qr, Questionarios q, 
+                    QuestionariosQuestoes qq, Pessoas p
+                WHERE q.codigo = qq.questionario 
+                AND qr.questao = qq.codigo
+                AND qr.pessoa = p.codigo
+                AND q.codigo = :codigo ";
+        
+        $params = array('codigo' => $codigo);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            $i = 0;
+            foreach ($res as $reg) {
+                if ($reg["valor"]) {
+                    $new_res[$i]['codAluno'] = $reg["codPessoa"];
+                    $new_res[$i]['total'] += $reg["valor"];
+                    $i++;
+                }
+            }
+
+            return $new_res;
+        } else {
+            return false;
+        }
+    }
+    
     public function listRespostas($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
 
@@ -12,9 +45,12 @@ class QuestionariosRespostas extends Generic {
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
         $sql = "SELECT p.nome as pessoa, p.codigo as codPessoa,
-                qq.nome as questao, qr.resposta, qr.codigo
+                qq.nome as questao, qr.resposta, qr.codigo,
+                (SELECT qi.valor FROM QuestionariosQuestoesItens qi
+                    WHERE qi.questao = qq.codigo 
+                    AND qi.nome = qr.resposta) as valor  
                 FROM QuestionariosRespostas qr, Questionarios q, 
-                    QuestionariosQuestoes qq, Pessoas p 
+                    QuestionariosQuestoes qq, Pessoas p
                 WHERE q.codigo = qq.questionario 
                 AND qr.questao = qq.codigo
                 AND qr.pessoa = p.codigo ";

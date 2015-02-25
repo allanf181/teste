@@ -155,12 +155,16 @@ if (isset($_GET['item']))
     $item = $_GET["item"];
 
 //LISTA OS REGISTROS DA TD
-$sqlAdicional .= ' AND f.modelo = :modelo ORDER BY p.nome ';
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $params['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicionalCoord = 'AND f.area IN (SELECT c.area FROM Coordenadores c WHERE c.coordenador = :coord)';
+}
+$sqlAdicional .= " AND f.modelo = :modelo $sqlAdicionalCoord ORDER BY p.nome ";
 $params['ano'] = $ANO;
 $params['semestre'] = $SEMESTRE;
 $params['modelo'] = $tabela;
-$res = $dados->listTDs($params, $sqlAdicional, null, null);
 
+$res = $dados->listTDs($params, $sqlAdicional, null, null);
 $totalRegistros = count($dados->listTDs($params, $sqlAdicional, null, null));
 
 $SITENAV = $SITE . '?';

@@ -24,6 +24,12 @@ if (!$SITE_RAIZ || $SITE_RAIZ = !$PHP_SELF || in_array($ALUNO, $_SESSION["loginT
     $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"Permite a inser&ccedil;&atilde;o de quest&otilde;es a questionarios criados anteriormente.\" href=\"#\"><img src=\"" . ICONS . "/help.png\"></a></span>";
 }
 
+//DEFININDO OS LINKS E O INDEX
+if (!$_GET['index'])
+    $_GET['index'] = 'index';
+$BASE = '?atribuicao='.$_GET['atribuicao'].'&index='.$_GET['index'];
+$SITE .= $BASE;
+
 require CONTROLLER . "/questionarioQuestao.class.php";
 $questoes = new QuestionariosQuestoes();
 
@@ -70,7 +76,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     $('#form_padrao').html5form({
         method: 'POST',
         action: '<?= $SITE ?>',
-        responseDiv: '#index',
+        responseDiv: '<?= '#'.$_GET['index'] ?>',
         colorOn: '#000',
         colorOff: '#999',
         messages: 'br'
@@ -105,7 +111,14 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                             print '<option title = "' . $cat['descricao'] . '" value = "' . $cat['codigo'] . '" ' . $selected . '>' . $cat['nome'] . '</option>';
                         }
                         ?>
-                    </select><br> * Mantenha o cursor do mouse sobre o item para dicas de funcionamento
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                     * Mantenha o cursor do mouse sobre o item para dicas de funcionamento.
+                    <br> * Aten&ccedil;&atilde;o, Texto, Par&aacute;grafo e data n&atilde;o entram na contabiliza&ccedil;&atilde;o para pontua&ccedil;&atilde;o. 
                 </td>
             </tr>
             <tr>
@@ -116,11 +129,11 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     <table width="100%">
                         <tr>
                             <td><input type="submit" value="Salvar" id="salvar" /></td>
-                            <td><a href="javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioQuestao.php?questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>');void(0)">Novo/Limpar</a></td> 
+                            <td><a href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioQuestao.php<?= $BASE ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>');void(0)">Novo/Limpar</a></td> 
                         </tr>
                     </table> 
                 </td>
-            </tr> 
+            </tr>
         </table>
     </form>
 </div>
@@ -137,7 +150,9 @@ $params['questionario'] = dcrip($_GET['questionario']);
 $sqlAdicional = ' ORDER BY qq.codigo ';
 $res = $questoes->listQuestoes($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($questoes->listQuestoes($params, $sqlAdicional, $item, $itensPorPagina));
-$SITENAV = $SITE . '?questionario=' . $_GET['questionario'] . '&questionarioNome=' . $_GET['questionarioNome'];
+
+$DIV_SITE = '#'.$_GET['index'];
+$SITENAV = $SITE . '&questionario=' . $_GET['questionario'] . '&questionarioNome=' . $_GET['questionarioNome'];
 require PATH . VIEW . '/system/paginacao.php';
 ?>
 
@@ -171,7 +186,7 @@ require PATH . VIEW . '/system/paginacao.php';
                 //verifica se a categoria está entre as que necessitam de itens
                 if ($reg['codCategoria'] <= 3) {
                     ?>
-                    <a data-placement="top" title="Adicionar Escolhas" data-content="Clique para adicionar escolhas &agrave; sua quest&atilde;o." href = "javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioQuestaoItem.php?questao=<?= crip($reg['codigo']) ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>&questaoNome=<?= crip($reg['nome']) ?>'); void(0)">
+                    <a data-placement="top" title="Adicionar Escolhas" data-content="Clique para adicionar escolhas &agrave; sua quest&atilde;o." href = "javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioQuestaoItem.php<?= $BASE ?>&questao=<?= crip($reg['codigo']) ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>&questaoNome=<?= crip($reg['questaoNome']) ?>'); void(0)">
                         <img src = "<?= ICONS ?>/add.png" class="botao" /></a>
                     <?php
                 }//fim da verificação se necessita de itens
@@ -179,7 +194,7 @@ require PATH . VIEW . '/system/paginacao.php';
             </td>	
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>' />
-                <a class="item-alterar" href="javascript:$('#index').load('<?= VIEW ?>/common/questionario/questionarioQuestao.php?codigo=<?= crip($reg['codigo']) ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>'); void(0)" title = "Alterar">
+                <a class="item-alterar" href="javascript:$('<?= '#'.$_GET['index'] ?>').load('<?= VIEW ?>/common/questionario/questionarioQuestao.php<?= $BASE ?>&codigo=<?= crip($reg['codigo']) ?>&questionario=<?= $_GET['questionario'] ?>&questionarioNome=<?= $_GET['questionarioNome'] ?>'); void(0)" title = "Alterar">
                     <img class="botao" src="<?= ICONS . '/config.png' ?>" />
                 </a>
             </td>
@@ -217,7 +232,7 @@ require PATH . VIEW . '/system/paginacao.php';
                             selected.push($(this).val());
                         });
 
-                        $('#index').load('<?= $SITE ?>?opcao=delete&codigo=' + selected + '&item=<?= $item ?>&questionario=<?= $_GET['questionario'] ?>');
+                        $('<?= '#'.$_GET['index'] ?>').load('<?= $SITE ?>&opcao=delete&codigo=' + selected + '&item=<?= $item ?>&questionario=<?= $_GET['questionario'] ?>');
                     }
                 }
             });

@@ -7,20 +7,35 @@
 
 require '../../inc/config.inc.php';
 require VARIAVEIS;
-require MENSAGENS;
-require FUNCOES;
-require SESSAO;
 require PERMISSAO;
+require FUNCOES;
+
+if ($_GET['dados']) {
+    require CONTROLLER . "/aluno.class.php";
+    $aluno = new Alunos();
+
+   foreach($aluno->listAlunosToJSON(dcrip($_GET['atribuicao']), $_GET["q"]) as $reg)
+        $arr[] = $reg;
+
+    $json_response = json_encode($arr);
+        
+    if ($_GET["callback"])
+        $json_response = $_GET["callback"] . "(" . $json_response . ")";
+
+    echo $json_response;
+    die;
+}
 
 require_once CONTROLLER . "/questionario.class.php";
 $questionario = new Questionarios();
 
 $_SESSION['SITE_RAIZ'] = $SITE;
 
-?>
-<script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
-<h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
-<?php
-
 // COPIA DE:
-require PATH.VIEW.'/common/questionario/base.php';
+if (dcrip($_GET['atribuicao']) || dcrip($_POST['atribuicao'])) {
+    $_GET['index'] = 'professor';
+    require PATH . VIEW . '/common/questionario/questionario.php';
+} else {
+    $_GET['index'] = 'index';
+    require PATH . VIEW . '/common/questionario/base.php';
+}

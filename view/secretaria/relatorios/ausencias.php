@@ -47,8 +47,17 @@ if (isset($_GET["mes"]))
 <?php
 if (!empty($_GET["mes"])) {
     require CONTROLLER . "/frequencia.class.php";
+
+    if (in_array($COORD, $_SESSION["loginTipo"])) {
+        $params['coord'] = $_SESSION['loginCodigo'];
+        $sqlAdicional = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
+    }
+    
+    $params['ano'] = $ANO;
+    $params['mes'] = str_pad($_GET["mes"] + 1, 2, "0", STR_PAD_LEFT);
+
     $frequencia = new Frequencias();
-    $res = $frequencia->listAusencias($_GET["mes"] + 1, $ANO);
+    $res = $frequencia->listAusencias($params, $sqlAdicional);
     ?>
     <table id="frequencias" border="0" align="center" width="100%">
         <tr>
@@ -85,7 +94,7 @@ if (!empty($_GET["mes"])) {
 }
 ?>
 <script>
-    $('#mes').change(function() {
+    $('#mes').change(function () {
         $('#index').load('<?= $SITE ?>?&mes=' + $('#mes').val());
     });
 </script>
