@@ -69,7 +69,7 @@ if ($_GET['pagina']) {
                     <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=entregarPlano');void(0);">Entregar Plano</a></li>	
                     <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoEnsino');void(0);">Plano de Ensino</a></li>
                     <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoAula');void(0);">Plano de Aula</a></li>
-                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoCopiar');void(0);">Copiar Plano</a></li>
+                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoCopiar');void(0);">Importar Plano</a></li>
                     <li><a target="_blank" href="<?= VIEW; ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= $atribuicao; ?>"><img src="<?= ICONS; ?>/icon-printer.gif" width="30"></a></li>
                 </ul>
             </td>
@@ -134,7 +134,7 @@ if ($_GET['pagina']) {
 
     if ($_GET['pagina'] == "planoCopiar") {
         ?>
-        <p>Permite copiar planos de ensino cadastrados para a mesma disciplina no semestre atual ou outros semestres.</p>
+        <p>Permite importar planos de ensino cadastrados para a mesma disciplina no semestre atual ou outros semestres.</p>
         <?php
         if ($_GET["codigoCopy"]) {
             $ret = $planoEnsino->copyPlano(dcrip($_GET["atribuicao"]), dcrip($_GET["codigoCopy"]));
@@ -181,7 +181,7 @@ if ($_GET['pagina']) {
                 </table>
                 <br />
                 <table width="100%"><tr><td>
-                            <a class="nav" id='item-copiar' href="#" title="Copiar Plano de Ensino"><img src='<?= ICONS ?>/copiar.gif' width="30" /></a>
+                            <a class="nav" id='item-copiar' href="#" title="Importar Plano de Ensino"><img src='<?= ICONS ?>/copiar.gif' width="30" /></a>
                         </td></tr></table> 
             </form>
         </div>
