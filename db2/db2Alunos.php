@@ -11,6 +11,7 @@ mysql_set_charset('latin1');
 
 $i = 0;
 $j = 0;
+    print "ok";
 
 $db2 = "SELECT * 
 	FROM ESCOLA.ALUNOS 
@@ -31,7 +32,6 @@ if (db2_stmt_error() == 42501) {
 }
 
 while ($row = db2_fetch_object($res)) {
-    print "ok";
     // VERIFICA SE O ALUNO EXISTE
     $sql = "select * from Pessoas where prontuario='$row->AL_PRONT'";
     $result = mysql_query($sql);
