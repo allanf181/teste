@@ -70,7 +70,7 @@ if ($_GET["atribuicao"]) {
             <?php } ?>
         </tr>
         <tr>
-            <td colspan="9" align='center'>
+            <td colspan="10" align='center'>
                 <hr>
             </td>
         </tr>
@@ -90,7 +90,7 @@ if ($_GET["atribuicao"]) {
             </td>
         </tr>
         <tr>
-            <td colspan="9" align='center'>
+            <td colspan="10" align='center'>
                 <hr>
             </td>
         </tr>
