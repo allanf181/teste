@@ -11,7 +11,6 @@ mysql_set_charset('latin1');
 
 $i = 0;
 $j = 0;
-    print "ok";
 
 $db2 = "SELECT * 
 	FROM ESCOLA.ALUNOS 
@@ -30,6 +29,7 @@ if (db2_stmt_error() == 42501) {
     mysql_query("INSERT INTO Logs VALUES (0, '" . addslashes($ERRO) . "', now(), 'CRON_ERRO', 1)");
     print $ERRO;
 }
+    print "ok";
 
 while ($row = db2_fetch_object($res)) {
     // VERIFICA SE O ALUNO EXISTE
