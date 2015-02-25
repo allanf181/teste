@@ -66,7 +66,6 @@ for ($n = 1; $n <= 2; $n++) {
                     print "$REG <br>\n";
             }
         } else {
-            print "$professor->nome | $nome \n";
             if (strcmp($professor->nome, $nome) != 0 || $professor->sexo != $sexo) {
                 $sql = "UPDATE Pessoas
 		    			SET nome = '$nome',
