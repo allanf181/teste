@@ -36,7 +36,7 @@ while ($row = db2_fetch_object($res)) {
     $row->AL_PRONT = trim(addslashes($row->AL_PRONT));
 
     // VERIFICA SE O ALUNO EXISTE
-    $sql = "select * from Pessoas where prontuario='$row->AL_PRONT'";
+    $sql = "select * from Pessoas where prontuario LIKE '$row->AL_PRONT'";
     $result = mysql_query($sql);
     $aluno = @mysql_fetch_object($result);
 
