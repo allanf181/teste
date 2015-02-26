@@ -35,9 +35,8 @@ for ($n = 1; $n <= 2; $n++) {
         $row->PR_PRONTP = trim(addslashes($row->PR_PRONTP));
          
         // VERIFICA SE O PROFESSOR EXISTE
-        $sql = "SELECT * FROM Pessoas p, PessoasTipos pt 
-	    			WHERE pt.pessoa = p.codigo 
-	    			AND p.prontuario LIKE '$row->PR_PRONTP' AND pt.tipo = $PROFESSOR";
+        $sql = "SELECT * FROM Pessoas p
+	    			WHERE p.prontuario = '$row->PR_PRONTP'";
 
         $result = mysql_query($sql);
         $professor = mysql_fetch_object($result);
