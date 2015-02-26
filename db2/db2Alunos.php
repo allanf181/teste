@@ -37,11 +37,13 @@ while ($row = db2_fetch_object($res)) {
     $row->AL_PRONT = trim(addslashes($row->AL_PRONT));
 
     // VERIFICA SE O ALUNO EXISTE
-    $sql = "select * from Pessoas where prontuario LIKE '$row->AL_PRONT'";
+    $sql = "SELECT * FROM Pessoas p, PessoasTipos pt 
+	    			WHERE pt.pessoa = p.codigo 
+	    			AND p.prontuario LIKE '$row->AL_PRONT' AND pt.tipo = $ALUNO";
     $result = mysql_query($sql);
     $aluno = @mysql_fetch_object($result);
 
-    print $row->AL_PRONT ."-".$professor->codigo ."\n";
+    print $row->AL_PRONT . "-" . $professor->codigo . "\n";
 
     $cidade = inserirCidade(addslashes(conv($row->AL_CIDADE)), addslashes(conv($row->AL_ESTADO)));
     $naturalidade = inserirCidade(addslashes(conv($row->AL_NASCCID)), addslashes(conv($row->AL_UFNASC)));
