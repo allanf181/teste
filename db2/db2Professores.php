@@ -33,7 +33,7 @@ for ($n = 1; $n <= 2; $n++) {
         $professor = null;
         
         $row->PR_PRONTP = trim(addslashes($row->PR_PRONTP));
-        
+         
         // VERIFICA SE O PROFESSOR EXISTE
         $sql = "SELECT * FROM Pessoas p, PessoasTipos pt 
 	    			WHERE pt.pessoa = p.codigo 
