@@ -119,4 +119,7 @@ mysql_query("DELETE FROM Logs WHERE origem LIKE 'CRON%' AND datediff(now(), data
 require CONTROLLER . "/logEmail.class.php";
 $logEmail = new LogEmails();
 $logEmail->send();
+
+// POR FAVOR, NAO ADICIONE NENHUM SCRIPT EXTERNO
+// ISSO IMPEDE A ATUALIZACAO DO GIT
 ?>
