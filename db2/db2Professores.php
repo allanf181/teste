@@ -74,7 +74,7 @@ for ($n = 1; $n <= 2; $n++) {
 		    			SET nome = '$nome',
 		    			sexo = '$sexo' WHERE codigo = $professor->codigo";
                 mysql_query($sql);
-                $REG = "PROFESSOR ALTERACAO: $nome";
+                $REG = "PROFESSOR ALTERACAO: $nome / $professor->nome";
                 mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_PROFESSOR', 1)");
                 if ($DEBUG)
                     print "$REG <br>\n";
