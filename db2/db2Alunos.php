@@ -33,14 +33,14 @@ if (db2_stmt_error() == 42501) {
 }
 
 while ($row = db2_fetch_object($res)) {
-    $row->PR_PRONTP = trim(addslashes($row->PR_PRONTP));
+    $row->AL_PRONT = trim(addslashes($row->AL_PRONT));
 
     // VERIFICA SE O ALUNO EXISTE
     $sql = "select * from Pessoas where prontuario='$row->AL_PRONT'";
     $result = mysql_query($sql);
     $aluno = @mysql_fetch_object($result);
 
-    print $row->PR_PRONTP ."-".$professor->codigo .'\n';
+    print $row->AL_PRONT ."-".$professor->codigo .'\n';
 
     $cidade = inserirCidade(addslashes(conv($row->AL_CIDADE)), addslashes(conv($row->AL_ESTADO)));
     $naturalidade = inserirCidade(addslashes(conv($row->AL_NASCCID)), addslashes(conv($row->AL_UFNASC)));
