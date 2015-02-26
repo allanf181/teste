@@ -54,8 +54,8 @@ require("$LOCATION_CRON" . "db2.php");
 if (!$DB2_FAIL) {
     require("$LOCATION_CRON" . "db2Funcoes.php");
 
-    include ("$LOCATION_CRON" . "db2Alunos.php");
     include ("$LOCATION_CRON" . "db2Professores.php");
+    include ("$LOCATION_CRON" . "db2Alunos.php");
     include ("$LOCATION_CRON" . "db2Horarios.php");
 
     include ("$LOCATION_CRON" . "db2CursosDisciplinasNovos.php");

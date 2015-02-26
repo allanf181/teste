@@ -30,6 +30,8 @@ for ($n = 1; $n <= 2; $n++) {
     }
 
     while ($row = db2_fetch_object($res)) {
+        $professor = null;
+        
         $row->PR_PRONTP = trim(addslashes($row->PR_PRONTP));
         
         // VERIFICA SE O PROFESSOR EXISTE

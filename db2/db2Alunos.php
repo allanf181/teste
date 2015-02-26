@@ -33,6 +33,7 @@ if (db2_stmt_error() == 42501) {
 }
 
 while ($row = db2_fetch_object($res)) {
+    $aluno = null;
     $row->AL_PRONT = trim(addslashes($row->AL_PRONT));
 
     // VERIFICA SE O ALUNO EXISTE
