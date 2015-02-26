@@ -40,7 +40,7 @@ while ($row = db2_fetch_object($res)) {
     $result = mysql_query($sql);
     $aluno = @mysql_fetch_object($result);
 
-    print $row->AL_PRONT ."-".$professor->codigo .'\n';
+    print $row->AL_PRONT ."-".$professor->codigo ."\n";
 
     $cidade = inserirCidade(addslashes(conv($row->AL_CIDADE)), addslashes(conv($row->AL_ESTADO)));
     $naturalidade = inserirCidade(addslashes(conv($row->AL_NASCCID)), addslashes(conv($row->AL_UFNASC)));

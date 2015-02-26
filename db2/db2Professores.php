@@ -40,7 +40,7 @@ for ($n = 1; $n <= 2; $n++) {
         $result = mysql_query($sql);
         $professor = mysql_fetch_object($result);
 
-        print $row->PR_PRONTP ."-".$professor->codigo .'\n';
+        print $row->PR_PRONTP ."-".$professor->codigo ."\n";
         //FORMATANDO DADOS
         $sexo = trim($row->PR_SEXO);
         $nome = formatarTexto(addslashes((conv(rtrim($row->PR_NOME)))));
