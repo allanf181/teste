@@ -25,8 +25,9 @@ class LogEmails extends Generic {
 
         foreach ($this->listRegistros(null, ' WHERE data IS NULL GROUP BY para, mensagem ', null, null) as $reg)
             foreach (explode(',', $reg['para']) as $e)
-                if ($e)
+                if ($e && strlen($e) > 5) {
                     $lista[$e] .= '<hr>'.$reg['mensagem'];
+                }
 
         $ma = '<b>E-mail das solicitações em que você foi adicionado no WebDiário:<br /></b>';
         $md .= "<br /><br />Atenciosamente,<br/>";

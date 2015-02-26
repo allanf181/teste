@@ -256,7 +256,7 @@ $_SESSION['VOLTAR'] = "professor";
 $_SESSION['LINK'] = VIEW . "/professor/nota.php?atribuicao=" . crip($atribuicao) . "&avaliacao=" . crip($avaliacao);
 
 $params['criador'] = $_SESSION['loginCodigo'];
-$res = $questionario->listQuestionarios($params);
+$res = $questionario->listQuestionarios($params, ' AND situacao = 0 ');
 ?>
 <script>
     function validaItem(item) {
