@@ -29,6 +29,7 @@ if (db2_stmt_error() == 42501) {
 while ($row = db2_fetch_object($result)) {
     $turma = 'A' . $row->AT_TURMA;
     $subturma = trim($row->AT_SUBTURMA);
+    $row->AL_PRONT = trim(addslashes($row->AL_PRONT));
 
     // BUSCA A LISTA DE ATRIBUICOES
     $sql = "SELECT a.codigo FROM Atribuicoes a, Turmas t 
@@ -36,10 +37,8 @@ while ($row = db2_fetch_object($result)) {
     $result1 = mysql_query($sql);
     while ($atribuicao = mysql_fetch_object($result1)) {
         // BUSCA O CODIGO DO ALUNO
-        $sql = "SELECT p.codigo FROM Pessoas p, PessoasTipos pt 
-   				WHERE p.codigo = pt.pessoa 
-   				AND pt.tipo=$ALUNO 
-   				AND p.prontuario='$row->AT_PRONT'";
+        $sql = "SELECT p.codigo FROM Pessoas p WHERE p.prontuario='$row->AT_PRONT'";
+        
         $res = mysql_query($sql);
         if ($aluno = mysql_fetch_object($res)) {
 

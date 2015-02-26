@@ -31,11 +31,10 @@ if (db2_stmt_error() == 42501) {
 }
 
 while ($row = db2_fetch_object($result)) {
+    $row->AL_PRONT = trim(addslashes($row->AL_PRONT));
+
     // BUSCA O CODIGO DO ALUNO
-    $sql = "SELECT p.codigo FROM Pessoas p, PessoasTipos pt 
-   				WHERE p.codigo = pt.pessoa 
-   				AND pt.tipo=$ALUNO 
-   				AND p.prontuario='$row->AL_PRONT'";
+    $sql = "SELECT p.codigo FROM Pessoas p WHERE p.prontuario='$row->AL_PRONT'";
     $res = mysql_query($sql);
     if ($aluno = mysql_fetch_object($res)) {
         $DISC = trim($row->MD_DISC);
