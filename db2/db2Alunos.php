@@ -37,7 +37,9 @@ while ($row = db2_fetch_object($res)) {
     $row->AL_PRONT = trim(addslashes($row->AL_PRONT));
 
     // VERIFICA SE O ALUNO EXISTE
-    $sql = "SELECT * FROM Pessoas WHERE p.prontuario = '$row->AL_PRONT'";
+    $sql = "SELECT * FROM Pessoas p, PessoasTipos pt 
+	    			WHERE pt.pessoa = p.codigo 
+	    			AND p.prontuario = '$row->AL_PRONT' AND pt.tipo = $ALUNO";
     $result = mysql_query($sql);
     $aluno = @mysql_fetch_object($result);
 
@@ -107,7 +109,7 @@ while ($row = db2_fetch_object($res)) {
 	    			escola1g = '$escola1g'
 	    			WHERE codigo = $aluno->codigo";
             mysql_query($sql);
-            $REG = "ALUNO ALTERACAO: $row->AL_PRONT $nome / $aluno->prontuario $aluno->nome ";
+            $REG = "ALUNO ALTERACAO: $nome";
             mysql_query("insert into Logs values(0, '$REG', now(), 'CRON_ALUNO', 1)");
             if ($DEBUG)
                 print "$REG <br>\n";
