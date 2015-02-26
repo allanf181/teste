@@ -8,9 +8,8 @@ class Academico53 extends Ruckusing_Migration_Base {
         // CORRIGINDO ERRO DE REGISTROS DUPLICADOS EM MATRÍCULAS
         $result = $this->select_all("SELECT * FROM information_schema.TABLE_CONSTRAINTS 
                                 WHERE
-                                CONSTRAINT_SCHEMA = DATABASE() AND
-                                CONSTRAINT_NAME   = 'aluno_atribuicao' AND
-                                CONSTRAINT_TYPE   = 'FOREIGN KEY'");
+                                CONSTRAINT_SCHEMA = 'academico' AND
+                                CONSTRAINT_NAME   = 'aluno_atribuicao'");
         if (!$result) {
             $this->execute("ALTER TABLE Matriculas DROP PRIMARY KEY, ADD PRIMARY KEY (codigo);
                         
