@@ -83,6 +83,7 @@ while ($row = db2_fetch_object($res)) {
                 print "$REG <br>\n";
         }
     } else {
+        // ALTERANDO OS DADOS
         if (strcmp(addslashes($aluno->nome), $nome) != 0 || strcmp(addslashes($aluno->rg), $rg) != 0 || strcmp(addslashes($aluno->cpf), $cpf) != 0 || strcmp($aluno->email, $email) != 0 || strcmp(addslashes($aluno->observacoes), $observacoes) != 0 || strcmp(addslashes($aluno->endereco), $endereco) != 0 || strcmp(addslashes($aluno->bairro), $bairro) != 0 || strcmp($aluno->nascimento, $nascimento) != 0 || strcmp($aluno->naturalidade, $naturalidade) != 0 || strcmp(addslashes($aluno->cep), $cep) != 0 || $aluno->cidade != $cidade || strcmp(addslashes($aluno->telefone), $telefone) != 0 || strcmp(addslashes($aluno->celular), $celular) != 0 || $aluno->sexo != $sexo || strcmp(addslashes($aluno->ano1g), $ano1g) != 0 || strcmp(addslashes($aluno->escola1g), $escola1g) != 0
         ) {
             $sql = "UPDATE Pessoas
