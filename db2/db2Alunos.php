@@ -33,11 +33,14 @@ if (db2_stmt_error() == 42501) {
 }
 
 while ($row = db2_fetch_object($res)) {
+    $row->PR_PRONTP = trim(addslashes($row->PR_PRONTP));
 
     // VERIFICA SE O ALUNO EXISTE
     $sql = "select * from Pessoas where prontuario='$row->AL_PRONT'";
     $result = mysql_query($sql);
     $aluno = @mysql_fetch_object($result);
+
+    print $row->PR_PRONTP ."-".$professor->codigo .'\n';
 
     $cidade = inserirCidade(addslashes(conv($row->AL_CIDADE)), addslashes(conv($row->AL_ESTADO)));
     $naturalidade = inserirCidade(addslashes(conv($row->AL_NASCCID)), addslashes(conv($row->AL_UFNASC)));
@@ -63,8 +66,8 @@ while ($row = db2_fetch_object($res)) {
     if (empty($aluno)) { // NÃO EXISTE, ENTÃO IMPORTA
         $sql = "insert into Pessoas (codigo, prontuario, senha, nome, cidade, rg, cpf, email, observacoes, endereco, bairro, nascimento, naturalidade, "
                 . "cep, telefone, celular, sexo, ano1g, escola1g) values (0, "
-                . "'" . addslashes($row->AL_PRONT) . "', "
-                . "PASSWORD('" . conv($row->AL_PRONT) . "'), "
+                . "'" . $row->AL_PRONT . "', "
+                . "PASSWORD('" . $row->AL_PRONT . "'), "
                 . "'$nome', $cidade, '$rg', '$cpf', '$email', '$observacoes', '$endereco', '$bairro', "
                 . "'$nascimento', '$naturalidade', '$cep', '$telefone', '$celular', '$sexo', "
                 . " '$ano1g', '$escola1g')";
