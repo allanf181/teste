@@ -30,7 +30,8 @@ for ($n = 1; $n <= 2; $n++) {
     }
 
     while ($row = db2_fetch_object($res)) {
-
+        $row->PR_PRONTP = trim(addslashes($row->PR_PRONTP));
+        
         // VERIFICA SE O PROFESSOR EXISTE
         $sql = "SELECT * FROM Pessoas p, PessoasTipos pt 
 	    			WHERE pt.pessoa = p.codigo 
@@ -39,15 +40,16 @@ for ($n = 1; $n <= 2; $n++) {
         $result = mysql_query($sql);
         $professor = mysql_fetch_object($result);
 
+        print $row->PR_PRONTP ."-".$professor->codigo .'\n';
         //FORMATANDO DADOS
         $sexo = trim($row->PR_SEXO);
         $nome = formatarTexto(addslashes((conv(rtrim($row->PR_NOME)))));
 
         if (empty($professor)) { // NÃO EXISTE, ENTÃO IMPORTA
             $sql = "insert into Pessoas (codigo, prontuario, nome, senha, sexo, cidade, naturalidade) values (0, "
-                    . "'" . addslashes($row->PR_PRONTP) . "', "
+                    . "'" . $row->PR_PRONTP . "', "
                     . "'$nome', "
-                    . "PASSWORD('" . addslashes($row->PR_PRONTP) . "'), "
+                    . "PASSWORD('" . $row->PR_PRONTP . "'), "
                     . "'$sexo', "
                     . " 1, 1)";
 
