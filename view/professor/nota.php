@@ -148,7 +148,7 @@ if ($_SESSION['dataExpirou'])
                     ?>
                 <tr <?= $cdif ?>>
                     <td align='center'><?= $reg['prontuario'] ?></td>
-                    <td><a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot nav' title='<?= mostraTexto($reg['aluno']) ?>'>
+                    <td><a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot' title='<?= mostraTexto($reg['aluno']) ?>'>
                             <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' />
                         </a>
                         <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>');void(0);"><?= mostraTexto($reg['aluno']) ?></a>
