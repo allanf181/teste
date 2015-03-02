@@ -5,7 +5,7 @@ require 'PHPExcel/PHPExcel.php';
 
 // Instanciation of inherited class
 $objReader = PHPExcel_IOFactory::createReader('Excel5');
-$objPHPExcel = $objReader->load("/var/www/academico/lib/PHPExcel/templateIFSP.xls");
+$objPHPExcel = $objReader->load(PATH.LOCATION."/lib/PHPExcel/templateIFSP.xls");
 
 if (!$linha2)
     die('Sem dados para gerar a lista.');

@@ -65,6 +65,14 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 </center>
 
 <br />
+<b>Vers&atilde;o 1.436</b>
+<br> - Corre&ccedil;&atilde;o do relacionamento entre alunos e matr&iacute;culas.
+<br />
+<br />
+<b>Vers&atilde;o 1.435</b>
+<br> - Corre&ccedil;&atilde;o das permiss&otilde;es de todos os tipos de pap&eacute;is.
+<br />
+<br />
 <b>Vers&atilde;o 1.434</b>
 <br> - Adi&ccedil;&atilde;o de Sistema de Question&aacute;rios
 <br> - Desvincula&ccedil;&atilde;o do Socioecon&ocirc;mico de Pessoa, registros transportados para Socioecon&ocirc;mico em Question&aacute;rios.
