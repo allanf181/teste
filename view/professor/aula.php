@@ -82,7 +82,8 @@ if ($_GET['opcao'] == 'insert') {
     $planoAula = new PlanosAula();
     $res = $planoAula->getConteudosAulas($atribuicao, $ANO, $SEMESTRE);
 
-    if (!$quantidade) $quantidade = $ensalamento->getQdeAulaDiaSemana($atribuicao, date("N"));
+    if (!$quantidade)
+        $quantidade = $ensalamento->getQdeAulaDiaSemana($atribuicao, date("N"));
     ?>
     <div id="html5form" class="main">
         <form id="form_padrao">
@@ -155,7 +156,23 @@ if ($_GET['opcao'] == '') {
         <span class='rotulo_professor'>Dias: </span><?= $res[0]['dias'] ?><br />
         <span class='rotulo_professor'>Aulas dadas: </span><?= $res[0]['aulasDadas'] ?><br />
     </div>
-    <hr><br>
+    <hr>
+
+    <center>    
+        <?php if (!$_SESSION['dataExpirou']) {
+            ?>
+            <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>');void(0);" title="Cadastrar Nova">
+                <img class='botao' src='<?= ICONS ?>/add.png' /></a>
+            <?php
+        } else {
+            ?>
+            <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
+            <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a>
+            <?php
+        }
+        ?>
+    </center>
+    <br />
 
     <?php if ($res[0]['aulasDadas']) { ?>
         <table id="listagem" border="0" align="center">
@@ -185,25 +202,8 @@ if ($_GET['opcao'] == '') {
                 }
                 ?>
         </table>
-    <?php } ?>
-
-    <br />
-    <center>    
-        <?php if (!$_SESSION['dataExpirou']) {
-            ?>
-            <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>');void(0);" title="Cadastrar Nova">
-                <img class='botao' src='<?= ICONS ?>/add.png' /></a>
-            <?php
-        } else {
-            ?>
-            <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
-            <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a>
-                <?php
-            }
-            ?>
-    </center>
-
     <?php
+    }
 }
 
 if ($LIMITE_DIARIO_PROF != 0) {
