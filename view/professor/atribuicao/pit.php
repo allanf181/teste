@@ -88,13 +88,12 @@ $params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $pano, 'semestre'
 $res = $dados->listModelo($params, $sqlAdicional, null, null);
 extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
-//SE NAO ENCONTROU PIT, IMPORTA DA FPA
-if (!$res) {
-    $params['modelo'] = 'FPA';
-    $resFPA = $dados->listModelo($params, $sqlAdicional, null, null);
-    extract(array_map("htmlspecialchars", $resFPA[0]), EXTR_OVERWRITE);
-    $horario = "";
-}
+//IMPORTA PARÃMETROS DA FPA
+$params['modelo'] = 'FPA';
+$resFPA = $dados->listModelo($params, $sqlAdicional, null, null);
+extract(array_map("htmlspecialchars", $resFPA[0]), EXTR_OVERWRITE);
+
+$horario = "";
 
 //LISTA COMPONENTES
 $resC = $componente->listComponentes($codigo);

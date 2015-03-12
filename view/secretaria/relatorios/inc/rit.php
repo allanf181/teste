@@ -31,30 +31,22 @@ if (dcrip($_GET["professor"])) {
 
     $params['ano'] = $ANO;
     $params['semestre'] = $SEMESTRE;
+            
+    $params['modelo'] = 'RIT';
 
-    $sqlAdicional .= " AND modelo = 'RIT' ORDER BY p.nome ";
+    $sqlAdicional .= " AND modelo = :modelo ORDER BY p.nome ";
 
     $res = $dados->listModelo($params, $sqlAdicional, null, null);
     if ($res) {
         foreach ($res as $reg) {
             $codigo = $reg['codigo'];
-            $nome = $reg['nome'];
-            $prontuario = $reg['prontuario'];
-            $ano = $reg['ano'];
-            $semestre = $reg['semestre'];
-            $telefone = $reg['telefone'];
-            $celular = $reg['celular'];
-            $email = $reg['email'];
-            $area = $reg['area'];
-            $regime = $reg['regime'];
-            $apelido = ($reg['apelido']) ? "$nome (".$reg['apelido'].")" : $nome;
-            $horario = $reg['horario'];
-            $horario1 = $reg['horario1'];
-            $horario2 = $reg['horario2'];
-            $horario3 = $reg['horario3'];
-            $subHorario = $reg['subHorario'];
-            $duracaoAula = $reg['duracaoAula'];
-            $dedicarEnsino = $reg['dedicarEnsino'];
+            
+            //IMPORTA PARÃMETROS DA FPA
+            $params['modelo'] = 'FPA';
+            $resFPA = $dados->listModelo($params, $sqlAdicional, null, null);
+            extract(array_map("htmlspecialchars", $resFPA[0]), EXTR_OVERWRITE);
+
+            $apelido = ($apelido) ? "$nome ($apelido)" : $nome;
 
             //VERIFICA SE ESTA FINALIZADO OU VALIDADO
             $finalizado = $reg['finalizado'];
