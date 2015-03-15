@@ -65,6 +65,13 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 </center>
 
 <br />
+<b>Vers&atilde;o 1.437</b>
+<br> - Corre&ccedil;&atilde;o da FPA, PIT e RIT.
+<br> - Corre&ccedil;&atilde;o da impress&atilde;o do verso do di&aacute;rio.
+<br> - Mudança no tamanho do campo de nome da disciplina e pessoa.
+<br> - Liberada para GED e SEC a visualiza&ccedil;&atilde;o de Trocas/Reposi&ccedil;&otilde;es.
+<br />
+<br />
 <b>Vers&atilde;o 1.436</b>
 <br> - Corre&ccedil;&atilde;o do relacionamento entre alunos e matr&iacute;culas.
 <br />

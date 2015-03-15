@@ -319,7 +319,7 @@ if (!empty($curso)) {
             'buttons': ['Sim', 'Não'],
             'onClose': function (caption, valor) {
                 if (caption == 'Sim') {
-                    $('#index').load('<?= $SITE ?>?opcao=change&codigo=' + codigo + '&curso=' + curso + '&solicitacao=' + valor + "&professor=" + professor + '&turma=' + turma + '&atribuicao=' + atribuicao);
+                    $('#index').load('<?= $SITE ?>?opcao=change&codigo=' + codigo + '&curso=' + curso + '&solicitacao=' +  encodeURIComponent(valor) + "&professor=" + professor + '&turma=' + turma + '&atribuicao=' + atribuicao);
                 }
             }
         });

@@ -320,7 +320,7 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
 //IMPRIMINDO AS SITUACOES EXISTENTES NO DIÁRIO
 foreach ($situacao->listRegistros() as $reg) {
     if (in_array($reg['sigla'], $situacoes)) {
-        $sigla = '| '. $reg['sigla'].': '.$reg['nome'];
+        $sigla = '| ' . $reg['sigla'] . ': ' . $reg['nome'];
         $pdf->Cell(strlen($sigla), $alturaLinha, $sigla, 0, 0, 'C', true);
     }
 }
@@ -359,13 +359,9 @@ $pdf->SetFillColor(255, 255, 255);
 $pdf->SetLineWidth(.1);
 
 $limit = 120; // tamanho limite
-$limit2 = 120;
 
 $observ = $aulas[0]['observacoes'];
 $competencias = $aulas[0]['competencias'];
-
-$obs = explode("\n", wordwrap($observ, $limit2));
-$comp = explode("\n", wordwrap($competencias, $limit2));
 
 $k = 0;
 $j = 0;
@@ -399,81 +395,40 @@ foreach ($aulas as $reg) {
         $pdf->SetFont($fonte, '', $tamanho);
         $pdf->Ln();
     }
-
-    if ($k >= 40) {
-        $k = 0;
-        $pdf->AddPage($orientacao, $papel);
-        $ALT_OBS = 18;
-    }
 }
 
-//COMPLETA AS LINHAS PARA PREENCHER A FOLHA
-while ($k < 40) {
-    $pdf->Cell($larg1, $alturaLinha, "//", 1, 0, 'C', true);  //mes
-    $pdf->Cell($larg2, $alturaLinha, "//", 1, 0, 'C', true);  //dia
-    $pdf->Cell($larg3, $alturaLinha, "//////////////////////////////////", 1, 0, 'L', true); //conteÃºdo ministrado
-    $pdf->Cell($larg4, $alturaLinha, "//////////////////////////////////", 1, 0, 'L', true);         //avaliaÃ§Ãµes
-    $pdf->Ln();
-    $k++;
-}
-
+// OBSERVACOES E COMPETENCIAS
+if ($observ || $competencias) {
 // LINHA EM BRANCO TRANSVERSAL
-$pdf->Cell($larg1, $alturaLinha, '', '', 0, 'C', true);
-$pdf->Cell($larg2, $alturaLinha, '', '', 0, 'C', true);
-$pdf->Cell($larg3, $alturaLinha, '', '', 0, 'C', true);
-$pdf->Ln();
-
-// OBSERVAÃ‡Ã•ES E COMPETÃŠNCIAS
-$pdf->SetFont('Courier', '', $tamanho);
-$l = 0;
-$pdf->Cell(8, $alturaLinha, '', 'LRT', 0, 'C', true);
-while ($l <= 12) {
-    if ($l > 0)
-        $pdf->Cell(8, $alturaLinha, '', 'LR', 0, 'C', true);
-    $pdf->Cell($larg6 * 1.213, $alturaLinha, utf8_decode($obs[$l]), 1, 0, 'L', true);
-    if ($l == 0)
-        $pdf->Cell($larg5, $alturaLinha, '', 'LRT', 0, 'L', true);
-    else
-        $pdf->Cell($larg5, $alturaLinha, '', 'LR', 0, 'L', true);
-    $pdf->Cell($larg6 * 1.213, $alturaLinha, utf8_decode($comp[$l]), 1, 0, 'L', true);
+    $pdf->Cell($larg1, $alturaLinha, '', '', 0, 'C', true);
+    $pdf->Cell($larg2, $alturaLinha, '', '', 0, 'C', true);
+    $pdf->Cell($larg3, $alturaLinha, '', '', 0, 'C', true);
     $pdf->Ln();
-    $l++;
-    if ($l >= 13)
-        break;
-}
 
-if ($l <= 10) {
-    while ($l <= 12) {
-        if ($l == 12)
-            $pdf->Cell(8, $alturaLinha, '', 'LRB', 0, 'L', true);
-        else
-            $pdf->Cell(8, $alturaLinha, '', 'LR', 0, 'L', true);
+    $pdf->SetFont('Courier', 'B', $tamanho + 2);
+    $pdf->Cell($larg1 + $larg3, $alturaLinha, utf8_decode('OBSERVAÇÕES'), 1, 0, 'C', true);
+    $pdf->Cell($larg2 + $larg4, $alturaLinha, utf8_decode('COMPETÊNCIAS DESENVOLVIDAS'), 1, 0, 'C', true);
+    $pdf->Ln();
 
-        $pdf->Cell($larg6 * 1.213, $alturaLinha, '', 1, 0, 'C', true);
-        if ($l == 12)
-            $pdf->Cell($larg5, $alturaLinha, '', 'LRB', 0, 'L', true);
-        else
-            $pdf->Cell($larg5, $alturaLinha, '', 'LR', 0, 'L', true);
-        $pdf->Cell($larg6 * 1.213, $alturaLinha, '', 1, 0, 'C', true);
+    $obs1 = explode("\n", wordwrap(str_replace("\r\n", ";", trim($observ)), $limit));
+    $comp1 = explode("\n", wordwrap(str_replace("\r\n", ";", trim($competencias)), $limit));
+
+    $REG = ($obs1 > $comp1) ? $obs1 : $comp1;
+    foreach ($REG as $j => $trecho) {
+        $pdf->SetFont('Courier', '', $tamanho);
+        $pdf->Cell($larg1 + $larg3, $alturaLinha, utf8_decode($obs1[$j]), 1, 0, 'L', true);
+        $pdf->Cell($larg2 + $larg4, $alturaLinha, utf8_decode($comp1[$j]), 1, 0, 'L', true);
+        $k++;
+        $pdf->SetFont($fonte, '', $tamanho);
         $pdf->Ln();
-        $l++;
     }
 }
-$pdf->Ln();
 
-
-// TEXTOS ROTACIONADOS
-$pdf->SetFont($fonte, '', $tamanho + 4);
-$pdf->RotatedText(15, 230 - $ALT_OBS, utf8_decode('OBSERVAÇÕES'), 90);
-$pdf->RotatedText(206, 243 - $ALT_OBS, utf8_decode('COMPETÊNCIAS DESENV.'), 90);
-
-$pdf->Ln();
 $pdf->Ln();
 $pdf->Ln();
 $pdf->Ln();
 $pdf->Cell(100, $alturaLinha, utf8_decode(str_repeat("_", 40)), 0, 0, 'R', false);
 $pdf->Cell(165, $alturaLinha, utf8_decode(str_repeat("_", strlen($professor) + 10)), 0, 0, 'R', false);
-$pdf->Ln();
 $pdf->Ln();
 $pdf->Cell(70, $alturaLinha, utf8_decode("COORDENADOR"), 0, 0, 'R', false);
 $pdf->Cell(185, $alturaLinha, utf8_decode($professor), 0, 0, 'R', false);

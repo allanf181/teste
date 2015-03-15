@@ -138,8 +138,9 @@ require CONTROLLER . "/questionario.class.php";
 <?php
 showChecks();
 
-if (in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
-// Listra Trocas de Aulas validadas para os Alunos e Professores
+if (in_array($GED, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"]) 
+        || in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
+    // Listra Trocas de Aulas validadas
     listTrocaAula();
 }
 
@@ -674,7 +675,7 @@ function questionario() {
 
 // TABELAS DE DADOS
 function listTrocaAula() {
-    global $PROFESSOR, $ALUNO, $_SESSION;
+    global $PROFESSOR, $ALUNO, $_SESSION, $SEC, $GED;
 
     if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
         // Verificando se o Professor tem aulas trocadas vigentes
@@ -692,6 +693,12 @@ function listTrocaAula() {
                 . " AND dataTroca >= NOW() ";
     }
 
+    if (in_array($SEC, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"]) ) {
+        $params = array();
+        $sqlAdicional = " AND coordenadorAceite = 'S' "
+                . " AND dataTroca >= NOW() ";
+    }
+    
     $aulaTroca = new AulasTrocas();
     $res = $aulaTroca->listTrocas($params, $sqlAdicional);
     if ($res) {
