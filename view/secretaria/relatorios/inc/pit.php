@@ -39,8 +39,6 @@ if (dcrip($_GET["professor"])) {
     $res = $dados->listModelo($params, $sqlAdicional, null, null);
     if ($res) {
         foreach ($res as $reg) {
-            $codigo = $reg['codigo'];
-            
             //IMPORTA PARÃMETROS DA FPA
             $params['modelo'] = 'FPA';
             $resFPA = $dados->listModelo($params, $sqlAdicional, null, null);
@@ -55,6 +53,8 @@ if (dcrip($_GET["professor"])) {
             else if (!$reg['valido'] || $reg['valido'] == '0000-00-00 00:00:00')
                 $pdf->setWaterText(null, null, "NAO FOI VALIDADO");
 
+            $codigo = $reg['codigo'];
+            $horario = $reg['horario'];
 
             //LISTA COMPONENTES
             $resC = $componente->listComponentes($codigo);

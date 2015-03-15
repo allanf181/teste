@@ -82,16 +82,22 @@ if ($_GET['pano'] && $_GET['psemestre']) {
     }
 }
 
-//LISTA OS REGISTROS DA FPA
 $sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ';
-$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $pano, 'semestre' => $psemestre, 'modelo' => 'RIT');
-$res = $dados->listModelo($params, $sqlAdicional, null, null);
-
-//IMPORTA DA FPA
+$params = array('pessoa' => $_SESSION['loginCodigo']);
+        
+//IMPORTA PARÃMETROS DA FPA
 $params['modelo'] = 'FPA';
 $resFPA = $dados->listModelo($params, $sqlAdicional, null, null);
 extract(array_map("htmlspecialchars", $resFPA[0]), EXTR_OVERWRITE);
-$horario = "";
+$codigo = null;
+
+//LISTA OS REGISTROS DA PIT
+$params['ano'] = $pano;
+$params['semestre'] = $psemestre;
+$params['modelo'] = 'RIT';
+$res = $dados->listModelo($params, $sqlAdicional, null, null);
+$horario = $res[0]['horario'];
+$codigo = $res[0]['codigo'];
 
 //LISTA COMPONENTES
 $resC = $componente->listComponentes($codigo);
