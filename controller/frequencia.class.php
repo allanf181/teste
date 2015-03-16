@@ -82,7 +82,7 @@ class Frequencias extends FrequenciasAbonos {
             foreach ($reg as $atr => $r) {
                 if ($r >= 3 && $new[$atr]) {
                     $arr[$pront]['aluno'] = $new[$pront]['aluno'];
-                    $arr[$pront]['disciplina'][] = $new[$atr];
+                    $arr[$pront]['disciplina'][$atr] = $new[$atr];
                     $arr[$pront]['codigo'] = $new[$pront]['codigo'];
                 }
             }

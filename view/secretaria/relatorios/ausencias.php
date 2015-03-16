@@ -40,19 +40,21 @@ if (isset($_GET["mes"]))
     <tr>
         <td>&nbsp;</td>
         <td>
-            <font size="1">Mostra alunos com mais de 3 faltas no m&ecirc;s em uma mesma disciplina.</font>
+            <font size="1">Mostra alunos com mais de 3 dias de faltas no m&ecirc;s em uma mesma disciplina.</font>
         </td>
     </tr>
 </table>
 <?php
 if (!empty($_GET["mes"])) {
     require CONTROLLER . "/frequencia.class.php";
+    require CONTROLLER . "/professor.class.php";
+    $professor = new Professores();
 
     if (in_array($COORD, $_SESSION["loginTipo"])) {
         $params['coord'] = $_SESSION['loginCodigo'];
         $sqlAdicional = " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
     }
-    
+
     $params['ano'] = $ANO;
     $params['mes'] = str_pad($_GET["mes"] + 1, 2, "0", STR_PAD_LEFT);
 
@@ -79,8 +81,13 @@ if (!empty($_GET["mes"])) {
                     <?= mostraTexto($reg['aluno']) ?>
                 </td>
                 <td align='center'><?php
-                    foreach ($reg['disciplina'] as $disc) {
-                        print $disc . '<br>';
+                    foreach ($reg['disciplina'] as $c => $n) {
+                        ?>
+                        <a target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($c) ?>' data-placement="top" data-content='Clique para ver o di&aacute;rio do professor.' title='<?= $professor->getProfessor($c, 1, '', 0, 0) ?>'>
+                            <?= $n ?> 
+                        </a>
+                        <br>
+                        <?php
                     }
                     ?>
                 </td>

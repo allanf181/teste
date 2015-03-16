@@ -2,6 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/Z:/academico/view/system/home.php</file>
+            <file>file:/Z:/academico/lib/migration/migrations/academico/20150315000001_Academico54.php</file>
+            <file>file:/Z:/academico/view/system/creditos.php</file>
+            <file>file:/Z:/academico/view/secretaria/relatorios/inc/diario.php</file>
+        </group>
     </open-files>
 </project-private>
