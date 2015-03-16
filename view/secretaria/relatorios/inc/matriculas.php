@@ -36,7 +36,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     $sqlAdicional .= " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
 }
 
-$sqlAdicional .= " GROUP BY m.codigo ORDER BY a.bimestre, p.nome ";
+$sqlAdicional .= " GROUP BY p.codigo ORDER BY a.bimestre, p.nome ";
 
 $linha2 = $matricula->getMatriculas($params, $sqlAdicional);
 
