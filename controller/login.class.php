@@ -29,7 +29,7 @@ class login extends Generic {
         $rs = null;
         $notLog = null;
         $prontuarioBD = $prontuario;
-
+        
         if ($LDAP_ATIVADO) {
             //REMOVENDO CARACETERES ADICIONAIS PARA AUTENTICACAO DO LDAP
             if ($LDAP_DROP_LEFT)
@@ -49,9 +49,17 @@ class login extends Generic {
                 $ldap = new ldap();
                 $rs = $ldap->autentica($prontuario, $senha);
             }
+
+            if (!$rs && $prontuarioBD != 'admin') return false;
+            
+            // SE AUTENTICOU PELO LDAP, PEGA OS DADOS PARA A SESSAO.
+            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+                    . " FROM Pessoas"
+                    . " WHERE prontuario=:prontuario";
+            $params = array(':prontuario' => $prontuarioBD);
         }
 
-        if (!$rs) { // SE NAO AUTENTICOU PELO LDAP, TENTA PELO BANCO.
+        if (!$LDAP_ATIVADO) { // SE NAO LDAP, TENTA PELO BANCO.
             // SE ADMIN QUE ESTA USANDO OUTRO LOGIN
             if (strpos($prontuarioBD, '#ADMIN') !== false) {
                 $pront = explode('#', $prontuarioBD);
@@ -69,12 +77,8 @@ class login extends Generic {
                         . " AND senha=PASSWORD(:senha)";
                 $params = array(':prontuario' => $prontuario, ':senha' => $senha);
             }
-        } else { // SE AUTENTICOU PELO LDAP, PEGA OS DADOS PARA A SESSAO.
-            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
-                    . " FROM Pessoas"
-                    . " WHERE prontuario=:prontuario";
-            $params = array(':prontuario' => $prontuarioBD);
         }
+
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
@@ -139,7 +143,7 @@ class login extends Generic {
                 if ($instituicao->sendEmail($email, $assunto, $mensagem, $headers)) {
                     $mail_segments = explode("@", $res[0]['email']);
                     if (strlen($mail_segments[0]) > 4) {
-                        $mail_segments[0] = substr($mail_segments[0], 0, 2) . str_repeat("*", strlen($mail_segments[0])-2);
+                        $mail_segments[0] = substr($mail_segments[0], 0, 2) . str_repeat("*", strlen($mail_segments[0]) - 2);
                     } else {
                         $mail_segments[0] = str_repeat("*", strlen($mail_segments[0]));
                     }
