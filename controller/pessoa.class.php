@@ -152,13 +152,14 @@ class Pessoas extends Generic {
 
         if ($params['codigo']) {
             $sql .= " WHERE codigo = :codigo";
+            $res = $bd->updateDB($sql, $params);
         }
 
         if ($params['prontuario']) {
             $sql .= " WHERE prontuario = :prontuario ";
+            $res = $bd->updateDB($sql, $params);
         }
 
-        $res = $bd->updateDB($sql, $params);
         if ($res) {
             return true;
         } else {
