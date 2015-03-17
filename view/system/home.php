@@ -949,7 +949,7 @@ function listOcorrencia() {
                 ?>
                 <tr <?= $cdif ?>>
                     <td>&nbsp;<a href="#" data-placement="top" data-content='<?= $reg['aluno'] ?>' title="Nome"><?= abreviar($reg['aluno'], 30) ?></a></td>
-                    <td><?= $reg['data'] ?></td>
+                    <td><?= $reg['dataFormat'] ?></td>
                     <td>&nbsp;<a href="#" data-placement="top" data-content="<?= $reg['descricao'] ?>" title="&Uacute;ltima descri&ccedil;&atilde;o"><?= abreviar($reg['descricao'], 70) ?></a></td>
                     <td>
                         <a data-placement="top" href="javascript:$('#index').load('<?= VIEW ?>/secretaria/ocorrencia.php?aluno=<?= crip($reg['codAluno']) ?>');void(0);" title='Clique aqui para visualizar'>

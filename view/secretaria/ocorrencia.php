@@ -42,7 +42,7 @@ if ($_GET["opcao"] == 'historico') {
         $res = $ocorrencia->listOcorrencias($params, $sqlAdicional);
         ?>
             <tr>
-                <th><?= $res[0]['data'] ?></th>
+                <th><?= $res[0]['dataFormat'] ?></th>
                 <th><?= $res[0]['registroPor'] ?></th>
                 <th><?= $res[0]['descricao'] ?></th>
                 <?php if ($remover) print '<th>&nbsp;</th>'; ?>
@@ -52,7 +52,7 @@ if ($_GET["opcao"] == 'historico') {
         foreach ($interacao->listInteracoes($params, $sqlAdicional) as $l) {
             ?>
             <tr>
-                <th><?= $l['data'] ?></th>
+                <th><?= $l['dataFormat'] ?></th>
                 <th><?= $l['registroPor'] ?></th>
                 <th><?= $l['descricao'] ?></th>
                 <?php if ($remover) { ?>
@@ -194,7 +194,7 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$sqlAdicional .= ' ORDER BY data DESC, codigo DESC ';
+$sqlAdicional .= ' ORDER BY p.nome, data DESC, codigo DESC ';
 $res = $ocorrencia->listOcorrencias($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($ocorrencia->listOcorrencias($params, $sqlAdicional));
 
@@ -225,7 +225,7 @@ require PATH . VIEW . '/system/paginacao.php';
         ?>
         <tr <?= $cdif ?>>
             <td>&nbsp;<a href="#" title="<?= $reg['aluno'] ?>"><?= abreviar($reg['aluno'], 30) ?></a></td>
-            <td><?= $reg['data'] ?></td>
+            <td><?= $reg['dataFormat'] ?></td>
             <td>&nbsp;<a href="#" title="<?= $reg['registroPor'] ?>"><?= abreviar($reg['registroPor'], 30) ?></a></td>
             <td>&nbsp;<a href="#" title="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 15) ?></a></td>
             <td align='center'><?= $reg['interacao'] ?></td>

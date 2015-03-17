@@ -14,7 +14,7 @@ class Ocorrencias extends Generic {
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
         $sql = "SELECT o.codigo, p.nome as aluno, p1.nome as registroPor, p.codigo as codAluno,
-                        date_format(o.data, '%d/%m/%Y %H:%i') as data,o.descricao,
+                        date_format(o.data, '%d/%m/%Y %H:%i') as dataFormat,o.descricao,
                         (SELECT COUNT(*) FROM OcorrenciasInteracoes i WHERE i.ocorrencia = o.codigo) as interacao
                         FROM Ocorrencias o, Pessoas p, Pessoas p1
                         WHERE o.aluno = p.codigo
