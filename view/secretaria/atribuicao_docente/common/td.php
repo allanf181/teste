@@ -24,6 +24,13 @@ if ($_GET["opcao"] == 'historico') {
     die;
 }
 
+// DELETE
+if ($_GET["opcao"] == 'delete') {
+    $ret = $dados->delete($_GET["codigo"]);
+    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    $_GET["codigo"] = null;
+}
+
 if ($_GET["opcao"] == 'change') {
     $_GET['nomeTabela'] = $tabela;
     $_GET['solicitante'] = $_SESSION['loginCodigo'];
@@ -182,6 +189,7 @@ require PATH . VIEW . '/system/paginacao.php';
             <th width="150" title='Solicitar Corre&ccedil;&atilde;o?'>Solicitar corre&ccedil;&atilde;o</th>
             <th width="70" title='Marcar como conferido?'>Validar?</th>
             <th width="70">Hist&oacute;rico</th>            
+            <th width="10">&nbsp;</th>
             <?php
         }
         ?>
@@ -212,41 +220,41 @@ require PATH . VIEW . '/system/paginacao.php';
                 <td>
                     Corrigido
                 </td>
-        <?php
-        $checked = "checked='checked'";
-    } else if ($reg['solicitacao']) {
-        ?>
+                <?php
+                $checked = "checked='checked'";
+            } else if ($reg['solicitacao']) {
+                ?>
                 <td colspan='2'>
                     Correção solicitada
                 </td>
-        <?php
-        $correcao = 1;
-    } else {
-        if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"])) {
-            ?>
+                <?php
+                $correcao = 1;
+            } else {
+                if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"])) {
+                    ?>
                     <td align='center'>
                         <a href='#' title='Solicitar correção' onclick="return change('<?= $reg['codigo'] ?>', '<?= $reg['nome'] ?>')">
                             <img class='botao campoCorrecao' id='<?= crip($reg['codigo']) ?>' name='<?= $reg['codigo'] ?>' src='<?= ICONS ?>/cancel.png' />
                         </a>
                     </td>
-            <?php
-        }
-    }
+                    <?php
+                }
+            }
 
-    if (!$correcao) {
-        if ($reg['valido'] != "00/00/0000 00:00" || $reg['valido'] != "") {
-            if (!in_array($ADM, $_SESSION["loginTipo"]) && !in_array($COORD, $_SESSION["loginTipo"]) && !in_array($GED, $_SESSION["loginTipo"]))
-                $bloqueado = "disabled='disabled' title='pendente'";
+            if (!$correcao) {
+                if ($reg['valido'] != "00/00/0000 00:00" || $reg['valido'] != "") {
+                    if (!in_array($ADM, $_SESSION["loginTipo"]) && !in_array($COORD, $_SESSION["loginTipo"]) && !in_array($GED, $_SESSION["loginTipo"]))
+                        $bloqueado = "disabled='disabled' title='pendente'";
 
-            if (!in_array($ADM, $_SESSION["loginTipo"]) && !in_array($GED, $_SESSION["loginTipo"]) && $checked)
-                $bloqueado = "disabled='disabled' title='Somente GED'";
-            ?>
+                    if (!in_array($ADM, $_SESSION["loginTipo"]) && !in_array($GED, $_SESSION["loginTipo"]) && $checked)
+                        $bloqueado = "disabled='disabled' title='Somente GED'";
+                    ?>
                     <td align='center'>
                         <input <?= $bloqueado ?> type='checkbox' <?= $checked ?> id='<?= $reg['codigo'] ?>' value='<?= $valor ?>' onclick="return conf(this.checked, '<?= $reg['nome'] ?>', '<?= $reg['codigo'] ?>')">
                     </td>
-            <?php
-        } else {
-            ?>
+                    <?php
+                } else {
+                    ?>
                     <td>&nbsp;</td>
                     <?php
                 }
@@ -256,12 +264,17 @@ require PATH . VIEW . '/system/paginacao.php';
                 <a href='#' title='Ver hist&oacute;rico de solicita&ccedil;&otilde;es'>
                     <img class='botao search' id='<?= crip($reg['codigo']) ?>' src='<?= ICONS ?>/search.png' />
                 </a>
+            </td>
+            <td align='center'>
+                <a href='#' title='Excluir' class="item-excluir" id='<?= crip($reg['codigo']) ?>'>
+                    <img class='botao' src='<?= ICONS ?>/delete.png' />
+                </a>
             </td>                    
         </tr>
-    <?php
-    $i++;
-}
-?>
+        <?php
+        $i++;
+    }
+    ?>
 </table>
 <script>
     function atualizar(getLink) {
@@ -286,12 +299,26 @@ require PATH . VIEW . '/system/paginacao.php';
                     'height': 300
                 }},
             width: 600,
-            title: '<?=$tabela?>'
+            title: '<?= $tabela ?>'
+        });
+    });
+
+    $(".item-excluir").click(function () {
+        var codigo = $(this).attr('id');
+        $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
+            'type': 'question',
+            'title': '<?= $TITLE ?>',
+            'buttons': ['Sim', 'Não'],
+            'onClose': function (caption) {
+                if (caption == 'Sim') {
+                    $('#index').load(atualizar(1) + '&opcao=delete&codigo=' + codigo + '&item=<?= $item ?>');
+                }
+            }
         });
     });
 
     function change(codigo, nome) {
-        $.Zebra_Dialog('<strong>Confirma a solicitação de correção na <?=$tabela?> de ' + nome + '? <br><br>Descrever a solicitação:</strong>', {
+        $.Zebra_Dialog('<strong>Confirma a solicitação de correção na <?= $tabela ?> de ' + nome + '? <br><br>Descrever a solicitação:</strong>', {
             'type': 'prompt',
             'promptInput': '<textarea rows="2" cols="30" name="Zebra_valor" maxlength="200" id="Zebra_valor"></textarea>',
             'title': '<?= $TITLE ?>',
@@ -303,12 +330,12 @@ require PATH . VIEW . '/system/paginacao.php';
             }
         });
     }
-    
+
     function conf(checked, nome, codigo) {
         if (!checked)
-            modo = '<strong>Confirma abrir a <?=$tabela?> de ' + nome + '?</strong>';
+            modo = '<strong>Confirma abrir a <?= $tabela ?> de ' + nome + '?</strong>';
         else
-            modo = '<strong>Confirma a conferência da <?=$tabela?> de ' + nome + '?<br><br>Atenção: somente o GED poderá abrir novamente!</strong>';
+            modo = '<strong>Confirma a conferência da <?= $tabela ?> de ' + nome + '?<br><br>Atenção: somente o GED poderá abrir novamente!</strong>';
 
         $.Zebra_Dialog(modo, {
             'type': 'question',
