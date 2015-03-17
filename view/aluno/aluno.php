@@ -102,5 +102,5 @@ if ($_GET["atribuicao"]) {
 ?>
 <div id="aluno"></div>
 <script>
-    $('#aluno').load('<?= VIEW . "/aluno/aviso?atribuicao=" . crip($atribuicao) ?>');
+    $('#aluno').load('<?= VIEW . "/aluno/aviso.php?atribuicao=" . crip($atribuicao) ?>');
 </script>
