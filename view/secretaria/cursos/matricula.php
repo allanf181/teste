@@ -298,7 +298,11 @@ if ($params['turma'] || $params['atribuicao'] || $params['nome'] || $params['pro
     if ($_GET['item'])
         $item = $_GET["item"];
 
-    $sqlAdicional .= " GROUP BY m.codigo ORDER BY a.bimestre, p.nome ";
+    $params['ano'] = $ANO;
+    $params['semestre'] = $SEMESTRE;
+    $sqlAdicional .= " AND t.ano = :ano "
+            . "AND (semestre = 0 OR semestre = :semestre) "
+            . "GROUP BY m.codigo ORDER BY a.bimestre, p.nome, d.nome ";
     $res = $matricula->getMatriculas($params, $sqlAdicional, $item, $itensPorPagina);
     $totalRegistros = count($matricula->getMatriculas($params, $sqlAdicional, null, null));
 

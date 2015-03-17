@@ -117,7 +117,11 @@ if (dcrip($_GET["bimestre"])) {
     }
 
     if ($aluno && $turma) {
-        $sqlAdicional .= " GROUP BY m.codigo ORDER BY a.bimestre, p.nome ";
+        $params['ano'] = $ANO;
+        $params['semestre'] = $SEMESTRE;
+        $sqlAdicional .= " AND t.ano = :ano "
+                . "AND (semestre = 0 OR semestre = :semestre) "
+                . "GROUP BY m.codigo ORDER BY a.bimestre, p.nome, d.nome ";
         $res = $matricula->getMatriculas($params, $sqlAdicional);
         $resultadoGlobal = $nota->resultadoModulo($aluno, $turma);
         ?>

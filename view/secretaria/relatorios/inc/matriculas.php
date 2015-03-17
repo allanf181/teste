@@ -36,8 +36,11 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     $sqlAdicional .= " AND c.codigo IN (SELECT curso FROM Coordenadores co WHERE co.coordenador= :coord) ";
 }
 
-$sqlAdicional .= " GROUP BY p.codigo ORDER BY a.bimestre, p.nome ";
-
+$params['ano'] = $ANO;
+$params['semestre'] = $SEMESTRE;
+$sqlAdicional .= " AND t.ano = :ano "
+        . "AND (semestre = 0 OR semestre = :semestre) "
+        . "GROUP BY p.codigo ORDER BY a.bimestre, p.nome, d.nome ";
 $linha2 = $matricula->getMatriculas($params, $sqlAdicional);
 
 $titulo = str_repeat(" ", 30) . "Relatório de Matrículas";
