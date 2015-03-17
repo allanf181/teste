@@ -206,13 +206,13 @@ if ($_GET["pesquisa"] == 1) {
 if (dcrip($_GET["prontuario"])) {
     $params['prontuario'] = '%' . dcrip($_GET["prontuario"]) . '%';
     $prontuario = dcrip($_GET["prontuario"]);
-    $sqlAdicional = ' AND prontuario like :prontuario ';
+    $sqlAdicional .= ' AND prontuario like :prontuario ';
 }
 
 if (dcrip($_GET["nome"])) {
     $params['nome'] = '%' . dcrip($_GET["nome"]) . '%';
     $nome = dcrip($_GET["nome"]);
-    $sqlAdicional = ' AND nome like :nome ';
+    $sqlAdicional .= ' AND nome like :nome ';
 }
 
 if (dcrip($_GET["tipo"])) {
