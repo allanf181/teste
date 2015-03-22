@@ -29,7 +29,7 @@ class login extends Generic {
         $rs = null;
         $notLog = null;
         $prontuarioBD = $prontuario;
-        
+
         if ($LDAP_ATIVADO) {
             //REMOVENDO CARACETERES ADICIONAIS PARA AUTENTICACAO DO LDAP
             if ($LDAP_DROP_LEFT)
@@ -50,8 +50,9 @@ class login extends Generic {
                 $rs = $ldap->autentica($prontuario, $senha);
             }
 
-            if (!$rs && $prontuarioBD != 'admin') return false;
-            
+            if (!$rs && $prontuarioBD != 'admin' && strpos($prontuarioBD, '#ADMIN') === false)
+                return false;
+
             // SE AUTENTICOU PELO LDAP, PEGA OS DADOS PARA A SESSAO.
             $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
                     . " FROM Pessoas"
@@ -59,24 +60,22 @@ class login extends Generic {
             $params = array(':prontuario' => $prontuarioBD);
         }
 
-        if (!$LDAP_ATIVADO) { // SE NAO LDAP, TENTA PELO BANCO.
-            // SE ADMIN QUE ESTA USANDO OUTRO LOGIN
-            if (strpos($prontuarioBD, '#ADMIN') !== false) {
-                $pront = explode('#', $prontuarioBD);
-                $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
-                        . " FROM Pessoas"
-                        . " WHERE prontuario=:pront1"
-                        . " AND 'admin' = ( SELECT p1.prontuario FROM Pessoas p1 "
-                        . "WHERE p1.prontuario = :pront2 AND senha = PASSWORD(:senha) )";
-                $params = array(':pront1' => $pront[0], ':pront2' => $pront[1], ':senha' => $senha);
-                $notLog = 1;
-            } else {
-                $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
-                        . " FROM Pessoas"
-                        . " WHERE prontuario=:prontuario"
-                        . " AND senha=PASSWORD(:senha)";
-                $params = array(':prontuario' => $prontuario, ':senha' => $senha);
-            }
+        // SE ADMIN QUE ESTA USANDO OUTRO LOGIN
+        if (strpos($prontuarioBD, '#ADMIN') !== false) {
+            $pront = explode('#', $prontuarioBD);
+            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+                    . " FROM Pessoas"
+                    . " WHERE prontuario=:pront1"
+                    . " AND 'admin' = ( SELECT p1.prontuario FROM Pessoas p1 "
+                    . "WHERE p1.prontuario = :pront2 AND senha = PASSWORD(:senha) )";
+            $params = array(':pront1' => $pront[0], ':pront2' => $pront[1], ':senha' => $senha);
+            $notLog = 1;
+        } else {
+            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+                    . " FROM Pessoas"
+                    . " WHERE prontuario=:prontuario"
+                    . " AND senha=PASSWORD(:senha)";
+            $params = array(':prontuario' => $prontuario, ':senha' => $senha);
         }
 
         $res = $bd->selectDB($sql, $params);
@@ -156,7 +155,7 @@ class login extends Generic {
 
     // MÉTODO PARA ALTERAÇÃO DE SENHA
     // USADO POR: VIEW/SENHA.PHP
-    public function alteraSenha($prontuario, $senha, $senhaNova, $chave) {
+    public function alteraSenha($prontuario, $senha, $senhaNova, $chave, $LDAP_PASS) {
         $bd = new database();
         //Verifica se o usuário e senha atual estão corretos
         $sql = "SELECT codigo FROM Pessoas WHERE prontuario=:prontuario ";
@@ -176,7 +175,19 @@ class login extends Generic {
                     . "WHERE prontuario = :prontuario";
             $params = array(':prontuario' => $prontuario, ':senha' => $senhaNova);
             if ($bd->updateDB($sql, $params)) {
-                return true;
+                if (!$LDAP_PASS)
+                    return 1;
+
+                if ($LDAP_PASS) {
+                    require PATH . INC . '/ldap.inc.php';
+                    $ldap = new ldap();
+                    $rs = $ldap->changePassword($prontuario, $senhaNova);
+                    if ($rs == '1') {
+                        return 1;
+                    } else {
+                        return 2;
+                    }
+                }
             }
         }
         return false;

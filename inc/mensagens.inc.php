@@ -135,6 +135,8 @@ function mensagem($TIPO, $MSG, $OPT = null) {
 
     $NOK_QUESTIONARIO_CLOSE = 'Aten&ccedil;&atilde;o, o Questin&aacute;rio est&aacute; fechado nesse momento para altera&ccedil;&atilde;o.';
     
+    $ERRO_LDAP_WRONG_PASS = 'N&atilde;o foi poss&iacute;vel alterar a senha no LDAP, verifique se as configura&ccedil;&otilde;es est&atilde;o corretas ou se a senha atende os requisitos de seguran&ccedil;a configurados no LDAP.';
+    
     // CODIGOS DE ERROS - PDO/MYSQL
     if ($OPT) {
         if ($OPT == 23000 && ($MSG == 'UPDATE' || $MSG == 'INSERT')) {

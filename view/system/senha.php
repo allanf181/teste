@@ -20,7 +20,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 if ($LINK_RECUPERAR_SENHA) {
     ?>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             location.replace('<?= $LINK_RECUPERAR_SENHA ?>');
         });
     </script>
@@ -28,7 +28,7 @@ if ($LINK_RECUPERAR_SENHA) {
     die;
 }
 
-if ($LDAP_ATIVADO) {
+if ($LDAP_ATIVADO && !$LDAP_PASS) {
     mensagem('INFO', 'LDAP_ATIVADO');
     die;
 }
@@ -61,12 +61,15 @@ if (isset($_POST["opcao"]) && $_POST["opcao"] == 'alterarToBanco') {
     $chave = addslashes($_POST["chave"]);
 
     if ($_SESSION['session_textoCaptcha'] == $_POST["captcha_r"]) {
-        if ($login->alteraSenha($prontuario, $senha, $senhaNova, $chave)) {
+        $rs = $login->alteraSenha($prontuario, $senha, $senhaNova, $chave, $LDAP_PASS);
+        if ($rs == 1) {
             @session_unset($_SESSION_NAME);
             @session_destroy($_SESSION_NAME);
             print "Sua senha foi alterada com sucesso.<br />";
             print "<a href=\"?\">Clique aqui e acesse o sistema com sua nova senha.</a><br/><br/>";
             die;
+        } else if ($rs == 2) {
+            mensagem('ERRO', 'LDAP_WRONG_PASS');
         } else {
             if ($senha)
                 mensagem('ERRO', 'PASS_NOT_MATCH');

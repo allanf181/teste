@@ -65,6 +65,13 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 </center>
 
 <br />
+<b>Vers&atilde;o 1.438</b>
+<br> - Corre&ccedil;&otilde;es de Seguran&ccedil;a.
+<br> - Corre&ccedil;&atilde;o do #ADMIN para funcionar com LDAP.
+<br> - Adi&ccedil;&atilde;o de fun&ccedil;&atilde;o que permite que o WebDi&aacute;rio adicione os usu&aacute;rios do banco no LDAP.
+<br> - Adi&ccedil;&atilde;o de fun&ccedil;&atilde;o que permite que senhas alteradas no WebD&aacute;rio sejam replicadas no LDAP.
+<br />
+<br />
 <b>Vers&atilde;o 1.437</b>
 <br> - Corre&ccedil;&atilde;o da FPA, PIT e RIT.
 <br> - Corre&ccedil;&atilde;o da impress&atilde;o do verso do di&aacute;rio.

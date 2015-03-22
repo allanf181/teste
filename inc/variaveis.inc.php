@@ -41,6 +41,7 @@ if ($res = $instituicao->listRegistros()) {
     $LDAP_ATIVADO = $res[0]['ldap_ativado'];
     $LDAP_CACHE = $res[0]['ldap_cache'];
     $LDAP_DROP_LEFT = $res[0]['ldap_drop_left'];
+    $LDAP_PASS = $res[0]['ldap_pass'];
     $EMAIL = $res[0]['email_account'];
     $LINK_RECUPERAR_SENHA = $res[0]['link_recuperar_senha'];
 

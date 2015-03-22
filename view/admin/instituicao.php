@@ -20,7 +20,10 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
         $_POST['envioFoto'] = 0;
     if (!$_POST['ldap_ativado'])
         $_POST['ldap_ativado'] = 0;
-
+    if (!$_POST['ldap_sync'])
+        $_POST['ldap_sync'] = 0;
+    if (!$_POST['ldap_pass'])
+        $_POST['ldap_pass'] = 0;
     unset($_POST['opcao']);
 
     $ret = $instituicao->insertOrUpdate($_POST);
@@ -238,7 +241,11 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                     <tr><td colspan="2"><hr></td></tr>
                     <tr><td><b>LDAP DROP LEFT</b> <br>(Quantidade de caracteres que dever&atilde;o ser ignorados no momento da autentica&ccedil;&atilde;o, contando a partir da esquerda) <br> Deixe 0 para desabilitar: </td><td><input type="text" maxlength="2" name="ldap_drop_left" id="ldap_drop_left" value="<?= $ldap_drop_left ?>" /></td></tr>
                     <tr><td colspan="2"><hr></td></tr>
-
+                    <tr><td><b>LDAP CHANGE PASSWORD</b> <br>(Permitir que senhas alteradas no WebDi&aacute;rio sejam replicadas no LDAP. Necess&aacute;ria uma conex&atilde;o SSL e que os certificados estejam instalados corretamente.) <br> Deixe 0 para desabilitar: </td><td><input type='checkbox' <?php if ($ldap_pass != '') print "checked"; ?> id='ldap_pass' name='ldap_pass' value='1' /></td></tr>
+                    <tr><td colspan="2"><hr></td></tr>
+                    <tr><td colspan="2"><h3><b>Sincroniza&ccedil;&atilde;o via LDAP</b></h3></td></tr>
+                    <tr><td width="400"><b>Ativar sincroniza&ccedil;&atilde;o via LDAP: </b><br>Quando ativado, o sistema vai cadastrar automaticamente no LDAP os usu&aacute;rios do Banco de Dados. Unidades Organizacionais ser&atilde;o criadas automaticamente de acordo com os Tipos cadastrados, cada UO criada ir&aacute; comportar seus usu&aacute;rios assim como acontece no sistema.</td><td><input type='checkbox' <?php if ($ldap_sync != '') print "checked"; ?> id='ldap_sync' name='ldap_sync' value='1' /></td></tr>
+                    <tr><td colspan="2"><hr></td></tr>
                 </table>
                 <tr><td colspan="2">&nbsp;</td></tr>
                 <br><input type="submit" value="Salvar" id="salvar" />

@@ -34,4 +34,5 @@ $PROFESSOR = @mysql_result($resultado, 0, "prof");
 $VERSAO = @mysql_result($resultado, 0, "versao");
 $DIGITANOTAS = @mysql_result($resultado, 0, "campiDigitaNotas");
 $VERSAOAT = @mysql_result($resultado, 0, "versaoAtual");
+$LDAPSYNC = @mysql_result($resultado, 0, "ldap_sync");
 ?>

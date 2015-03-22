@@ -280,7 +280,13 @@ if ($_GET['pagina'] == "planoEnsino") {
                     <td colspan="10"><textarea rows="10" <?= $disabled; ?> cols="70" maxlength='<?= $caracteres ?>' id='bibliografiaComplementar' name='bibliografiaComplementar'><?= $bibliografiaComplementar; ?></textarea>
                 </tr>
             </table>
-            <table width="100%"><tr><td><input type="submit" <?= $disabled; ?> value="Salvar" /></td></tr></table>
+            <?php
+            if (!$disabled) {
+                ?>
+                <table width="100%"><tr><td><input type="submit" <?= $disabled; ?> value="Salvar" /></td></tr></table>
+                <?php
+            }
+            ?>
         </form>
     </div>
     </div>
@@ -346,9 +352,15 @@ if ($_GET['pagina'] == "planoAula") {
                     <td colspan="10"><textarea rows="3" <?= $disabled; ?> cols="80" maxlength='400' id='conteudo' name='conteudo'><?= $conteudo; ?></textarea>
                 </tr>
             </table>
-            <table width="100%"><tr><td><input type="submit" <?= $disabled; ?> value="Salvar" /></td>
-                    <td><a href="javascript:$('#professor').load('<?= "$SITE?pagina=planoAula&atribuicao=" . $_GET['atribuicao']; ?>');void(0);">Novo/Limpar</a></td>
-                </tr></table>	
+            <?php
+            if (!$disabled) {
+                ?>
+                <table width="100%"><tr><td><input type="submit" <?= $disabled; ?> value="Salvar" /></td>
+                        <td><a href="javascript:$('#professor').load('<?= "$SITE?pagina=planoAula&atribuicao=" . $_GET['atribuicao']; ?>');void(0);">Novo/Limpar</a></td>
+                    </tr></table>	
+                <?php
+            }
+            ?>
             <br><br>
 
             <table id="listagem" border="0" align="center">
