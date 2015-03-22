@@ -70,7 +70,7 @@ class login extends Generic {
                     . "WHERE p1.prontuario = :pront2 AND senha = PASSWORD(:senha) )";
             $params = array(':pront1' => $pront[0], ':pront2' => $pront[1], ':senha' => $senha);
             $notLog = 1;
-        } else {
+        } else if(!$LDAP_ATIVADO) {
             $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
                     . " FROM Pessoas"
                     . " WHERE prontuario=:prontuario"
