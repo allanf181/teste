@@ -11,9 +11,11 @@ class Aulas extends Frequencias {
 
     // LISTA OS CONTEUDOS DAS AULAS DO ALUNO
     // USADO POR: VIEW/ALUNO/AULA.PHP, VIEW/SECRETARIA/RELATORIOS/DIARIO.PHP
-    public function listAulasAluno($aula, $aluno, $sigla = null) {
+    public function listAulasAluno($aula, $aluno, $sigla = null, $data = null) {
         $bd = new database();
 
+        if ($data) $sqlAdicional = ' AND a.data = :data ';
+        
         $sql = "SELECT (
                     SELECT quantidade
 			FROM Frequencias f, Matriculas m
@@ -26,8 +28,12 @@ class Aulas extends Frequencias {
                     date_format(a.data, '%d/%m/%Y') as dataFormatada,
                     a.conteudo as conteudo
 		FROM Aulas a
-		WHERE a.codigo = :aula";
+		WHERE a.codigo = :aula
+                $sqlAdicional";
+        
         $params = array('aluno' => $aluno, ':aula' => $aula);
+        if ($data) $params['data'] = $data;
+        
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {

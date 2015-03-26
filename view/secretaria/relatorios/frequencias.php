@@ -123,7 +123,7 @@ if ($turma) {
         $datas[] = $reg['dataFormatada'];
         $aulas[$reg['dataFormatada']][$reg['codAula']] = $reg['quantidade'];
         $disciplinas[$reg['codAula']] = $reg['disciplina'];
-        $falta = $aula->listAulasAluno($reg['codAula'], $reg['aluno'], 'sigla');
+        $falta = $aula->listAulasAluno($reg['codAula'], $reg['codAluno'], 'sigla', $reg['data']);
         $frequencias[$reg['codAluno']][$reg['codAula']] = $falta[0]['falta'];
         $nomes[$reg['codAluno']] = $reg['aluno'].' ('.$reg['situacao'].')';
         $professores[$reg['codAula']] = $professor->getProfessor($reg['atribuicao'], 1, '', 0, 0);
