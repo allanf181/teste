@@ -141,7 +141,10 @@ $questionarioNome = dcrip($_GET['questionarioNome']);
 <script type="text/javascript">
     $(document).ready(function () {
         $("#to").tokenInput("<?= $SITE ?>&dados=1", {
-            theme: "facebook"
+            theme: "facebook",
+            searchingText: "Procurando...",
+            noResultsText: "Sem resultados para esse termo!",
+            preventDuplicates: true
         });
     });
 </script>

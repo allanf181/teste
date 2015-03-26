@@ -8,6 +8,31 @@ class Ocorrencias extends Generic {
         //
     }
     
+    public function insertOrUpdateOcorrencias($POST) {
+        $params['codigo'] = $POST['codigo'];
+        $params['descricao'] = $POST['descricao'];
+        $params['data'] = $POST['data'];
+        $params['registroPor'] = $POST['registroPor'];
+        $to = explode(',', $POST['to']);
+
+        $res = 0;
+        foreach ($to as $dest) {
+            $params['aluno'] = 'NULL';
+
+            if (substr($dest, 0, 2) == 'P:')
+                $params['aluno'] = crip(substr($dest, 2));
+
+            if ($this->insertOrUpdate($params))
+                $res++;
+        }
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
+    
     public function listOcorrencias($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {
         $bd = new database();
         if ($item && $itensPorPagina)

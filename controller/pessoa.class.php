@@ -27,6 +27,26 @@ class Pessoas extends Generic {
         return false;
     }
 
+    // UTILIZADO POR: SECRETARIA/OCORRENCIA.PHP
+    public function listPessoasTiposToJSON($params, $sqlAdicional = null) {
+        $bd = new database();
+
+        $sql = "SELECT CONCAT('P:', p.codigo) as id, CONCAT('[',p.prontuario,'] ',p.nome) as name
+               	FROM Pessoas p, PessoasTipos pt, Tipos t
+               	WHERE p.codigo = pt.pessoa
+                AND t.codigo = pt.tipo
+                AND p.nome LIKE :s
+                $sqlAdicional
+		ORDER BY p.nome LIMIT 10";
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res)
+            return $res;
+
+        return false;
+    }
+    
     //UTILIZADO POR: SECRETARIA/ABONO.PHP, SECRETARIA/CURSOS/COORDENADOR.PHP
     //RETORNA PESSOAS DE UM DETERMINADO TIPO
     public function listPessoasTipos($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {

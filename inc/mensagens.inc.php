@@ -132,6 +132,7 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $NOK_EMPTY_REG = 'Por favor, preencha todo o formul&aacute;rio!';
 
     $OK_AVISO = 'Total de avisos inseridos: '.$OPT;
+    $OK_OCORRENCIA = 'Total de ocorr&ecirc;ncias inseridas: '.$OPT;
 
     $NOK_QUESTIONARIO_CLOSE = 'Aten&ccedil;&atilde;o, o Questin&aacute;rio est&aacute; fechado nesse momento para altera&ccedil;&atilde;o.';
     

@@ -7,6 +7,30 @@
 
 require '../../inc/config.inc.php';
 require VARIAVEIS;
+
+require CONTROLLER . "/pessoa.class.php";
+$pessoa = new Pessoas();
+
+if ($_GET['dados']) {
+    $arr = array();
+
+    $paramPessoa = array('tipo' => $ALUNO, 'ano' => $ANO, 'semestre' => $SEMESTRE, ':s' => '%' . $_GET["q"] . '%');
+    $sqlAdicionalTipo = " AND pt.tipo = :tipo AND p.codigo IN
+            (SELECT m.aluno FROM Atribuicoes a, Matriculas m, Turmas t
+            WHERE a.codigo = m.atribuicao AND a.turma = t.codigo
+            AND t.ano = :ano AND (t.semestre = :semestre OR t.semestre = 0)) ";
+    foreach ($pessoa->listPessoasTiposToJSON($paramPessoa, $sqlAdicionalTipo) as $reg)
+        $arr[] = $reg;
+
+    $json_response = json_encode($arr);
+
+    if ($_GET["callback"])
+        $json_response = $_GET["callback"] . "(" . $json_response . ")";
+
+    echo $json_response;
+    die;
+}
+
 require MENSAGENS;
 require FUNCOES;
 require PERMISSAO;
@@ -22,12 +46,12 @@ $remover = 1;
 if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
     $remover = 0;
 }
-    
+
 if ($_GET["opcao"] == 'historico') {
     //REMOVENDO INTERACAO
     if (isset($_GET["remover"]) && $remover) {
         $interacao->delete($_GET["remover"]);
-    }    
+    }
     ?>
     <table border="1" style="border-collapse:collapse; font-family: verdana; font-size: 10px;" align="center" width="100%">
         <tr style="background-color: #ccc">
@@ -41,12 +65,12 @@ if ($_GET["opcao"] == 'historico') {
         $sqlAdicional = ' AND o.codigo = :codigo ORDER BY data DESC, codigo DESC ';
         $res = $ocorrencia->listOcorrencias($params, $sqlAdicional);
         ?>
-            <tr>
-                <th><?= $res[0]['dataFormat'] ?></th>
-                <th><?= $res[0]['registroPor'] ?></th>
-                <th><?= $res[0]['descricao'] ?></th>
-                <?php if ($remover) print '<th>&nbsp;</th>'; ?>
-            </tr>
+        <tr>
+            <th><?= $res[0]['dataFormat'] ?></th>
+            <th><?= $res[0]['registroPor'] ?></th>
+            <th><?= $res[0]['descricao'] ?></th>
+            <?php if ($remover) print '<th>&nbsp;</th>'; ?>
+        </tr>
         <?php
         $sqlAdicional = ' AND i.ocorrencia = :codigo ORDER BY i.data DESC ';
         foreach ($interacao->listInteracoes($params, $sqlAdicional) as $l) {
@@ -73,16 +97,17 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     unset($_POST['opcao']);
 
     if (dcrip($_POST['codigo'])) {
-        unset($_POST['aluno']);
+        print "ok";
+        unset($_POST['to']);
         $_POST['ocorrencia'] = $_POST['codigo'];
         unset($_POST['codigo']);
         $ret = $interacao->insertOrUpdate($_POST);
         $_GET["codigo"] = $_POST['ocorrencia'];
+        mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     } else {
-        $ret = $ocorrencia->insertOrUpdate($_POST);
-        $_GET["codigo"] = crip($ret['RESULTADO']);
+        $ret = $ocorrencia->insertOrUpdateOcorrencias($_POST);
+        mensagem('OK', 'OCORRENCIA', $ret);
     }
-    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 }
 
 // DELETE
@@ -108,13 +133,29 @@ if (dcrip($_GET["aluno"]) != "") {
 if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
     // consulta no banco
     $res = $ocorrencia->listRegistros(array('codigo' => dcrip($_GET["codigo"])));
+    $codOcorr = $res[0]['codigo'];
+    $res = $pessoa->listRegistros(array('codigo' => $res[0]['aluno']));
     extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
-    $data = dataPTBR($data);
     $sqlAdicional .= " AND o.codigo = :codigo ";
     $params['codigo'] = dcrip($_GET["codigo"]);
     $descricao = null;
 }
 ?>
+
+<script type="text/javascript" src="<?= VIEW ?>/js/AutocompleteList/src/jquery.tokeninput.js"></script>
+<link rel="stylesheet" href="<?= VIEW ?>/js/AutocompleteList/styles/token-input.css" type="text/css" />
+<link rel="stylesheet" href="<?= VIEW ?>/js/AutocompleteList/styles/token-input-facebook.css" type="text/css" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#to").tokenInput("<?= $SITE ?>?dados=1", {
+            theme: "facebook",
+            searchingText: "Procurando...",
+            noResultsText: "Sem resultados para esse termo!",
+            preventDuplicates: true
+        });
+    });
+</script>
 
 <script>
     $('#form_padrao').html5form({
@@ -130,30 +171,25 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table align="center" width="100%" id="form">
-            <input type="hidden" value="<?= crip($codigo) ?>" name="codigo" id="codigo" />
+            <input type="hidden" value="<?= crip($codOcorr) ?>" name="codigo" id="codigo" />
             <tr>
-                <td align="right">Aluno: </td>
+                <td align="right">Para: </td>
                 <td>
-                    <select name="aluno" id="aluno" style="width: 350px" <?php if ($codigo) print 'disabled'; ?>>
-                        <option></option>
-                        <?php
-                        require CONTROLLER . '/pessoa.class.php';
-                        $pessoa = new Pessoas();
-                        $paramPessoa = array('tipo' => $ALUNO, 'ano' => $ANO, 'semestre' => $SEMESTRE);
-                        $sqlAdicionalTipo = " AND pt.tipo = :tipo AND p.codigo IN "
-                                . "(SELECT m.aluno FROM Atribuicoes a, Matriculas m, Turmas t "
-                                . "WHERE a.codigo = m.atribuicao AND a.turma = t.codigo "
-                                . "AND t.ano = :ano AND (t.semestre = :semestre OR t.semestre = 0)) ";
-                        $res = $pessoa->listPessoasTipos($paramPessoa, $sqlAdicionalTipo);
-                        foreach ($res as $reg) {
-                            $selected = "";
-                            if ($reg['codigo'] == $aluno)
-                                $selected = "selected";
-                            print "<option $selected value='" . crip($reg['codigo']) . "'>[" . $reg['prontuario'] . "] " . $reg['nome'] . "</option>";
-                        }
+                    <?php
+                    if ($codigo) {
                         ?>
-                    </select>
+                        <b><?= $nome ?></b>
+                        <?php
+                    } else {
+                        ?>
+                        <input type="text" id="to" name="to" />
+                        <?php
+                    }
+                    ?>
                 </td>
+            </tr>
+            <tr><td></td>
+                <td align="left"><font size='1'><?= $para ?> Deixe em branco para enviar para todos.</font></td>
             </tr>
             <tr>
                 <td align="right">Descri&ccedil;&atilde;o:</td>
@@ -224,16 +260,16 @@ require PATH . VIEW . '/system/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>>
-            <td>&nbsp;<a href="#" title="<?= $reg['aluno'] ?>"><?= abreviar($reg['aluno'], 30) ?></a></td>
+            <td>&nbsp;<a href="#" data-placement="top" title="Aluno" data-content="<?= $reg['aluno'] ?>"><?= abreviar($reg['aluno'], 30) ?></a></td>
             <td><?= $reg['dataFormat'] ?></td>
-            <td>&nbsp;<a href="#" title="<?= $reg['registroPor'] ?>"><?= abreviar($reg['registroPor'], 30) ?></a></td>
-            <td>&nbsp;<a href="#" title="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 15) ?></a></td>
+            <td>&nbsp;<a href="#" data-placement="top" title="Regitro por" data-content="<?= $reg['registroPor'] ?>"><?= abreviar($reg['registroPor'], 30) ?></a></td>
+            <td>&nbsp;<a href="#" data-placement="top" title="Descri&ccedil;&atilde;o" data-content="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 15) ?></a></td>
             <td align='center'><?= $reg['interacao'] ?></td>
             <td align='center'>
-                <a href='#' title='Ver hist&oacute;rico de ocorr&ecirc;ncias e intera&ccedil;&otilde;es'>
+                <a href='#' data-placement="top" title='Ver hist&oacute;rico de ocorr&ecirc;ncias e intera&ccedil;&otilde;es'>
                     <img class='botao search' id='<?= crip($reg['codigo']) ?>' src='<?= ICONS ?>/search.png' />
                 </a>
-                <a href="#" class='item-add' id='<?= crip($reg['codigo']) ?>' title='Adicionar uma intera&ccedil;&atilde;o nesta ocorr&ecirc;ncia.'>
+                <a href="#" data-placement="top" class='item-add' id='<?= crip($reg['codigo']) ?>' title='Adicionar uma intera&ccedil;&atilde;o nesta ocorr&ecirc;ncia.'>
                     <img class='botao' src='<?= ICONS ?>/add.png' />
                 </a>                
             </td>
@@ -261,13 +297,12 @@ require PATH . VIEW . '/system/paginacao.php';
             title: '<?= $tabela ?>',
             onClose: function () {
                 atualizar();
-            }            
+            }
         });
     });
 
     function atualizar(getLink) {
-        var aluno = $('#aluno').val();
-        var URLS = '<?= $SITE ?>?aluno=' + aluno;
+        var URLS = '<?= $SITE ?>?';
         if (!getLink)
             $('#index').load(URLS + '&item=<?= $item ?>');
         else
@@ -275,7 +310,7 @@ require PATH . VIEW . '/system/paginacao.php';
     }
 
     function valida() {
-        if ($('#aluno').val() != "" && ($('#descricao').val() != "")) {
+        if ($('#to').val() != "" && ($('#descricao').val() != "")) {
             $('#salvar').removeAttr('disabled');
         } else {
             $('#salvar').attr('disabled', 'disabled');
@@ -284,9 +319,8 @@ require PATH . VIEW . '/system/paginacao.php';
 
     $(document).ready(function () {
         valida();
-        $('#aluno').change(function () {
+        $('#to').change(function () {
             valida();
-            atualizar();
         });
 
         $('#descricao').keyup(function () {
@@ -328,7 +362,7 @@ require PATH . VIEW . '/system/paginacao.php';
             $('#index').load(atualizar(1) + '&codigo=' + codigo);
         });
 
-        $('#select-all').click(function (event) {
+        $('#select-all').click(function () {
             if (this.checked) {
                 // Iterate each checkbox
                 $(':checkbox').each(function () {

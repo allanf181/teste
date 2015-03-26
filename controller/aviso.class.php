@@ -102,8 +102,6 @@ class Avisos extends Generic {
         }
     }
 
-    // USADO POR: COMMON/AVISO.PHP
-    // Lista os avisos do usuário
     public function insertOrUpdateAvisos($POST) {
         $params['codigo'] = $POST['codigo'];
         $params['conteudo'] = $POST['conteudo'];
