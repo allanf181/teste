@@ -49,7 +49,7 @@ if ($client) {
     if ($result) {
         mysql_query("UPDATE Instituicoes SET versaoAtual = '$result'");
         if ($DEBUG)
-            print "Registrando versão $result \n";
+            print "Registrando a versao $result \n";
     }
 }
 
