@@ -18,20 +18,33 @@ $professor = new Professores();
 require CONTROLLER . "/frequencia.class.php";
 $frequencia = new Frequencias();
 
+require CONTROLLER . "/atribuicao.class.php";
+$atribuicao = new Atribuicoes();
+
 require CONTROLLER . "/aula.class.php";
 $aula = new Aulas();
 
 $data = date("d/m/Y", time()); // data atual
 
-if (isset($_GET["mes"])) {
-    $mes = $_GET["mes"];
-    $sqlAdicional = " AND date_format(au.data, '%m')=$mes+1 ";
+$dataInicio = $_GET['dataInicio'];
+$dataFim = $_GET['dataFim'];
+
+if ($dataFim && $dataInicio) {
+    $params['dataInicio'] = dataMysql($dataInicio);
+    $params['dataFim'] = dataMysql($dataFim);
+    $sqlAdicional .= " AND au.data >= :dataInicio AND au.data <= :dataFim ";
 }
 
 if (dcrip($_GET["turma"])) {
     $turma = dcrip($_GET["turma"]);
     $params['turma'] = $turma;
     $sqlAdicional .= " AND at.turma=:turma ";
+}
+
+if (dcrip($_GET["disciplina"])) {
+    $disciplina = dcrip($_GET["disciplina"]);
+    $params['disciplina'] = $disciplina;
+    $sqlAdicional .= " AND at.codigo=:disciplina ";
 }
 
 if (dcrip($_GET["turno"])) {
@@ -47,12 +60,12 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 ?>
 
 <style>
-    table {     width: 100%;
-                margin-top: -15px;
-                /*background: red;*/
-                padding: -5px;
-                border-collapse:collapse; }
-    td, th { border: 1px solid #ccc;}
+    #table {     width: 100%;
+                 margin-top: -15px;
+                 /*background: red;*/
+                 padding: -5px;
+                 border-collapse:collapse; }
+    #table td, th { border: 1px solid #ccc;}
 
     .hover { background-color: #bfe0c5; }
     .noslim { background-color: #e1f2d0; }
@@ -63,18 +76,10 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 
 <table align="center" width="100%" id='form'>
     <tr>
-        <td align="right" style="width: 100px">M&ecirc;s:</td>
+        <td style="width: 100px" align="right">Data: </td>
         <td>
-            <select id="mes" name="mes" value='<?= $mes ?>'>
-                <?php
-                foreach (array("Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro") as $n => $nomeMes) {
-                    $selected = "";
-                    if ($n == $mes)
-                        $selected = "selected='selected'";
-                    echo "<option $selected value='$n'>$nomeMes</option>\n";
-                }
-                ?>
-            </select>
+            <input type="text" size="10" value="<?= $dataInicio ?>" name="dataInicio" id="dataInicio" />
+            a <input type="text" size="10" value="<?= $dataFim ?>" name="dataFim" id="dataFim" />
         </td>
     </tr>
     <tr>
@@ -99,6 +104,23 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         </td>
     </tr>
     <tr>
+        <td align="right">Disciplina: </td>
+        <td><select name="disciplina" id="disciplina" style="width: 350px">
+                <option></option>
+                <?php
+                $sqlAdicionaDisc = ' AND t.codigo = :turma ';
+                $paramsDisc = array(':turma' => $turma, ':ano' => $ANO, ':semestre' => $SEMESTRE);
+                foreach ($atribuicao->getAllAtribuicoes($paramsDisc, $sqlAdicionaDisc) as $reg) {
+                    $selected = "";
+                    if ($reg['atribuicao'] == $disciplina)
+                        $selected = "selected";
+                    print "<option $selected value='" . crip($reg['atribuicao']) . "'>" . $reg['disciplina'] . $reg['bimestre'] . $reg['subturma'] . " [" . $reg['turno'] . "]</option>";
+                }
+                ?>
+            </select>
+        </td>
+    </tr>
+    <tr>
         <td align="right" style="width: 30px">Turno: </td><td>
             <select name="turno" id="turno" value="<?= $turno ?>">
                 <option></option>
@@ -117,17 +139,38 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
     </tr>
 </table>
 <?php
-if ($turma) {
+if ($turma && $dataFim && $dataInicio) {
     $sqlAdicional .= " group by p.nome, au.codigo ";
     foreach ($frequencia->getListaFrequencias($params, $sqlAdicional) as $reg) {
         $datas[] = $reg['dataFormatada'];
         $aulas[$reg['dataFormatada']][$reg['codAula']] = $reg['quantidade'];
         $disciplinas[$reg['codAula']] = $reg['disciplina'];
         $falta = $aula->listAulasAluno($reg['codAula'], $reg['codAluno'], 'sigla', $reg['data']);
+        $totalFaltas[$reg['codAluno']] += substr_count($falta[0]['falta'], 'F');
         $frequencias[$reg['codAluno']][$reg['codAula']] = $falta[0]['falta'];
-        $nomes[$reg['codAluno']] = $reg['aluno'].' ('.$reg['situacao'].')';
+        $nomes[$reg['codAluno']] = $reg['aluno'] . ' (' . $reg['situacao'] . ')';
         $professores[$reg['codAula']] = $professor->getProfessor($reg['atribuicao'], 1, '', 0, 0);
     }
+
+    function consecutive_values(array $haystack) {
+        $cons = 0;
+        $faltasConsecutivas = 0;
+        foreach ($haystack as $f) {
+            if (substr_count($f, 'F') > 0) {
+                if ($cons) {
+                    $faltasConsecutivas += 1 + $ant;
+                    $ant = 0;
+                } else {
+                    $cons = 1;
+                    $ant = 1;
+                }
+            } else {
+                $cons = 0;
+            }
+        }
+        return $faltasConsecutivas;
+    }
+
 }
 
 if (!empty($turma)) {
@@ -160,12 +203,14 @@ if (!empty($turma)) {
                             $textoData = $data;
                         }
                         ?>
-                        <?= $textoData ?>
+                    <?= $textoData ?>
                     </th>
                     <?php
                 }
             }
             ?>
+            <th align="center"><a href="#" data-placement="top" title="Faltas Totais" data-content="N&uacute;mero total de faltas no per&iacute;odo.">FT</a></th>
+            <th align="center"><a href="#" data-placement="top" title="Dias de Faltas Consecutivas" data-content="N&uacute;mero total de dias com faltas consecutivas no per&iacute;odo.">DFC</a></th>
         </tr>
         <?php
         $i = 1;
@@ -189,6 +234,8 @@ if (!empty($turma)) {
                         <?php
                     }
                     ?>
+                    <td align='center' bgcolor='<?= $cor ?>'><?= $totalFaltas[$c] ?></td>
+                    <td align='center' bgcolor='<?= $cor ?>'><?= consecutive_values($frequencias[$c]) ?></td>
                 </tr>
                 <?php
                 $i++;
@@ -201,11 +248,25 @@ if (!empty($turma)) {
 ?>
 <script>
     $(document).ready(function () {
-        $("#turma, #mes, #turno").change(function () {
+        $("#dataInicio, #dataFim").datepicker({
+            dateFormat: 'dd/mm/yy',
+            defaultDate: '<?= date("d/m/Y") ?>',
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            nextText: 'Próximo',
+            prevText: 'Anterior'
+        });
+
+        $("#turma, #dataInicio, #dataFim, #turno, #disciplina").change(function () {
             var turma = $('#turma').val();
+            var disciplina = $('#disciplina').val();
             var turno = $('#turno').val();
-            var mes = $('#mes').val();
-            $('#index').load('<?= $SITE ?>?turma=' + turma + '&turno=' + turno + '&mes=' + mes);
+            var dataInicio = $('#dataInicio').val();
+            var dataFim = $('#dataFim').val();
+            $('#index').load('<?= $SITE ?>?turma=' + turma + '&turno=' + turno + '&dataInicio=' + dataInicio + '&dataFim=' + dataFim + '&disciplina=' + disciplina);
         });
 
         $("#table").delegate('td', 'mouseover mouseleave', function (e) {

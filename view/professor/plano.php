@@ -50,10 +50,13 @@ if ($_GET['pagina']) {
         $tipo = $_GET['pagina'];
         $ret = $$tipo->insertOrUpdate($_POST);
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
-        if ($_POST['codigo'])
-            $_GET["codigo"] = $_POST['codigo'];
-        else
-            $_GET["codigo"] = crip($ret['RESULTADO']);
+
+        if ($tipo != 'planoAula') {
+            if ($_POST['codigo'])
+                $_GET["codigo"] = $_POST['codigo'];
+            else
+                $_GET["codigo"] = crip($ret['RESULTADO']);
+        }
     }
 }
 ?>

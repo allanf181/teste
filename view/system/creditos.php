@@ -66,6 +66,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 
 <br />
 <b>Vers&atilde;o 1.438</b>
+<br> - Melhorias no relat&oacute;rio de Frequ&ecirc;ncias.
 <br> - Corre&ccedil;&otilde;es de Seguran&ccedil;a.
 <br> - Corre&ccedil;&atilde;o do #ADMIN para funcionar com LDAP.
 <br> - Adi&ccedil;&atilde;o de fun&ccedil;&atilde;o que permite que o WebDi&aacute;rio adicione os usu&aacute;rios do banco no LDAP.
