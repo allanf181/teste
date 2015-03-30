@@ -32,7 +32,7 @@ $res = metricas();
 
 // INSERINDO INFOS VIA WS
 require $LOCATION_CRON . '../lib/nusoap/lib/nusoap.php';
-$client = new nusoap_client("https://200.133.218.2:80/wsWD/server.wsdl", true);
+$client = new nusoap_client("http://200.133.214.162/wsWD/server.wsdl", true);
 $client->setCredentials("WebDiarioWDWS", "W3bD1ari0_WS_WD_##!!", "basic");
 
 if ($client) {
