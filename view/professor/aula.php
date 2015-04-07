@@ -95,7 +95,7 @@ if ($_GET['opcao'] == 'insert') {
                             <option></option>;
                             <?php
                             foreach ($res as $reg) {
-                                echo "<option title='" . $reg['conteudo'] . "' $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
+                                print "<option title='" . $reg['conteudo'] . "' $selected value='" . $reg['conteudo'] . "'>Semana " . $reg['semana'] . " [" . abreviar($reg['conteudo'], 85) . "]</option>";
                             }
                             if (!$quantidade)
                                 $quantidade = $res[0]['numeroAulaSemanal'];
@@ -125,7 +125,7 @@ if ($_GET['opcao'] == 'insert') {
                             $regAtv[] = 'Seminário';
                             $regAtv[] = 'Projeto interdisciplinar';
                             foreach ($regAtv as $reg) {
-                                echo "<option value='$reg'>$reg</option>";
+                                print "<option value='$reg'>$reg</option>";
                             }
                             ?>
                         </select>

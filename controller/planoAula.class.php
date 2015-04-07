@@ -46,7 +46,6 @@ class PlanosAula extends Generic {
     // USADO POR: PROFESSOR/AULA.PHP
     // LISTA AS SEMANAS DE AULA DO PROFESSOR
     public function getConteudosAulasEquivalente($codigo, $ano, $semestre) {
-        print $codigo;
         $bd = new database();
 
         $sql = "SELECT pa.conteudo, pa.semana, pe.numeroAulaSemanal 
