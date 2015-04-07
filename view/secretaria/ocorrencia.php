@@ -230,7 +230,7 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-$sqlAdicional .= ' ORDER BY p.nome, data DESC, codigo DESC ';
+$sqlAdicional .= ' ORDER BY data DESC, p.nome ASC, codigo DESC ';
 $res = $ocorrencia->listOcorrencias($params, $sqlAdicional, $item, $itensPorPagina);
 $totalRegistros = count($ocorrencia->listOcorrencias($params, $sqlAdicional));
 
