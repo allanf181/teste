@@ -147,6 +147,7 @@ if ($_GET['opcao'] == 'insert') {
     <br><div style='margin: auto'><a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>');void(0);" class='voltar' title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
     <?php
 }
+
 if ($_GET['opcao'] == '') {
     $res = $aula->listAulasProfessor($atribuicao, 'ORDER BY data DESC');
     ?>
