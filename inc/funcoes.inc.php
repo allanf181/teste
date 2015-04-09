@@ -1,4 +1,5 @@
 <?php
+
 function nDias($date) {
     return dateDiff(date('Y-m-d'), $date);
 }
@@ -108,15 +109,15 @@ function abreviar($texto, $tamanho) {
     if (strlen($texto) > $tamanho) {
         $regExp = "[áàâãäªÁÀÂÃÄéèêëÉÈÊËíìîïÍÌÎÏóòôõöºÓÒÔÕÖúùûüÚÙÛÜçÇÑñ.]";
         $texto2 = substr_replace($texto, '...', $tamanho);
-        if ( ereg($regExp,$texto2[strlen($texto2)-4]) )
-            return substr_replace($texto, '...', $tamanho-5);
+        if (ereg($regExp, $texto2[strlen($texto2) - 4]))
+            return substr_replace($texto, '...', $tamanho - 5);
         return $texto2;
     } else
         return $texto;
 }
 
 function crip($texto) {
-    return base64_encode($_SESSION["cripto"] . $texto).'___';
+    return base64_encode($_SESSION["cripto"] . $texto) . '___';
 }
 
 function dcrip($texto) {
@@ -155,7 +156,7 @@ function dataPTBR($data) {
     $data = $data[2] . '/' . $data[1] . '/' . $data[0];
 
     if ($parts[1])
-        $data = $parts[1].' de '.$data;
+        $data = $parts[1] . ' de ' . $data;
     return $data;
 }
 
@@ -229,13 +230,14 @@ if (!function_exists('sys_get_temp_dir')) {
 // Saída: Lista de Diretórios e Arquivos (Array)
 // Arquivos que utilizam essa função: view/admin/permissao.php
 // Autor: Naylor - 17/07
-function dirToArray($dir, $regex=null) {
+function dirToArray($dir, $regex = null) {
     $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST);
     foreach ($objects as $name => $object) {
         $arquivo = str_replace(PATH . LOCATION . '/', '', $name);
-        
-        if (!$regex) $regex = '\/..$|\/.$';
-        
+
+        if (!$regex)
+            $regex = '\/..$|\/.$';
+
         if (!preg_match("/$regex/", $name)) {
             if (is_dir($name)) {
                 $files[$arquivo] = '';
@@ -273,7 +275,7 @@ function dcripArray($array) {
 // Autor: Naylor - 29/07
 function mapURL($array) {
     foreach ($array as $key => $value) {
-        $ret[] = "$key=".urlencode($value);
+        $ret[] = "$key=" . urlencode($value);
     }
     return implode('&', $ret);
 }
@@ -282,7 +284,7 @@ function mapURL($array) {
 function updateDataBase() {
     try {
         $argv[2] = 1;
-        require PATH.LIB.'/migration/ruckusWeb.php';
+        require PATH . LIB . '/migration/ruckusWeb.php';
         $argv[0] = 'db:migrate';
 
         $main = new Ruckusing_FrameworkRunner($db_config, $argv);
@@ -321,4 +323,38 @@ function getClientIP() {
 
     return getenv('REMOTE_ADDR');
 }
+
+function xss_clean($data) {
+    // Fix &entity\n;
+    $data = str_replace(array('&amp;', '&lt;', '&gt;'), array('&amp;amp;', '&amp;lt;', '&amp;gt;'), $data);
+    $data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
+    $data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
+    $data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
+
+    // Remove any attribute starting with "on" or xmlns
+    $data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
+
+    // Remove javascript: and vbscript: protocols
+    $data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
+    $data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
+    $data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
+
+    // Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
+    $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+    $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+    $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
+
+    // Remove namespaced elements (we do not need them)
+    $data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
+
+    do {
+        // Remove really unwanted tags
+        $old_data = $data;
+        $data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
+    } while ($old_data !== $data);
+
+    // we are done...
+    return $data;
+}
+
 ?>
