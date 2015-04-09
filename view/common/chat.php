@@ -13,8 +13,7 @@ if ($_POST["opcao"] == 'insertMessage') {
     unset($_POST['opcao']);
     $_POST['prontuario'] = $_SESSION['loginProntuario'];
     $_POST['data'] = date('Y-m-d H:m:i');
-    $_POST['mensagem'] = xss_clean($_POST['mensagem']);
-    
+
     if ($_POST['origem'])
         unset($_POST['atribuicao']);
 

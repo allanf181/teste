@@ -39,6 +39,7 @@ Abstract class Generic {
                     $UP[] = $key . '=NULL';
                     unset($params[$key]);
                 } else {
+                    $params[$key] = xss_clean($params[$key]);
                     $INS[] = ':' . $key;
                     $UP[] = $key . '=:' . $key;
                 }
