@@ -10,7 +10,7 @@ class PlanosAula extends Generic {
     
     // USADO POR: PROFESSOR/AULA.PHP
     // LISTA AS SEMANAS DE AULA DO PROFESSOR
-    public function getConteudosAulas($codigo) {
+    public function getConteudosAulas($codigo, $ano, $semestre) {
         $bd = new database();
 
         $sql = "SELECT pa.conteudo, pa.semana, pe.numeroAulaSemanal 
@@ -21,21 +21,23 @@ class PlanosAula extends Generic {
 		AND a.disciplina = d.codigo
                 AND t.codigo = a.turma
                 AND c.codigo = t.curso
-		AND d.numero IN (SELECT d1.numero 
-				FROM Atribuicoes a1, Disciplinas d1, Turmas t1
-				WHERE a1.disciplina = d1.codigo 
-                                AND t1.codigo = a1.turma
-                                AND t.numero = t1.numero
-				AND a1.codigo = :cod)
-                AND c.codigo IN (SELECT t1.curso
-                                FROM Disciplinas d1, Atribuicoes a1, Turmas t1 
-        			WHERE a1.disciplina = d1.codigo 
-                                AND t1.codigo = a1.turma
-        			AND a1.codigo = :cod)                                
+		AND (
+                        (pa.atribuicao = :cod 
+                            AND t.ano = :ano 
+                            AND (t.semestre = 0 OR t.semestre = :semestre)
+                        )
+                    OR (d.numero IN (SELECT d1.numero 
+                            FROM Disciplinas d1, Atribuicoes a1 
+                            WHERE a1.disciplina = d1.codigo 
+                            AND d1.numero = d.numero 
+                            AND a1.codigo = :cod
+                            AND t.ano = :ano)
+                        )
+                    )
                 GROUP BY pa.semana
                 ORDER BY pa.semana";
 
-        $params = array(':cod'=> $codigo);
+        $params = array(':cod'=> $codigo, ':ano'=> $ano, ':semestre'=> $semestre);
         $res = $bd->selectDB($sql, $params);
 
         if ( $res )

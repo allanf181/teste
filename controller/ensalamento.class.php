@@ -161,6 +161,24 @@ class Ensalamentos extends Generic {
         }
     }    
 
+    public function getQdeAulaDiaSemana($atribuicao, $diaSemana) {
+        $bd = new database();
+
+        $sql = "SELECT COUNT(*) as total 
+                    FROM Ensalamentos e
+                    WHERE e.atribuicao = :atribuicao
+                    AND e.diaSemana = :dia
+                    GROUP BY e.sala";
+
+        $params = array(':atribuicao' => $atribuicao, ':dia' => $diaSemana);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res[0]['total']) {
+            return $res[0]['total'];
+        } else {
+            return false;
+        }
+    } 
 }
 
 ?>

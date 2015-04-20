@@ -20,6 +20,9 @@ $atribuicao = dcrip($_GET["atribuicao"]);
 require CONTROLLER . "/aula.class.php";
 $aula = new Aulas();
 
+require CONTROLLER . "/ensalamento.class.php";
+$ensalamento = new Ensalamentos();
+
 require CONTROLLER . "/logSolicitacao.class.php";
 $log = new LogSolicitacoes();
 
@@ -77,7 +80,9 @@ if ($_GET['opcao'] == 'insert') {
     <?php
     require CONTROLLER . "/planoAula.class.php";
     $planoAula = new PlanosAula();
-    $res = $planoAula->getConteudosAulas($atribuicao);
+    $res = $planoAula->getConteudosAulas($atribuicao, $ANO, $SEMESTRE);
+    
+    if (!$quantidade) $quantidade = $ensalamento->getQdeAulaDiaSemana($atribuicao, date("N"));
     ?>
     <div id="html5form" class="main">
         <form id="form_padrao">
