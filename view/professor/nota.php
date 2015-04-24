@@ -164,7 +164,7 @@ if ($_SESSION['dataExpirou'])
                             $situacao = array();
                             if ($reg['bimestre'] > 0) { // Busca as Notas dos Bimestres
                                 foreach ($AT_BIM as $nBim => $at) {
-                                    $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0);
+                                    $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0,$_SESSION['dataExpirou']);
                                     if ($reg['bimestre'] == $nBim && $res['final'] == 0) {
                                         $color = 'blue';
                                         $situacao[$reg['codAluno']] = abreviar($dados['situacao'], 14);

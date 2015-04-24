@@ -101,8 +101,8 @@ class Notas extends Frequencias {
 
     function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
         $bd = new database();
-
-        if (!$fechamento) {
+            
+        if ($fechamento) {
             // VERIFICANDO SE O DIÁRIO FOI FINALIZADO, SE SIM, BUSCA NA TABELA DE NOTAS FINALIZADAS
             if ($final == 0)
                 $sqlFinal1 = "AND n.bimestre <> 'M' ";
