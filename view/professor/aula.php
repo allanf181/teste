@@ -259,10 +259,10 @@ print "</script>\n";
             });
         });
 
-        $('#data, #conteudo, #quantidade, #plano').hover(function () {
+        $('#conteudo, #quantidade').keyup(function () {
             valida();
         });
-        $('#data, #conteudo, #quantidade, #plano').change(function () {
+        $('#data, #plano').change(function () {
             valida();
         });
 

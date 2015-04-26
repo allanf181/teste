@@ -36,6 +36,8 @@ Class ldap {
 
         ldap_set_option($this->ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($this->ldap_conn, LDAP_OPT_REFERRALS, 0);
+        ldap_set_option($this->ldap_conn, LDAP_OPT_NETWORK_TIMEOUT, 4);
+        ldap_set_option($this->ldap_conn, LDAP_OPT_TIMELIMIT, 4);
 
         if ($this->ldap_conn) {
             $ldapbind = ldap_bind($this->ldap_conn, $this->user, $this->password);

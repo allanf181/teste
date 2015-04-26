@@ -32,6 +32,12 @@ class PlanosAula extends Generic {
                             AND d1.numero = d.numero 
                             AND a1.codigo = :cod
                             AND t.ano = :ano)
+                        AND 
+                        t.numero IN (SELECT t1.numero 
+                            FROM Atribuicoes a1, Turmas t1
+                            WHERE t1.codigo = a1.turma
+                            AND a1.codigo = :cod
+                            AND t.ano = :ano)
                         )
                     )
                 GROUP BY pa.semana

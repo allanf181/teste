@@ -67,7 +67,7 @@ class login extends Generic {
                         . " FROM Pessoas"
                         . " WHERE prontuario=:prontuario"
                         . " AND senha=PASSWORD(:senha)";
-                $params = array(':prontuario' => $prontuarioBD, ':senha' => $senha);
+                $params = array(':prontuario' => $prontuario, ':senha' => $senha);
             }
         } else { // SE AUTENTICOU PELO LDAP, PEGA OS DADOS PARA A SESSAO.
             $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
