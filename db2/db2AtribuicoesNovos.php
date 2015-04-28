@@ -194,4 +194,5 @@ if (!$LOCATION_CRON) {
     $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";
     mysql_query($sql);
 }
+
 ?>

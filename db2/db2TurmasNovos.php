@@ -94,7 +94,7 @@ $i = 0;
 while ($row = db2_fetch_object($res)) {
     $turno = getTurno($row->ED_PERIODO);
 
-    if (abs(date('m', strtotime("$row->ED_DTFINAL")) - date('m', strtotime("$row->ED_DTINICIO"))) > 6)
+    if (abs(date('m', strtotime("$row->ED_DTFINAL")) - date('m', strtotime("$row->ED_DTINICIO"))) > 7)
         $semestre = 0;
     else
         $semestre = date('m', strtotime("$row->ED_DTINICIO")) < 6 ? 1 : 2;
