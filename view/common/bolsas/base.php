@@ -38,7 +38,7 @@ $script = explode('/', $_SERVER['SCRIPT_NAME']);
         }
         ?>
         <td width="25%" align="center" <?= ($script[5]=='bolsaRelatorio.php') ? 'style="background-color: #EEE"':'' ?>>
-            <a title='Reltar&oacute;rio cadastrado pelo bolsista' href="javascript:$('#index').load('<?= VIEW ?>/common/bolsas/bolsaRelatorio.php');void(0);">
+            <a title='Relat&oacute;rio cadastrado pelo bolsista' href="javascript:$('#index').load('<?= VIEW ?>/common/bolsas/bolsaRelatorio.php');void(0);">
                 <img style='width: 48px' src="<?= IMAGES ?>/chamada.png">
                 <br />
                 Relat&oacute;rios
