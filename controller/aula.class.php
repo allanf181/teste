@@ -54,6 +54,9 @@ class Aulas extends Frequencias {
                         else
                             $res[$i]['falta'] = str_repeat('*', $reg['auladada']);
                     }
+                    if ($M['tipo'] == 'IN_AFTER') {
+                        $res[$i]['falta'] = str_repeat('*', $reg['auladada']);
+                    }
                 } else {
                     $res[$i]['falta'] = (!$sigla) ? $M['tipo'] : $M['sigla'];
                 }

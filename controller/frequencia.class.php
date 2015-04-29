@@ -68,7 +68,7 @@ class Frequencias extends FrequenciasAbonos {
                 AND DATE_FORMAT(a.data, '%Y') = :ano";
 
         $sql .= $sqlAdicional;
-        
+
         $res = $bd->selectDB($sql, $params);
         foreach ($res as $reg) {
             if (strpos($reg['quantidade'], 'F') !== false) {
@@ -123,14 +123,22 @@ class Frequencias extends FrequenciasAbonos {
                             WHERE matricula = :matricula 
                             AND atribuicao= :atr";
             $params = array('matricula' => $matricula, 'atr' => $atribuicao);
-            $res = $bd->selectDB($sql, $params);            
+            $res = $bd->selectDB($sql, $params);
         }
-        
+
+        if (!class_exists('MatriculasAlteracoes'))
+            require_once CONTROLLER . '/matriculaAlteracao.class.php';
+        $ma = new MatriculasAlteracoes();
+
         if ($res) {
             $faltas = 0;
             foreach ($res as $reg) {
-                if (!$this->getFrequenciaAbono($reg['aluno'], $atribuicao, $reg['data']))
-                    $faltas += substr_count($reg['quantidade'], 'F');
+                if (!$this->getFrequenciaAbono($reg['aluno'], $atribuicao, $reg['data'])) {
+                    $M = $ma->getAlteracaoMatricula($reg['aluno'], $atribuicao, $reg['data']);
+                    if ($M['tipo'] != 'IN_AFTER') {
+                        $faltas += substr_count($reg['quantidade'], 'F');
+                    }
+                }
             }
 
             if (!$auladada = $res[0]['aulas'])
@@ -192,9 +200,9 @@ class Frequencias extends FrequenciasAbonos {
                 AND s.habilitar = 1
                 $sqlAdicional
                 order by au.data, p.nome";
-        
+
         $res = $bd->selectDB($sql, $params);
-        
+
         if ($res) {
             return $res;
         } else {
@@ -214,21 +222,22 @@ class Frequencias extends FrequenciasAbonos {
             $item[$reg['prontuario']]['frequencia'] += intval($dados['frequencia']);
             $item[$reg['prontuario']]['count'] += 1;
         }
-        
+
         foreach ($item as $k => $i) {
             $item1[] = $k;
-            $item2[] = intval($i['frequencia']/$i['count']);
+            $item2[] = intval($i['frequencia'] / $i['count']);
         }
 
         $graph_data = array('item1Name' => 'Prontuário', 'item1' => $item1,
             'item2Name' => 'Frequência', 'item2' => $item2,
             'item3Name' => ' ', 'item3' => $item3,
-            'title' => 'Relatório de Frequência', 
+            'title' => 'Relatório de Frequência',
             'titleY' => 'Porcentagem (todas as disciplinas)',
             'titleX' => 'Prontuário');
 
         return json_encode($graph_data);
-    }    
+    }
+
 }
 
 ?>
