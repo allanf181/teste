@@ -5,8 +5,12 @@
         <group>
             <file>file:/Z:/academico/view/common/bolsas/bolsaRelatorio.php</file>
             <file>file:/Z:/academico/db2/db2AtribuicoesNovos.php</file>
+            <file>file:/Z:/academico/controller/aula.class.php</file>
+            <file>file:/Z:/academico/controller/matriculaAlteracao.class.php</file>
             <file>file:/Z:/academico/db2/db2CursosDisciplinasNovos.php</file>
+            <file>file:/Z:/academico/controller/frequencia.class.php</file>
             <file>file:/Z:/academico/db2/db2Cron.php</file>
+            <file>file:/Z:/academico/inc/funcoes.inc.php</file>
             <file>file:/Z:/academico/db2/db2TurmasNovos.php</file>
         </group>
     </open-files>

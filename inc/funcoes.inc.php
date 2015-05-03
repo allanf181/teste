@@ -27,16 +27,21 @@ function percentual($parte, $todo) {
 }
 
 function arredondar($valor) {
-    if ($valor - floor($valor) > 0 && $valor - floor($valor) <= .249)
-        return floor($valor);
-    else if ($valor - floor($valor) >= .25 && $valor - floor($valor) < .59)
-        return floor($valor) + .5;
-    else if ($valor - floor($valor) > .5 && $valor - floor($valor) <= .749)
-        return floor($valor) + .5;
-    else if ($valor - floor($valor) >= .75)
-        return ceil($valor);
-    else
+    if ($valor - floor($valor) > 0 && $valor - floor($valor) <= .249) {
+        $r = floor($valor);
+        return $r;
+    } else if ($valor - floor($valor) >= .25 && $valor - floor($valor) < .59) {
+        $r = floor($valor) + .5;
+        return $r;
+    } else if ($valor - floor($valor) > .5 && $valor - floor($valor) <= .749) {
+        $r = floor($valor) + .5;
+        return $r;
+    } else if (($valor - floor($valor)) >= .749) {
+        $r = ceil($valor);
+        return $r;
+    } else {
         return ($valor);
+    }
 }
 
 function formata($strDate, $PDF = null) {
