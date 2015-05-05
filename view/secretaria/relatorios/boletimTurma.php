@@ -134,7 +134,7 @@ if (dcrip($_GET["turno"]))
 <div style="text-align: center; margin-top: 10px"><a href="#" id="maximizar">Maximizar</a></div>
 <?php
 if ($turma && $fechamento) {
-    foreach ($atribuicao->getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento, $turno) as $reg) {
+    foreach ($atribuicao->getAtribuicoesFromBoletimTurma($turma, $bimestre, $fechamento, $turno, $ANO) as $reg) {
         $bimestres[$reg['bimestre']] = $reg['bimestre'];
         $alunos[$reg['codAluno']] = $reg['aluno'];
         $disciplinasMediaNome[$reg['numero']] = $reg['numero'];
