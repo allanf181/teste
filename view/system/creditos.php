@@ -15,52 +15,59 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 <center><img style="width: 400px" src="<?= IMAGES ?>/pic.png"/>
 
 
-<table border="0" id="form" width="100%">
-<tr>
-	<td colspan="4"><h2>Pró-reitoria de Desenvolvimento Institucional</h2></td>
-</tr>
-<tr>
-<td colspan="4" valign="top" align="center">Eduardo Leal (Assessor)
-	<br>Brunno Alves (Diretor de Sistemas de Informação)
-</td>
-</tr>
+    <table border="0" id="form" width="100%">
+        <tr>
+            <td colspan="4"><h2>Pró-reitoria de Desenvolvimento Institucional</h2></td>
+        </tr>
+        <tr>
+            <td colspan="4" valign="top" align="center">Eduardo Leal (Assessor)
+                <br>Brunno Alves (Diretor de Sistemas de Informação)
+            </td>
+        </tr>
 
-<tr><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td></tr>
 
-<tr>
-	<td colspan="4"><h2>Gerente de Projeto</h2></td>
-</tr>
-<tr>
-<td colspan="4" valign="top" align="center">João Paulo Lemos Escola (Barretos)
-</td>
-</tr>
+        <tr>
+            <td colspan="4"><h2>Gerente de Projeto</h2></td>
+        </tr>
+        <tr>
+            <td colspan="4" valign="top" align="center">João Paulo Lemos Escola (Barretos)
+            </td>
+        </tr>
 
-<tr><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td></tr>
 
-<tr>
-	<td width="300"><h2>Analistas</h2></td>
-	<td width="300"><h2>Desenvolvedores</h2></td>
-        <td width="300"><h2>Testes de Software e Suporte</h2></td>
-</tr>
-<tr>
-<td valign="top" align="center">Anne Domenici (Sert&atilde;ozinho)
-	<br>Lourenço Alves (Araraquara)
-        <br>Kerolláine Lauro Oliveira (Araraquara)
-</td>
-<td valign="top" align="center">Naylor Garcia Bachiega (Birigui)
-    	<br>Marcelo Fernandes (Campos do Jord&atilde;o)
-	<br>Carlos Eduardo Alves da Silva (Votuporanga)
-        <br>Fernando Parreira (Votuporanga)
-        <br>Ricardo Crivelli (Avar&eacute;)
-        <br>Rodolfo Esteves (Hortol&acirc;ndia)
-</td>
-<td valign="top" align="center">
-	Lucas de Araujo Oliveira (Barretos)
-        <br>Ricardo Takazu (S&atilde;o Paulo)
-        <br>Josiane Rosa de Oliveira Gaia (Hortol&acirc;ndia)
-</td>
-</tr>
-</table>
+        <tr>
+            <td width="300"><h2>Desenvolvedor</h2></td>
+            <td width="300"><h2>Testes de Software e Suporte</h2></td>
+            <td width="300"><h2>Segurança de Software</h2></td>
+        </tr>
+        <tr>
+            <td valign="top" align="center">Naylor Garcia Bachiega (Birigui)</td>
+            <td valign="top" align="center">
+                Lucas de Araujo Oliveira (Barretos)
+            </td>
+            <td valign="top" align="center">
+                Josiane Rosa de Oliveira Gaia (Hortol&acirc;ndia)
+                <br>Ricardo Takazu (S&atilde;o Paulo)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3"><h2>Colaboradores</h2></td>
+        </tr>
+        <tr>
+            <td colspan="3" valign="top" align="center">Anne Domenici (Sert&atilde;ozinho)
+                <br>Carlos Eduardo Alves da Silva (Votuporanga)
+                <br>Fernando Parreira (Votuporanga)
+                <br>Kerolláine Lauro Oliveira (Araraquara) 
+                <br>Lourenço Alves (Araraquara)
+                <br>Marcelo Fernandes (Campos do Jordão)
+                <br>Ricardo Crivelli (Avaré) 
+                <br>Rodolfo Esteves (Hortolândia)
+            </td>
+        </tr>
+
+    </table>
 
 </center>
 
