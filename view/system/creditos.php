@@ -45,11 +45,11 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
         <tr>
             <td valign="top" align="center">Naylor Garcia Bachiega (Birigui)</td>
             <td valign="top" align="center">
-                Lucas de Araujo Oliveira (Barretos)
-            </td>
-            <td valign="top" align="center">
                 Josiane Rosa de Oliveira Gaia (Hortol&acirc;ndia)
                 <br>Ricardo Takazu (S&atilde;o Paulo)
+            </td>
+            <td valign="top" align="center">
+                Lucas de Araujo Oliveira (Barretos)
             </td>
         </tr>
         <tr>
