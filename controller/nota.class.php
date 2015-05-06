@@ -295,7 +295,7 @@ class Notas extends Frequencias {
                 if ($reg['fechamento'] == 's' || $reg['fechamento'] == 'a')
                     $dados = $this->resultado($reg['matricula'], $reg['atribuicao']);
                 if ($reg['fechamento'] == 'b')
-                    $dados = $this->resultadoBimestral($aluno, $turma, $reg['numero']);
+                    $dados = $this->resultadoBimestral($aluno, $turma, $reg['numero'], 0, 1);
 
                 $medias[] = $dados['media'];
                 $frequencias[] = $dados['frequencia'];
