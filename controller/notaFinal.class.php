@@ -30,7 +30,7 @@ class NotasFinais extends Notas {
 
                 if ($matSituacao['listar'] && $matSituacao['habilitar']) {
 
-                    $dados = $this->resultado($reg['matricula'], $atribuicao, 0, 1);
+                    $dados = $this->resultado($reg['matricula'], $atribuicao, 0, 0);
 
                     $params2['atribuicao'] = $atribuicao;
                     $params2['matricula'] = $reg['matricula'];
