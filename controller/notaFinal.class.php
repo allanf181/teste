@@ -56,9 +56,11 @@ class NotasFinais extends Notas {
 
                         $res1 = $bd->selectDB($sql1, $params1);
 
-                        if ($res1)
+                        if ($res1) {
                             $params2['codigo'] = $res1[0]['codigo'];
-                        else {
+                            $params2['flag'] = '0';
+                            $params2['retorno'] = 'Diario alterado, aguardando sincronizacao.';
+                        } else {
                             $params2['atribuicao'] = $atribuicao;
                             $params2['matricula'] = $reg['matricula'];
                         }

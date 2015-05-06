@@ -472,8 +472,8 @@ class Atribuicoes extends Generic {
         } else if ($bimestre == 'final' && $fechamento == 'b') {
             $sqlAdicional = " IN (SELECT t1.codigo FROM Turmas t1 
                                 WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
-                                WHERE t2.codigo = :turma AND ano = :ano)) ";
-            $params['ano'] = $bimestre;
+                                WHERE t2.codigo = :turma) AND t1.ano = :ano)";
+            $params['ano'] = $ano;
         } else {
             $sqlAdicional = " = :turma ";
         }

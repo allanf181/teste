@@ -282,7 +282,7 @@ if ($turma && $fechamento) {
                     foreach ($disciplinas as $dCodigo => $dMatricula) {
                         if ($situacaoListar[$c][$dCodigo]) {
                             if ($situacaoHabilitar[$c][$dCodigo]) {
-                                $dados = $nota->resultado($dMatricula[$c], $dCodigo);
+                                $dados = $nota->resultado($dMatricula[$c], $dCodigo, 0, 1);
                                 ?>
                                 <td align='center'>
                                     <a title='<?= $disciplinasNomes2[$dCodigo] ?>' data-content='Faltas: <?= $dados['faltas'] ?><br>Aulas Dadas: <?= $dados['auladada'] ?><br>Frequ&ecirc;ncia (Aulas Dadas): <?= arredondar($dados['frequencia']) ?>%<br>Frequ&ecirc;ncia (Aulas Previstas): <?= arredondar($dados['frequenciaPrevista']) ?>%'><font color='<?= $dados['color'] ?>'><?= $dados['media'] ?></font></a>
