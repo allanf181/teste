@@ -19,10 +19,10 @@ if (!$LOCATION_CRON) {
 $i = 0;
 $j = 0;
 if ($semestre == 2) {
-    $db2 = "SELECT NTA_DISC, NTA_PRONT, NTA_NOTA, NTA_FALTA, NTA_BIM, NTA_EVENTOD "
-            . "FROM ESCOLA.NOTASAL "
-            . "WHERE NTA_ANO = $ano "
-            . "AND (NTA_BIM = '1' OR NTA_BIM = '2')";
+    $db2 = "SELECT NTA_DISC, NTA_PRONT, NTA_NOTA, NTA_FALTA, NTA_BIM, NTA_EVENTOD
+            FROM ESCOLA.NOTASAL
+            WHERE NTA_ANO = $ano
+            AND (NTA_BIM = '1' OR NTA_BIM = '2')";
     $res = db2_exec($conn, $db2);
     while ($row = db2_fetch_object($res)) {
         $row->NTA_DISC = trim($row->NTA_DISC);
@@ -47,7 +47,7 @@ if ($semestre == 2) {
         //print $sql;
         $res2 = mysql_query($sql);
         while ($row2 = mysql_fetch_object($res2)) {
-            if (!$row2->notas) {
+            if ($row2->notas == NULL) {
                 // IMPORTA A NOTA
                 $sql = "INSERT INTO NotasFinais 
                     (codigo, atribuicao, matricula, bimestre, mcc, rec, ncc, falta, sincronizado, flag, retorno) 
