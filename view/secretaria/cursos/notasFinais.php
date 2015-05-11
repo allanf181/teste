@@ -177,7 +177,7 @@ if (!empty($curso) && !empty($turma)) {
                     ?>
                     <td align=left>
                         <?php
-                        if ($reg['retorno'] != 'FROM IMPORT NOTAS' || $reg['retorno'] != 'Nota registra com sucesso') {
+                        if ($reg['retorno'] != 'FROM IMPORT NOTAS' && $reg['retorno'] != 'Nota registra com sucesso') {
                             ?>
                             <a href='#' title='Sincronizar' class='sync' id='<?= $reg['codigo'] ?>'>
                                 <img src="<?= ICONS ?>/sync.png" class='botao'>
