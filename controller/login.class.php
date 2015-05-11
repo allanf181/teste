@@ -77,7 +77,7 @@ class login extends Generic {
                     . " FROM Pessoas"
                     . " WHERE prontuario=:prontuario"
                     . " AND senha=PASSWORD(:senha)";
-            $params = array(':prontuario' => $prontuario, ':senha' => $senha);
+            $params = array(':prontuario' => $prontuarioBD, ':senha' => $senha);
         }
 
         $res = $bd->selectDB($sql, $params);
