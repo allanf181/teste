@@ -154,7 +154,7 @@ if (!empty($curso) && !empty($turma)) {
                     <td align=left>
                         <a href='#' title='Sincronizar' class='sync' id='<?= $reg['codigo'] ?>'>
                             <?php
-                            if ($reg['retorno'] == '') {
+                            if ($reg['retorno'] == '' || ($reg['retorno'] != 'FROM IMPORT NOTAS' && $reg['retorno'] != 'Nota registra com sucesso')) {
                                 ?>
                                 <img src="<?= ICONS ?>/sync.png" class='botao'>
                                 <?php
