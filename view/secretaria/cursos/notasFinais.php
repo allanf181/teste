@@ -49,7 +49,6 @@ if (dcrip($_GET["disciplina"])) {
     $params['disciplina'] = $disciplina;
     $sqlAdicional .= ' AND a.codigo = :disciplina ';
 }
-
 ?>
 <table align="center" id="form" width="100%">
     <tr>
@@ -97,7 +96,7 @@ if (dcrip($_GET["disciplina"])) {
                 <option value="">Todas as disciplinas</option>
                 <?php
                 require CONTROLLER . '/atribuicao.class.php';
-                $atribuicao = new Atribuicoes();                
+                $atribuicao = new Atribuicoes();
                 $sqlAdicionaDisc = ' AND t.codigo = :turma ';
                 $paramsDisc = array(':turma' => $turma, ':ano' => $ANO, ':semestre' => $SEMESTRE);
                 foreach ($atribuicao->getAllAtribuicoes($paramsDisc, $sqlAdicionaDisc) as $reg) {
@@ -177,7 +176,19 @@ if (!empty($curso) && !empty($turma)) {
                 } else {
                     ?>
                     <td align=left>
-                        <img src="<?= ICONS ?>/true.png" class='botao'>
+                        <?php
+                        if ($reg['retorno'] != 'FROM IMPORT NOTAS' || $reg['retorno'] != 'Nota registra com sucesso') {
+                            ?>
+                            <a href='#' title='Sincronizar' class='sync' id='<?= $reg['codigo'] ?>'>
+                                <img src="<?= ICONS ?>/sync.png" class='botao'>
+                            </a>
+                            <?php
+                        } else {
+                            ?>
+                            <img src="<?= ICONS ?>/true.png" class='botao'>
+                            <?php
+                        }
+                        ?>
                     </td>
                     <?php
                 }
