@@ -21,6 +21,9 @@ $aulaFreq = new Aulas();
 require CONTROLLER . "/matriculaAlteracao.class.php";
 $ma = new MatriculasAlteracoes();
 
+require CONTROLLER . "/ocorrencia.class.php";
+$ocorrencia = new Ocorrencias();
+
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_GET["aula"] = $_POST["aula"];
     $_GET["atribuicao"] = $_POST["atribuicao"];
@@ -84,6 +87,16 @@ $dadosAula = $aulaFreq->getAula($aula);
                 ?>
                 <tr <?= $cdif ?> ><td align='center'><?= $reg['prontuario'] ?></td>
                     <td>
+                        <?php
+                        if ($o = $ocorrencia->countOcorrencias($reg['codAluno'])) {
+                            ?>
+                            <a href="#" title="Este aluno possui <?= $o ?> ocorr&ecirc;ncia(s)">
+                                <img src='<?= ICONS ?>/info.png' class="botao" />
+                            </a>
+                            &nbsp;
+                            <?php
+                        }
+                        ?>  
                         <a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot' title='<?= mostraTexto($reg['aluno']) ?>'>
                             <img class='foto_lista' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' /></a>
                         <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>');void(0);"><?= mostraTexto($reg['aluno']) ?></a>
@@ -110,7 +123,7 @@ $dadosAula = $aulaFreq->getAula($aula);
                                     <?php
                                 }
                             } else {
-                                print "<a href='#' data-placement='top' data-content=".$A['motivo']." title='Motivo'>".$A['tipo']."</a>";
+                                print "<a href='#' data-placement='top' data-content=" . $A['motivo'] . " title='Motivo'>" . $A['tipo'] . "</a>";
                             }
                             ?>
                         </td>

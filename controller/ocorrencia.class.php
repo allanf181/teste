@@ -57,33 +57,21 @@ class Ocorrencias extends Generic {
             return false;
     }
     
-    public function checkOcorrencias($params, $sqlAdicional = null) {
+    public function countOcorrencias($aluno) {
         $bd = new database();
+        $sql = "SELECT COUNT(*) as total
+                        FROM Ocorrencias o, Pessoas p
+                        WHERE o.aluno = p.codigo
+                        AND p.codigo = :aluno";
 
-        $sql = "SELECT date_format(i.data, '%d/%m/%Y %H:%i') as data, i.descricao, 
-                    i.registroPor, p.nome as aluno, 
-                    p1.nome as registroPor, p.codigo as codAluno 
-                FROM Ocorrencias o, OcorrenciasInteracoes i, Pessoas p, Pessoas p1
-                WHERE o.aluno = p.codigo
-                AND o.registroPor = p1.codigo
-                AND i.ocorrencia = o.codigo
-            UNION 
-                SELECT date_format(o.data, '%d/%m/%Y %H:%i') as data, o.descricao, 
-                    o.registroPor,p.nome as aluno, 
-                    p1.nome as registroPor, p.codigo as codAluno 
-                FROM Ocorrencias o, Pessoas p, Pessoas p1
-                WHERE o.aluno = p.codigo
-                AND o.registroPor = p1.codigo 
-                AND o.codigo NOT IN (SELECT ocorrencia FROM OcorrenciasInteracoes i)";
-        $sql .= " $sqlAdicional ";
-
+        $params = array('aluno' => $aluno);
         $res = $bd->selectDB($sql, $params);
-        
-        if ($res)
-            return $res;
+
+        if ($res[0]['total'])
+            return $res[0]['total'];
         else
             return false;
-    }    
+    }
 }
 
 ?>
