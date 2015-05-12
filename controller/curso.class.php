@@ -37,7 +37,7 @@ class Cursos extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
-        $sql = "SELECT c.codigo, m.nome as modalidade,
+        $sql = "SELECT c.codigo, m.nome as modalidade, m.codigo as codModalidade,
                 IF(LENGTH(c.nomeAlternativo) > 0,c.nomeAlternativo, 
                     IF(m.codigo < 1000 OR m.codigo > 2000, CONCAT(c.nome,' [',m.nome,']'), c.nome)   ) 
                 as curso

@@ -102,7 +102,7 @@ require PATH . VIEW . '/system/paginacao.php';
 
 <table id="listagem" border="0" align="center">
     <tr>
-        <th align="center" width="40">#</th>
+        <th align="center" width="80">C&oacute;digo</th>
         <th align="left">Curso</th>
         <th align="left">Modalidade</th>
         <th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
@@ -119,9 +119,9 @@ require PATH . VIEW . '/system/paginacao.php';
         $codigo = crip($reg['codigo']);
         ?>
         <tr <?= $cdif ?>>
-            <td align='center'><?= $i ?></td>
+            <td align='center'><?= $reg['codigo'] ?></td>
             <td><?= $reg['curso'] ?></td>
-            <td><?= $reg['modalidade'] ?></td>
+            <td>[<?= $reg['codModalidade'] ?>] <?= $reg['modalidade'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= $codigo ?>' />
                 <a href='#' title='Alterar' class='item-alterar' id='<?= $codigo ?>'>

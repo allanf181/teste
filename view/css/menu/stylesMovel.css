@@ -234,7 +234,7 @@
 
 @media all and (max-width: 800px), only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 1024px), only screen and (min-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (min-resolution: 192dpi) and (max-width: 1024px), only screen and (min-resolution: 2dppx) and (max-width: 1024px) {
   #cssmenu {
-    background: #39b1cc;
+    background: #00913d;
   }
   #cssmenu > ul {
     display: none;
@@ -257,6 +257,7 @@
   #cssmenu > ul > li > a {
     padding: 18px 25px 18px 25px;
     border-right: 0;
+    width: 250px;
   }
   #cssmenu > ul > li:hover > a,
   #cssmenu > ul > li.active > a {
@@ -268,7 +269,7 @@
     font-size: 13px;
     font-weight: 700;
     color: #d3eced;
-    padding: 18px 25px 18px 25px;
+    padding: 10px 10px 10px 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
     background: url('images/bg.png');
@@ -297,7 +298,7 @@
     width: 100%;
   }
   #cssmenu ul ul li a {
-    width: 100%;
+    width: 250px;
     box-shadow: none;
     padding-left: 35px;
   }

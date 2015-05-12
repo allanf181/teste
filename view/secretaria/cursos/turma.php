@@ -62,8 +62,8 @@ require PATH . VIEW . '/system/paginacao.php';
         ?>
         <tr <?= $cdif ?>>
             <td><?= $reg['numero'] ?></td>
-            <td align='left'><?= $reg['curso'] ?></td>
-            <td align='left'><?= $reg['modalidade'] ?></td>
+            <td align='left'>[<?= $reg['codCurso'] ?>] <?= $reg['curso'] ?></td>
+            <td align='left'>[<?= $reg['codModalidade'] ?>] <?= $reg['modalidade'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codTurma']) ?>' />
             </td>
