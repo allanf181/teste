@@ -21,6 +21,9 @@ $atribuicao = new Atribuicoes();
 require CONTROLLER . '/aluno.class.php';
 $alunos = new Alunos();
 
+require CONTROLLER . '/matriculaAlteracao.class.php';
+$ma = new MatriculasAlteracoes();
+
 $pdf = new PDF ();
 $pdf->rodape = $SITE_TITLE;
 
@@ -50,9 +53,11 @@ if (dcrip($_GET["turma"])) {
             $disciplinas[$reg['bimestre']][$reg['numeroDisciplina']]['matricula'] = $reg['matricula'];
             $disciplinas[$reg['bimestre']][$reg['numeroDisciplina']]['numero'] = $reg['numeroDisciplina'];
             $disciplinas[$reg['bimestre']][$reg['numeroDisciplina']]['atribuicao'] = $reg['atribuicao'];
-            $situacaoListar[$reg['atribuicao']] = $reg['listar'];
-            $situacaoNome[$reg['sigla']] = $reg['situacao'];
-            $situacaoSigla[$reg['numeroDisciplina']] = $reg['sigla'];
+            
+            $matricula = $ma->getAlteracaoMatricula($reg['aluno'], $reg['atribuicao'], date('Y-m-d'));
+            $situacaoListar[$reg['atribuicao']] = $matricula['listar'];
+            $situacaoNome[$reg['sigla']] = $matricula['nome'];
+            $situacaoSigla[$reg['numeroDisciplina']] = $matricula['sigla'];
             $disciplinasNomes[$reg['codDisciplina']][$reg['numeroDisciplina']] = $reg['disciplina'];
             $bimestres[$reg['bimestre']] = $reg['bimestre'];
         }
