@@ -32,7 +32,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
         $mensagem .= '<br />CAMPUS: '.utf8_decode($SITE_CIDADE);
         $mensagem .= '<br /><br />MENSAGEM: <br>'.utf8_decode($_POST['conteudo']);
        
-        $email = array('suporte@ifsp.edu.br', 'webdiario@ifsp.edu.br', 'naylorgarcia@ifsp.edu.br');
+        $email = array('suporte@ifsp.edu.br', 'webdiario@ifsp.edu.br');
         
         if ($instituicao->sendEmail($email, 'CONTATO-WEBDIARIO', $mensagem, $headers))
             mensagem('OK', 'EMAIL_SUGESTAO');
