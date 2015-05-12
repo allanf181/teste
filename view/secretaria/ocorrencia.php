@@ -116,6 +116,7 @@ if ($_GET["opcao"] == 'delete') {
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET["codigo"] = null;
 }
+
 ?>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
@@ -123,10 +124,10 @@ if ($_GET["opcao"] == 'delete') {
 <?php
 // inicializando as variáveis do formulário
 
-if (dcrip($_GET["aluno"]) != "") {
-    $params['aluno'] = dcrip($_GET["aluno"]);
-    $sqlAdicional .= " AND o.aluno = :aluno ";
-    $aluno = dcrip($_GET["aluno"]);
+if ($_GET["pesquisa"]) {
+    $params['nome'] = '%' . $_GET["pesquisa"] . '%';
+    $pesquisa = $_GET["pesquisa"];
+    $sqlAdicional .= ' AND p.nome like :nome ';
 }
 
 // LISTAGEM
@@ -187,19 +188,29 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     }
                     ?>
                 </td>
+                <td>
+                    Pesquisa: <input type="text" name="pesquisa" id="pesquisa" value="<?= $pesquisa ?>">
+                    &nbsp;
+                    <a href="#" id="botaoPesquisa" title="Buscar">
+                        <img class='botao' style="width:15px;height:15px;" src='<?= ICONS ?>/search.png' />
+                    </a>
+                </td>
             </tr>
-            <tr><td></td>
-                <td align="left"><font size='1'><?= $para ?> Deixe em branco para enviar para todos.</font></td>
+            <tr>
+                <td></td>
+                <td align="left" colspan="2">
+                    <font size='1'><?= $para ?> Deixe em branco para enviar para todos.</font>
+                </td>
             </tr>
             <tr>
                 <td align="right">Descri&ccedil;&atilde;o:</td>
-                <td>
+                <td colspan="2">
                     <textarea maxlength="500" rows="5" cols="80" id="descricao" name="descricao" style="width: 600px; height: 60px"><?= $descricao ?></textarea>
                 </td>
             </tr>
             <tr>
                 <td></td>
-                <td>
+                <td colspan="2">
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <table width="100%">
                         <tr>
@@ -213,7 +224,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             </tr>
             <tr>
                 <td></td>
-                <td>
+                <td colspan="2">
                     <font color="red"><br />1. Depois de cadastrada, uma ocorr&ecirc;ncia n&atilde;o pode ser alterada, somente apagada.
                     <br />2. Somente a CRE/ADM/GED pode remover uma ocorr&ecirc;ncia ou intera&ccedil;&atilde;o.
                     <br />3. Somente TAEs e Docentes possuem acesso, alunos não conseguem visualizar ocorrências.</font>
@@ -303,8 +314,9 @@ require PATH . VIEW . '/system/paginacao.php';
 
     function atualizar(getLink) {
         var URLS = '<?= $SITE ?>?';
+        var pesquisa = encodeURIComponent($('#pesquisa').val());
         if (!getLink)
-            $('#index').load(URLS + '&item=<?= $item ?>');
+            $('#index').load(URLS + '&item=<?= $item ?>&pesquisa='+pesquisa);
         else
             return URLS;
     }
@@ -357,6 +369,10 @@ require PATH . VIEW . '/system/paginacao.php';
             });
         });
 
+        $('#botaoPesquisa').click(function () {
+            atualizar();
+        });
+        
         $(".item-add").click(function () {
             var codigo = $(this).attr('id');
             $('#index').load(atualizar(1) + '&codigo=' + codigo);
