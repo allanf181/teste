@@ -473,16 +473,24 @@ $hor3 = explode(',', $horario3);
 
     function calcComponente() {
         total = 0;
+        componentes = 0;
         if ('<?= $duracaoAula ?>') {
             for (i = 0; i <= 9; i++) {
-                if ($("#A" + i).val())
+                if ($("#A" + i).val()) {
                     total += parseInt($("#A" + i).val());
+                    componentes++;
+                }
             }
             totalAulas = (total * '<?= substr($duracaoAula, 3, 2) ?>') / 60;
 
+            var adicional = 0; // carga adicional para mais de 4 componentes curriculares
+            if (componentes > 4) {
+                adicional = (componentes - 4);
+            }
+            
             $("#regencia").html(Math.round(totalAulas));
-            $("#ensino").html(Math.round(totalAulas));
-            totalHoras += Math.round(totalAulas) * 2;
+            $("#ensino").html(Math.round(totalAulas + adicional));
+            totalHoras += (Math.round(totalAulas) * 2) + adicional;
             $("#totalRegEns").html(totalHoras);
 
             $("#TH").html(totalHoras);
