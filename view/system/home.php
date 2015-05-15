@@ -12,6 +12,11 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
 }
 
+if (!$user){
+   echo "<script> window.location='index.php';</script>";
+   die;
+}
+
 //FUNCAO PARA RENOVAR O TEMPO DO SITE.
 if ($_GET['time_over']) {
     print "Renovado o tempo...";
