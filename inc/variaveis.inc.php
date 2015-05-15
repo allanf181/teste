@@ -33,6 +33,7 @@ if ($res = $instituicao->listRegistros()) {
     $ALUNO = $res[0]['aluno'];
     $PROFESSOR = $res[0]['prof'];
     $SSP = $res[0]['ssp'];
+    $CAE = $res[0]['cae'];
     $ENVIOFOTO = $res[0]['envioFoto'];
     $VERSAO = $res[0]['versao'];
     $VERSAOAT = $res[0]['versaoAtual'];
@@ -52,6 +53,7 @@ if ($res = $instituicao->listRegistros()) {
         'COORD' => 'Coordenador',
         'ALUNO' => 'Aluno',
         'PROFESSOR' => 'Professor',
-        'SSP' => 'Servi&ccedil;o Sociopedag&oacute;gico');
+        'SSP' => 'Servi&ccedil;o Sociopedag&oacute;gico',
+        'CAE' => 'Coordenadoria de Apoio ao Ensino');
 }
 ?>

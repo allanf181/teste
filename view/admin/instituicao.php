@@ -168,7 +168,19 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                                 }
                                 ?>
                             </select>
-                        </td></tr>                     
+                        </td></tr>
+                    <tr><td align="left">Coordenadoria de Apoio ao Ensino: </td><td><select name="cae" value="<?= $cae ?>">
+                                <option value="NULL"></option>
+                                <?php
+                                foreach ($res as $reg) {
+                                    $selected = "";
+                                    if ($reg['codigo'] == $cae)
+                                        $selected = "selected";
+                                    echo "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </td></tr> 
                     <tr><td></td><td>
                         </td></tr>
                 </table>

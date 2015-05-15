@@ -138,8 +138,11 @@ require CONTROLLER . "/questionario.class.php";
 <?php
 showChecks();
 
-if (in_array($GED, $_SESSION["loginTipo"]) || in_array($SEC, $_SESSION["loginTipo"]) 
-        || in_array($PROFESSOR, $_SESSION["loginTipo"]) || in_array($ALUNO, $_SESSION["loginTipo"])) {
+if (in_array($GED, $_SESSION["loginTipo"]) 
+        || in_array($SEC, $_SESSION["loginTipo"])
+        || in_array($CAE, $_SESSION["loginTipo"])
+        || in_array($PROFESSOR, $_SESSION["loginTipo"]) 
+        || in_array($ALUNO, $_SESSION["loginTipo"])) {
     // Listra Trocas de Aulas validadas
     listTrocaAula();
 }
@@ -413,7 +416,7 @@ function checkBloqueioFoto() {
 }
 
 function checkPapeis() {
-    global $PAPEIS, $GED, $ADM, $SEC, $COORD, $ALUNO, $PROFESSOR, $SSP, $textoAlerta;
+    global $PAPEIS, $GED, $ADM, $SEC, $COORD, $ALUNO, $PROFESSOR, $SSP, $CAE, $textoAlerta;
 
     foreach ($PAPEIS as $p => $n) {
         if (!$$p) {
