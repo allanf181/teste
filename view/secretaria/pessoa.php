@@ -29,16 +29,31 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $tipo = $_POST['tipo'];
     unset($_POST['tipo']);
 
-    $ret = $pessoa->insertOrUpdate($_POST);
+    $retP = $pessoa->insertOrUpdate($_POST);
 
-    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    if ($_POST['senha'] && $retP['STATUS'] == 'OK') {
+        if ($LDAP_PASS) {
+            require PATH . INC . '/ldap.inc.php';
+            $ldap = new ldap();
+            $rs = $ldap->changePassword($_POST['prontuario'], $_POST['senha']);
+            if ($rs != '1')
+                mensagem('ERRO', 'LDAP_WRONG_PASS');
+        }
+    }
+
     if (dcrip($_POST['codigo']))
         $_GET["codigo"] = $_POST['codigo'];
     else
-        $_GET["codigo"] = crip($ret['RESULTADO']);
+        $_GET["codigo"] = crip($retP['RESULTADO']);
 
-    $ret = $pessoaTipo->insertOrUpdateTipo(dcrip($_GET["codigo"]), $tipo);
-    mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
+    $retT = $pessoaTipo->insertOrUpdateTipo(dcrip($_GET["codigo"]), $tipo);
+
+    if ($retP['STATUS'] == 'INFO' && $retT['STATUS'] == 'OK') {
+        mensagem($retT['STATUS'], $retT['TIPO'], $retT['RESULTADO']);
+    } else {
+        mensagem($retP['STATUS'], $retP['TIPO'], $retP['RESULTADO']);
+        mensagem($retT['STATUS'], $retT['TIPO'], $retT['RESULTADO']);
+    }
 }
 
 // DELETE
@@ -193,7 +208,7 @@ if (!empty($_GET["codigo"])) {
     $estadoNaturalidade = $estadoNaturalidade[0]['codEstado'];
 
     $tipo = $pessoaTipo->getTipoPessoa($codigo);
-    if (in_array($ALUNO, $tipo) || in_array($PROFESSOR, $tipo))
+    if (in_array($ALUNO, $tipo))
         $NOT_PERM = 1;
 }
 
@@ -375,7 +390,7 @@ if (dcrip($_GET["tipo"])) {
 
             <div class="cont_tab" id="Dados4">
                 <table width="100%">
-                    <tr><td>Aten&ccedil;&atilde;o: n&atilde;o remova o tipo de um aluno ou professor, pois o sistema n&atilde;o permite incluir esses tipos.</td></tr>
+                    <tr><td>Aten&ccedil;&atilde;o: n&atilde;o remova o tipo de um aluno, pois o sistema n&atilde;o permite incluir esses tipos.</td></tr>
                 </table>
                 <table width="60%" border="0">
                     <tr>
@@ -402,7 +417,7 @@ if (dcrip($_GET["tipo"])) {
                                     if (in_array($reg['codigo'], $tipo)) {
                                         echo "<option value='" . $reg['codigo'] . "'>" . $reg['nome'] . "</option>";
                                     } else {
-                                        if ($reg['codigo'] != $ALUNO && $reg['codigo'] != $PROFESSOR)
+                                        if ($reg['codigo'] != $ALUNO)
                                             $TPS[$reg['codigo']] = $reg['nome'];
                                     }
                                 }
@@ -610,17 +625,17 @@ require PATH . VIEW . '/system/paginacao.php';
             function preparaInput() {
                 var resultado = '<br>Tipos: ';
                 resultado += '<select id="Zebra_valor" name="Zebra_valor" value="<?= $mes ?>">';
-                <?php
-                foreach ($t->listRegistros(null, ' ORDER BY nome ') as $reg) {
-                    ?>
+<?php
+foreach ($t->listRegistros(null, ' ORDER BY nome ') as $reg) {
+    ?>
                     resultado += "<option value='<?= ($reg['codigo']) ?>'><?= $reg['nome'] ?></option>\n";
-                    <?php
-                }
-                ?>
+    <?php
+}
+?>
                 resultado += "</select>";
                 return resultado;
             }
-            
+
             $.Zebra_Dialog('<strong>Selecione o Tipo da pessoa para fazer a busca:</strong>', {
                 'type': 'prompt',
                 'promptInput': preparaInput(),
@@ -633,7 +648,7 @@ require PATH . VIEW . '/system/paginacao.php';
                 }
             });
         });
-        
+
         $(".item-excluir").click(function () {
             $.Zebra_Dialog('<strong>Deseja continuar com a exclus&atilde;o?</strong>', {
                 'type': 'question',
