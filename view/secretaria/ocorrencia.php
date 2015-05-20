@@ -95,9 +95,9 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_POST['data'] = date('Y-m-d H:i:s');
     $_POST['registroPor'] = $_SESSION['loginCodigo'];
     unset($_POST['opcao']);
+    unset($_POST['pesquisa']);
 
     if (dcrip($_POST['codigo'])) {
-        print "ok";
         unset($_POST['to']);
         $_POST['ocorrencia'] = $_POST['codigo'];
         unset($_POST['codigo']);
