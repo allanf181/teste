@@ -31,6 +31,13 @@ if (dcrip($_GET["professor"])) {
 
     $params['ano'] = $ANO;
     $params['semestre'] = $SEMESTRE;
+    
+    if (dcrip($_GET["pano"])) {
+        $params['ano'] = dcrip($_GET["pano"]);
+    }
+    if (dcrip($_GET["psemestre"])) {
+        $params['semestre'] = dcrip($_GET["psemestre"]);
+    }
 
     $sqlAdicional .= " AND modelo = 'FPA' ORDER BY p.nome ";
 
@@ -213,6 +220,9 @@ if (dcrip($_GET["professor"])) {
                 $pdf->Cell(20, 3, utf8_decode($resC[$t]['aulas']), 1, 0, 'L', true);
                 $pdf->Ln();
                 $tAulas += $resC[$t]['aulas'];
+
+                if ($resC[$t]['aulas'])
+                    $disc++;
             }
 
             $tAulas = round($tAulas * substr($duracaoAula, 3, 2) / 60);
@@ -221,6 +231,10 @@ if (dcrip($_GET["professor"])) {
             $pdf->Cell(160, 5, utf8_decode("Regência de Aulas (em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tAulas, 1, 0, 'C', true);
             $pdf->Ln();
+            if ($disc > 4) {
+                $tAulas = $tAulas + ($disc - 4);
+                $totalGeral = $totalGeral + ($disc - 4);
+            }
             $pdf->Cell(160, 5, utf8_decode("Organização do Ensino (em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tAulas, 1, 0, 'C', true);
             $pdf->Ln();
@@ -263,7 +277,8 @@ if (dcrip($_GET["professor"])) {
             $pdf->Ln();
             $pdf->Ln();
 
-            $pdf->Cell(60, $alturaLinha, utf8_decode($SITE_CIDADE) . ', ' . html_entity_decode(formata($finalizado)), 0, 0, 'L', true);
+            if ($finalizado != "0000-00-00 00:00:00")
+                $pdf->Cell(60, $alturaLinha, utf8_decode($SITE_CIDADE) . ', ' . html_entity_decode(formata($finalizado)), 0, 0, 'L', true);
             $pdf->Ln();
             $pdf->Ln();
 

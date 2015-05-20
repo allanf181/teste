@@ -213,7 +213,7 @@ if ($VALIDO)
                     <tr align="right">
                         <th align="left">
                             <img style="width: 30px" src="<?= ICONS ?>/icon-printer.gif" title="Imprimir em PDF" />
-                            <a href="<?= VIEW ?>/secretaria/relatorios/inc/pit.php?professor=<?= crip($_SESSION['loginCodigo']) ?>" target="_blank">
+                            <a href="<?= VIEW ?>/secretaria/relatorios/inc/pit.php?professor=<?= crip($_SESSION['loginCodigo']) ?>&pano=<?= crip($pano) ?>&psemestre=<?= crip($psemestre) ?>" target="_blank">
                                 <span style='font-weight: bold; color: white'>Imprimir</span>
                             </a>
                         </th>

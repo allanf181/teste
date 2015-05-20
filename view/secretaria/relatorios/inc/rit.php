@@ -31,14 +31,21 @@ if (dcrip($_GET["professor"])) {
 
     $params['ano'] = $ANO;
     $params['semestre'] = $SEMESTRE;
-            
+
+    if (dcrip($_GET["pano"])) {
+        $params['ano'] = dcrip($_GET["pano"]);
+    }
+    if (dcrip($_GET["psemestre"])) {
+        $params['semestre'] = dcrip($_GET["psemestre"]);
+    }
+
     $params['modelo'] = 'RIT';
 
     $sqlAdicional .= " AND modelo = :modelo ORDER BY p.nome ";
 
     $res = $dados->listModelo($params, $sqlAdicional, null, null);
     if ($res) {
-        foreach ($res as $reg) {            
+        foreach ($res as $reg) {
             //IMPORTA PARÃMETROS DA FPA
             $params['modelo'] = 'FPA';
             $resFPA = $dados->listModelo($params, $sqlAdicional, null, null);
@@ -124,6 +131,8 @@ if (dcrip($_GET["professor"])) {
                 $pdf->Cell(20, 3, utf8_decode($resC[$t]['aulas']), 1, 0, 'L', true);
                 $pdf->Ln();
                 $tAulas += $resC[$t]['aulas'];
+                if ($resC[$t]['aulas'])
+                    $disc++;
             }
 
             $tAulas = round($tAulas * substr($duracaoAula, 3, 2) / 60);
@@ -132,11 +141,16 @@ if (dcrip($_GET["professor"])) {
             $pdf->Cell(160, 5, utf8_decode("Regência de Aulas (em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tAulas, 1, 0, 'C', true);
             $pdf->Ln();
+
+            if ($disc > 4) {
+                $tAulas = $tAulas + ($disc - 4);
+                $totalGeral = $totalGeral + ($disc - 4);
+            }
             $pdf->Cell(160, 5, utf8_decode("Organização do Ensino (em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tAulas, 1, 0, 'C', true);
             $pdf->Ln();
             $pdf->Cell(160, 5, utf8_decode("Tempo total dedicado à Aulas e Organização de Ensino (em horas)"), 1, 0, 'R', true);
-            $pdf->Cell(20, 5, $tAulas*2, 1, 0, 'C', true);            
+            $pdf->Cell(20, 5, $totalGeral, 1, 0, 'C', true);
             $pdf->Ln();
             $pdf->Ln();
 
@@ -179,17 +193,18 @@ if (dcrip($_GET["professor"])) {
 
             $pdf->Cell(180, 5, utf8_decode("Alterações em relação ao PIT (Justificativas)"), 1, 0, 'C', true);
             $pdf->Ln();
-            $pdf->SetFont($fonte, '', $tamanho-1);
+            $pdf->SetFont($fonte, '', $tamanho - 1);
             $conteudo = explode("\n", wordwrap(str_replace("\r\n", ";", trim($horario)), 180));
 
             foreach ($conteudo as $j => $trecho) {
                 $pdf->Cell(180, $alturaLinha, utf8_decode($conteudo[$j]), 1, 0, 'L', true);
                 $pdf->Ln();
-            }            
+            }
 
-            $pdf->Ln();            
+            $pdf->Ln();
             $pdf->SetFont($fonte, 'B', $tamanho);
-            $pdf->Cell(60, $alturaLinha, utf8_decode($SITE_CIDADE) . ', ' . html_entity_decode(formata($finalizado)), 0, 0, 'L', true);
+            if ($finalizado != "0000-00-00 00:00:00")
+                $pdf->Cell(60, $alturaLinha, utf8_decode($SITE_CIDADE) . ', ' . html_entity_decode(formata($finalizado)), 0, 0, 'L', true);
             $pdf->Ln();
 
             $pdf->Cell(100, $alturaLinha, str_repeat('_', 38), 0, 0, 'R', true);
@@ -198,18 +213,17 @@ if (dcrip($_GET["professor"])) {
             $pdf->Cell(140, $alturaLinha, utf8_decode("$nome"), 0, 0, 'C', true);
             $pdf->Cell(1, $alturaLinha, utf8_decode("Presidente CAAD"), 0, 0, 'C', true);
             $pdf->SetFont($fonte, '', $tamanho);
-            
+
             $pdf->Ln();
             $pdf->Ln();
 
-            $pdf->SetFont($fonte, 'B', $tamanho+2);
+            $pdf->SetFont($fonte, 'B', $tamanho + 2);
             $pdf->Cell(180, 5, utf8_decode("Parecer da Comissão de Área para Atividade Docente"), 1, 0, 'C', true);
-            $pdf->Ln();           
+            $pdf->Ln();
             $pdf->Cell(180, 30, "", 1, 0, 'L', true);
             $pdf->Ln();
             $pdf->SetFont($fonte, '', $tamanho);
             $pdf->Cell(180, 5, utf8_decode("Resultado:  [  ] Homologado  [  ] Devolução para ajustes no preenchimento em ____/_____/______           Ass.: ______________________ (Presidente da CAAD)"), 1, 0, 'L', true);
-
         }
     } else {
         print utf8_decode("RIT está em processo de correção ou não foi finalizado pelo Docente!");
