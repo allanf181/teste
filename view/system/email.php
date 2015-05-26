@@ -34,6 +34,9 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
        
         $email = array('suporte@ifsp.edu.br', 'webdiario@ifsp.edu.br');
         
+        if ($EMAIL)
+            array_push($email, $EMAIL);
+        
         if ($instituicao->sendEmail($email, 'CONTATO-WEBDIARIO', $mensagem, $headers))
             mensagem('OK', 'EMAIL_SUGESTAO');
     }
