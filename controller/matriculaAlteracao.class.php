@@ -53,11 +53,13 @@ class MatriculasAlteracoes extends Generic {
             $rs['sigla'] = $res[0]['sigla'];
             $rs['tipo'] = $res[0]['nome'];
             $rs['codSituacao'] = $res[0]['codigo'];
-        } else {
-            $rs['habilitar'] = '1';
-            $rs['listar'] = 1;
-            $rs['tipo'] = 'IN_AFTER';
-        }
+        } 
+        // DESABILITADO ATÉ QUE SEJA INCLUÍDO UM CAMPO DE DATA DE MATRÍCULA NO NAMBEI
+//        else {
+//            $rs['habilitar'] = '1';
+//            $rs['listar'] = 1;
+//            $rs['tipo'] = 'IN_AFTER';
+//        }
         return $rs;
     }
     
