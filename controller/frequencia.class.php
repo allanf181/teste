@@ -199,7 +199,7 @@ class Frequencias extends FrequenciasAbonos {
                 AND s.listar = 1
                 AND s.habilitar = 1
                 $sqlAdicional
-                order by au.data, p.nome";
+                order by au.data, d.nome, p.nome";
 
         $res = $bd->selectDB($sql, $params);
 
