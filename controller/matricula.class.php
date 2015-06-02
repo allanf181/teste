@@ -98,6 +98,24 @@ class Matriculas extends Generic {
 
         return json_encode($graph_data);
     }
+    
+    public function isMatriculado($aluno, $aula) {
+        $bd = new database();
+        $sql = "SELECT count(m.codigo) as n "
+                . "FROM Atribuicoes a, Matriculas m, Aulas au "
+                . "WHERE m.atribuicao=a.codigo "
+                . "AND au.atribuicao=a.codigo "
+                . "AND m.aluno=:aluno "
+                . "AND au.codigo=:aula";
+        $params = array(':aluno' => $aluno, ':aula' => $aula);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res[0]['n']>0)
+            return true;
+        else
+            return false;
+    }
+    
 }
 
 ?>
