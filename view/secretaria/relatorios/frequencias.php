@@ -1,6 +1,6 @@
 <?php
 //A descrição abaixo é utilizada em Permissões para indicar o que o arquivo faz (respeitar a ordem da linha)
-//Possibilita visualizar o percentual de frequência de todos os alunos de uma determinada disciplina.
+//Possibilita visualizar as aulas lançadas pelos docentes e se o aluno esteve ou não presente
 //Link visível, quando ativo, mostra o nome definido no menu do sistema.
 //O número abaixo indica se o arquivo deve entrar nas permissões (respeitar a ordem da linha)
 //1
@@ -24,10 +24,17 @@ $atribuicao = new Atribuicoes();
 require CONTROLLER . "/aula.class.php";
 $aula = new Aulas();
 
+require CONTROLLER . "/matricula.class.php";
+$matricula = new Matriculas();
+
 $data = date("d/m/Y", time()); // data atual
 
-$dataInicio = $_GET['dataInicio'];
-$dataFim = $_GET['dataFim'];
+$dataInicio=date("d/m/Y", time()-(3*24*60*60)); // três últimos dias por padrão
+$dataFim=$data;
+if (isset($_GET['dataInicio']))
+    $dataInicio = $_GET['dataInicio'];
+if (isset($_GET['dataFim']))
+    $dataFim = $_GET['dataFim'];
 
 if ($dataFim && $dataInicio) {
     $params['dataInicio'] = dataMysql($dataInicio);
@@ -86,6 +93,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
         <td align="right">Turma: </td>
         <td>
             <select name="turma" id="turma" value="<?= $turma ?>">
+                <option></option>
                 <?php
                 require CONTROLLER . '/turma.class.php';
                 $turmas = new Turmas();
@@ -127,7 +135,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
                 <?php
                 require CONTROLLER . '/turno.class.php';
                 $turnos = new Turnos();
-                foreach ($turnos->listRegistros() as $reg) {
+                foreach ($turnos->getTurnos($turma) as $reg) {
                     $selected = "";
                     if ($reg['codigo'] == $turno)
                         $selected = "selected";
@@ -151,7 +159,6 @@ if ($turma && $dataFim && $dataInicio) {
         $nomes[$reg['codAluno']] = $reg['aluno'] . ' (' . $reg['situacao'] . ')';
         $professores[$reg['codAula']] = $professor->getProfessor($reg['atribuicao'], 1, '', 0, 0);
     }
-
     function consecutive_values(array $haystack) {
         $cons = 0;
         $faltasConsecutivas = 0;
@@ -227,7 +234,9 @@ if (!empty($turma)) {
                         foreach ($codAulas as $codAula => $n) {
                             if ($frequencias[$c][$codAula] > 0 && $frequencias[$c][$codAula] <= $codAulas)
                                 $cor = '#FFCCCC';
-                            $conteudo.= "<a href='#' data-placement='top' title='" . mostraTexto($disciplinas[$codAula]) . "' data-content='" . mostraTexto($professores[$codAula]) . "<br>$n aulas' > (" . $frequencias[$c][$codAula] . ")</a>";
+                            
+                            if ($matricula->isMatriculado($c, $codAula))
+                                $conteudo.= "<a href='#' data-placement='top' title='" . mostraTexto($disciplinas[$codAula]) . "' data-content='" . mostraTexto($professores[$codAula]) . "<br>$n aulas' > (" . $frequencias[$c][$codAula] . ")</a>";
                         }
                         ?>
                         <td align='center' bgcolor='<?= $cor ?>'><?= $conteudo ?></td>
