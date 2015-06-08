@@ -70,7 +70,7 @@ $travaFinal = $resAval['final'];
                 Turma: <?= $resAval['turma'] ?><br />
                 Semestre: <?= $resAval['semestre'] ?> / <?= $resAval['ano'] ?><br />
                 Notas para: <?= $resAval['nome'] ?> de <?= $resAval['dataFormat'] ?>
-                <?php if ($resAval['calculo'] == 'peso') { ?>
+                <?php if ($resAval['calculo'] == 'peso' && $resAval['tipo'] != 'pontoExtra') { ?>
                     (peso: <?= $resAval['peso'] ?>)
                     <?php
                     $resAval['notaMaxima'] = '10';

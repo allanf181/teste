@@ -3,10 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Z:/academico/db2/db2ConsultaDisciplinas.php</file>
-            <file>file:/Z:/academico/db2/lib/consultaDisciplinasWS.php</file>
-            <file>file:/Z:/academico/db2/lib/criptografia.php</file>
-            <file>file:/Z:/academico/db2/db2Cron.php</file>
+            <file>file:/var/www/html/academico/controller/atribuicao.class.php</file>
+            <file>file:/var/www/html/academico/controller/avaliacao.class.php</file>
+            <file>file:/var/www/html/academico/controller/notaFinal.class.php</file>
+            <file>file:/var/www/html/academico/view/professor/avaliacao.php</file>
+            <file>file:/var/www/html/academico/view/professor/nota.php</file>
+            <file>file:/var/www/html/academico/db2/db2DigitaNotas.php</file>
+            <file>file:/var/www/html/academico/controller/nota.class.php</file>
+            <file>file:/var/www/html/academico/view/professor/professor.php</file>
+            <file>file:/var/www/html/academico/db2/db2Funcoes.php</file>
+            <file>file:/var/www/html/academico/db2/db2ConsultaDisciplinas.php</file>
+            <file>file:/var/www/html/academico/db2/db2Cron.php</file>
+            <file>file:/var/www/html/academico/db2/lib/consultaDisciplinasWS.php</file>
         </group>
     </open-files>
 </project-private>

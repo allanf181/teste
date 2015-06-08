@@ -101,7 +101,7 @@ class Notas extends Frequencias {
 
     function resultado($matricula, $atribuicao, $final = 0, $fechamento = 0) {
         $bd = new database();
-            
+
         if ($fechamento) {
             // VERIFICANDO SE O DIÁRIO FOI FINALIZADO, SE SIM, BUSCA NA TABELA DE NOTAS FINALIZADAS
             if ($final == 0)
@@ -192,14 +192,19 @@ class Notas extends Frequencias {
             if ($reg['tipo'] == 'pontoExtra' && $tipo != 'formula') {
                 $pontoExtra[] = $reg['nota'];
             }
-            
+
             if ($reg['tipo'] == 'pontoExtra' && $tipo == 'formula') {
                 $medias[$reg['sigla']] = $reg['nota'];
             }
 
             if ($reg['tipo'] == 'substitutiva') {
-                if ($medias[$reg['sub']] < $reg['nota'])
-                    $medias[$reg['sub']] = $reg['nota'];
+                if ($tipo == 'peso') {
+                    if ($medias[$reg['sub']] < ($reg['nota'] * $reg['peso']))
+                        $medias[$reg['sub']] = $reg['nota'] * $reg['peso'];
+                } else {
+                    if ($medias[$reg['sub']] < $reg['nota'])
+                        $medias[$reg['sub']] = $reg['nota'];
+                }
             }
 
             if ($reg['tipo'] == 'recuperacao' && !$reg['final']) {
@@ -227,7 +232,7 @@ class Notas extends Frequencias {
 
         // ADICIONANDO OS PONTOS EXTRAS
         $media += array_sum($pontoExtra);
-                
+
         if ($arredondar)
             $media = arredondar($media);
 
