@@ -103,7 +103,9 @@ $dadosAula = $aulaFreq->getAula($aula);
                     </td>
                     <?php
                     $frequencia = $freq->getFrequencia($reg['matricula'], $atribuicao);
-                    $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $atribuicao, $dadosAula['data']);
+                    // DESABILITADO ATÉ QUE SEJA INCLUÍDO O CAMPO DE DATA DE MATRÍCULA NO NAMBEI
+//                    $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $atribuicao, $dadosAula['data']);
+                    $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $atribuicao, $ANO."-12-31");
                     if ($matSituacao['listar'] && $matSituacao['habilitar']) {
                         ?>
                         <td align='left'>
