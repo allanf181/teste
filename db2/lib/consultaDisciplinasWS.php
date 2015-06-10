@@ -8,7 +8,7 @@ class ConsultaDisciplinasWS {
         try {
             $pass = Criptografia::codificar($pass);
 
-            $servicoConsultarDisciplinaMinistrada = 'http://aurorateste.ifsp.edu.br:8080/IFSPWebServices-0.0.1-SNAPSHOT/';
+            $servicoConsultarDisciplinaMinistrada = 'http://aurorateste.ifsp.edu.br:8080/IFSPWebServices-0.0.1-SNAPSHOT/services/servicoConsultarDisciplinaMinistrada';
             $cliente = new SoapClient($servicoConsultarDisciplinaMinistrada . "?wsdl", array(
                 "trace" => 1,
                 "exception" => 1,
@@ -16,13 +16,13 @@ class ConsultaDisciplinasWS {
                 'login' => $user,
                 'password' => $pass
             ));
-            print_r($cliente);
-            
+                        
             $cliente->__getFunctions();
 
             $cliente->__setLocation($servicoConsultarDisciplinaMinistrada);
 
-            $professorObj = $cliente->digitarNotasAlunos($campus, $prontProfessor);
+            $professorObj = $cliente->consultarDisciplinasMinistradas($campus, $prontProfessor);
+
             return (object) $professorObj;
 
         } catch (Exception $e) {

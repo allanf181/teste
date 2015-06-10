@@ -90,7 +90,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
             </select>
         </td>
         <td rowspan="4"><input type="submit" name="liberar" id="liberar" value="Liberar"><br /><br />
-            <input type="submit" name="fechar" id="fechar" value="Fechar">
+            <!--<input type="submit" name="fechar" id="fechar" value="Fechar"> -->
         </td>
     </tr>
     <tr>

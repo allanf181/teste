@@ -51,7 +51,7 @@ class Avaliacoes extends Generic {
 
         $sql = "SELECT date_format(a.data, '%d/%m/%Y') dataFormatada, a.nome as nome,
 		a.peso, a.codigo, d.nome as disciplina, tu.nome as turno, a.data, a.tipo, at.status,
-		DATEDIFF(prazo, NOW()) as prazo, at.calculo, ti.tipo,
+		DATEDIFF(prazo, NOW()) as prazo, at.calculo, ti.tipo, c.modalidade,
 		(SELECT calculo FROM TiposAvaliacoes WHERE codigo = a.tipo AND tipo='recuperacao') as recuperacao,
 		(SELECT SUM(peso) FROM Avaliacoes a1, TiposAvaliacoes t1 
                         WHERE a1.tipo = t1.codigo AND t1.tipo = 'avaliacao' AND a1.atribuicao = at.codigo) as totalPeso,
@@ -60,11 +60,12 @@ class Avaliacoes extends Generic {
 		(SELECT final FROM TiposAvaliacoes WHERE codigo = a.tipo AND tipo='recuperacao' AND final=1) as final,
 		at.bimestre, a.sigla, t.numero,
                 (SELECT CONCAT(nome, ' (', sigla,')') FROM Avaliacoes WHERE codigo = a.substitutiva) as substitutiva
-            FROM Turnos tu, Turmas t, Disciplinas d, Atribuicoes at
+            FROM Turnos tu, Cursos c, Turmas t, Disciplinas d, Atribuicoes at
             LEFT JOIN Avaliacoes a ON a.atribuicao=at.codigo $sqlAdicional
             LEFT JOIN TiposAvaliacoes ti ON ti.codigo = a.tipo
             WHERE at.codigo = :atr
             AND at.turma=t.codigo 
+            AND t.curso = c.codigo
             AND at.disciplina=d.codigo 
             AND t.turno=tu.codigo
             ORDER BY a.data DESC";
@@ -114,7 +115,7 @@ class Avaliacoes extends Generic {
                 av.peso as peso, av.nome as nome, ti.tipo as tipo, av.data,
 		DATEDIFF(a.prazo, NOW()) as prazo, a.status as status,
 		d.numero as discNumero, a.bimestre as bimestre, ti.final,
-                t.numero as turma, a.calculo as calculo,
+                t.numero as turma, a.calculo as calculo, ti.sigla,
                 IF(ti.tipo NOT LIKE 'recuperacao' 
                     AND (a.calculo LIKE 'soma' OR ti.tipo LIKE 'pontoExtra'), av.peso, ti.notaMaxima) as notaMaxima
  		FROM Atribuicoes a, Disciplinas d, Turmas t, Cursos c, Turnos tu,

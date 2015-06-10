@@ -20,13 +20,17 @@ $user = 'BA000022';
 $pass = '4(HC&m3KbT';
 $campus = strtoupper($DIGITANOTAS);
 
-$sql = "SELECT p.prontuario
+$sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.eventod
 	FROM NotasFinais n, Atribuicoes a, Pessoas p, Professores pr, Disciplinas d, Turmas t
 	WHERE n.atribuicao = a.codigo
 	AND pr.professor = p.codigo
         AND pr.atribuicao = a.codigo
 	AND d.codigo = a.disciplina
 	AND t.codigo = a.turma
+        AND t.ano = $ano
+        AND t.semestre = $semestre
+        AND n.bimestre = 1
+        AND n.recuperacao IS NULL
         AND flag = 5
 	GROUP BY p.codigo
         ORDER BY n.bimestre";
@@ -35,35 +39,69 @@ $result = mysql_query($sql);
 
 $total = mysql_num_rows($result);
 
-while ($l = mysql_fetch_array($result)) {   
-    //$prontuario = $l[0];
-    $prontuario = '137029';
-    $campus = 'BI';
-    
-    
-        $consultaDisciplinasWS = new ConsultaDisciplinasWS();
+while ($l = mysql_fetch_array($result)) {
+    $prontuario = $l[0];
+    $disciplina = $l[2].'_'.$l[5];
+    $atribuicao = $l[1];
+    $bimestre = $l[3];
 
-        $ret = $consultaDisciplinasWS->consultaDisciplinas($user, $pass, $campus, $prontuario);
-        print_r($ret);
+    $consultaDisciplinasWS = new ConsultaDisciplinasWS();
 
-        if ($ret) {
-            print_r($ret);
-            die;
-        }
-
-
-    $codigos = array();
-    $notas = array();
-    $logs = array();
-
-    if ($conexao == 6) {
-        //AGUARDANDO 10 SEGUNDOS DA CONEXÃO COM O DIGITA NOTAS
-        for ($m = 1; $m <= 10; $m++) {
-            sleep(1);
-            print "Esperando WS Block... $m segundos... \n";
-        }
-        $conexao = 0;
+    //Obtem todas as informações das disciplinas ministradas pelo professor
+    $professorObj = $consultaDisciplinasWS->consultaDisciplinas($user, $pass, $campus, $prontuario);
+        
+    //Pega todas as disciplinas ministradas pelo professor
+    if (count($professorObj->disciplinasMinistradas->DisciplinaMinistrada) > 1) {
+        $disciplinasMinistradas = $professorObj->disciplinasMinistradas->DisciplinaMinistrada;
+    } else {
+        $disciplinasMinistradas = $professorObj->disciplinasMinistradas;
     }
+    
+    //Pega por disciplina ministradas para obter todos os alunos
+    foreach ($disciplinasMinistradas as $disciplinasMinistrada) {
+        
+        //Verificando apenas disciplinas na tabela de NOTASFINAIS
+        if ($disciplinasMinistrada->codigoDisciplina != 'HCTS1_3')
+            continue;
+        
+        //Verifica se tem alunos matriculados caso tenha monta a lista de alunos matriculados
+        if ($disciplinasMinistrada->qtdMatriculados != 0) {
+            if (count($disciplinasMinistrada->alunoMatriculadoDisciplina->AlunoMatriculadoDisciplina) > 1) {
+                $alunosMatriculados = $disciplinasMinistrada->alunoMatriculadoDisciplina->AlunoMatriculadoDisciplina;
+            } else if (count($disciplinasMinistrada->alunoMatriculadoDisciplina->AlunoMatriculadoDisciplina) == 1) {
+                $alunosMatriculados = $disciplinasMinistrada->alunoMatriculadoDisciplina;
+            }
+        } else {
+            $alunosMatriculados = null;
+        }
+        
+        print_r($alunosMatriculados);
+        die;
+        
+        //Pega a informação de cada aluno
+        foreach ($alunosMatriculados as $alunosMatriculado) {
+            
+            $flagNotaReavDigitada = rtrim($alunosMatriculado->flagNotaReavDigitada);
+            $flagNota1Digitada = rtrim($alunosMatriculado->flagNota1Digitada);
+
+            $situacaoNota = rtrim($alunosMatriculado->situacaoNota);
+            $aluno = $alunosMatriculado->prontuario;
+
+            //Verifica a situação
+            if ($flagNota1Digitada == "5" && $flagNotaReavDigitada == "0" && $situacaoNota == "5") {
+                $sqlUpdate = "\nUPDATE NotasFinais n SET n.recuperacao = 1
+                        WHERE n.atribuicao = $atribuicao
+                        AND n.bimestre = $bimestre
+                        AND n.matricula = (SELECT m.codigo FROM Matriculas m, Pessoas p
+                                            WHERE m.aluno = p.codigo
+                                            AND m.atribuicao = $atribuicao
+                                            AND p.prontuario = '$aluno')";
+                print $sqlUpdate;
+
+            }
+        }
+    }
+
 }
 
 // REGISTRA A ATUALIZACAO

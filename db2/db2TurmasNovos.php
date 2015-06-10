@@ -49,7 +49,7 @@ while ($row = db2_fetch_object($res)) {
     		WHERE numero='$numero' 
     		AND curso=$row->CN_CDCURSO 
                 AND ano=$ano
-    		AND (semestre=$semestre OR semestre=0)";
+    		AND (semestre=$semestre OR semestre=0) ORDER BY codigo ASC";
     $res2 = mysql_query($sql);
     if (!$turma = mysql_fetch_object($res2)) {// TURMA NÃO EXISTE, ENTÃO IMPORTA
         // IMPORTA A TURMA

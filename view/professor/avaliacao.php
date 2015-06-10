@@ -21,6 +21,9 @@ $att = new Atribuicoes();
 require CONTROLLER . "/logSolicitacao.class.php";
 $log = new LogSolicitacoes();
 
+require CONTROLLER . "/notaFinal.class.php";
+$notaFinal = new NotasFinais();
+
 // PEDIDO DE LIBERAÇÃO DO DIÁRIO
 if ($_GET["motivo"]) {
     $paramsLog['dataSolicitacao'] = date('Y-m-d h:i:s');
@@ -30,6 +33,25 @@ if ($_GET["motivo"]) {
     $paramsLog['solicitante'] = $_SESSION['loginCodigo'];
     $ret = $log->insertOrUpdate($paramsLog);
     mensagem($ret['STATUS'], 'PRAZO_DIARIO');
+}
+
+// FECHAMENTO DAS NOTAS - DIGITA NOTAS
+if ($_GET["opcao"] == 'controleDiario') {
+    $atribuicao = dcrip($_GET["atribuicao"]);
+
+    if (!$erro = $notaFinal->fecharDiario($atribuicao)) {
+        $paramsLog['nomeTabela'] = 'DIARIO';
+        $paramsLog['solicitante'] = $_SESSION['loginCodigo'];
+        $paramsLog['dataSolicitacao'] = date('Y-m-d H:m:s');
+        $paramsLog['dataConcessao'] = date('Y-m-d H:m:s');
+        $paramsLog['codigoTabela'] = $atribuicao;
+        $paramsLog['solicitacao'] = 'Professor fechou as notas manualmente.';
+        $log->insertOrUpdate($paramsLog);
+        print "Notas fechadas. As notas serão exportadas para o DigitasNotas. Aguarde a execução do Roda.";
+    } else {
+        print "Problema ao fechar notas!";
+    }
+    die;
 }
 
 // INSERT E UPDATE DE AVALIACOES
@@ -126,7 +148,7 @@ if ($_GET['opcao'] == 'insert') {
                 $('#sigla').val($('#sigla').val().toUpperCase());
                 valida();
             });
-            
+
             $('#nome <?= $P1 ?>, #sigla').keyup(function () {
                 $('#sigla').val($('#sigla').val().toUpperCase());
                 valida();
@@ -157,7 +179,8 @@ if ($_GET['opcao'] == 'insert') {
     ?>
 
             if ($('#data').val() != "" && $('#tipo').val() != null &&
-                    $('#nome').val() != "" && $('#sigla').val() != "" <?= $P ?>)
+                    $('#nome').val() != "" && $('#sigla').val() != ""
+    <?= $P ?>)
                 $('#salvar').removeAttr('disabled');
             else
                 $('#salvar').attr('disabled', 'disabled');
@@ -186,67 +209,90 @@ if ($_GET['opcao'] == 'insert') {
 
     <div id="html5form" class="main">
         <form id="form_padrao">
-            <center>
-                <h2>Cadastro de Avalia&ccedil;&atilde;o</h2>
-                <table>
-                    <tr><td align="right">Data: </td><td><input type="text" readonly size="10" id="data" name="data" value="<?= $data ?>" />
-                            <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a>
-                        </td></tr></td></tr>
-                    <tr><td align="right">Nome: </td><td><input style="width: 350px" type="text" id="nome" maxlength="145" name="nome" value="<?= $nome ?>"/></td></tr>
-                    <tr><td align="right">Sigla: </td><td><input type="text" id="sigla" size="2" maxlength="2" name="sigla" value="<?= $sigla ?>"/> <spam id="Siglas"></spam></td></tr>
-                    <tr><td align="right">Tipo: </td><td>
-                            <select name="tipo" id="tipo" value="<?= $tipo ?>">
-                                <?php
-                                require CONTROLLER . "/tipoAvaliacao.class.php";
-                                $tipoAvaliacao = new TiposAvaliacoes();
+            <h2>Cadastro de Avalia&ccedil;&atilde;o</h2>
+            <table>
+                <tr>
+                    <td align="right">Data: </td>
+                    <td>
+                        <input type="text" readonly size="10" id="data" name="data" value="<?= $data ?>" />
+                        <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'>
+                            <img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">Nome: </td>
+                    <td><input style="width: 350px" type="text" id="nome" maxlength="145" name="nome" value="<?= $nome ?>"/></td>
+                </tr>
+                <tr>
+                    <td align="right">Sigla: </td>
+                    <td><input type="text" id="sigla" size="2" maxlength="2" name="sigla" value="<?= $sigla ?>"/> <spam id="Siglas"></spam></td>
+                </tr>
+                <tr>
+                    <td align="right">Tipo: </td>
+                    <td>
+                        <select name="tipo" id="tipo" value="<?= $tipo ?>">
+                            <?php
+                            require CONTROLLER . "/tipoAvaliacao.class.php";
+                            $tipoAvaliacao = new TiposAvaliacoes();
 
-                                if ($tipoAval == 'substitutiva') {
-                                    $res1 = $avaliacao->listAvaliacoes($atribuicao, 'substitutiva');
+                            if ($tipoAval == 'substitutiva') {
+                                $res1 = $avaliacao->listAvaliacoes($atribuicao, 'substitutiva');
 
-                                    $tipo = $tipoAvaliacao->listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipoAval);
-                                } else {
-                                    $res1 = $tipoAvaliacao->listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipoAval, dcrip($_GET['final']));
-                                }
-                                foreach ($res1 as $reg) {
-                                    $selected = "";
-                                    if ($reg['codigo'] == $tipo)
-                                        $selected = "selected";
-                                    print "<option $selected value='" . $reg['codigo'] . "'>" . $reg['nome'] . "</option>";
-                                    if ($reg['tipo'] == 'recuperacao')
-                                        $tipoAvalRec = $reg['tipo'];
-                                }
-                                ?>
-                            </select>
-                        </td></tr>
-                    <?php
-                    if (($calculo == 'peso' || $calculo == 'soma' || $tipoAval == 'pontoextra') && ($tipoAval != 'substitutiva' && $tipoAvalRec != 'recuperacao')) {
-                        if ($maxPontos <= 0)
-                            $enabled = 'disabled';
+                                $tipo = $tipoAvaliacao->listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipoAval);
+                            } else {
+                                $res1 = $tipoAvaliacao->listTiposAvaliacoes($atribuicao, $calculo, $PONTO, $pontos, $tipoAval, dcrip($_GET['final']));
+                            }
+                            foreach ($res1 as $reg) {
+                                $selected = "";
+                                if ($reg['codigo'] == $tipo)
+                                    $selected = "selected";
+                                print "<option $selected value='" . $reg['codigo'] . "'>" . $reg['nome'] . "</option>";
+                                if ($reg['tipo'] == 'recuperacao')
+                                    $tipoAvalRec = $reg['tipo'];
+                            }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
+                <?php
+                if (($calculo == 'peso' || $calculo == 'soma' || $tipoAval == 'pontoextra') && ($tipoAval != 'substitutiva' && $tipoAvalRec != 'recuperacao')) {
+                    if ($maxPontos <= 0)
+                        $enabled = 'disabled';
 
-                        $peso = number_format($res[0]['peso'], 2);
-                        $peso = str_pad($peso, 5, "0", STR_PAD_LEFT);
-                        ?>
-                        <tr><td align="right">Valor</td><td><input type="text" id="valor" style="width: 50px" <?= $enabled ?> name="peso" value="<?= $peso ?>"/> (m&aacute;ximo <?= $maxPontos ?>)</td></tr>
-                        <?php
-                    }
-                    if ($tipoAval == 'substitutiva') {
-                        $codigo = key($tipo);
-                        ?>
-                        <input type="hidden" name="substitutiva" value="1" />
-                        <?php
-                    }
+                    $peso = number_format($res[0]['peso'], 2);
+                    $peso = str_pad($peso, 5, "0", STR_PAD_LEFT);
                     ?>
-
-                    <tr><td></td><td>
-                            <input type="hidden" name="atribuicao" value="<?= crip($atribuicao) ?>" />
-                            <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
-                            <input type="hidden" name="opcao" value="InsertOrUpdate" />
-                            <input type="submit" disabled value="Salvar" id="salvar" />
-                        </td></tr>
-                </table>
+                    <tr>
+                        <td align="right">Valor</td>
+                        <td><input type="text" id="valor" style="width: 50px" <?= $enabled ?> name="peso" value="<?= $peso ?>"/> (m&aacute;ximo <?= $maxPontos ?>)</td>
+                    </tr>
+                    <?php
+                }
+                if ($tipoAval == 'substitutiva') {
+                    $codigo = key($tipo);
+                    ?>
+                    <input type="hidden" name="substitutiva" value="1" />
+                    <?php
+                }
+                ?>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="hidden" name="atribuicao" value="<?= crip($atribuicao) ?>" />
+                        <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
+                        <input type="hidden" name="opcao" value="InsertOrUpdate" />
+                        <input type="submit" disabled value="Salvar" id="salvar" />
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
-    <br><div style='margin: auto'><a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>');void(0);" class='voltar' title='Voltar' ><img class='botao' src='<?= ICONS ?>/left.png'/></a></div>
+    <br>
+    <div style='margin: auto'>
+        <a href="javascript:$('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>');void(0);" class='voltar' title='Voltar' >
+            <img class='botao' src='<?= ICONS ?>/left.png'/>
+        </a>
+    </div>
     <?php
 }
 
@@ -264,70 +310,168 @@ if ($_GET['opcao'] == '') {
         $disabled = 'disabled';
     ?>
     <div id="etiqueta" align="center">
-        <b>Turma: </b><?= $res[0]['numero'] ?><br />
-        <b>Disciplina: </b><?= $res[0]['disciplina'] ?><br />
-        <b>M&eacute;todo de C&aacute;lculo: </b>
-        <select name="campoCalculo" <?= $disabled ?> id="campoCalculo" value="<?= $calculo ?>" onChange="$('#professor').load('<?= $SITE ?>?opcao=calculo&atribuicao=<?= crip($atribuicao) ?>&calculo=' + this.value);">
-            <?php
-            $MC = array('soma', 'media', 'peso', 'formula');
-            foreach ($MC as $c) {
-                $selected = null;
-                if ($c == $calculo)
-                    $selected = 'selected';
-                $n = strtoupper($c);
-                ?>
-                <option <?= $selected ?> value='<?= $c ?>'><?= $$n ?></option>
-                <?php
-            }
-            ?>
-        </select>
-        <?php if ($calculo == 'peso' || $calculo == 'soma') { ?>
-            <br><b>Pontos atribu&iacute;dos: </b><?= round($res[0]['totalPeso'], 2) ?>
-            <?php
-        }
-        if ($calculo == 'formula') {
-            ?>
-            <script>
-                $('#form_padrao').html5form({
-                    method: 'POST',
-                    action: '<?= $SITE ?>',
-                    responseDiv: '#professor',
-                    colorOn: '#000',
-                    colorOff: '#999',
-                    messages: 'br'
-                })
-            </script>
-            <hr>
-            <div id="html5form" class="main">
-                <form id="form_padrao">
-                    <table>
+        <table width='900' border='0'>
+            <tr>
+                <td width="200">
+                    <b>Turma: </b><?= $res[0]['numero'] ?><br />
+                    <b>Disciplina: </b><?= $res[0]['disciplina'] ?><br />
+                    <b>M&eacute;todo de C&aacute;lculo: </b>
+                    <select name="campoCalculo" <?= $disabled ?> id="campoCalculo" value="<?= $calculo ?>" onChange="$('#professor').load('<?= $SITE ?>?opcao=calculo&atribuicao=<?= crip($atribuicao) ?>&calculo=' + this.value);">
+                        <?php
+                        $MC = array('soma', 'media', 'peso', 'formula');
+                        foreach ($MC as $c) {
+                            $selected = null;
+                            if ($c == $calculo)
+                                $selected = 'selected';
+                            $n = strtoupper($c);
+                            ?>
+                            <option <?= $selected ?> value='<?= $c ?>'><?= $$n ?></option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                    <?php if ($calculo == 'peso' || $calculo == 'soma') { ?>
+                        <br><b>Pontos atribu&iacute;dos: </b><?= round($res[0]['totalPeso'], 2) ?>
+                        <?php
+                    }
+                    if ($calculo == 'formula') {
+                        ?>
+                        <script>
+                            $('#form_padrao').html5form({
+                                method: 'POST',
+                                action: '<?= $SITE ?>',
+                                responseDiv: '#professor',
+                                colorOn: '#000',
+                                colorOff: '#999',
+                                messages: 'br'
+                            })
+                        </script>
+                        <hr>
+                        <div id="html5form" class="main">
+                            <form id="form_padrao">
+                                <table border="0">
+                                    <tr>
+                                        <td>
+                                            <font size="2">M&eacute;dia: </font><input type="text" size="25" maxlength="100" name="formula" value="<?= $formula ?>" onchange="validaItem(this)" />
+                                            <br>
+                                            <input type="submit" value="Salvar f&oacute;rmula" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <font size="1">1. Exemplo: <b>($A1+$A2)/2</b>  --> onde A1 &eacute; a sigla da avalia&ccedil;&atilde;o precedida de $</font>
+                                            <br />
+                                            <font size="1">2. Nas multiplica&ccedil;&otilde;es, utilizar somente 1 fra&ccedil;&atilde;o decimal. Exemplo: <b>($A1+$A2)*0.2</b></font>
+                                            <br />
+                                            <font size="1">3. Para maior precis&atilde;o utilizar conforme exemplo: <b>($A1+$A2)*(25/100)</b></font>
+                                            <br />
+                                            <font size="1">4. Utilizar somente Avalia&ccedil;&otilde;es e Pontos Extras na f&oacute;rmula.</font>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <input type="hidden" name="opcao" value="InsertFormula" />
+                                <input type="hidden" name="codigo" value=<?= crip($atribuicao) ?> />
+                            </form>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </td>
+                <td width = '400' valign = 'top' align='center'>
+                    <table border='1' id="listagem" style="margin-top: 0px">
+                        <?php
+                        if ($res[0]['modalidade'] != 1006 && $res[0]['modalidade'] != 1007 && ($res[0]['bimestre'] == 4 || $res[0]['bimestre'] == 0)) {
+                            $instrumento = ($res[0]['modalidade'] == 1004) ? 'do Instrumento Final de Avalia&ccedil;&atilde;o' : 'da Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o';
+                            ?>
+                            <tr>
+                                <td width = '80'><b>Observação</b></td>
+                                <td colspan="2">Professor, os alunos <?= $instrumento ?> estar&atilde;o dispon&iacute;veis ap&oacute;s a exporta&ccedil;&atilde;o das notas para o DigitaNotas e o Roda for executado.</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <?php
+                        }
+                        $paramsQde = array('atribuicao' => $atribuicao);
+                        $qdeAvaliacoes = $avaliacao->getQdeAvaliacoes($paramsQde, " AND t.tipo = 'avaliacao' ");
+
+                        $libera_nota = 0;
+                        $trava_nota = 0;
+                        $trava_rec = 0;
+
+                        $bimNF = $res[0]['bimestre'];
+                        if ($res[0]['bimestre'] == 0)
+                            $bimNF = 1;
+                        
+                        $nf = $notaFinal->checkIfExportDN($atribuicao, null, $bimNF);
+                        if ((!$nf || $nfd = $nf[0]['total'] - count($nf)) && ($res[0]['totalPeso'] >= $PONTO)) {
+                            $nota_text = 'Professor, ao finalizar suas notas, clique no bot&atilde;o para exportar para o DigitaNotas';
+                            $libera_nota = 1;
+                            $trava_nota = 0;
+                        } else {
+                            $nota_text = 'Notas j&aacute; finalizadas';
+                            $trava_nota = 1;
+                        }
+                        if ($res[0]['totalPeso'] < $PONTO || $qdeAvaliacoes['avalCadastradas'] < $qdeAvaliacoes['qdeMinima']) {
+                            $nota_text = 'Professor, voc&ecirc; ainda n&atilde;o concluiu suas notas, seus pesos est&atilde;o incompletos ou o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es n&atilde;o foi aplicado.';
+                            $trava_nota = 0;
+                            $libera_nota = 0;
+                        }
+
+                        $libera_rec = 0;
+                        $rec = $notaFinal->checkIfRoda($atribuicao);
+                        if (!$rec['reg']) {
+                            $rec_text = 'Professor, as notas ainda n&atilde;o foram finalizadas.';
+                        } else if ($rec['reg'] && !$rec['total']) {
+                            $libera_nota = 0;
+                            $rec_text = 'Professor, suas notas foram finalizadas, mas o Roda ainda n&atilde;o foi executado para listar os alunos de recupera&ccedil;&atilde;o. Aguarde!';
+                        } else if ($rec['reg'] && $rec['total'] && !$rec['totalRec']) {
+                            $libera_nota = 0;
+                            $libera_rec = 1;
+                            $rec_text = 'Professor, ao digitar suas notas de recupera&ccedil;&atilde;o, clique no bot&atilde;o para exportar para o DigitaNotas';
+                        } else if ($rec['totalRec']) {
+                            $rec_text = 'Notas j&aacute; finalizadas. Aguarde a execu&ccedil;&atilde;o do Roda para finalizar seu di&aacute;rio.';
+                            $trava_rec = 1;
+                        }
+                        ?>
                         <tr>
+                            <td><b>Notas</b></td>
+                            <td colspan="2"><?= $nota_text ?></td>
                             <td>
-                                <font size="2">M&eacute;dia: </font><input type="text" size="25" maxlength="100" name="formula" value="<?= $formula ?>" onchange="validaItem(this)" />
-                            </td>
-                            <td>
-                                <input type="submit" value="Salvar f&oacute;rmula" />
+                                <div id="nota_retorno">
+                                    <?php if ($libera_nota) {
+                                        ?>
+                                        <a id="digita-nota" title='Exportar notas para o DigitaNotas' data-content='Aten&ccedil;&atilde;o professor, as notas ser&atilde;o exportadas para o DigitaNotas, altera&ccedil;&otilde;es posteriores somente pela secretaria.' class = 'nav questionario_item' href = "#">
+                                            <img class='botao' src = "<?= ICONS . '/sync.png' ?>" />
+                                        </a>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <font size="1">1. Exemplo: <b>($A1+$A2)/2</b>  --> onde A1 &eacute; a sigla da avalia&ccedil;&atilde;o precedida de $</font>
-                                <br />
-                                <font size="1">2. Nas multiplica&ccedil;&otilde;es, utilizar somente 1 fra&ccedil;&atilde;o decimal. Exemplo: <b>($A1+$A2)*0.2</b></font>
-                                <br />
-                                <font size="1">3. Para maior precis&atilde;o utilizar conforme exemplo: <b>($A1+$A2)*(25/100)</b></font>
-                                <br />
-                                <font size="1">4. Utilizar somente Avalia&ccedil;&otilde;es e Pontos Extras na f&oacute;rmula.</font>
-                            </td>
-                        </tr>
+                        <?php if ($instrumento) { ?>
+                            <tr>
+                                <td><b>Recuperação</b></td>
+                                <td colspan="2"><?= $rec_text ?></td>
+                                <td>
+                                    <?php if ($libera_rec) {
+                                        ?>
+                                        <div id="rec_retorno">
+                                            <a id="digita-rec" title='Exportar notas para o DigitaNotas' data-content='Aten&ccedil;&atilde;o professor, as notas ser&atilde;o exportadas para o DigitaNotas, altera&ccedil;&otilde;es posteriores somente pela secretaria.' class = 'nav questionario_item' href = "#">
+                                                <img class='botao' src = "<?= ICONS . '/sync.png' ?>" />
+                                            </a>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
                     </table>
-                    <input type="hidden" name="opcao" value="InsertFormula" />
-                    <input type="hidden" name="codigo" value=<?= crip($atribuicao) ?> />
-                </form>
-            </div>
-            <?php
-        }
-        ?>
+                </td>
+            </tr>
+        </table>
     </div>
     <hr><br>
     <?php if ($res[0]['nome']) { ?>
@@ -389,7 +533,14 @@ if ($_GET['opcao'] == '') {
                         <?php
                     } else {
                         ?>
-                        <td align='center' width="20"><input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
+                        <td align='center' width="20">
+                            <?php
+                            if ((!$trava_nota && !$final) || ($final && !$trava_rec)) {
+                                ?>
+                                <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
+                                <?php
+                            }
+                            ?>
                             <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= crip(round($totalPesoOrPonto - $reg['peso'], 2)) ?>&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip($reg['tipo']) ?>&final=<?= crip($reg['final']) ?>');void(0);" class='nav' title='Alterar'>
                                 <img class='botao' src='<?= ICONS ?>/config.png' /></a>
                         </td>
@@ -495,17 +646,50 @@ print "</script>\n";
             }
         });
     });
-    $("#unlock").click(function () {
-        $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
-            'type': 'prompt',
-            'promptInput': '<textarea rows="2" cols="30" name="Zebra_valor" maxlength="200" id="Zebra_valor"></textarea>',
+
+    $("#digita-nota").click(function () {
+        $.Zebra_Dialog('<strong>Professor, as notas ser&atilde;o finalizadas e posteriormente exportadas para o DigitaNotas, ap&oacute;s essa opera&ccedil;&atilde;o as notas n&atilde;o poder&atilde;o ser alteradas. \n\
+                                <br><br>Somente a secretaria poder&aacute; alterar a nota pelo Nambei.\n\
+                                <br><br>Deseja continuar com a exporta&ccedil;&atilde;o?</strong>', {
+            'type': 'question',
             'title': '<?= $TITLE ?>',
             'buttons': ['Sim', 'Não'],
-            'onClose': function (caption, valor) {
+            'onClose': function (caption) {
                 if (caption == 'Sim') {
-                    $('#professor').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
-                }
-            }
-        });
-    });
+                    $('#nota_retorno').load('<?= $SITE ?>?opcao=controleDiario&atribuicao=<?= crip($atribuicao) ?>');
+                                        //$('#notas').load('db2/db2DigitaNotas.php?atribuicao=<?= $atribuicao ?>');
+                                    }
+                                }
+                            });
+                        });
+
+                        $("#digita-rec").click(function () {
+                            $.Zebra_Dialog('<strong>Professor, as notas de recupera&ccedil;&atilde;o ser&atilde;o finalizadas e posteriormente exportadas para o DigitaNotas, ap&oacute;s essa opera&ccedil;&atilde;o as notas n&atilde;o poder&atilde;o ser alteradas. \n\
+                                <br><br>Somente a secretaria poder&aacute; alterar a nota pelo Nambei.\n\
+                                <br><br>Deseja continuar com a exporta&ccedil;&atilde;o?</strong>', {
+                                'type': 'question',
+                                'title': '<?= $TITLE ?>',
+                                'buttons': ['Sim', 'Não'],
+                                'onClose': function (caption) {
+                                    if (caption == 'Sim') {
+                                        $('#rec_retorno').load('<?= $SITE ?>?opcao=controleDiario&atribuicao=<?= crip($atribuicao) ?>');
+                                                            //$('#notas').load('db2/db2DigitaNotas.php?atribuicao=<?= $atribuicao ?>');
+                                                        }
+                                                    }
+                                                });
+                                            });
+
+                                            $("#unlock").click(function () {
+                                                $.Zebra_Dialog('<strong>Professor, informe o motivo da solicitação:</strong>', {
+                                                    'type': 'prompt',
+                                                    'promptInput': '<textarea rows="2" cols="30" name="Zebra_valor" maxlength="200" id="Zebra_valor"></textarea>',
+                                                    'title': '<?= $TITLE ?>',
+                                                    'buttons': ['Sim', 'Não'],
+                                                    'onClose': function (caption, valor) {
+                                                        if (caption == 'Sim') {
+                                                            $('#professor').load('<?= $SITE ?>?motivo=' + encodeURIComponent(valor) + '&atribuicao=' + '<?= crip($atribuicao) ?>');
+                                                        }
+                                                    }
+                                                });
+                                            });
 </script>

@@ -28,6 +28,9 @@ require SESSAO;
 require CONTROLLER . "/nota.class.php";
 $nota = new Notas();
 
+require CONTROLLER . "/notaFinal.class.php";
+$notaFinal = new NotasFinais();
+
 require CONTROLLER . "/avaliacao.class.php";
 $aval = new Avaliacoes();
 
@@ -39,7 +42,7 @@ $matricula = new Matriculas();
 
 require CONTROLLER . "/matriculaAlteracao.class.php";
 $ma = new MatriculasAlteracoes();
-    
+
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_GET["avaliacao"] = $_POST["avaliacao"];
     $_GET["atribuicao"] = $_POST["atribuicao"];
@@ -109,7 +112,7 @@ if ($_SESSION['dataExpirou'])
             <tr>
                 <th align="center" width="80">Prontuário</th>
                 <th align="center">Aluno</th>
-                <th width="50" align='center'>Nota</th>
+                <th width="60" align='center'>Nota</th>
                 <?php
                 // SE FOR BIMESTRAL, ACHAR OS CODIGOS DAS OUTRAS ATRIBUICOES
                 // PARA MOSTRAR AS NOTAS DOS BIMESTRES ANTERIORES
@@ -142,8 +145,16 @@ if ($_SESSION['dataExpirou'])
                 <th width="100"></th>
                 <?php
                 $i = 1;
-
                 foreach ($aval->getNotasAlunosOfAvaliacao($atribuicao, $avaliacao) as $reg) {
+                    $bimNF = $resAval['bimestre'];
+                    if ( ($resAval['sigla'] == 'IFA' || $resAval['sigla'] == 'REF') && !$notaFinal->checkIfRecuperacao($atribuicao, $reg['matricula']))
+                        continue;
+                    if ($resAval['sigla'] == 'IFA' || $resAval['sigla'] == 'REF') {
+                        if ($bimNF == "0")
+                            $bimNF = "1";
+                        $tipoDN = 2;
+                    }
+
                     $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                     ?>
                 <tr <?= $cdif ?>>
@@ -159,12 +170,22 @@ if ($_SESSION['dataExpirou'])
                         if ($matSituacao['listar'] && $matSituacao['habilitar']) {
                             ?>
                             <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
+                            <?php
+                            if ($notaFinal->checkIfExportDN($atribuicao, $reg['matricula'], $bimNF, $tipoDN)) {
+                                ?>
+                                <a href='#' data-placement='top' title='Nota exportada para o DigitaNotas' data-content='Aten&ccedil;&atilde;o, a m&eacute;dia j&aacute; foi exportada! <br> A altera&ccedil;&atilde;o s&oacute; ser&aacute; efetivada pela secretaria diretamente no Nambei. <br><br>Favor informar a secretaria.'>
+                                    DN
+                                </a>
+                                <?php
+                                $disabled = 'disabled';
+                            }
+                            ?>
                             <input <?= $disabled ?> id='A<?= $reg['codAluno'] ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
                             <?php
                             $situacao = array();
                             if ($reg['bimestre'] > 0) { // Busca as Notas dos Bimestres
                                 foreach ($AT_BIM as $nBim => $at) {
-                                    $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0,$_SESSION['dataExpirou']);
+                                    $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0, $_SESSION['dataExpirou']);
                                     if ($reg['bimestre'] == $nBim && $res['final'] == 0) {
                                         $color = 'blue';
                                         $situacao[$reg['codAluno']] = abreviar($dados['situacao'], 14);
@@ -194,7 +215,7 @@ if ($_SESSION['dataExpirou'])
                                 $trava = null;
                                 if ($travaFinal && !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                     ?>
-                                                    <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
+                                    <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
                                     <?php
                                 }
                             }
@@ -204,14 +225,14 @@ if ($_SESSION['dataExpirou'])
                             //TRAVANDO PARA RECUPERACAO
                             if (!$travaFinal && !$situacao[$reg['codAluno']] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
                                 ?>
-                                                <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
+                                 <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
                                 <?php
                             }
                         } else {
                             $dados = $nota->resultado($reg['matricula'], $atribuicao, $resAval['final']);
                             ?>
                             <td align='center'><?= $dados['media'] ?></td>
-                            <td align='center'><?= $dados['situacao'] ?></td>
+                            <td align='center'></td>
                             <?php
                             // TRAVANDO PARA ATRIBUICOES NAO BIMESTRAIS
                             if (!$dados['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
@@ -270,13 +291,13 @@ $res = $questionario->listQuestionarios($params, ' AND situacao = 0 ');
         function preparaInput() {
             var resultado = '<br>Question&aacute;rio: ';
             resultado += '<select id="Zebra_valor" name="Zebra_valor" value="">';
-            <?php
-            foreach ($res as $reg) {
-                ?>
+<?php
+foreach ($res as $reg) {
+    ?>
                 resultado += "<option value='<?= crip($reg['codigo']) ?>'><?= $reg['nome'] ?></option>\n";
-                <?php
-            }
-            ?>
+    <?php
+}
+?>
             resultado += "</select>";
             return resultado;
         }
@@ -292,20 +313,20 @@ $res = $questionario->listQuestionarios($params, ' AND situacao = 0 ');
                 }
             }
         });
-        
-    function importaNota(valor) {
-        $.ajax({
-            url: '<?= $SITE ?>',
-            data: {'opcao': 'importNotas', 'questionario': valor},
-            dataType: 'json',
-            success: function (data)
-            {
-                for (var i in data) {
-                    alert(data[i].total);
-                    $('#A'+data[i].codAluno).val(data[i].total);
+
+        function importaNota(valor) {
+            $.ajax({
+                url: '<?= $SITE ?>',
+                data: {'opcao': 'importNotas', 'questionario': valor},
+                dataType: 'json',
+                success: function (data)
+                {
+                    for (var i in data) {
+                        alert(data[i].total);
+                        $('#A' + data[i].codAluno).val(data[i].total);
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
     });
 </script>

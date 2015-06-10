@@ -252,7 +252,8 @@ class Atribuicoes extends Generic {
                                                     WHERE a3.codigo = :att)
                         AND a2.subturma = (SELECT a4.subturma 
                                                 FROM Atribuicoes a4 
-                                                WHERE a4.codigo = :att)";
+                                                WHERE a4.codigo = :att)
+                        ORDER BY a2.bimestre ";
         $params = array(':att' => $atribuicao, ':ano' => $ano);
 
         $res = $bd->selectDB($sql, $params);
@@ -344,6 +345,7 @@ class Atribuicoes extends Generic {
         $atribuicoes = explode(',', $params["codigo"]);
 
         foreach ($atribuicoes as $atribuicao) {
+            /*
             if ($params['botao'] == 'fechou') {
                 $params_new = array('codigo' => $atribuicao, 'status' => 1, 'prazo' => 'NULL');
                 if ($res = $this->insertOrUpdate($params_new))
@@ -360,6 +362,7 @@ class Atribuicoes extends Generic {
                     $bd->updateDB($sql, $params_nota);
                 }
             }
+            */
 
             if ($params['botao'] == 'liberou') {
                 $params_new = array('codigo' => $atribuicao);

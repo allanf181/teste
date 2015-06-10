@@ -27,13 +27,13 @@ $coordenador = new Coordenadores();
 // PEDIDO DE LIBERAÇÃO DO DIÁRIO
 if ($_GET["motivo"]) {
     $paramsLog['dataSolicitacao'] = date('Y-m-d h:i:s');
-    $paramsLog['solicitacao'] = 'Docente solicitou abertura do diário, motivo: '.$_GET['motivo'];
+    $paramsLog['solicitacao'] = 'Docente solicitou abertura do diário, motivo: ' . $_GET['motivo'];
     $paramsLog['codigoTabela'] = $_GET['atribuicao'];
     $paramsLog['nomeTabela'] = 'DIARIO';
     $paramsLog['solicitante'] = $_SESSION['loginCodigo'];
     $ret = $log->insertOrUpdate($paramsLog);
     mensagem($ret['STATUS'], 'PRAZO_DIARIO');
-    
+
     if ($ret['STATUS'] == 'OK') {
         if ($coodEmail = $coordenador->getEmailCoordFromAtribuicao(dcrip($_GET['atribuicao']))) {
             $logEmail->sendEmailLogger($_SESSION['loginNome'], $paramsLog['solicitacao'], $coodEmail);
@@ -41,14 +41,17 @@ if ($_GET["motivo"]) {
     }
 }
 
+$atribuicao = dcrip($_GET["atribuicao"]);
+
+require CONTROLLER . "/notaFinal.class.php";
+$notaFinal = new NotasFinais();
+
+$temPendencias = $notaFinal->checkIfRoda($atribuicao);
+
 if ($_GET["opcao"] == 'controleDiario') {
-    $atribuicao = dcrip($_GET["atribuicao"]);
     $status = $_GET["status"];
 
-    require CONTROLLER . "/notaFinal.class.php";
-    $nota = new NotasFinais();
-
-    if (!$erro = $nota->fecharDiario($atribuicao)) {
+    if ($temPendencias['reg'] && $temPendencias['totalRec'] == $temPendencias['reg']) {
         $params['codigo'] = $atribuicao;
         $params['status'] = $status;
         $params['prazo'] = null;
@@ -62,15 +65,10 @@ if ($_GET["opcao"] == 'controleDiario') {
         $paramsLog['codigoTabela'] = $atribuicao;
         $paramsLog['solicitacao'] = 'Professor fechou o diário manualmente.';
         $log->insertOrUpdate($paramsLog);
-        
     } else {
-        if ($erro == 2)
-            mensagem('NOK', 'FALSE_CLOSE_CLASS_REGISTRY');
-        else
-            mensagem('NOK', 'FALSE_UPDATE');
+        mensagem('NOK', 'FALSE_CLOSE_CLASS_REGISTRY');
     }
 }
-
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
@@ -80,8 +78,6 @@ if ($_GET["atribuicao"]) {
     ?>
     <table width="100%" align="center" border="0">
         <?php
-        $atribuicao = dcrip($_GET["atribuicao"]);
-
         $res = $att->getAtribuicao($atribuicao, $LIMITE_DIARIO_PROF);
         extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
 
@@ -102,7 +98,7 @@ if ($_GET["atribuicao"]) {
             $pergunta = $QUESTION_DIARIO1;
         }
 
-        if (!$status && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima']) {
+        if (!$status && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima'] && $temPendencias['reg'] && $temPendencias['totalRec'] == $temPendencias['reg']) {
             $pergunta = $QUESTION_DIARIO2;
         }
         ?>
@@ -116,8 +112,10 @@ if ($_GET["atribuicao"]) {
             <h2 id='titulo_disciplina_modalidade'><?= $bimestreNome ?></h2>
         </div>
         <?php
-        if ($codModalidade != 1004 && $codModalidade != 1006 && $codModalidade != 1007 && ($bimestre == 4 || $bimestre == 0))
-            print "<tr><td colspan=\"9\"><font color=\"red\">A Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o ser&aacute; realizada pelo Nambei e n&atilde;o estar&aacute; dispon&iacute;vel no Webdi&aacute;rio.</font></td></tr>\n";
+        /*
+          if ($codModalidade != 1004 && $codModalidade != 1006 && $codModalidade != 1007 && ($bimestre == 4 || $bimestre == 0))
+          print "<tr><td colspan=\"9\"><font color=\"red\">A Recupera&ccedil;&atilde;o Final / Reavalia&ccedil;&atilde;o ser&aacute; realizada pelo Nambei e n&atilde;o estar&aacute; dispon&iacute;vel no Webdi&aacute;rio.</font></td></tr>\n";
+         */
         ?>
 
         <tr valign="top" align='center'>

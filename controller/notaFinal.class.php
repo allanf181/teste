@@ -32,6 +32,8 @@ class NotasFinais extends Notas {
 
                     $dados = $this->resultado($reg['matricula'], $atribuicao, 0, 0);
 
+                    $params2 = array();
+                    
                     $params2['atribuicao'] = $atribuicao;
                     $params2['matricula'] = $reg['matricula'];
                     if ($reg['bimestre'] == 0) {
@@ -44,9 +46,9 @@ class NotasFinais extends Notas {
                     $params2['ncc'] = $dados['media'];
                     $params2['falta'] = $dados['faltas'];
 
-                    if ($dados['siglaSituacao'] != 'IFA' && $dados['siglaSituacao'] != 'REF') {
+                    if ($dados['siglaSituacao'] != 'REF') {
 
-                        $sql1 = "SELECT codigo FROM NotasFinais WHERE atribuicao = :cod 
+                        $sql1 = "SELECT codigo,recuperacao FROM NotasFinais WHERE atribuicao = :cod 
     			AND matricula = :mat
     			AND bimestre = :bim";
 
@@ -58,8 +60,10 @@ class NotasFinais extends Notas {
 
                         if ($res1) {
                             $params2['codigo'] = $res1[0]['codigo'];
-                            $params2['flag'] = '0';
+                            $params2['flag'] = '00';
                             $params2['retorno'] = 'Diario alterado, aguardando sincronizacao.';
+                            if ($res1[0]['recuperacao'])
+                                $params2['recuperacao'] = '2';
                         } else {
                             $params2['atribuicao'] = $atribuicao;
                             $params2['matricula'] = $reg['matricula'];
@@ -137,6 +141,119 @@ class NotasFinais extends Notas {
         }
     }
 
+    // USADO POR: PROFESSOR/NOTA.PHP
+    // VERIFICA SE A NOTA DO ALUNO FOI EXPORTADA
+    public function checkIfExportDN($atribuicao, $matricula = null, $bimestre = null, $tipo = null) {
+        $bd = new database();
+
+        if ($bimestre == "0")
+            $bimestre = "1";
+        
+        $params = array('atribuicao' => $atribuicao, 'bimestre' => $bimestre);
+
+        if ($matricula) {
+            $sqlMatricula = 'AND n.matricula = :matricula';
+            $params['matricula'] = $matricula;
+            if ($tipo)
+                $sqlMatricula .= ' AND recuperacao = 2 ';
+        }
+        
+        // efetuando a consulta para listagem
+        $sql = "SELECT *, (SELECT COUNT(*) FROM Matriculas m, MatriculasAlteracoes ma 
+                            WHERE m.codigo = ma.matricula 
+                            AND atribuicao = n.atribuicao 
+                            AND ma.data = (SELECT MAX(data) FROM MatriculasAlteracoes WHERE matricula = m.codigo) 
+                            AND ma.situacao = 1) as total
+                    FROM NotasFinais n
+                    WHERE n.atribuicao = :atribuicao
+                    AND n.bimestre = :bimestre
+                    $sqlMatricula
+                    AND flag = 0";
+
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
+    
+    // USADO POR: PROFESSOR/NOTA.PHP
+    // VERIFICA SE O ALUNO TEM RECUPERACAO
+    public function checkIfRecuperacao($atribuicao, $matricula) {
+        $bd = new database();
+
+        // efetuando a consulta para listagem
+        $sql = "SELECT recuperacao
+                    FROM NotasFinais n
+                    WHERE n.atribuicao = :atribuicao
+                    AND n.matricula = :matricula
+                    AND n.recuperacao >= 1
+                    ORDER BY n.codigo ";
+
+        $params = array('atribuicao' => $atribuicao, 'matricula' => $matricula);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res[0]['recuperacao']) {
+            return $res[0]['recuperacao'];
+        } else {
+            return false;
+        }
+    }
+    
+    // USADO POR: PROFESSOR/NOTA.PHP
+    // VERIFICA SE O RODA FOI EXECUTADO
+    public function checkIfRoda($atribuicao) {
+        $bd = new database();
+
+        // efetuando a consulta para listagem
+        $sql = "SELECT COUNT(*) as reg, (SELECT COUNT(*) 
+                                    FROM NotasFinais n1
+                                    WHERE n1.atribuicao = n.atribuicao
+                                    AND n1.recuperacao IS NOT NULL)  as total,
+                        (SELECT COUNT(*) 
+                                    FROM NotasFinais n1
+                                    WHERE n1.atribuicao = n.atribuicao
+                                    AND n1.recuperacao = 2) as totalRec
+                    FROM NotasFinais n
+                    WHERE n.atribuicao = :atribuicao
+                    ORDER BY n.codigo ";
+
+        $params = array('atribuicao' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res[0];
+        } else {
+            return false;
+        }
+    }
+    
+    // USADO POR: HOME.PHP
+    // VERIFICA SE O RODA FOI EXECUTADO
+    public function checkIfRodaDisciplinas($professor) {
+        $bd = new database();
+
+        // efetuando a consulta para listagem
+        $sql = "SELECT n.atribuicao, d.nome
+                    FROM NotasFinais n, Atribuicoes a, Professores p, Disciplinas d
+                    WHERE n.atribuicao = a.codigo
+                    AND p.atribuicao = a.codigo
+                    AND a.disciplina = d.codigo
+                    AND p.professor = :professor
+                    AND n.recuperacao = 1
+                    ORDER BY n.codigo ";
+
+        $params = array('professor' => $professor);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>

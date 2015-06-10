@@ -51,6 +51,7 @@ while ($row = db2_fetch_object($res)) {
     $email = strtolower(trim($row->AL_EMAIL));
     $observacoes = addslashes(conv(rtrim($row->AL_OBS)));
     $endereco = addslashes(conv(rtrim($row->AL_ENDER)));
+    $numero = addslashes(conv(rtrim($row->AL_ENDERNUM)));
     $bairro = addslashes(conv(rtrim($row->AL_BAIRRO)));
     $nascimento = addslashes($row->AL_NASC);
     $naturalidade = $naturalidade;
@@ -67,7 +68,7 @@ while ($row = db2_fetch_object($res)) {
                 . "cep, telefone, celular, sexo, ano1g, escola1g) values (0, "
                 . "'" . $row->AL_PRONT . "', "
                 . "PASSWORD('" . $row->AL_PRONT . "'), "
-                . "'$nome', $cidade, '$rg', '$cpf', '$email', '$observacoes', '$endereco', '$bairro', "
+                . "'$nome', $cidade, '$rg', '$cpf', '$email', '$observacoes', '$endereco', '$numero', '$bairro', "
                 . "'$nascimento', '$naturalidade', '$cep', '$telefone', '$celular', '$sexo', "
                 . " '$ano1g', '$escola1g')";
 
@@ -86,7 +87,7 @@ while ($row = db2_fetch_object($res)) {
         }
     } else {
         // ALTERANDO OS DADOS DO WD
-        if (strcmp(addslashes($aluno->nome), $nome) != 0 || strcmp(addslashes($aluno->rg), $rg) != 0 || strcmp(addslashes($aluno->cpf), $cpf) != 0 || strcmp($aluno->email, $email) != 0 || strcmp(addslashes($aluno->observacoes), $observacoes) != 0 || strcmp(addslashes($aluno->endereco), $endereco) != 0 || strcmp(addslashes($aluno->bairro), $bairro) != 0 || strcmp($aluno->nascimento, $nascimento) != 0 || strcmp($aluno->naturalidade, $naturalidade) != 0 || strcmp(addslashes($aluno->cep), $cep) != 0 || $aluno->cidade != $cidade || strcmp(addslashes($aluno->telefone), $telefone) != 0 || strcmp(addslashes($aluno->celular), $celular) != 0 || $aluno->sexo != $sexo || strcmp(addslashes($aluno->ano1g), $ano1g) != 0 || strcmp(addslashes($aluno->escola1g), $escola1g) != 0
+        if (strcmp(addslashes($aluno->nome), $nome) != 0 || strcmp(addslashes($aluno->rg), $rg) != 0 || strcmp(addslashes($aluno->cpf), $cpf) != 0 || strcmp($aluno->email, $email) != 0 || strcmp(addslashes($aluno->observacoes), $observacoes) != 0 || strcmp(addslashes($aluno->endereco), $endereco) != 0 || strcmp(addslashes($aluno->numero), $numero) != 0 || strcmp(addslashes($aluno->bairro), $bairro) != 0 || strcmp($aluno->nascimento, $nascimento) != 0 || strcmp($aluno->naturalidade, $naturalidade) != 0 || strcmp(addslashes($aluno->cep), $cep) != 0 || $aluno->cidade != $cidade || strcmp(addslashes($aluno->telefone), $telefone) != 0 || strcmp(addslashes($aluno->celular), $celular) != 0 || $aluno->sexo != $sexo || strcmp(addslashes($aluno->ano1g), $ano1g) != 0 || strcmp(addslashes($aluno->escola1g), $escola1g) != 0
         ) {
             $sql = "UPDATE Pessoas
                                 SET nome = '$nome',
@@ -95,6 +96,7 @@ while ($row = db2_fetch_object($res)) {
 	    			email = '$email',
 	    			observacoes = '$observacoes',
 	    			endereco = '$endereco',
+	    			numero = '$numero',
 	    			bairro = '$bairro',
 	    			nascimento = '$nascimento',
 	    			naturalidade = '$naturalidade',

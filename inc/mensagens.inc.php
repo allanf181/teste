@@ -81,9 +81,10 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $OK_TRUE_COPY_PERMISSAO = 'Permiss&atilde;o copiada com sucesso.';
     $NOK_FALSE_COPY_PERMISSAO = 'Problema ao copiar a Permiss&atilde;o.';
 
-    $NOK_FALSE_CLOSE_CLASS_REGISTRY = 'O di&aacute;rio n&atilde;o pode ser finalizado. '
-            . 'Verifique se h&aacute; algum aluno sem nota ou se algum instrumento de avalia&ccedil;&atilde;o deixou de ser aplicado. '
-            . '<br>O Sistema n&atilde;o ser&aacute; finalizado caso algum aluno esteja com situa&ccedil;&atilde;o pendente em Avalia&ccedil;&otilde;es!';
+    $NOK_FALSE_CLOSE_CLASS_REGISTRY = 'O di&aacute;rio n&atilde;o pode ser finalizado. Verifique se:'
+            . '<br>- o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es foi aplicado.'
+            . '<br>- a carga hor&aacute;ria foi cumprida.'
+            . '<br>- o Roda foi executado para seu di&aacute;rio. ';
 
     $NOT_SELECT = "Nenhum registro selecionado.";
 

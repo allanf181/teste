@@ -45,7 +45,7 @@ require CONTROLLER . "/log.class.php";
 require CONTROLLER . "/bolsa.class.php";
 require CONTROLLER . "/calendario.class.php";
 require CONTROLLER . "/questionario.class.php";
-
+require CONTROLLER . "/notaFinal.class.php";
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
@@ -115,6 +115,8 @@ require CONTROLLER . "/questionario.class.php";
             }
 
             if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
+                // verifica se o Roda foi executado para algum disciplina do professor.
+                checkRoda();
                 // Mostra e define o lattes
                 defineLattes();
                 // Verifica se tem troca de aula para aceitar
@@ -401,10 +403,10 @@ function checkCoordHasCursoArea($coord) {
     $res = $coordenador->checkIfCoordHasAreaCurso($params, $sqlAdicional);
 
     if ($res['area']) {
-        $textoAlerta['Área'] = $resp1;
+        $textoAlerta['Área'][] = $resp1;
     }
     if ($res['curso']) {
-        $textoAlerta['Curso'] = $resp2;
+        $textoAlerta['Curso'][] = $resp2;
     }
 }
 
@@ -416,7 +418,7 @@ function checkBloqueioFoto() {
     if ($res) {
         $resp = "H&aacute; fotos de alunos bloqueadas aguardando valida&ccedil;&atilde;o.";
         $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/secretaria/pessoa.php?opcao=validacao');void(0);\">Clique aqui para validar</a>";
-        $textoAlerta['Fotos'] = $resp;
+        $textoAlerta['Fotos'][] = $resp;
     }
 }
 
@@ -427,7 +429,7 @@ function checkPapeis() {
         if (!$$p) {
             $resp = "O papel de " . $n . " n&atilde;o foi definido.";
             $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/admin/instituicao.php');void(0);\">Clique aqui para definir</a>";
-            $textoAlerta['Papéis'] = $resp;
+            $textoAlerta['Papéis'][] = $resp;
         }
     }
 }
@@ -464,7 +466,7 @@ function checkSistema() {
             $resp .= "- Verifique se o 'git pull' est&aacute; sendo executado automaticamente pelo CRON.";
             $resp .= "<br>- Execute o migrate manualmente: 'php lib/migration/ruckus.php db:migrate'";
 
-            $textoAlerta['Atualização'] = $resp;
+            $textoAlerta['Atualização'][] = $resp;
         }
     }
 
@@ -474,14 +476,14 @@ function checkSistema() {
         $resp = "O script de sincroniza&ccedil;&atilde;o nunca foi executado ou n&atilde;o est&aacute; sendo executado diariamente.";
         $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/admin/sincronizadorNambei.php');void(0);\">Clique aqui para verificar</a>";
 
-        $textoAlerta['Logs'] = $resp;
+        $textoAlerta['Logs'][] = $resp;
     }
 
     // Verifica se o nome e cidade no sistema estão preenchidos.
     if (!$SITE_TITLE || !$SITE_CIDADE) {
         $resp = "O nome da institui&ccedil;&atilde;o e a cidade devem ser preenchidos.";
         $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/admin/instituicao.php');void(0);\">Clique aqui para preencher</a>";
-        $textoAlerta['Dados'] = $resp;
+        $textoAlerta['Dados'][] = $resp;
     }
 
     // Verifica se a sigla do campus foi preenchida
@@ -489,7 +491,23 @@ function checkSistema() {
     if (!$DIGITANOTAS) {
         $resp = "A sigla da institui&ccedil;&atilde;o deve ser preenchida para que as notas sejam exportadas automaticamente para o DigitaNotas.";
         $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/admin/instituicao.php');void(0);\">Clique aqui para preencher</a>";
-        $textoAlerta['Digita Notas'] = $resp;
+        $textoAlerta['Digita Notas'][] = $resp;
+    }
+}
+
+function checkRoda() {
+    global $user, $textoAlerta;
+
+    $notaFinal = new NotasFinais();
+
+    $res = $notaFinal->checkIfRodaDisciplinas($user);
+
+    if ($res) {
+        foreach ($res as $reg) {
+            $resp = "O Roda j&aacute; foi executado para sua disciplina: ".$reg['nome'];
+            $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/professor/professor.php?atribuicao=".crip($reg['atribuicao'])."');void(0);\">Clique aqui para analisar</a>";
+            $textoAlerta['Roda'][] = $resp;
+        }
     }
 }
 
@@ -506,7 +524,7 @@ function checkTrocaAula() {
         foreach ($res as $reg) {
             $resp = "Voc&ecirc; tem uma solicita&ccedil;&atilde;o de troca de aula.";
             $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/professor/aulaTroca.php');void(0);\">Clique aqui para analisar</a>";
-            $textoAlerta['Trocas'] = $resp;
+            $textoAlerta['Trocas'][] = $resp;
         }
     }
 }
@@ -523,7 +541,7 @@ function checkTD() {
         foreach ($res as $reg) {
             $resp = $reg['solicitante'] . ", solicitou corre&ccedil;&atilde;o em sua " . $reg['modelo'] . " (" . $reg['semestre'] . "/" . $reg['ano'] . "): <br>" . $reg['solicitacao'];
             $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/professor/atribuicao/" . strtolower($reg['modelo']) . ".php');void(0);\">Clique aqui para corrigir</a>";
-            $textoAlerta['Atribuição'] = $resp;
+            $textoAlerta['Atribuição'][] = $resp;
         }
     }
 }
@@ -540,7 +558,7 @@ function checkPlanoEnsino() {
         foreach ($res as $reg) {
             $resp = $reg['solicitante'] . ", solicitou corre&ccedil;&atilde;o em seu Plano de Ensino de " . $reg['disciplina'] . ": <br>" . $reg['solicitacao'];
             $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/professor/professor.php?atribuicao=" . crip($reg['atribuicao']) . "');void(0);\">Clique aqui para corrigir</a>";
-            $textoAlerta['Planos'] = $resp;
+            $textoAlerta['Planos'][] = $resp;
         }
     }
 }
@@ -556,7 +574,7 @@ function checkAtendimentoAluno() {
     if (!$res || !$res[0]['horario']) {
         $resp = "Digite seu hor&aacute;rio de atendimento para divulga&ccedil;&atilde;o aos alunos.";
         $resp .= "<br><a href=\"javascript:$('#index').load('" . VIEW . "/professor/atribuicao/atendimento.php');void(0);\">Clique aqui para digitar</a>";
-        $textoAlerta['Atendimento'] = $resp;
+        $textoAlerta['Atendimento'][] = $resp;
     }
 }
 
@@ -565,7 +583,7 @@ function showChecks() {
     
     if (count($textoAlerta) >= 1) {
     ?>
-        <div class="boxHome avisos"">
+        <div class="boxHome avisos">
         <table border="0" width="100%">
             <?php
             foreach ($textoAlerta as $k => $alerta) {
@@ -573,12 +591,16 @@ function showChecks() {
                 <tr>
                     <td colspan="2"><h2 style="background-color: #CD0000; color: white"><?= $k ?></h2></td>
                 </tr>
-                <tr>
-                    <td valign="top">
-                        <font size='1'><?= $alerta ?></font>
-                    </td>
-                </tr>
                 <?php
+                foreach ($alerta as $a) {
+                    ?>
+                    <tr>
+                        <td valign="top">
+                            <font size='1'><?= $a ?></font>
+                        </td>
+                    </tr>
+                    <?php
+                }
             }
             ?>
         </table>

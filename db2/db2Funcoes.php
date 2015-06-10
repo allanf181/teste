@@ -245,10 +245,10 @@ function modalidadesCursoNovo() {
             $res = mysql_query($sql);
         }
 
-        //if ($cod == 1001 || $cod == 1003) {
-        //    $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $cod, 'sub_media', 1, 4, 6, 'REF', 0, 6, 1, 10)";
-        //    $res = mysql_query($sql);
-        //}
+        if ($cod == 1001 || $cod == 1003) {
+            $sql = "INSERT INTO TiposAvaliacoes VALUES (NULL, 'Reavaliação Final', 'recuperacao', $cod, 'sub_media', 1, 4, 6, 'REF', 0, 6, 1, 10)";
+            $res = mysql_query($sql);
+        }
 
         mysql_set_charset('latin1');
     }
