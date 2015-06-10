@@ -317,9 +317,10 @@ if ($_GET['opcao'] == 'listTroca') {
     <br />    
     <table id="listagem" border="0" align="center">
         <tr class="listagem_tr">
-            <th align="center" width="100">Tipo</th>
-            <th align="center" width="170">Data Solicitação</th>
+            <th align="center" width="70">Tipo</th>
+            <th align="center" width="110">Data Solicitação</th>
             <th align='center' width="140">Data Troca/Reposi&ccedil;&atilde;o</th>
+            <th align='center'>Disciplina</th>
             <th align='center'>Professor Substituto</th>
             <th align='center'>Parecer</th>
             <th align='center'>Coordenador</th>
@@ -335,20 +336,22 @@ if ($_GET['opcao'] == 'listTroca') {
             ?>
             <tr <?= $cdif ?>>
                 <td><?= $reg['tipo'] ?></td>                
+                
                 <td><?= $reg['dataPedido'] ?></td>
                 <td>
                     <?php
                     $dados = $reg['disciplina'] . '<br><br>Data: ' . $reg['dataTrocaFormatada'] . '<br><br>' . str_replace(',', '<br>', $reg['aula']) . '<br><br>Motivo: ' . $reg['motivo'];
                     ?>
-                    <a href='#' class='show' data-placement="top" data-content='Clique na data para ver os detalhes da solicitação.' title='Detalhes da Solicita&ccedil;&atilde;o' id='<?= $dados ?>'><?= $reg['dataTrocaFormatada'] ?></a>
+                    <a style='color: darkgreen' href='#' class='show' data-placement="top" data-content='Clique na data para ver os detalhes da solicitação.' title='Detalhes da Solicita&ccedil;&atilde;o' id='<?= $dados ?>'><?= $reg['dataTrocaFormatada'] ?></a>
                 </td>                
+                <td><a style="color: darkgreen" href="#" title="<?=$reg['disciplina']." [".$reg['turma']."] ".$reg['curso']?>"><?=$reg['disciplina'] ?></a></td>
                 <td><?php if ($reg['tipo'] == 'Troca')
                         print $reg['professorSub'];
                     else
                         print '---';
                     ?></td>
                 <td><?php if ($reg['tipo'] == 'Troca')
-                print "<a href='#' title='" . $reg['professorSubParecer'] . "'>" . $reg['avalProfSub'] . "</a>";
+                print "<a style=\"color: darkgreen\" href='#' title='" . $reg['professorSubParecer'] . "'>" . $reg['avalProfSub'] . "</a>";
             else
                 print '---';
             ?></td>
@@ -360,7 +363,7 @@ if ($_GET['opcao'] == 'listTroca') {
                 <td><?php if ($reg['professorSubAceite'] == 'N')
             print '---';
         else
-            print "<a href='#' title='" . $reg['coordenadorParecer'] . "'>" . $reg['avalCoord'] . "</a>";
+            print "<a style='color: darkgreen' href='#' title='" . $reg['coordenadorParecer'] . "'>" . $reg['avalCoord'] . "</a>";
         ?></td>
             </tr>
     <?php } ?>
