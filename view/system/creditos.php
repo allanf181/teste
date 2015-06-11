@@ -72,6 +72,16 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 </center>
 
 <br />
+<b>Vers&atilde;o 1.440</b>
+<br> - Inclus&atilde;o do WS para verifica&ccedil;&atilde;o de IFA/Recupera&ccedil;&atilde;o/Reavalia&ccedil;&atilde;o.
+<br> - Retirada data de altera&ccedil;&atilde;o de matr&iacute;cula.
+<br />
+<br />
+<b>Vers&atilde;o 1.439</b>
+<br> - Corre&ccedil;&atilde;o do LDAP.
+<br> - Diversas corre&ccedil;&otilde;es solicitadas por e-mail.
+<br />
+<br />
 <b>Vers&atilde;o 1.438</b>
 <br> - Melhorias no relat&oacute;rio de Frequ&ecirc;ncias.
 <br> - Corre&ccedil;&otilde;es de Seguran&ccedil;a.
