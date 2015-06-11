@@ -354,6 +354,14 @@ if ($_GET['pagina'] == "planoAula") {
                     <td align="left">Conte&uacute;do: </td>
                     <td colspan="10"><textarea rows="3" <?= $disabled; ?> cols="80" maxlength='400' id='conteudo' name='conteudo'><?= $conteudo; ?></textarea>
                 </tr>
+                <tr>
+                    <td align="left" width="200">Instrumentos e Crit&eacute;rios de Avalia&ccedil;&atilde;o da Aprendizagem: </td>
+                    <td colspan="10"><textarea rows="3" <?= $disabled; ?> cols="80" maxlength='400' id='conteudo' name='criterio'><?= $criterio; ?></textarea>
+                </tr>
+                <tr>
+                    <td align="left">Metodologia de Ensino e Recursos: </td>
+                    <td colspan="10"><textarea rows="3" <?= $disabled; ?> cols="80" maxlength='400' id='conteudo' name='metodologia'><?= $metodologia; ?></textarea>
+                </tr>
             </table>
             <?php
             if (!$disabled) {
@@ -367,7 +375,18 @@ if ($_GET['pagina'] == "planoAula") {
             <br><br>
 
             <table id="listagem" border="0" align="center">
-                <tr class="listagem_tr"><th align="center" width="80">Semana</th><th align="left">Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a></th></tr>
+                <tr class="listagem_tr">
+                    <th align="center" width="80">Semana</th>
+                    <th align="left">Conte&uacute;do</th>
+                    <th align="left">Crit&eacute;rios</th>
+                    <th align="left">Metodologia</th>
+                    <th align="center" width="50">&nbsp;&nbsp;
+                        <input type="checkbox" id="select-all" value="">
+                        <a href="#" class='item-excluir'>
+                            <img class='botao' src='<?= ICONS ?>/delete.png' />
+                        </a>
+                    </th>
+                </tr>
                 <?php
                 // efetuando a consulta para listagem
                 $i = 0;
@@ -377,6 +396,8 @@ if ($_GET['pagina'] == "planoAula") {
                     ?>
                     <tr <?= $cdif ?>><td align='left'><?= $reg['semana'] ?></td>
                         <td><?= nl2br(mostraTexto($reg['conteudo'])) ?></td>
+                        <td><?= nl2br(mostraTexto($reg['criterio'])) ?></td>
+                        <td><?= nl2br(mostraTexto($reg['metodologia'])) ?></td>
                         <?php
                         if (!$$disabled) {
                             ?>   

@@ -132,7 +132,7 @@ if (dcrip($_GET["atribuicao"])) {
         $pdf->Cell(278, $alturaLinha, utf8_decode("$chave"), 1, 0, 'L', true);
         $pdf->Ln();
         $conteudo = explode("\r\n", $valor);
-        $pdf->SetFont($fonte, '', 12);
+        $pdf->SetFont($fonte, '', $tamanho+3);
         foreach ($conteudo as $j => $trecho) {
             if (strlen($trecho) > $limit) {
                 $conteudo2 = explode("\n", wordwrap(str_replace("\r\n", "; ", trim($trecho)), $limit));
@@ -157,33 +157,72 @@ if (dcrip($_GET["atribuicao"])) {
 
     $limit = 125;
     foreach ($planoAula->listPlanoAulas($atribuicao) as $reg) {
-        $pdf->SetFont($fonte, 'B', $tamanho + 5);
-        $pdf->Cell(28, $alturaLinha, utf8_decode($reg['semana']), 1, 0, 'C', true);
-        $conteudo = explode("\r\n", $reg['conteudo']);
-        $pdf->SetFont($fonte, '', 12);
-        $k = 0;
-        foreach ($conteudo as $j => $trecho) {
-            if ($k != 0)
-                $pdf->Cell(28, $alturaLinha, "", 1, 0, 'C', true);
-            if (strlen($trecho) > $limit) {
-                $conteudo2 = explode("\n", wordwrap(str_replace("\r\n", "; ", trim($trecho)), $limit));
-                foreach ($conteudo2 as $n => $trecho2) {
-                    if ($n != 0)
-                        $pdf->Cell(28, $alturaLinha, "", 1, 0, 'C', true);
-                    $pdf->Cell(250, $alturaLinha, utf8_decode($trecho2), 1, 0, 'L', true);
-                    $pdf->Ln();
-                }
-            } else {
-                $pdf->Cell(250, $alturaLinha, utf8_decode($trecho), 1, 0, 'L', true);
-                $pdf->Ln();
-            }
-            $k ++;
+        $pdf->SetFont($fonte, 'B', $tamanho + 3);
+        // CONTEÚDO
+        $borda = 'LRT';
+        $pdf->Cell(28, $alturaLinha, utf8_decode($reg['semana']), $borda, 0, 'C', true); // SEMANA
+        pdfAdd($pdf, "Conteúdo: ", $fonte, 'B', $tamanho+3, $alturaLinha, $limit, $borda); // TÍTULO
+        $borda = 'LRB';
+        if (count(explode("\r\n", $reg['conteudo']))>1 || (($reg['metodologia']!="" || $reg['criterio']!="")))
+            $borda='LR';
+        $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
+        if ($reg['metodologia']=="" && $reg['criterio']=="")
+            $borda = 'LRB';
+        pdfAdd($pdf, $reg['conteudo'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda); // CONTEUDO
+        
+        // CRITÉRIOS
+        $borda = 'LR';
+        if ($reg['criterio']){
+            $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
+            pdfAdd($pdf, "Instrumentos e Critérios de Avaliação da Aprendizagem: ", $fonte, 'B',$tamanho+3, $alturaLinha, $limit, $borda); // TÍTULO
+            if (empty($reg['metodologia']))
+                $borda='LRB';
+            $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
+            pdfAdd($pdf, $reg['criterio'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda); // CONTEUDO
         }
-        //$pdf->Ln();
+        
+        // METODOLOGIA
+        if ($reg['metodologia']){
+            $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
+            pdfAdd($pdf, "Metodologia de Ensino e Recursos: ", $fonte, 'B',$tamanho+3, $alturaLinha, $limit, $borda); // TÍTULO
+            $borda='LRB';
+            $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
+            pdfAdd($pdf, $reg['metodologia'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda); // CONTEUDO
+        }
+        $pdf->Ln();
     }
 
     rodape();
 
     $pdf->Output();
+}
+
+function pdfAdd($pdf, $conteudo, $fonte, $bold, $tamanho, $alturaLinha, $limit, $borda){
+    // ADICIONA A LINHA DE CONTEÚDO NO PLANO DE AULA
+    $conteudo = explode("\r\n", $conteudo);
+    $pdf->SetFont($fonte, $bold, $tamanho);
+    $k = 0;
+    $temp = $borda;
+    foreach ($conteudo as $j => $trecho) {
+        $borda='LR';
+        if (sizeof($conteudo)==$j+1)
+            $borda=$temp;
+
+        if ($k != 0)
+            $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
+        if (strlen($trecho) > $limit) {
+            $conteudo2 = explode("\n", wordwrap(str_replace("\r\n", "; ", trim($trecho)), $limit));
+            foreach ($conteudo2 as $n => $trecho2) {
+                if ($n != 0)
+                    $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
+                $pdf->Cell(250, $alturaLinha, utf8_decode($trecho2), $borda, 0, 'L', true);
+                $pdf->Ln();
+            }
+        } else {
+            $pdf->Cell(250, $alturaLinha, utf8_decode($trecho), $borda, 0, 'L', true);
+            $pdf->Ln();
+        }
+        $k ++;
+    }
 }
 ?>

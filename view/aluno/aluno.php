@@ -55,7 +55,6 @@ if ($_GET["atribuicao"]) {
         <tr align='center'>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aula.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/aulas.png' /><br />Aulas</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/questionario.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/questionario.png' /><br />Avalia&ccedil;&otilde;es</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/arquivo.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>    
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/ensalamento.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Disciplina</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#aluno').load('<?= VIEW ?>/aluno/aviso.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos</a></td>
@@ -70,7 +69,7 @@ if ($_GET["atribuicao"]) {
             <?php } ?>
         </tr>
         <tr>
-            <td colspan="10" align='center'>
+            <td colspan="9" align='center'>
                 <hr>
             </td>
         </tr>

@@ -72,6 +72,11 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 </center>
 
 <br />
+<b>Vers&atilde;o 1.441</b>
+<br> - Adi&ccedil;&atilde;o dos campos Crit&eacute;rios e Metodologia em Planos de Aula.
+<br> - Retirada dos Question&aacute;rios do Perfil Professor/Aluno.
+<br />
+<br />
 <b>Vers&atilde;o 1.440</b>
 <br> - Inclus&atilde;o do WS para verifica&ccedil;&atilde;o de IFA/Recupera&ccedil;&atilde;o/Reavalia&ccedil;&atilde;o.
 <br> - Retirada data de altera&ccedil;&atilde;o de matr&iacute;cula.

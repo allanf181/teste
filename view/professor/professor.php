@@ -121,7 +121,6 @@ if ($_GET["atribuicao"]) {
         <tr valign="top" align='center'>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/aula.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/aulas.png' /><br />Aulas</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/questionario.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/questionario.png' /><br />Question&aacute;rios</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/diario.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chamada.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/chamada.png' /><br />Lista de Chamada</a></td>
             <?php
@@ -136,7 +135,7 @@ if ($_GET["atribuicao"]) {
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/ensalamento.php?turma=<?= crip($turmaCodigo) ?>&subturma=<?= crip($subturma) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/arquivo.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>
         </tr>
-        <tr><td colspan="10"><hr></td></tr>
+        <tr><td colspan="9"><hr></td></tr>
     </table>
 
     <div id="professor">
