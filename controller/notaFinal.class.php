@@ -163,7 +163,7 @@ class NotasFinais extends Notas {
                             WHERE m.codigo = ma.matricula 
                             AND atribuicao = n.atribuicao 
                             AND ma.data = (SELECT MAX(data) FROM MatriculasAlteracoes WHERE matricula = m.codigo) 
-                            AND ma.situacao = 1) as total
+                            AND (ma.situacao = 1 OR ma.situacao = 100)) as total
                     FROM NotasFinais n
                     WHERE n.atribuicao = :atribuicao
                     AND n.bimestre = :bimestre
