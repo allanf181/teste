@@ -42,9 +42,9 @@ class MatriculasAlteracoes extends Generic {
                         AND ma.situacao = s.codigo
 			AND m.aluno = :aluno
                         AND m.atribuicao = :atr
-                        AND ma.data <= :data ORDER BY ma.data DESC";
+                        ORDER BY ma.data DESC";
 
-        $params = array(':aluno' => $aluno, ':atr' => $atribuicao, 'data' => $data);
+        $params = array(':aluno' => $aluno, ':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
 
         if ($res) {
