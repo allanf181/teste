@@ -189,12 +189,8 @@ class Notas extends Frequencias {
                     $medias[$reg['sigla']] = $reg['nota'];
             }
 
-            if ($reg['tipo'] == 'pontoExtra' && $tipo != 'formula') {
+            if ($reg['tipo'] == 'pontoExtra') {
                 $pontoExtra[] = $reg['nota'];
-            }
-
-            if ($reg['tipo'] == 'pontoExtra' && $tipo == 'formula') {
-                $medias[$reg['sigla']] = $reg['nota'];
             }
 
             if ($reg['tipo'] == 'substitutiva') {
