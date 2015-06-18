@@ -151,7 +151,7 @@ class Avaliacoes extends Generic {
 		left join Pessoas al on m.aluno=al.codigo 
 		WHERE a.codigo=:atribuicao 
                 AND av.codigo=:avaliacao 
-                GROUP BY n.matricula
+                GROUP BY m.aluno
                 ORDER BY al.nome";
         $params = array(':atribuicao' => $atribuicao, ':avaliacao' => $avaliacao);
 

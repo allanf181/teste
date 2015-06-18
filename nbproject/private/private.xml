@@ -8,6 +8,8 @@
             <file>file:/var/www/html/academico/view/professor/avaliacao.php</file>
             <file>file:/var/www/html/academico/controller/nota.class.php</file>
             <file>file:/var/www/html/academico/controller/notaFinal.class.php</file>
+            <file>file:/var/www/html/academico/controller/avaliacao.class.php</file>
+            <file>file:/var/www/html/academico/view/professor/nota.php</file>
         </group>
     </open-files>
 </project-private>
