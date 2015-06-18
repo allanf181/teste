@@ -168,7 +168,7 @@ class NotasFinais extends Notas {
                     WHERE n.atribuicao = :atribuicao
                     AND n.bimestre = :bimestre
                     $sqlMatricula
-                    AND flag = 0";
+                    AND (flag = 0 OR flag = 5)";
 
         $res = $bd->selectDB($sql, $params);
 

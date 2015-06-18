@@ -423,6 +423,8 @@ if ($_GET['opcao'] == '') {
                         } else if ($rec['reg'] && !$rec['total']) {
                             $libera_nota = 0;
                             $rec_text = 'Professor, suas notas foram finalizadas, mas o Roda ainda n&atilde;o foi executado para listar os alunos de recupera&ccedil;&atilde;o. Aguarde!';
+                            $nota_text = 'Professor, suas notas foram finalizadas!';
+                            $trava_nota = 1;
                         } else if ($rec['reg'] && $rec['total'] && !$rec['totalRec']) {
                             $libera_nota = 0;
                             $libera_rec = 1;
