@@ -67,6 +67,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                 <li><a href="#Dados3">Limites</a></li>
                 <li><a href="#Dados4">Configura&ccedil;&otilde;es</a></li>
                 <li><a href="#Dados5">LDAP</a></li>
+                <li><a href="#Dados6">CONFIG.INC.PHP</a></li>
             </ul>
             <input type="hidden" name="opcao" value="InsertOrUpdate" />
             <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
@@ -257,6 +258,30 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                     <tr><td colspan="2"><hr></td></tr>
                     <tr><td colspan="2"><h3><b>Sincroniza&ccedil;&atilde;o via LDAP</b></h3></td></tr>
                     <tr><td width="400"><b>Ativar sincroniza&ccedil;&atilde;o via LDAP: </b><br>Quando ativado, o sistema vai cadastrar automaticamente no LDAP os usu&aacute;rios do Banco de Dados. Unidades Organizacionais ser&atilde;o criadas automaticamente de acordo com os Tipos cadastrados, cada UO criada ir&aacute; comportar seus usu&aacute;rios assim como acontece no sistema.</td><td><input type='checkbox' <?php if ($ldap_sync != '') print "checked"; ?> id='ldap_sync' name='ldap_sync' value='1' /></td></tr>
+                    <tr><td colspan="2"><hr></td></tr>
+                </table>
+                <tr><td colspan="2">&nbsp;</td></tr>
+                <br><input type="submit" value="Salvar" id="salvar" />
+            </div>
+
+            <div class="cont_tab" id="Dados6">
+                <table align="left" width="100%">
+                    <tr><td colspan="2"><h3><b>CONFIG.INC.PHP</b></h3></td></tr>
+                    <tr><td colspan="2"><hr></td></tr>
+
+                    <tr><td colspan="2" width="400">
+                            <?php
+                            try {
+                                $config = fopen("../../inc/config.inc.php", "r");
+                                while (!feof($config)) {
+                                    $linha = fgets($config, 4096);
+                                    echo $linha . "<br>";
+                                }
+                                fclose($config);
+                            } catch (Exception $e) {
+                                print $e;
+                            }
+                            ?>
                     <tr><td colspan="2"><hr></td></tr>
                 </table>
                 <tr><td colspan="2">&nbsp;</td></tr>

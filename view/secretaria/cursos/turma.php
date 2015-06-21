@@ -47,6 +47,7 @@ require PATH . VIEW . '/system/paginacao.php';
         <th>N&uacute;mero</th>
         <th>Curso</th>
         <th>Modalidade</th>
+        <th>Semestre/Ano</th>
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
@@ -64,6 +65,7 @@ require PATH . VIEW . '/system/paginacao.php';
             <td><?= $reg['numero'] ?></td>
             <td align='left'>[<?= $reg['codCurso'] ?>] <?= $reg['curso'] ?></td>
             <td align='left'>[<?= $reg['codModalidade'] ?>] <?= $reg['modalidade'] ?></td>
+            <td align='left'><?= $reg['semestre'] ?>/<?= $reg['ano'] ?></td>
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codTurma']) ?>' />
             </td>
