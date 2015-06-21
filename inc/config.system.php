@@ -31,10 +31,10 @@ define("INC", LOCATION.'/inc', true);
 define("PATH", str_replace(INC, '', __DIR__), true);
 
 // Local do conector
-define("MYSQL", PATH.INC.'/mysql.php', true);
+define("MYSQL", PATH.INC.'/mysql.inc.php', true);
 
 // Local do conector
-define("DB2", PATH.INC.'/db2.php', true);
+define("DB2", PATH.'/db2/db2.php', true);
 
 // ================================= //
 $_SESSION['LOCATION'] = PATH.LOCATION;

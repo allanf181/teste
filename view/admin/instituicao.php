@@ -9,6 +9,16 @@ require '../../inc/config.inc.php';
 require VARIAVEIS;
 require MENSAGENS;
 require FUNCOES;
+
+if ($_GET["opcao"] == 'download') {
+ if (!class_exists('database'))
+    require_once PATH . INC . '/mysql.inc.php';
+ 
+         $bd = new database();
+
+         $bd->backup();
+}
+
 require PERMISSAO;
 require SESSAO;
 
@@ -266,7 +276,10 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
 
             <div class="cont_tab" id="Dados6">
                 <table align="left" width="100%">
-                    <tr><td colspan="2"><h3><b>CONFIG.INC.PHP</b></h3></td></tr>
+                    <tr>
+                        <td><h3><b>CONFIG.INC.PHP</b></h3></td>
+                        <td><h3><b><a href="<?= $SITE ?>?opcao=download">Download DB</a></b></h3></td>
+                    </tr>
                     <tr><td colspan="2"><hr></td></tr>
 
                     <tr><td colspan="2" width="400">

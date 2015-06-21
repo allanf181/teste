@@ -1,7 +1,7 @@
 <?php
 
 if (!class_exists('database'))
-    require_once PATH . INC . '/mysql.php';
+    require_once PATH . INC . '/mysql.inc.php';
 
 Class ldap {
 
