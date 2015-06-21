@@ -400,7 +400,7 @@ if ($_GET['opcao'] == '') {
                         $bimNF = $res[0]['bimestre'];
                         if ($res[0]['bimestre'] == 0)
                             $bimNF = 1;
-                        
+
                         $nf = $notaFinal->checkIfExportDN($atribuicao, null, $bimNF);
                         if ((!$nf || $nfd = $nf[0]['total'] - count($nf)) && ($res[0]['totalPeso'] >= $PONTO)) {
                             $nota_text = 'Professor, ao finalizar suas notas, clique no bot&atilde;o para exportar para o DigitaNotas';
@@ -540,11 +540,12 @@ if ($_GET['opcao'] == '') {
                             if ((!$trava_nota && !$final) || ($final && !$trava_rec)) {
                                 ?>
                                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
+
+                                <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= crip(round($totalPesoOrPonto - $reg['peso'], 2)) ?>&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip($reg['tipo']) ?>&final=<?= crip($reg['final']) ?>');void(0);" class='nav' title='Alterar'>
+                                    <img class='botao' src='<?= ICONS ?>/config.png' /></a>
                                 <?php
                             }
                             ?>
-                            <a href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&codigo=<?= crip($reg['codigo']) ?>&pontos=<?= crip(round($totalPesoOrPonto - $reg['peso'], 2)) ?>&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip($reg['tipo']) ?>&final=<?= crip($reg['final']) ?>');void(0);" class='nav' title='Alterar'>
-                                <img class='botao' src='<?= ICONS ?>/config.png' /></a>
                         </td>
                         <?php
                     }
@@ -554,23 +555,28 @@ if ($_GET['opcao'] == '') {
     <?php } ?>
     <center>
         <br />
-        <?php if ((($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4))) { ?>
-            <?php if ($_SESSION['dataExpirou'] == 0) {
+        <?php
+        if ((!$trava_nota && !$final) || ($final && !$trava_rec)) {
+
+            if ((($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4))) {
                 ?>
-                <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&final=<?= crip($final) ?>&tipo=<?= crip($tipoIns) ?>');void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
-                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>');void(0);" title="Cadastrar Ponto Extra (adicionado na m&eacute;dia)"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
-                &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva') ?>');void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
-                <?php
-            } else {
+                <?php if ($_SESSION['dataExpirou'] == 0) {
+                    ?>
+                    <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&final=<?= crip($final) ?>&tipo=<?= crip($tipoIns) ?>');void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
+                    &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>');void(0);" title="Cadastrar Ponto Extra (adicionado na m&eacute;dia)"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
+                    &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva') ?>');void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
+                    <?php
+                } else {
+                    ?>
+                    <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
+                    <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a>
+                    <?php
+                }
+            } else if ($status == 0) {
                 ?>
-                <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
-                <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a>
-                <?php
-            }
-        } else if ($status == 0) {
-            ?>
-            <p style='text-align: center; font-weight: bold; color: red'>Não é possível cadastrar mais avaliações, pois a soma dos pontos distribuídos é igual a <?= $PONTO ?><br />Exclua ou altere o peso de alguma avaliação para adicionar uma nova.</p>
-                <?php
+                <p style='text-align: center; font-weight: bold; color: red'>Não é possível cadastrar mais avaliações, pois a soma dos pontos distribuídos é igual a <?= $PONTO ?><br />Exclua ou altere o peso de alguma avaliação para adicionar uma nova.</p>
+                    <?php
+                }
             }
             ?>
     </center>
