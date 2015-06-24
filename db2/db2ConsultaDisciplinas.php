@@ -24,8 +24,8 @@ $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.e
         AND (a.bimestre = 0 OR a.bimestre = 4)
         AND n.bimestre = 1
         AND n.recuperacao IS NULL
-        AND flag = 5
-	GROUP BY p.codigo
+        AND n.flag = 5
+	GROUP BY d.numero, p.codigo
         ORDER BY n.bimestre";
 
 $result = mysql_query($sql);
@@ -119,7 +119,7 @@ while ($l = mysql_fetch_array($result)) {
     }
     
     if (in_array($disciplina, $disciplinas)) {
-        $URL .= "A disciplina $disciplina não consta para o professor $prontuario. ";
+        $URL .= "A disciplina $disciplina não consta para o professor $prontuario. \n";
     }
 }
 
