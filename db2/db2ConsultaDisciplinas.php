@@ -119,7 +119,7 @@ while ($l = mysql_fetch_array($result)) {
     }
     
     if (in_array($disciplina, $disciplinas)) {
-        $URL .= "A disciplina $disciplina não consta para o professor $prontuario. \n";
+        $URL .= "\n A disciplina $disciplina não consta para o professor $prontuario.";
     }
 }
 
