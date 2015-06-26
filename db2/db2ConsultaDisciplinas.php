@@ -10,6 +10,7 @@ require ('lib/consultaDisciplinasWS.php');
 
 $user = 'BA000022';
 $pass = '4(HC&m3KbT';
+//$pass = 1234;
 $campus = strtoupper($DIGITANOTAS);
 
 $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.eventod
@@ -23,15 +24,17 @@ $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.e
         AND t.semestre = $semestre
         AND (a.bimestre = 0 OR a.bimestre = 4)
         AND n.bimestre = 1
-        AND n.recuperacao IS NULL
-        AND n.flag = 5
-	GROUP BY d.numero, p.codigo
+        AND (n.situacao IS NULL or n.situacao = 'Em Curso')
+        AND flag = 5
+	GROUP BY p.codigo
         ORDER BY n.bimestre";
-
+//echo $sql;
 $result = mysql_query($sql);
 
 $total = mysql_num_rows($result);
 
+$s=0; // SINCRONIZADAS
+$n=0; // NAO-SINCRONIZADAS
 while ($l = mysql_fetch_array($result)) {
     $prontuario = $l[0];
     $disciplina = $l[2] . '_' . $l[5];
@@ -80,14 +83,31 @@ while ($l = mysql_fetch_array($result)) {
 
                 $situacaoNota = rtrim($alunosMatriculado->situacaoNota);
                 $aluno = $alunosMatriculado->prontuario;
+                $situacaoAluno = $alunosMatriculado->situacao;
+//echo "<br>=====================<br>".var_dump($alunosMatriculado);
 
+//echo "<hr />".$alunosMatriculado->nome;
+//echo "<br>".$situacaoNota;
+//echo "<br>reav? ".$flagNotaReavDigitada;
+//echo "<br>sit? ".$alunosMatriculado->situacao;
+//echo "<br>sitNota? ".$alunosMatriculado->situacaoNota;
+//echo "<br>nota1? ".$flagNota1Digitada;
+//echo "<br>notareav? ".$flagNotaReavDigitada;
                 $recuperacao = null;
 
                 //Verifica a situação
                 if ($flagNota1Digitada == "5" && $flagNotaReavDigitada == "0" && $situacaoNota == "5") {
+//                if ($flagNota1Digitada == "5" && $flagNotaReavDigitada == "0" && $situacaoAluno == "Em Curso") {
+//                    $situacaoAluno=null;// ALUNO DE RECUPERACAO DEVE TER SITUACAO NULA
+//                    echo "<br>REC!";
+//                if ($flagNota1Digitada == "5" && $flagNotaReavDigitada == "0" && $situacaoNota == "0") {
                     $recuperacao = 1;
                 }
-
+                else if ($flagNota1Digitada == "5" && $flagNotaReavDigitada == "0" && !is_null($situacaoAluno) && $situacaoAluno != "Em Curso") {
+                    $reprovado = $situacaoAluno;
+                }
+                
+                
                 $situacao = array();
                 $situacao[] = "1"; // Aprovado
                 $situacao[] = "2"; // Reprovado por Media
@@ -104,23 +124,51 @@ while ($l = mysql_fetch_array($result)) {
                 }
 
                 if ($recuperacao) {
-                    $sqlUpdate = "\nUPDATE NotasFinais n SET n.recuperacao = $recuperacao
+                    if ($flagNotaReavDigitada==5)
+                        $situacaoAluno= ", n.situacao='REAVALIADO' ";                        
+                    else if ($situacaoAluno)
+                        $situacaoAluno= ", n.situacao='$situacaoAluno' ";
+                    $sqlUpdate = "\nUPDATE NotasFinais n SET n.recuperacao = '$recuperacao'
+                            $situacaoAluno
+                        WHERE n.atribuicao = $atribuicao
+                        AND n.bimestre = $bimestre
+                            
+                        AND n.matricula = (SELECT m.codigo FROM Matriculas m, Pessoas p
+                                            WHERE m.aluno = p.codigo
+                                            AND m.atribuicao = $atribuicao
+                                            AND p.prontuario = '$aluno')";
+//                    print $sqlUpdate;
+                    mysql_query($sqlUpdate);
+                }
+                else if (!is_null($situacaoAluno)){
+                    if ($flagNotaReavDigitada==5)
+                        $situacaoAluno= "REAVALIADO";  
+                    else {
+                        $recuperacao=", recuperacao=null";
+                    }
+
+                    $sqlUpdate = "\nUPDATE NotasFinais n SET n.situacao='$situacaoAluno' $recuperacao
                         WHERE n.atribuicao = $atribuicao
                         AND n.bimestre = $bimestre
                         AND n.matricula = (SELECT m.codigo FROM Matriculas m, Pessoas p
                                             WHERE m.aluno = p.codigo
                                             AND m.atribuicao = $atribuicao
                                             AND p.prontuario = '$aluno')";
-                    print $sqlUpdate;
-                    //mysql_query($sqlUpdate);
+//                    print $sqlUpdate;
+                    mysql_query($sqlUpdate);
+                    
                 }
             }
         }
     }
     
-    if (in_array($disciplina, $disciplinas)) {
-        $URL .= "\n A disciplina $disciplina não consta para o professor $prontuario.";
+    if (!in_array($disciplina, $disciplinas)) { // MOSTRA UM ERRO CASO A DISCIPLINA NAO CONSTE NO WS
+        $URL .= "\nERRO WS CONSULTA DISCIPLINAS: A disciplina $disciplina não consta para o professor $prontuario. ";
     }
+    else{
+        $URL = count($disciplinas)." disciplinas processadas para o professor após o RODA.";
+    }
+    $s++;
 }
 
 // REGISTRA A ATUALIZACAO
@@ -129,7 +177,7 @@ if (!$LOCATION_CRON) {
     mysql_query($sql);
     ?>
     <script>
-        $('#db2ConsultaDisciplinaRetorno').text('<?= $URL ?>');
+        $('#db2ConsultaDisciplinasRetorno').text('<?= $s ?> disciplinas sincronizadas.');
     </script><?php
 } else {
     $sqlAdmin = "SELECT * FROM Pessoas WHERE prontuario='admin'";
@@ -139,6 +187,7 @@ if (!$LOCATION_CRON) {
     $sql = "insert into Atualizacoes values(0,114," . $admin->codigo . ", now())";
     mysql_query($sql);
 
+    $URL = "CONSULTA RODA: ".count($disciplinas)." DISCIPLINAS SINCRONIZADAS";
     if ($DEBUG)
         print "$URL \n";
     $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";

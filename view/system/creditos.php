@@ -43,7 +43,7 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
             <td width="300"><h2>Segurança de Software</h2></td>
         </tr>
         <tr>
-            <td valign="top" align="center">Naylor Garcia Bachiega (Birigui)</td>
+            <td valign="top" align="center">João Paulo Lemos Escola (Barretos)</td>
             <td valign="top" align="center">
                 Josiane Rosa de Oliveira Gaia (Hortol&acirc;ndia)
                 <br>Ricardo Takazu (S&atilde;o Paulo)
@@ -56,12 +56,14 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
             <td colspan="3"><h2>Colaboradores</h2></td>
         </tr>
         <tr>
-            <td colspan="3" valign="top" align="center">Anne Domenici (Sert&atilde;ozinho)
+            <td colspan="3" valign="top" align="center">
+                Anne Domenici (Sert&atilde;ozinho)
                 <br>Carlos Eduardo Alves da Silva (Votuporanga)
                 <br>Fernando Parreira (Votuporanga)
                 <br>Kerolláine Lauro Oliveira (Araraquara) 
                 <br>Lourenço Alves (Araraquara)
                 <br>Marcelo Fernandes (Campos do Jordão)
+                <br>Naylor Garcia Bachiega (Birigui)
                 <br>Ricardo Crivelli (Avaré) 
                 <br>Rodolfo Esteves (Hortolândia)
             </td>
@@ -70,6 +72,14 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     </table>
 
 </center>
+
+<p style="text-align: center; margin: 20px auto 0 auto; width: 80%; color: green;">
+    O WebDiário é desenvolvido de forma distribuída, com auxílio direto dos servidores dos campi e indireto por meio da contribuição dos diversos servidores
+    espalhados pelos campi do IFSP. 
+</p>
+<p style="text-align: center; margin: 20px auto 0 auto; width: 80%; color: green;">
+    É servidor do IFSP e quer ajudar? Venha fazer parte da equipe!
+</p>
 
 <br />
 <b>Vers&atilde;o 1.441</b>

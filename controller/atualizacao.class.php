@@ -24,6 +24,7 @@ class Atualizacoes extends Generic {
         $res[10] = array('title' => 'Matr&iacute;culas (Cursos Antigos)', 'file' => 'db2Matriculas', 'tipo' => '10');
         $res[11] = array('title' => 'Dispensas', 'file' => 'db2Dispensas', 'tipo' => '13');
         $res[12] = array('title' => 'Digita Notas', 'file' => 'db2DigitaNotas', 'tipo' => '12');
+        $res[13] = array('title' => 'Consulta Roda', 'file' => 'db2ConsultaDisciplinas', 'tipo' => '14');
  
         for ($i = 0; $i < count($res); $i++) {
             $sql = "SELECT p.nome, a.tipo, date_format(a.data, '%d/%m/%Y') as data "

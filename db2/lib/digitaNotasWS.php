@@ -9,6 +9,7 @@ class DigitaNotasWS {
             $pass = Criptografia::codificar($pass);
 
             $servicoDigitaNotas = 'http://ws.ifsp.edu.br/servicoDigitaNotas';
+//            $servicoDigitaNotas = 'http://aurorateste.ifsp.edu.br:8080/IFSPWebServices-0.0.1-SNAPSHOT/services/servicoDigitaNotas';
             $cliente = new SoapClient($servicoDigitaNotas . "?wsdl", array(
                 "trace" => 1,
                 "exception" => 1,
@@ -16,7 +17,7 @@ class DigitaNotasWS {
                 'login' => $user,
                 'password' => $pass
             ));
-
+            
             $cliente->__getFunctions();
 
             $cliente->__setLocation($servicoDigitaNotas);
@@ -25,7 +26,9 @@ class DigitaNotasWS {
             return (object) $notaAlunoObj;
 
         } catch (Exception $e) {
+            
             $erro = "Erro DigitaNotas (WS): " . $e->getMessage();
+//            echo "<br>ERRO==============+++> $e<br>"; 
             if ($DEBUG) {
                 echo "$erro \n";
             }

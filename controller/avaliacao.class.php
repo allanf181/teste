@@ -68,7 +68,7 @@ class Avaliacoes extends Generic {
             AND t.curso = c.codigo
             AND at.disciplina=d.codigo 
             AND t.turno=tu.codigo
-            ORDER BY a.data DESC";
+            ORDER BY a.data desc, a.nome";
 
         $params = array(':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);

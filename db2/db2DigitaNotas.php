@@ -23,6 +23,7 @@ if (isset($_GET["atribuicao"])) {
 
 $user = 'BA000022';
 $pass = '4(HC&m3KbT';
+//$pass = '1234';
 $campus = strtoupper($DIGITANOTAS);
 $turma = '0';
 $flagDigitacaoNota = '5';
@@ -44,7 +45,7 @@ $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuico
         AND flag <> 5
 	$sqlCodigo
         ORDER BY n.bimestre";
-
+//echo $sql;
 $result = mysql_query($sql);
 $n = 0;
 $s = 0;
@@ -58,6 +59,7 @@ $conexao = 0;
 $total = mysql_num_rows($result);
 
 while ($l = mysql_fetch_array($result)) {
+    
     $count++;
 
     $prontuario = $l[0];
@@ -87,26 +89,40 @@ while ($l = mysql_fetch_array($result)) {
 
     $aluno = array(
         "ano" => $ano,
-        "turma" => $turma,
-        "eventoTod" => $eventod,
         "bimestre" => $bimestre,
+        "campus" => $campus,
         "codigoDisciplina" => $codigoDisciplina,
-        "prontuarioUsuario" => $prontuario,
-        "prontuarioAluno" => $prontuarioAluno,
-        "semestre" => $semestre,
+        "dataGravacao" => date('dmY'),
+        "eventoTod" => $eventod,
+        "falta" => $faltas,
         "flagDigitacaoNota" => $flagDigitacaoNota,
         "nota" => $nota,
-        "falta" => $faltas,
-        "campus" => $campus,
-        "dataGravacao" => date('dmY')
+        "prontuarioAluno" => $prontuarioAluno,
+        "prontuarioUsuario" => $prontuario,
+        "semestre" => $semestre,
+        "turma" => $turma
     );
 
     $logs[] = "COD: $l[12] |TURMA: $turmaD [$bimestre BIM] |PRONT: $prontuario |DISC: $codigoDisciplina |NOTA: $nota \n";
     $codigos[] = $l[12];
-    array_push($notas, $aluno);
-    $c++;
-
-    if ($count >= 10 || isset($codigo) || $count >= $total) {
+    $dAtual = $codigoDisciplina;
+    
+    
+//    echo "<br>ANT:".$dAnterior." ATUAL:".$dAtual;
+    
+    if ($dAnterior==$dAtual || $dAnterior==""){// INCLUI O ALUNO NA LISTA SE FOR O PRIMEIRO OU SE FOR DA DISCIPLINA ATUAL
+//        ECHO "<BR>=====>INCLUIU ".$dAtual;
+        array_push($notas, $aluno);
+        $c++;
+    }
+    
+//    echo "<br>diferente?".($dAnterior!=$dAtual);
+//    echo "<br>diferente?".($dAnterior!="");
+//    echo "<br>".$dAnterior;
+//    echo $dAtual;
+//    if ($count >= 10 || isset($codigo) || $count >= $total) {
+    if (($dAnterior!=$dAtual && $dAnterior!="")|| $count >= $total) {
+//        echo "<br>==>$dAtual";
         $total -= $count;
 
         $count = 0;
@@ -118,11 +134,21 @@ while ($l = mysql_fetch_array($result)) {
             $digitaNotaAlunoWS = new digitaNotasWS();
 
             $lista = array("notas" => $notas);
+//echo "<br>=====================<br>Lista:";
+//            var_dump($lista);
 
             $ret = $digitaNotaAlunoWS->digitarNotasAlunos($user, $pass, $campus, $lista);
+            
+//            echo "<br>====="; var_dump($ret);
+//            die;
+            
             $conexao++;
 
             if ($ret) {
+//                echo "<br>sucesso? ".$ret->sucesso;
+//                echo "<br>motivo? ".$ret->motivo;
+//                echo "<hr>";
+                
                 if ($ret->sucesso == 1) {
                     $URL = 'Nota registra com sucesso';
                 } else {
@@ -178,6 +204,7 @@ while ($l = mysql_fetch_array($result)) {
             $conexao = 0;
         }
     }
+    $dAnterior=$dAtual;
 }
 
 if ($atribuicao) {

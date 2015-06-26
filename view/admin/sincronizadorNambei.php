@@ -17,6 +17,9 @@ $atualizacao = new Atualizacoes();
 
 require CONTROLLER . "/log.class.php";
 $log = new Logs();
+
+require CONTROLLER . "/notaFinal.class.php";
+$notas = new NotasFinais();
 ?>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
@@ -36,12 +39,26 @@ $log = new Logs();
         foreach ($res as $reg) {
             ?>
             <tr>
-                <td align="right"><?= $reg['title'] ?>: </td>
-                <td>
+                <td align="right" valign="top"><?= $reg['title'] ?>: </td>
+                <td valign="top">
                     <input type="button" id="<?= $reg['file'] ?>" value="<?= $reg['rotulo'] ?>" />
                 </td>
                 <td>
                     <div id='<?= $reg['file'] ?>Retorno'><?= $reg['situacao'] ?></div>
+                    
+                    <?php
+                    // DISCIPLINAS QUE AGUARDAM O RODA
+                    if ($reg['title']=="Consulta Roda"){
+                        echo "<div style='border: 2px solid red'>";
+                            echo "<div id='aguardandoRoda'>";
+                            echo "<p style='background: red; color: white; text-align: center'>Docentes aguardando o Roda:</p>";
+                            foreach ($notas->getDisciplinasRoda() as $atribuicao){
+                                echo "<p><a target='_blank' title='Clique para acessar o RodaWeb' href='http://rodaweb.ifsp.edu.br/'>".$atribuicao['professor']." [".$atribuicao['disciplina']."] ".$atribuicao['turma']." ".$atribuicao['curso']." </a></p>";
+                            }
+                            echo "</div>";
+                        echo "</div>";
+                    }
+                    ?>
                 </td>
             </tr>
             <?php

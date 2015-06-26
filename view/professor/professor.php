@@ -51,7 +51,7 @@ $temPendencias = $notaFinal->checkIfRoda($atribuicao);
 if ($_GET["opcao"] == 'controleDiario') {
     $status = $_GET["status"];
 
-    if ($temPendencias['reg'] && $temPendencias['totalRec'] == $temPendencias['reg']) {
+    if ($temPendencias['reg'] && ($temPendencias['situacoes'] == $temPendencias['reg'] || $temPendencias['totalRec']==0)) {
         $params['codigo'] = $atribuicao;
         $params['status'] = $status;
         $params['prazo'] = null;
@@ -66,6 +66,10 @@ if ($_GET["opcao"] == 'controleDiario') {
         $paramsLog['solicitacao'] = 'Professor fechou o diário manualmente.';
         $log->insertOrUpdate($paramsLog);
     } else {
+        echo "<br>".$temPendencias['reg'];
+        echo "<br>".$temPendencias['totalRec'];
+                echo "<br>".$temPendencias['reg'];
+                echo "<br>".$temPendencias['situacoes'];
         mensagem('NOK', 'FALSE_CLOSE_CLASS_REGISTRY');
     }
 }
@@ -98,6 +102,9 @@ if ($_GET["atribuicao"]) {
             $pergunta = $QUESTION_DIARIO1;
         }
 
+        if (empty($aulaPrevista))
+            $aulaPrevista=0;
+        
         if (!$status && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima'] && $temPendencias['reg'] && $temPendencias['totalRec'] == $temPendencias['reg']) {
             $pergunta = $QUESTION_DIARIO2;
         }
@@ -144,7 +151,7 @@ if ($_GET["atribuicao"]) {
             <tr>
                 <td><b><font size="1">Aulas dadas:</b> <?= $qdeAulas ?><br>
                     <b>Carga Hor&aacute;ria:</b> <?= $CH ?>
-                    <br><b>Aulas previstas:</b> <?= $aulaPrevista ?></font>
+                    <br><b>Aulas previstas:</b> <?= $aulaPrevista ?><?=($aulaPrevista==0) ? " (NAO INFORMADO PELA SECRETARIA)" : "" ?></font>
                 </td>
                 <?php
                 require CONTROLLER . "/professor.class.php";

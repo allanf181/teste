@@ -73,7 +73,7 @@ if (!$LOCATION_CRON) {
     $sql = "insert into Atualizacoes values(0,113," . $admin->codigo . ", now())";
     mysql_query($sql);
 
-    $URL = "DISPENSAS IMPORTADAS: $f ";
+    $URL = "DISPENSAS IMPORTADOS: $f ";
     if ($DEBUG)
         print "$URL \n";
     $sql = "insert into Logs values(0, '$URL', now(), 'CRON', 1)";

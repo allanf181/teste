@@ -31,7 +31,7 @@ class NotasFinais extends Notas {
                 if ($matSituacao['listar'] && $matSituacao['habilitar']) {
 
                     $dados = $this->resultado($reg['matricula'], $atribuicao, 0, 0);
-
+                    
                     $params2 = array();
                     
                     $params2['atribuicao'] = $atribuicao;
@@ -46,7 +46,7 @@ class NotasFinais extends Notas {
                     $params2['ncc'] = $dados['media'];
                     $params2['falta'] = $dados['faltas'];
 
-                    if ($dados['siglaSituacao'] != 'REF') {
+//                    if ($dados['siglaSituacao'] != 'REF') {// ERRO DESABILITADO TEMPORARIAMENTE
 
                         $sql1 = "SELECT codigo,recuperacao FROM NotasFinais WHERE atribuicao = :cod 
     			AND matricula = :mat
@@ -71,8 +71,8 @@ class NotasFinais extends Notas {
 
                         if (!$this->insertOrUpdate($params2))
                             $erro = 1;
-                    } else
-                        $erro = 2;
+//                    } else
+//                        $erro = 2;
 
                     // FECHAMENTO ANUAL BIMESTRAL
                     /* if ($reg['bimestre'] == 4) {
@@ -169,9 +169,9 @@ class NotasFinais extends Notas {
                     AND n.bimestre = :bimestre
                     $sqlMatricula
                     AND (flag = 0 OR flag = 5)";
-
+//echo $sql;
         $res = $bd->selectDB($sql, $params);
-
+//var_dump($params);
         if ($res) {
             return $res;
         } else {
@@ -212,10 +212,18 @@ class NotasFinais extends Notas {
                                     FROM NotasFinais n1
                                     WHERE n1.atribuicao = n.atribuicao
                                     AND n1.recuperacao IS NOT NULL)  as total,
+                                    (SELECT COUNT(*) 
+                                    FROM NotasFinais n1
+                                    WHERE n1.atribuicao = n.atribuicao
+                                    AND n1.situacao IS NOT NULL and n1.situacao!='Em Curso')  as situacoes,
                         (SELECT COUNT(*) 
                                     FROM NotasFinais n1
                                     WHERE n1.atribuicao = n.atribuicao
-                                    AND n1.recuperacao = 2) as totalRec
+                                    AND n1.recuperacao = 2) as totalRec,
+                        (SELECT COUNT(*) 
+                                    FROM NotasFinais n1
+                                    WHERE n1.atribuicao = n.atribuicao
+                                    AND n1.rec != 0) as notasRec
                     FROM NotasFinais n
                     WHERE n.atribuicao = :atribuicao
                     ORDER BY n.codigo ";
@@ -254,6 +262,30 @@ class NotasFinais extends Notas {
             return false;
         }
     }
+    
+    // DISCIPLINAS QUE AGUARDAM O RODA
+    public function getDisciplinasRoda() {
+        $bd = new database();
+
+        // efetuando a consulta para listagem
+        $sql = "select pe.nome professor, d.nome disciplina, t.numero turma, c.nome curso, m.nome modalidade
+            from Cursos c, Turmas t, Pessoas pe, Professores p, Disciplinas d, NotasFinais n, Atribuicoes a, Modalidades m 
+            where c.modalidade=m.codigo and t.curso = c.codigo and a.turma=t.codigo and pe.codigo=p.professor 
+            and p.atribuicao=a.codigo and a.disciplina=d.codigo 
+            and a.codigo=n.atribuicao and (n.flag=0 or (n.flag=5 and n.situacao='Em Curso' and n.recuperacao is null)) 
+            group by pe.nome";
+        
+
+//        $params = array('atribuicao' => $atribuicao, 'matricula' => $matricula);
+//        $res = $bd->selectDB($sql, $params);
+        $res = $bd->selectDB($sql);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }    
 }
 
 ?>

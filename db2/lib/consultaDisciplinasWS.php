@@ -8,7 +8,8 @@ class ConsultaDisciplinasWS {
         try {
             $pass = Criptografia::codificar($pass);
 
-            $servicoConsultarDisciplinaMinistrada = 'http://aurorateste.ifsp.edu.br:8080/IFSPWebServices-0.0.1-SNAPSHOT/services/servicoConsultarDisciplinaMinistrada';
+//            $servicoConsultarDisciplinaMinistrada = 'http://aurorateste.ifsp.edu.br:8080/IFSPWebServices-0.0.1-SNAPSHOT/services/servicoConsultarDisciplinaMinistrada';
+            $servicoConsultarDisciplinaMinistrada = 'http://aurora.ifsp.edu.br:8080/IFSPWebServices-0.0.1-SNAPSHOT/services/servicoConsultarDisciplinaMinistrada';
             $cliente = new SoapClient($servicoConsultarDisciplinaMinistrada . "?wsdl", array(
                 "trace" => 1,
                 "exception" => 1,
@@ -22,6 +23,9 @@ class ConsultaDisciplinasWS {
             $cliente->__setLocation($servicoConsultarDisciplinaMinistrada);
 
             $professorObj = $cliente->consultarDisciplinasMinistradas($campus, $prontProfessor);
+//            echo "<br>============================<br>";
+//            var_dump($professorObj);
+//            die;
 
             return (object) $professorObj;
 
