@@ -170,7 +170,7 @@ if ($_SESSION['dataExpirou'])
                                     $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0, $_SESSION['dataExpirou']);
                                     if ($reg['bimestre'] == $nBim && $res['final'] == 0) {
                                         $color = 'blue';
-                                        $situacao[$reg['codAluno']] = abreviar($dados['situacao'], 14);
+                                        $situacao[$reg['codAluno']] = abreviar($dados['situacao'], 14); 
                                     } else {
                                         $color = null;
                                     }
