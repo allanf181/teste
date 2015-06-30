@@ -53,7 +53,8 @@ $notas = new NotasFinais();
                             echo "<div id='aguardandoRoda'>";
                             echo "<p style='background: red; color: white; text-align: center'>Docentes aguardando o Roda:</p>";
                             foreach ($notas->getDisciplinasRoda() as $atribuicao){
-                                echo "<p><a target='_blank' title='Clique para acessar o RodaWeb' href='http://rodaweb.ifsp.edu.br/'>".$atribuicao['professor']." [".$atribuicao['disciplina']."] ".$atribuicao['turma']." ".$atribuicao['curso']." </a></p>";
+                                echo "<p><a  title='Clique para consultar o Roda para esta disciplina' href=\"javascript:$('#".$reg['file']."Retorno').load('db2/db2ConsultaDisciplinas.php?atribuicao=".$atribuicao['codigo']."');void(0);\">".$atribuicao['professor']." [".$atribuicao['disciplina']."] ".$atribuicao['turma']." ".$atribuicao['curso']." </a></p>";
+                                echo "<div id='resultadoRoda".$atribuicao['codigo']."'></div>";
                             }
                             echo "</div>";
                         echo "</div>";
