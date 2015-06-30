@@ -268,12 +268,12 @@ class NotasFinais extends Notas {
         $bd = new database();
 
         // efetuando a consulta para listagem
-        $sql = "select pe.nome professor, d.nome disciplina, t.numero turma, c.nome curso, m.nome modalidade
+        $sql = "select pe.nome professor, d.nome disciplina, t.numero turma, c.nome curso, m.nome modalidade, a.codigo
             from Cursos c, Turmas t, Pessoas pe, Professores p, Disciplinas d, NotasFinais n, Atribuicoes a, Modalidades m 
             where c.modalidade=m.codigo and t.curso = c.codigo and a.turma=t.codigo and pe.codigo=p.professor 
             and p.atribuicao=a.codigo and a.disciplina=d.codigo 
             and a.codigo=n.atribuicao and (n.flag=0 or (n.flag=5 and n.situacao='Em Curso' and n.recuperacao is null)) 
-            group by pe.nome";
+            group by d.nome order by pe.nome";
         
 
 //        $params = array('atribuicao' => $atribuicao, 'matricula' => $matricula);
