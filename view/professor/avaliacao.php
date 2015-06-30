@@ -651,7 +651,7 @@ if ($_GET['opcao'] == '') {
                     <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&final=<?= crip($final) ?>&tipo=<?= crip($tipoIns) ?>');void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/av.png' /></a>
                     <?php 
                     }
-//echo "<br>".$trava_nota;
+//echo "<br>".$trava_nota; 
 //echo "<br>".$ifa;
                     if (!$trava_nota && !$ifa){ ?>
                         &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>');void(0);" title="Cadastrar Ponto Extra (adicionado na m&eacute;dia)"><img class='botao' src='<?= ICONS ?>/pExtra.png' /></a>

@@ -1,4 +1,7 @@
 <?php
+
+set_time_limit(2*60); // LIMITE DE TEMPO
+
 if (!$LOCATION_CRON) {
     require("$LOCATION_CRON" . "db2Mysql.php");
     require("$LOCATION_CRON" . "db2Funcoes.php");
@@ -11,7 +14,7 @@ require ('lib/digitaNotasWS.php');
 if (isset($_GET["codigo"])) {
     $codigo = $_GET["codigo"];
     $sqlCodigo = "AND n.codigo = $codigo";
-}
+} 
 
 if (isset($_GET["atribuicao"])) {
     $atribuicao = $_GET["atribuicao"];
@@ -21,7 +24,7 @@ if (isset($_GET["atribuicao"])) {
 //    $sqlCodigo = "AND (n.sincronizado IS NULL OR n.sincronizado = '0000-00-00 00:00:00')";
 
 
-$user = 'BA000022';
+$user = 'BA000022'; 
 $pass = '4(HC&m3KbT';
 //$pass = '1234';
 $campus = strtoupper($DIGITANOTAS);
@@ -40,11 +43,13 @@ $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuico
 	AND n.matricula = m.codigo
 	AND m.aluno = p.codigo
 	AND d.codigo = a.disciplina
+        AND t.ano = $ano
+        AND t.semestre = $semestre
 	AND m.atribuicao = a.codigo
 	AND t.codigo = a.turma
         AND flag <> 5
 	$sqlCodigo
-        ORDER BY n.bimestre";
+        ORDER BY n.bimestre, t.numero";
 //echo $sql;
 $result = mysql_query($sql);
 $n = 0;
@@ -110,16 +115,20 @@ while ($l = mysql_fetch_array($result)) {
     
 //    echo "<br>ANT:".$dAnterior." ATUAL:".$dAtual;
     
-    if ($dAnterior==$dAtual || $dAnterior==""){// INCLUI O ALUNO NA LISTA SE FOR O PRIMEIRO OU SE FOR DA DISCIPLINA ATUAL
+//    if ($dAnterior==$dAtual || $dAnterior==""){// INCLUI O ALUNO NA LISTA SE FOR O PRIMEIRO OU SE FOR DA DISCIPLINA ATUAL
 //        ECHO "<BR>=====>INCLUIU ".$dAtual;
         array_push($notas, $aluno);
         $c++;
-    }
-    
+//    }
+//    echo "<br>]]]]]]]]]]]]]]]]]]]]]]]]";
+//    echo "<br>ano?".($aluno['ano']);
+//    echo "<br>semestre?".($aluno['semestre']);
 //    echo "<br>diferente?".($dAnterior!=$dAtual);
 //    echo "<br>diferente?".($dAnterior!="");
-//    echo "<br>".$dAnterior;
-//    echo $dAtual;
+//    echo "<br>ant:".$dAnterior;
+//    echo "<br>atual:".$dAtual;
+//    echo "<br>count:".$count;
+//    echo "<br>total:".$total;
 //    if ($count >= 10 || isset($codigo) || $count >= $total) {
     if (($dAnterior!=$dAtual && $dAnterior!="")|| $count >= $total) {
 //        echo "<br>==>$dAtual";
@@ -184,7 +193,7 @@ while ($l = mysql_fetch_array($result)) {
                 print $ex;
             $erro = "Erro DigitaNotas: $ex";
             if ($DEBUG)
-                echo "$erro \n";
+                echo "erro: $erro \n";
             mysql_query("insert into Logs values(0, '" . addslashes($erro) . "', now(), 'CRON_NTERR', 1)");
             mysql_query("UPDATE NotasFinais SET retorno='$erro' WHERE codigo IN ($cod)");
             $n++;

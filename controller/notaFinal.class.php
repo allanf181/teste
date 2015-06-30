@@ -273,7 +273,8 @@ class NotasFinais extends Notas {
             where c.modalidade=m.codigo and t.curso = c.codigo and a.turma=t.codigo and pe.codigo=p.professor 
             and p.atribuicao=a.codigo and a.disciplina=d.codigo 
             and a.codigo=n.atribuicao and (n.flag=0 or (n.flag=5 and n.situacao='Em Curso' and n.recuperacao is null)) 
-            group by d.nome order by pe.nome";
+            and t.ano='$ano' and t.semestre='$semestre' 
+            group by d.nome order by pe.nome"; 
         
 
 //        $params = array('atribuicao' => $atribuicao, 'matricula' => $matricula);
