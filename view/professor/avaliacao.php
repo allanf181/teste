@@ -68,24 +68,24 @@ if ($_GET["opcao"] == 'controleDiario') {
 ////        $("#2").load('db2/db2ConsultaDisciplinas.php');
         $('#obs, #rec_text').hide();
         $('#rec_label').html('');
-        $('#nota_text').html('<?=$msgFinal?>');
-        $.Zebra_Dialog('<?=$msgFinal?>', {
-            'type': 'info',
-            'title': '<?= $TITLE ?>',
-            'buttons': ['OK'],
-            'onClose': function (caption) {
-                if (caption == 'OK') {
-                    var req1 = $.get("db2/db2DigitaNotas.php", function(data) {
-                        $("#tabs-1").html(data);
-                    });
-                    var req2 = $.get("db2/db2ConsultaDisciplinas.php", function(data) {
-                        $("#tabs-2").html(data);
-                    });
-                    $.when(req1, req2).then(doCallback);
-                    $('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>');
+        var req1 = $.get("db2/db2DigitaNotas.php?atribuicao=<?=$atribuicao?>", function(data) {
+            $("#tabs-1").html(data);
+        });
+        var req2 = $.get("db2/db2ConsultaDisciplinas.php?atribuicao=<?=$atribuicao?>", function(data) {
+            $("#tabs-2").html(data);
+        });        $.when(req1, req2).then(function(){
+            $.Zebra_Dialog('<?=$msgFinal?>', {
+                'type': 'info',
+                'title': '<?= $TITLE ?>',
+                'buttons': ['OK'],
+                'onClose': function (caption) {
+                    if (caption == 'OK') {
+                        $('#nota_text').html('<?=$msgFinal?>');
+                        $('#professor').load('<?= $SITE ?>?atribuicao=<?= crip($atribuicao) ?>');
+                    }
                 }
-            }
-                });
+            });
+        });
         </script>
         <?php
 
@@ -459,6 +459,7 @@ if ($_GET['opcao'] == '') {
 
                             } else {
 //                                $nota_text = $rec_text = 'Notas j&aacute; finalizadas. '.$fecharDiario;
+                                $nota_text = "Novas enviadas!";
                                 $rec_text = 'Professor, suas notas foram finalizadas, mas o Roda ainda n&atilde;o foi executado para listar os alunos de recupera&ccedil;&atilde;o. Aguarde!';
 
                                 $trava_nota=1;
@@ -647,13 +648,13 @@ if ($_GET['opcao'] == '') {
                 <?php if ($_SESSION['dataExpirou'] == 0) {
                     if (!$trava_nota){
                     ?>
-                    <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&final=<?= crip($final) ?>&tipo=<?= crip($tipoIns) ?>');void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/avaliacao.png' /></a>
+                    <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&final=<?= crip($final) ?>&tipo=<?= crip($tipoIns) ?>');void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/av.png' /></a>
                     <?php 
                     }
 //echo "<br>".$trava_nota;
 //echo "<br>".$ifa;
                     if (!$trava_nota && !$ifa){ ?>
-                        &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>');void(0);" title="Cadastrar Ponto Extra (adicionado na m&eacute;dia)"><img class='botao' src='<?= ICONS ?>/add.png' /></a>
+                        &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>');void(0);" title="Cadastrar Ponto Extra (adicionado na m&eacute;dia)"><img class='botao' src='<?= ICONS ?>/pExtra.png' /></a>
                         &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva') ?>');void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>
                     
                     <?php } ?>

@@ -1,4 +1,6 @@
 <?php
+set_time_limit(2*60); // LIMITE DE TEMPO
+
 if (!$LOCATION_CRON) {
     require("$LOCATION_CRON" . "db2Mysql.php");
     require("$LOCATION_CRON" . "db2Funcoes.php");
@@ -8,9 +10,14 @@ if (!$LOCATION_CRON) {
 
 require ('lib/consultaDisciplinasWS.php');
 
+if (isset($_GET["atribuicao"])) {
+    $atribuicao = $_GET["atribuicao"];
+    $sqlCodigo = "AND a.codigo = $atribuicao";
+}
+
 $user = 'BA000022';
 $pass = '4(HC&m3KbT';
-//$pass = 1234;
+//$pass = 1234; 
 $campus = strtoupper($DIGITANOTAS);
 
 $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.eventod
@@ -26,7 +33,8 @@ $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.e
         AND n.bimestre = 1
         AND (n.situacao IS NULL or n.situacao = 'Em Curso')
         AND flag = 5
-	GROUP BY p.codigo
+        $sqlCodigo
+	GROUP BY d.numero
         ORDER BY n.bimestre";
 //echo $sql;
 $result = mysql_query($sql);
