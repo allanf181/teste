@@ -480,6 +480,7 @@ if ($_GET['opcao'] == '') {
                                 $nota_text = 'Professor, voc&ecirc; ainda n&atilde;o concluiu suas notas, seus pesos est&atilde;o incompletos ou o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es n&atilde;o foi aplicado.';
                                 $trava_nota = 0;
                                 $libera_nota = 0;
+                                $trava_rec=0;
                             }
 
                             $libera_rec = 0;
@@ -680,7 +681,7 @@ if ($_GET['opcao'] == '') {
                 }
             } else if ($status == 0) {
                 ?>
-                <p style='text-align: center; font-weight: bold; color: red'>Não é possível cadastrar mais avaliações, pois a soma dos pontos distribuídos é igual a <?= $PONTO ?><br />Exclua ou altere o peso de alguma avaliação para adicionar uma nova.</p>
+                <p style='text-align: center; font-weight: bold; color: red'>Não é possível cadastrar mais avaliações, pois a soma dos pontos distribuídos é igual a <?= $PONTO ?> ou há recuperação cadastrada.<br />Exclua a recuperação ou alguma avaliação ou altere o peso de alguma avaliação para adicionar uma nova.</p>
                     <?php
                 }
             }
