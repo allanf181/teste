@@ -34,8 +34,8 @@ $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.e
         AND (n.situacao IS NULL or n.situacao = 'Em Curso')
         AND flag = 5
         $sqlCodigo
-	GROUP BY d.numero
-        ORDER BY n.bimestre";
+	GROUP BY a.codigo
+        ORDER BY n.bimestre,d.numero";
 //echo $sql;
 $result = mysql_query($sql);
 
