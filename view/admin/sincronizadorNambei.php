@@ -49,11 +49,12 @@ $notas = new NotasFinais();
                     <?php
                     // DISCIPLINAS QUE AGUARDAM O RODA
                     if ($reg['title']=="Consulta Roda"){
-                        echo "<div style='border: 2px solid red'>";
+                        echo "<div style='border: 2px solid red; padding: 5px;'>";
                             echo "<div id='aguardandoRoda'>";
                             echo "<p style='background: red; color: white; text-align: center'>Docentes aguardando o Roda:</p>";
+                            echo "<p style='background: red; color: white; text-align: center; padding-bottom: 5px'>Filtrar: <input type='text' id='filtro' /></p>";
                             foreach ($notas->getDisciplinasRoda() as $atribuicao){
-                                echo "<p><a  title='Clique para consultar o Roda para esta disciplina' href=\"javascript:$('#".$reg['file']."Retorno').load('db2/db2ConsultaDisciplinas.php?atribuicao=".$atribuicao['codigo']."');void(0);\">".$atribuicao['professor']." [".$atribuicao['disciplina']."] ".$atribuicao['turma']." ".$atribuicao['curso']." </a></p>";
+                                echo "<p class='resultado'><a  title='Clique para consultar o Roda para esta disciplina' href=\"javascript:$('#".$reg['file']."Retorno').load('db2/db2ConsultaDisciplinas.php?atribuicao=".$atribuicao['codigo']."');void(0);\">".$atribuicao['professor']." [".$atribuicao['disciplina']."] ".$atribuicao['turma']." ".$atribuicao['curso']." </a></p>";
                                 echo "<div id='resultadoRoda".$atribuicao['codigo']."'></div>";
                             }
                             echo "</div>";
@@ -115,3 +116,17 @@ $notas = new NotasFinais();
         </tr>
     </table>
 </form>
+<script>
+    $(document).ready(function () {
+        $('#filtro').keyup(function(){
+            $('.resultado').each(function(){
+                if ($(this).html().toUpperCase().indexOf($('#filtro').val().toUpperCase())>=0){
+                    $(this).show();
+                }
+                else{
+                    $(this).hide();
+                }
+            });
+        });
+    });    
+</script>
