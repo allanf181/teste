@@ -428,7 +428,7 @@ if ($_GET['opcao'] == '') {
                                 <td colspan="2" style="; padding: 5px">Professor, os alunos <?= $instrumento ?> estar&atilde;o dispon&iacute;veis ap&oacute;s a exporta&ccedil;&atilde;o das notas para o DigitaNotas e o Roda for executado.</td>
                                 <td>&nbsp;</td>
                             </tr>
-                            <?php
+                            <?php 
                         }
                         $fecharDiario = "<br />Pode finalizar o diário.";
                         $paramsQde = array('atribuicao' => $atribuicao);
