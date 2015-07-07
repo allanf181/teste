@@ -18,6 +18,9 @@ $atribuicao = new Atribuicoes();
 require CONTROLLER . "/professor.class.php";
 $prof = new Professores();
 
+require CONTROLLER . "/notaFinal.class.php";
+$notaFinal = new NotasFinais();
+
 // DELETE
 if ($_GET["opcao"] == 'delete') {
     $ret = $atribuicao->delete($_GET["codigo"]);
@@ -144,6 +147,7 @@ require PATH . VIEW . '/system/paginacao.php';
         <th>Professor</th>
         <th width="70px">Turma</th>
         <th>Per&iacute;odo</th>
+        <th>Aguarda Roda?</th>
         <th align="center" width="50">&nbsp;&nbsp;
             <input type="checkbox" id="select-all" value="">
             <a href="#" class='item-excluir'>
@@ -158,7 +162,7 @@ require PATH . VIEW . '/system/paginacao.php';
         $disc = $reg['bimestre'] . '['. $reg['turno'] .']';
         ?>
         <tr <?= $cdif ?>>
-            <td><?= $reg['numero'] ?></td>
+            <td><?= $reg['numero']."=>".$reg['atribuicao']."(".$prof->getProfessor($reg['atribuicao']).")" ?></td>
             <td>
                 <a data-placement="right" data-content='Clique aqui para abrir o Di&aacute;rio desta disciplina.' title="<?= $reg['disciplina'] .' '. $disc ?>" target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'>
                 <?= abreviar($reg['disciplina'], 30).$disc ?>
@@ -167,6 +171,7 @@ require PATH . VIEW . '/system/paginacao.php';
             <td align='left'><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1) ?></td>
             <td align=left><?= $reg['turma'] ?></td>
             <td align=left><?= $reg['periodo'] ?></td>            
+            <td align=center><?= ($notaFinal->isAguardandoRoda($reg['atribuicao']))?'Sim':'-' ?></td>            
             <td align='center'>
                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['atribuicao']) ?>' />
             </td>

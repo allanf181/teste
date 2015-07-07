@@ -286,6 +286,27 @@ class NotasFinais extends Notas {
             return false;
         }
     }    
+    
+    // VERIFICA SE A ATRIBUICAO ESTÁ AGUARDANDO O RODA
+    public function isAguardandoRoda($atribuicao) {
+        $bd = new database();
+
+        // efetuando a consulta para listagem
+        $sql = "select count(*) n
+            from NotasFinais n
+            where n.atribuicao=:atribuicao 
+            and (n.flag=0 or (n.flag=5 and n.situacao='Em Curso' and n.recuperacao is null)) ";        
+
+        $params = array('atribuicao' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+//        $res = $bd->selectDB($sql);
+
+        if ($res[0]['n']>0) {
+            return true;
+        } else {
+            return false;
+        }
+    }        
 }
 
 ?>
