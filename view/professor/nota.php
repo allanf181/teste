@@ -48,6 +48,11 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 $avaliacao = dcrip($_GET["avaliacao"]);
 $atribuicao = dcrip($_GET["atribuicao"]);
 
+$nf = $notaFinal->checkIfRoda($atribuicao);
+if ($DEBUG)
+    var_dump($nf);
+
+
 // Cabeçalho
 $resAval = $aval->getAvaliacao($avaliacao);
 $travaFinal = $resAval['final'];
@@ -74,7 +79,8 @@ $travaFinal = $resAval['final'];
 <br><hr>
 
 <?php
-if ($_SESSION['dataExpirou'])
+
+if ($_SESSION['dataExpirou'] || ($nf['flag5'] && $resAval['tipo']!='recuperacao') || ($nf['reg'] < $nf['flag5'])|| ($nf['flag5'] && $nf['totalRec']==$nf['total']))
     $disabled = "disabled='disabled'";
 ?>
 <script>
@@ -87,7 +93,28 @@ if ($_SESSION['dataExpirou'])
         messages: 'br'
     })
 </script>
-
+<?php
+        if ($DEBUG){
+//            echo "reav:".$resAval['tipo'];
+            var_dump($resAval);
+        }
+        
+        if($nf['flag5'] && !$_SESSION['dataExpirou'] && ($nf['flag5'] && $nf['totalRec']==$nf['total'])){
+            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px auto 30px auto'>Notas finalizadas.<br>Pode finalizar o diário.</p>";
+        }
+        else if($nf['flag5'] && $nf['total']!=$nf['reavaliados'] && $resAval['tipo']!='recuperacao' && ($nf['flag5'] && $nf['totalRec']!=$nf['total'])){
+            echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 10px auto 30px auto; padding: 5px'>Permitido lançamento de Reavaliação/IFA somente.</p>";
+        }
+        else if($nf['reg'] < $nf['flag5'] && !$_SESSION['dataExpirou']){
+            echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 10px auto 30px auto'>Notas e faltas enviadas.<br>Aguardando o Roda.</p>";
+        }
+        else if ($_SESSION['dataExpirou']){
+            ?>
+            <p style='text-align: center; font-weight: bold; color: red;margin-bottom: 20px;'>Di&aacute;rio Fechado.<br>
+            <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a></p>
+            <?php
+        }         
+?>
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table id="listagem" border="0" align="center">
@@ -153,13 +180,14 @@ if ($_SESSION['dataExpirou'])
                             ?>
                             <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
                             <?php
-                            if ($notaFinal->checkIfExportDN($atribuicao, $reg['matricula'], $bimNF, $tipoDN)) {
+//                            if ($notaFinal->checkIfExportDN($atribuicao, $reg['matricula'], $bimNF, $tipoDN)) {
+                            if ($disabled) {
                                 ?>
-                                <a href='#' data-placement='top' title='Nota exportada para o DigitaNotas' data-content='Aten&ccedil;&atilde;o, a m&eacute;dia j&aacute; foi exportada! <br> A altera&ccedil;&atilde;o s&oacute; ser&aacute; efetivada pela secretaria diretamente no Nambei. <br><br>Favor informar a secretaria.'>
+<!--                                <a href='#' data-placement='top' title='Nota exportada para o DigitaNotas' data-content='Aten&ccedil;&atilde;o, a m&eacute;dia j&aacute; foi exportada! <br> A altera&ccedil;&atilde;o s&oacute; ser&aacute; efetivada pela secretaria diretamente no Nambei. <br><br>Favor informar a secretaria.'>
                                     DN
-                                </a>
+                                </a>-->
                                 <?php
-                                $disabled = 'disabled';
+//                                $disabled = 'disabled';
                             }
                             ?>
                             <input <?= $disabled ?> id='A<?= $reg['codAluno'] ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
@@ -235,13 +263,13 @@ if ($_SESSION['dataExpirou'])
             }
             ?>
         </table>
-        <table align="center">
+        <table align="center" width="100%" style="margin-top: 10px">
             <tr><td></td><td>
                     <input type="hidden" value="<?= crip($avaliacao) ?>" name="avaliacao" />
                     <input type="hidden" value="<?= crip($atribuicao) ?>" name="atribuicao" />
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <?php if (!$disabled) { ?>
-                        <input type="submit" value="Salvar" name="salvar" />
+                        <center><input type="submit" value="Salvar" name="salvar" /></center>
                     <?php } ?>
                 </td></tr>
         </table>

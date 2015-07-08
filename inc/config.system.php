@@ -4,7 +4,9 @@
 //           SESSAO DO SISTEMA           //
 //=======================================//
 $TIMEOUT = 20; // MINUTOS;
-$_SESSION_NAME = "IFSP_WD_2014";
+$_SESSION_NAME = "IFSP_WD_".date('Y');
+$DEBUG=0;
+//$DEBUG=1;
 session_name($_SESSION_NAME);
 session_cache_expire($TIMEOUT);
 if (!isset($_SESSION)) { session_start(); }

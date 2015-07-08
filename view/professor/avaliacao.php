@@ -61,11 +61,6 @@ if ($_GET["opcao"] == 'controleDiario') {
         <div id="1" style="visibility: hidden; max-height: 1px; max-width: 1px; overflow:scroll;display:block;;"></div>
         <div id="2" style="visibility: hidden; max-height: 1px; max-width: 1px; overflow:scroll;display:block;;"></div>
         <script>
-//        alert(<?=$ifa?>);
-//        alert(<?=$liberaDN?>);
-        // EXECUTA OS SCRIPTS DE EXPORTACAO DE NOTAS.
-//        $("#1").load('db2/db2DigitaNotas.php');
-////        $("#2").load('db2/db2ConsultaDisciplinas.php');
         $('#obs, #rec_text').hide();
         $('#rec_label').html('');
         var req1 = $.get("db2/db2DigitaNotas.php?atribuicao=<?=$atribuicao?>", function(data) {
@@ -425,7 +420,7 @@ if ($_GET['opcao'] == '') {
                             ?>
                             <tr  id="obs">
                                 <td width = '80' style="text-align: center"><b>Observação:</b></td>
-                                <td colspan="2" style="; padding: 5px">Professor, os alunos <?= $instrumento ?> estar&atilde;o dispon&iacute;veis ap&oacute;s a exporta&ccedil;&atilde;o das notas para o DigitaNotas e o Roda for executado.</td>
+                                <td colspan="2" style="; padding: 5px">Professor, os alunos <?= $instrumento ?> estar&atilde;o dispon&iacute;veis ap&oacute;s a exporta&ccedil;&atilde;o das notas e faltas para o DigitaNotas e o Roda for executado.</td>
                                 <td>&nbsp;</td>
                             </tr>
                             <?php 
@@ -433,11 +428,14 @@ if ($_GET['opcao'] == '') {
                         $fecharDiario = "<br />Pode finalizar o diário.";
                         $paramsQde = array('atribuicao' => $atribuicao);
                         $qdeAvaliacoes = $avaliacao->getQdeAvaliacoes($paramsQde, " AND t.tipo = 'avaliacao' ");
-//echo "<br>Atr: ".$atribuicao;
+
+                        if ($DEBUG)
+                            echo "<br>Atr: ".$atribuicao;
 
                         $libera_nota = 0;
                         $trava_nota = 0;
                         $trava_rec = 0;
+//                        $final=1;
 
                         $bimNF = $res[0]['bimestre'];
                         if ($res[0]['bimestre'] == 0)
@@ -445,8 +443,14 @@ if ($_GET['opcao'] == '') {
 
                         $nf = $notaFinal->checkIfExportDN($atribuicao, null, $bimNF);
                         if (!empty($nf[0]['retorno']) && $nf[0]['flag']==0){
-//                            echo "<script>$('#obs, #notas').hide();</script>";
-                            $nota_text = "PROBLEMA AO EXPORTAR NOTAS, AVISE O ADMINISTRADOR: ".$nf[0]['retorno'];
+                            echo "<script>$('#obs, #recuperacao').hide();</script>";
+                            $nota_text = "<b>ERRO AO EXPORTAR NOTAS, AVISE O ADMINISTRADOR:</b> ".$nf[0]['retorno'];
+                            $nota_text .= "<br><b>Em caso de problema de alteração de notas, solicite liberação na secretaria.</b>";
+                            $nota_text .= "<br><b>Clique no botão ao lado para tentar novamente.</b>";
+//                            $trava_nota=1;
+//                            $trava_rec=1;
+                            $libera_nota=1;
+                            
                         }
                         else{
 //                             echo "<br>nf:".$nf;
@@ -456,10 +460,19 @@ if ($_GET['opcao'] == '') {
 //                            echo "<br>(round(\$res[0]['totalPeso'],2) >= \$PONTO)?".(round($res[0]['totalPeso'],2) >= $PONTO);
 //                            echo "<br>(round(\$res[0]['totalPeso'],2))?".(round($res[0]['totalPeso'],2));
 //                            echo "<br>(\$PONTO)?".($PONTO);
-                            if ((!$nf || $nfd = $nf[0]['total'] - count($nf)) && (round($res[0]['totalPeso'],2) >= $PONTO) && $_SESSION['dataExpirou']==0) {
-//                                echo "<br>".($nf[0]['total']);
-//                                echo "<br>".$situacoes;
-                                $nota_text = 'Professor, ao finalizar suas notas, clique no bot&atilde;o para exportar para o DigitaNotas';
+//                            
+//                            echo "<hr>";
+//                            echo "<br>\$rec['notasRec']>0:".($rec['notasRec']>0);
+//                            echo "<br>res[0]['bimestrjjje']==0?".($res[0]['bimestre']==0);
+//                            echo "<br>(\$rec['totalRec']==\$rec['total'])?".($rec['totalRec']==$rec['total']);
+//                            echo "<br>(\$rec['situacoes']==\$rec['reg'] ):".($rec['situacoes']==$rec['reg'] );
+                            // ALTERADA
+                            if ((!$nf || ($nfd = $nf[0]['total'] - count($nf) && $nf[0]['total']==$situacoes)) && (round($res[0]['totalPeso'],2) >= $PONTO) && $_SESSION['dataExpirou']==0) {
+//                                echo "<br>nftotal:".($nf[0]['total']);
+//                                echo "<br>sit:".$situacoes;
+//                                echo "<br>nfd:".$nfd;
+//                                echo "<br>flag5:".($nf[0]['flag5']);
+                                $nota_text = 'Professor, ao finalizar suas notas e faltas, clique no bot&atilde;o para exportar para o DigitaNotas';
                                 $libera_nota = 1;
                                 $trava_nota = 0;
 //                                $liberaDN=1;
@@ -469,7 +482,7 @@ if ($_GET['opcao'] == '') {
 //                                echo "<br>".$res[0]['bimestre'];
                                 $nota_text = "Novas enviadas!";
                                 if ($res[0]['bimestre']>0 && $res[0]['bimestre']<4 && $_SESSION['dataExpirou']==0)
-                                    $nota_text = "Novas enviadas! <br>Pode fechar o diário!";
+                                    $nota_text = "Novas enviadas! <br>Pode finalizar o diário!";
                                 $rec_text = 'Professor, suas notas foram finalizadas, mas o Roda ainda n&atilde;o foi executado para listar os alunos de recupera&ccedil;&atilde;o. Aguarde!';
 
                                 $trava_nota=1;
@@ -485,13 +498,27 @@ if ($_GET['opcao'] == '') {
 
                             $libera_rec = 0;
                             $rec = $notaFinal->checkIfRoda($atribuicao);
-//                                echo "<br>reg: ".$rec['reg'];
-//                                echo "<br>total: ".$rec['total'];
-//                                echo "<br>situacoes: ".$rec['situacoes'];
-//                                echo "<br>notasRec: ".$rec['notasRec'];
-                            if (!$rec['reg']) {
+                            if ($DEBUG){
+                                echo "<br>reg: ".$rec['reg'];
+                                echo "<br>total: ".$rec['total'];
+                                echo "<br>situacoes: ".$rec['situacoes'];
+                                echo "<br>notasRec: ".$rec['notasRec'];
+                            }
+                            if (!$rec['reg'] || $libera_nota) {
                                 $rec_text = 'Professor, as notas ainda n&atilde;o foram finalizadas.';
-                            } else if ($rec['reg'] && !$rec['total'] && $rec['situacoes']==0 && ($res[0]['bimestre']==1)) {
+                            } 
+                            else if ($_SESSION['dataExpirou']){
+                                echo "<script>$('#obs, #notas, #rec_label').hide();</script>";
+                                $rec_text = "Diário Fechado.";
+                            }
+                            else if ($rec['reavaliados']>0 || ($rec['notasRec']>0 && $res[0]['bimestre']==0) || ($rec['totalRec']==$rec['total'] && $rec['situacoes']==$rec['reg'] )) {
+//                                echo "<br>".$res[0]['bimestre'];
+                                echo "<script>$('#obs, #notas, #rec_label').hide();</script>";
+//                                $rec_label = 'Notas j&aacute; finalizadas. '.$fecharDiario;
+                                $rec_text = 'Notas j&aacute; finalizadas. '.$fecharDiario;
+                                $trava_rec = 1;                        
+                            } 
+                            else if ($rec['reg'] && !$rec['total'] && $rec['situacoes']==0 && ($res[0]['bimestre']==1)) {
                                 $libera_nota = 0;
                                 $rec_text = 'Professor, suas notas foram finalizadas, mas o Roda ainda n&atilde;o foi executado para listar os alunos de recupera&ccedil;&atilde;o. Aguarde!';
 //                                $nota_text = 'Professor, suas notas foram finalizadas!'.$fecharDiario;
@@ -506,29 +533,31 @@ if ($_GET['opcao'] == '') {
                                 $ifa=1; // HABILITA SOMENTE CRIACAO DE AVALIACAO DO TIPO IFA
                                 $liberaDN=1;
                                 $rec_text = 'ATENÇÃO: Há alunos aptos à aplicação de '.$instrumento.'!<BR>Professor, após digitar suas notas de '.$instrumento.', clique no bot&atilde;o ao lado para exportar para o DigitaNotas.';
-                            } else if (($rec['notasRec']>0 && $res[0]['bimestre']==0) || ($rec['totalRec']==$rec['total'] && $rec['situacoes']==$rec['reg'] )) {
-//                                echo "<br>".$res[0]['bimestre'];
-                                echo "<script>$('#obs, #notas, #rec_label').hide();</script>";
-//                                $rec_label = 'Notas j&aacute; finalizadas. '.$fecharDiario;
-                                $rec_text = 'Notas j&aacute; finalizadas. '.$fecharDiario;
-                                $trava_rec = 1;                        
                             } else if ($rec['totalRec']) {
 //                                echo "<br>".$rec['totalRec'];
                                 $rec_text = 'Notas j&aacute; finalizadas. Aguarde a execu&ccedil;&atilde;o do Roda para finalizar seu di&aacute;rio.';
                                 $trava_rec = 1;
+                                $final=0;
+                                $trava_nota=0;
+                            }
+                            else if (!$trava_nota && !$$trava_rec){
+                                echo "<script>$('#obs, #notas').hide();</script>";
+                                $rec_text = "Aguardando execução do Roda.";
+                                $trava_rec = 1;          
+                                $trava_nota = 1;
                             }
                         }
                         
                         ?>
                             <tr id="notas">
-                            <td style="text-align: center"><b>Notas:</b></td>
+                            <td style="text-align: center; padding-right: 20px;"><b>Notas:</b></td>
                             <td colspan="2" id="nota_text"><?= $nota_text ?></td>
                             <td>
                                 <div id="nota_retorno">
                                     <?php if ($libera_nota) {
                                         ?>
                                         <a id="digita-nota" title='Exportar notas para o DigitaNotas' data-content='Aten&ccedil;&atilde;o professor, as notas ser&atilde;o exportadas para o DigitaNotas, altera&ccedil;&otilde;es posteriores somente pela secretaria.' class = 'nav questionario_item' href = "#">
-                                            <img style="padding-right: 30px; padding-top: 10px" class='' src = "<?= ICONS . '/sync.png' ?>" />
+                                            <img style="padding-right: 10px; padding-top: 0px; width: 30px" class='' src = "<?= ICONS . '/sync.png' ?>" />
                                         </a>
                                         <?php
                                     }
@@ -573,7 +602,7 @@ if ($_GET['opcao'] == '') {
                 <th width="150">Valor</th>
                 <th align="center" width="50">&nbsp;&nbsp;
                 <?php
-                if (!$_SESSION['dataExpirou'] && !$trava_nota){
+                if (!$_SESSION['dataExpirou'] && !$trava_nota && !$final && $libera_nota){
                 ?>
                     <input type="checkbox" id="select-all" value="">
                     <a href="#" class='item-excluir'>
@@ -606,8 +635,11 @@ if ($_GET['opcao'] == '') {
                 if ($reg['tipo'] == 'pontoExtra')
                     $totalPesoOrPonto = $reg['totalPonto'];
 
-                if ($reg['tipo'] == 'recuperacao')
+                if ($reg['tipo'] == 'recuperacao'){
                     $final = 1;
+                    if (!$trava_nota)
+                        echo "<script>$('#nota_text').append('<br><b style=\'color: red\'>Caso deseje alterar as notas das avaliações regulares, exclua a reavaliação/IFA.</b>');</script>";
+                }
 
                 if ($reg['tipo'] == 'avaliacao')
                     $tipoIns = 'avaliacao';
@@ -616,7 +648,16 @@ if ($_GET['opcao'] == '') {
                 $titleAval = strtoupper($reg['recuperacao']);
                 ?>
                 <tr <?= $cdif ?>><td><?= $i-- ?></td>
-                    <td><a class='nav' title='Clique aqui para lan&ccedil;ar as notas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/nota.php?atribuicao=<?= crip($atribuicao) ?>&avaliacao=<?= crip($reg['codigo']) ?>');void(0);"><?= $reg['dataFormatada'] ?></a></td>
+                    <td>
+                        <?php if (!$_SESSION['dataExpirou'] && $final && $reg['tipo'] == 'AVALIACAO'){ ?>
+                        <p style='color: darkgray;' title='Não permitido. Exclua a reavaliação/IFA para alterar notas'>
+                            <img class='botao' src='<?= ICONS ?>/warning.png' />
+                            <?= $reg['dataFormatada'] ?>
+                        </p>
+                        <?php }else{ ?>
+                        <a class='nav' title='Clique aqui para lan&ccedil;ar as notas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/nota.php?atribuicao=<?= crip($atribuicao) ?>&avaliacao=<?= crip($reg['codigo']) ?>');void(0);"><?= $reg['dataFormatada'] ?></a>
+                        <?php } ?>
+                    </td>
                     <td><?= $reg['nome'] ?></td>
                     <td><?= $reg['sigla'] ?></td>
                     <td><?= $$reg['tipo'] . $sub ?> </td>
@@ -631,7 +672,7 @@ if ($_GET['opcao'] == '') {
                         ?>
                         <td align='center' width="20">
                             <?php
-                            if ((!$trava_nota && !$final) || ($final && !$trava_rec)) {
+                            if ((!$trava_nota && !$final) || ($final && !$trava_rec) || $libera_nota) {
                                 ?>
                                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
 
@@ -650,14 +691,18 @@ if ($_GET['opcao'] == '') {
     <center>
         <br />
         <?php
-//echo "=".$_SESSION['dataExpirou'];
-//echo "<br>trava=".$trava_nota;
-//echo "<br>final=".$final; 
-//echo "<br>travarec=".$trava_rec;
-//echo "<br>libera_nota=".$libera_nota;
-
-        if ((!$trava_nota && !$final) || ($final && !$trava_rec)) {
-            if ((($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4))) {
+        if ($DEBUG){
+            echo "dataExpirou?=".$_SESSION['dataExpirou'];
+            echo "<br>trava=".$trava_nota;
+            echo "<br>final=".$final; 
+            echo "<br>travarec=".$trava_rec;
+            echo "<br>libera_nota=".$libera_nota;
+            echo "<br>travanota".$trava_nota;
+            echo "<br>ifa:".$ifa;
+            echo "<br>status:".$status;
+        }
+        if ((!$trava_nota && !$final) || ($final && !$trava_rec) || $_SESSION['dataExpirou'] || $libera_nota) {
+            if ($libera_nota || (($_SESSION['dataExpirou'] || ($calculo == 'media' || $calculo == 'formula') && ($res[0]['totalPeso'] < $PONTO) || !$recuperacao || (!$recFinal && $bimestre == 4)))) {
                 ?>
                 <?php if ($_SESSION['dataExpirou'] == 0) {
                     if (!$trava_nota){
@@ -665,8 +710,6 @@ if ($_GET['opcao'] == '') {
                     <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&pontos=<?= crip(round($reg['totalPeso'], 2)) ?>&final=<?= crip($final) ?>&tipo=<?= crip($tipoIns) ?>');void(0);" title="Cadastrar Nova Avalia&ccedil;&atilde;o"><img class='botao' src='<?= ICONS ?>/av.png' /></a>
                     <?php 
                     }
-//echo "<br>".$trava_nota;
-//echo "<br>".$ifa;
                     if (!$trava_nota && !$ifa){ ?>
                         &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('pontoExtra') ?>&pontos=<?= crip(round($reg['totalPonto'], 2)) ?>');void(0);" title="Cadastrar Ponto Extra (adicionado na m&eacute;dia)"><img class='botao' src='<?= ICONS ?>/pExtra.png' /></a>
                         &nbsp;&nbsp;<a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>&tipo=<?= crip('substitutiva') ?>');void(0);" title="Cadastrar Prova Substitutiva"><img class='botao' src='<?= ICONS ?>/change.png' /></a>

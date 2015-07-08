@@ -85,6 +85,13 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 <b>Vers&atilde;o 1.441</b>
 <br> - Adi&ccedil;&atilde;o dos campos Crit&eacute;rios e Metodologia em Planos de Aula.
 <br> - Retirada dos Question&aacute;rios do Perfil Professor/Aluno.
+<br> - Integração com RodaWeb.
+<br> - Correções e ajustes na integração com RodaWeb.
+<br> - Listagem de disciplinas aguardando Roda na interface do sincronizador Nambei.
+<br> - Inclusão de filtro na listagem de disciplinas aguardando Roda.
+<br> - Nomes das avaliações no campo "observações" do diário.
+<br> - Campo "Aguardando Roda" na listagem de Atribuições;
+<br> - Controle de alteração e reenvio de notas quando há liberação pela CRE;
 <br />
 <br />
 <b>Vers&atilde;o 1.440</b>

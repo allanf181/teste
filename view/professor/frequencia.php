@@ -24,6 +24,11 @@ $ma = new MatriculasAlteracoes();
 require CONTROLLER . "/ocorrencia.class.php";
 $ocorrencia = new Ocorrencias();
 
+require CONTROLLER . "/notaFinal.class.php";
+$notaFinal = new NotasFinais();
+
+
+
 if ($_POST["opcao"] == 'InsertOrUpdate') {
     $_GET["aula"] = $_POST["aula"];
     $_GET["atribuicao"] = $_POST["atribuicao"];
@@ -42,7 +47,11 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 $aula = dcrip($_GET["aula"]);
 $atribuicao = dcrip($_GET["atribuicao"]);
 
-if ($_SESSION['dataExpirou'])
+$nf = $notaFinal->checkIfRoda($atribuicao);
+if ($DEBUG)
+    var_dump($nf);
+
+if ($_SESSION['dataExpirou'] ||  ($nf['flag5'] && $nf['totalRec']==$nf['total']))
     $disabled = "disabled='disabled'";
 
 // Cabeçalho
@@ -66,6 +75,20 @@ $dadosAula = $aulaFreq->getAula($aula);
         messages: 'br'
     })
 </script>
+<?php
+        if($nf['flag5'] && !$_SESSION['dataExpirou'] && ($nf['flag5'] && $nf['totalRec']==$nf['total'])){
+            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 0 auto 30px auto'>Notas finalizadas.<br>Pode finalizar o diário.</p>";
+        }
+        else if($nf['reg'] < $nf['flag5'] && !$_SESSION['dataExpirou']){
+            echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 0 auto 30px auto'>Notas e faltas enviadas.<br>Aguardando o Roda.</p>";
+        }
+        else if ($_SESSION['dataExpirou']){
+            ?>
+            <p style='text-align: center; font-weight: bold; color: red;margin-bottom: 20px;'>Di&aacute;rio Fechado.<br>
+            <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a></p>
+            <?php
+        }        
+?>
 <div id="html5form" class="main">
     <form id="form_padrao">
         <table id="listagem" border="0" align="center">
@@ -145,7 +168,7 @@ $dadosAula = $aulaFreq->getAula($aula);
             ?>
         </table>
         <?php
-        if (!$_SESSION['dataExpirou']) {
+        if (!$_SESSION['dataExpirou'] && !$nf['flag5'] || ($nf['flag5'] && $nf['totalRec']!=$nf['total'])) {
             ?>
             <table align="center" style="width: 100%; margin-top: 10px;">
                 <tr><td></td><td align="center">

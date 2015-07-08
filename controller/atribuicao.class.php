@@ -345,7 +345,7 @@ class Atribuicoes extends Generic {
         $atribuicoes = explode(',', $params["codigo"]);
 
         foreach ($atribuicoes as $atribuicao) {
-            /*
+            
             if ($params['botao'] == 'fechou') {
                 $params_new = array('codigo' => $atribuicao, 'status' => 1, 'prazo' => 'NULL');
                 if ($res = $this->insertOrUpdate($params_new))
@@ -362,7 +362,7 @@ class Atribuicoes extends Generic {
                     $bd->updateDB($sql, $params_nota);
                 }
             }
-            */
+            
 
             if ($params['botao'] == 'liberou') {
                 $params_new = array('codigo' => $atribuicao);
@@ -370,6 +370,20 @@ class Atribuicoes extends Generic {
                 if ($res = $bd->updateDB($sql, $params_new))
                     $ok++;
 
+                //ALTERAR NOTASFINAIS PARA SINCRONIZAR NOVAMENTE
+                if (!class_exists('NotasFinais'))
+                    require CONTROLLER . "/notaFinal.class.php";
+                $nota = new NotasFinais();
+
+                
+                  // EXCLUINDO REGISTROS PARA PERMITIR REENVIO AO RODA
+//                if ($nota->fecharDiario($atribuicao)) {
+                    $params_nota = array('codigo' => $atribuicao);
+//                    $sql = "UPDATE NotasFinais SET sincronizado='' WHERE atribuicao=:codigo AND flag <> 5";
+                    $sql = "delete from NotasFinais WHERE atribuicao=:codigo";
+                    $bd->updateDB($sql, $params_nota);
+//                }
+                
                 //ENVIANDO EMAIL
                 if ($res) {
                     if ($res['STATUS'] == 'OK') {

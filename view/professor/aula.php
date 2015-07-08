@@ -26,6 +26,9 @@ $ensalamento = new Ensalamentos();
 require CONTROLLER . "/logSolicitacao.class.php";
 $log = new LogSolicitacoes();
 
+require CONTROLLER . "/notaFinal.class.php";
+$notaFinal = new NotasFinais();
+
 // PEDIDO DE LIBERAÇÃO DO DIÁRIO
 if ($_GET["motivo"]) {
     $paramsLog['dataSolicitacao'] = date('Y-m-d h:i:s');
@@ -55,6 +58,13 @@ if ($_GET["opcao"] == 'delete') {
     $ret = $aula->delete($_GET["codigo"]);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
     $_GET['opcao'] = null;
+}
+
+
+$nf = $notaFinal->checkIfRoda($atribuicao);
+if ($DEBUG){
+    var_dump($nf);
+    echo "<br>dataExpirou?".$_SESSION['dataExpirou'] ;
 }
 
 if ($_GET['opcao'] == 'insert') {
@@ -160,12 +170,20 @@ if ($_GET['opcao'] == '') {
     <hr>
 
     <center>    
-        <?php if (!$_SESSION['dataExpirou']) {
+        <?php 
+        if($nf['flag5'] && !$_SESSION['dataExpirou'] && (!$nf['total'] || ($nf['flag5'] && $nf['totalRec']==$nf['total']))){
+            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px'>Notas finalizadas.<br>Pode finalizar o diário.</p>";
+        }
+        else if($nf['reg'] < $nf['flag5']  && !$_SESSION['dataExpirou']){
+            echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 10px'>Notas e faltas enviadas.<br>Aguardando o Roda.</p>";
+        }
+        else if (!$_SESSION['dataExpirou']) {
             ?>
             <a class="nav" href="javascript:$('#professor').load('<?= $SITE ?>?opcao=insert&atribuicao=<?= crip($atribuicao) ?>');void(0);" title="Cadastrar Nova">
                 <img class='botao' src='<?= ICONS ?>/add.png' /></a>
             <?php
-        } else {
+        } 
+        else {
             ?>
             <p style='text-align: center; font-weight: bold; color: red'>Di&aacute;rio Fechado.</p>
             <a href='#' id="unlock" title='Clique aqui para solicitar a liberação do diário.'><img src="<?= ICONS ?>/unlock.png"></a>
@@ -177,7 +195,17 @@ if ($_GET['opcao'] == '') {
 
     <?php if ($res[0]['aulasDadas']) { ?>
         <table id="listagem" border="0" align="center">
-            <tr class="listagem_tr"><th align="center" width="40">#</th><th align="center" width="100">Data</th><th align='center' width="50">Qtd</th><th align='center'>Conte&uacute;do</th><th align="center" width="50">&nbsp;&nbsp;<input type="checkbox" id="select-all" value=""><a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a></th></tr>
+            <tr class="listagem_tr"><th align="center" width="40">#</th><th align="center" width="100">Data</th><th align='center' width="50">Qtd</th><th align='center'>Conte&uacute;do</th>
+                <th align="center" width="50">
+                <?php
+                if (!$_SESSION['dataExpirou'] && !$nf['flag5'] || ($nf['totalRec']!=$nf['total'])) {                    
+                ?>
+                    &nbsp;&nbsp;<input type="checkbox" id="select-all" value="">
+                    <a href="#" class='item-excluir'><img class='botao' src='<?= ICONS ?>/delete.png' /></a>
+            <?php
+                }
+            ?>
+                </th></tr>
             <?php
             $i = count($res);
             foreach ($res as $reg) {
@@ -187,7 +215,7 @@ if ($_GET['opcao'] == '') {
                     <td><a class='nav' data-placement='top' title='Clique aqui para lan&ccedil;ar as faltas.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/frequencia.php?atribuicao=<?= crip($atribuicao) ?>&aula=<?= crip($reg['codigo']) ?>');void(0);"><?= $reg['data_formatada'] ?></a></td>
                     <td><?= $reg['quantidade'] ?></td><td><?= htmlspecialchars($reg['conteudo']) ?></td>
                     <?php
-                    if ($_SESSION['dataExpirou']) {
+                    if ($_SESSION['dataExpirou'] || ($nf['flag5'] && $nf['totalRec']==$nf['total'])) {
                         ?>
                         <td align='center'><a href='#' title='Di&aacute;rio Fechado'>Fechado</a></td>
                         <?php

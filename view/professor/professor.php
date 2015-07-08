@@ -51,7 +51,7 @@ $temPendencias = $notaFinal->checkIfRoda($atribuicao);
 if ($_GET["opcao"] == 'controleDiario') {
     $status = $_GET["status"];
 
-    if ($temPendencias['reg'] && ($temPendencias['situacoes'] == $temPendencias['reg'] || $temPendencias['totalRec']==0)) {
+    if ($temPendencias['reg'] && ($temPendencias['reavaliados']>0 || $temPendencias['situacoes'] == $temPendencias['reg'] || $temPendencias['totalRec']==0)) {
         $params['codigo'] = $atribuicao;
         $params['status'] = $status;
         $params['prazo'] = null;
@@ -66,10 +66,10 @@ if ($_GET["opcao"] == 'controleDiario') {
         $paramsLog['solicitacao'] = 'Professor fechou o diário manualmente.';
         $log->insertOrUpdate($paramsLog);
     } else {
-        echo "<br>".$temPendencias['reg'];
-        echo "<br>".$temPendencias['totalRec'];
-                echo "<br>".$temPendencias['reg'];
-                echo "<br>".$temPendencias['situacoes'];
+//        echo "<br>".$temPendencias['reg'];
+//        echo "<br>".$temPendencias['totalRec'];
+//        echo "<br>".$temPendencias['reg'];
+//        echo "<br>".$temPendencias['situacoes'];
         mensagem('NOK', 'FALSE_CLOSE_CLASS_REGISTRY');
     }
 }
@@ -86,6 +86,8 @@ if ($_GET["atribuicao"]) {
         extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
 
         //INFORMA AS CONDICOES DO DIARIO
+//        var_dump($res);
+//        echo "<br>limite: ".$LIMITE_DIARIO_PROF;
         if ($info1)
             mensagem('INFO', $info1, $info2);
 
@@ -105,7 +107,24 @@ if ($_GET["atribuicao"]) {
         if (empty($aulaPrevista))
             $aulaPrevista=0;
         
-        if (!$status && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima'] && $temPendencias['reg'] && $temPendencias['totalRec'] == $temPendencias['reg']) {
+        if ($DEBUG){
+            echo "<br>info1: $info1";
+            echo "<br>info2: $info2";
+            echo "<br>status: $status";
+            echo "<br>\$qdeAulas: $qdeAulas";
+            echo "<br>\$aulaPrevista: $aulaPrevista";
+            echo "<br>\$qdeAvaliacoes['avalCadastradas']: ".$qdeAvaliacoes['avalCadastradas'];
+            echo "<br>\$qdeAvaliacoes['qdeMinima']: ".$qdeAvaliacoes['qdeMinima'];
+            echo "<br>\$temPendencias['reg']: ".$temPendencias['reg'];
+            echo "<br>\$temPendencias['totalRec']: ".$temPendencias['totalRec'];
+            echo "<br>\situacoes: ".$temPendencias['situacoes'];
+            echo "<br>total: ".$temPendencias['total'];
+            echo "<br>reavaliados: ".$temPendencias['reavaliados'];
+            echo "<br>flag5: ".$temPendencias['flag5'];
+            echo "<br>\$bimestreNome: ".$bimestreNome;
+        }
+        
+        if (!$status && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima'] && $temPendencias['reg'] && (($bimestreNome != "SEMESTRAL" && $bimestreNome != "ANUAL" && $temPendencias['flag5']==$temPendencias['reg']) || $temPendencias['reavaliados']>0 || $temPendencias['situacoes'] == $temPendencias['reg'])) {
             $pergunta = $QUESTION_DIARIO2;
         }
         ?>

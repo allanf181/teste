@@ -274,8 +274,9 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
 
     $pdf->Cell($larguraDia, $alturaLinha, "", 0, 0, 'C', true);
 
+    $listaAvaliacoes = $aval->getAvaliacoes($atribuicao);
     if ($qde_avaliacao != 0) {
-        foreach ($aval->getAvaliacoes($atribuicao) as $reg) {
+        foreach ($listaAvaliacoes as $reg) {
             $pdf->SetFont($fonte, '', 6);
             $pdf->Cell($larguraDia, $alturaLinha, utf8_decode($reg['sigla']), 1, 0, 'C', true);
         }
@@ -362,6 +363,12 @@ $limit = 120; // tamanho limite
 
 $observ = $aulas[0]['observacoes'];
 $competencias = $aulas[0]['competencias'];
+
+// INCLUSAO DOS NOMES DAS AVALIAÇÕES NO CAMPO DE OBSERVAÇÕES
+$observ .= "Avaliações aplicadas:\n";
+foreach ($listaAvaliacoes as $i) {    
+    $observ .= ($i['data'].": ".$i['nome']."(".$i['sigla'].")\n");
+}
 
 $k = 0;
 $j = 0;
