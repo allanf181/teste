@@ -91,6 +91,8 @@ if (!$res) {
 
 //LISTA COMPONENTES
 $resC = $componente->listComponentes($codigo);
+//echo "<br>$codigo";
+//var_dump($resC);
 //LISTA ATIVIDADES
 $resAtv = $atvECmt->listAtvECmt($codigo, 'atv');
 //LISTA COMPLEMENTACAO
@@ -219,9 +221,15 @@ if ($VALIDO)
                             </a>
                         </th>
                         <th colspan="4" align="center">
-                            <input type="submit" <?= $disabled ?> style="width: 50px;" value="Salvar" id="salvar">
-                            &nbsp;&nbsp;&nbsp;
-                            <input type="submit" style="width: 50px" <?= $disabled ?> value="Enviar" id="enviar">
+                            <?php
+                            if (!$disabled){
+                            ?>
+                                <input type="submit" <?= $disabled ?> style="width: 50px;" value="Salvar" id="salvar">
+                                &nbsp;&nbsp;&nbsp;
+                                <input type="submit" style="width: 50px" <?= $disabled ?> value="Enviar" id="enviar">
+                            <?php
+                            }
+                            ?>
                         </th>
                     </tr>
                 </thead>
@@ -282,6 +290,29 @@ if ($VALIDO)
                         $periodo[2] = 'Vespertino';
                         $periodo[3] = 'Noturno';
 
+                        require CONTROLLER . "/horario.class.php";
+                        $horarios = new horarios();
+                        $hor1 = $horarios->listHorarios();
+                        $inicio = array("","","","");
+                        foreach ($hor1 as $h => $hh){
+                            if (empty($tempoDuracaoAula))
+                                $tempoDuracaoAula="00:".(date("i",strtotime($hh['fim']))-date("i",strtotime($hh['inicio'])));
+                            $hinicio = strtotime($hh['inicio']);
+                            for ($i=1; $i<=3; $i++){
+                                if (strpos($hh[1],substr($periodo[$i], 0, 1))){
+                                    if ($inicio[$i]=="")
+                                        $inicio[$i]=$hh['inicio'];
+                                    if ($hinicio>$hfim){
+                                        $tempoIntervalo[$i]=date("i",$hinicio-$hfim);
+                                        $intervalo[$i]=$tempIntervalo;
+                                        
+                                    }
+                                }
+                            }
+                            $hfim=strtotime($hh['fim']);
+                            $tempIntervalo=$hh['fim'];
+                        }                        
+                        
                         for ($p = 1; $p <= 3; $p++) {
                             ?>
                             <th colspan="7">
@@ -303,7 +334,7 @@ if ($VALIDO)
                                     }
                                     $IS = $p . $l . $c;
                                     ?>
-                                    <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[]" value="<?= $IS ?>" type="checkbox" <?php if (in_array($IS, $horarios)) print 'checked'; ?> /></td>
+                                    <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[]" value="<?= $IS ?>" type="checkbox" class="celulas" <?php if (in_array($IS, $horarios)) print 'checked'; ?> /></td>
                                     <?php
                                     $c++;
                                 }
@@ -317,14 +348,14 @@ if ($VALIDO)
                     <th>&nbsp;&nbsp;</th>
                     <th align="left" valign='top'>
                     <table border='0'>
-                        <tr>
+                        <tr style="display: none">
                             <td>
                                 Dura&ccedil;&atilde;o da Aula no Campus:<br />
-                                <input type="radio" <?= $disabled ?> id="duracaoAula" <?php if ($duracaoAula == '00:45') print 'checked'; ?> name="duracaoAula" value="00:45" /><font size="1">45min</font><br />
-                                <input type="radio" <?= $disabled ?> id="duracaoAula" <?php if ($duracaoAula == '00:50') print 'checked'; ?> name="duracaoAula" value="00:50" /><font size="1">50min</font>
+                                <input type="radio" <?= $disabled ?> id="duracaoAula" <?php if ($duracaoAula == '00:45' || (isset($tempoDuracaoAula) && $tempoDuracaoAula=='00:45')) print 'checked'; ?> name="duracaoAula" value="00:45" /><font size="1">45min</font><br />
+                                <input type="radio" <?= $disabled ?> id="duracaoAula" <?php if ($duracaoAula == '00:50' || (isset($tempoDuracaoAula) && $tempoDuracaoAula=='00:50')) print 'checked'; ?> name="duracaoAula" value="00:50" /><font size="1">50min</font>
                             </td>
                         </tr>
-                        <tr><td><hr /></td></tr>
+                        <tr style="display: none"><td><hr /></td></tr>
                         <tr>
                             <td>
                                 <input type="checkbox" <?= $disabled ?> id="dedicarEnsino" <?php if ($dedicarEnsino) print 'checked'; ?> name="dedicarEnsino" value="1" />
@@ -351,7 +382,7 @@ if ($VALIDO)
                         <tr><td><hr /></td></tr>
                         <tr>
                             <td>
-                                <table border="0">
+                                <table border="0" style="display: none">
                                     <?php
                                     for ($p = 1; $p <= 3; $p++) {
                                         $var = 'horario' . $p;
@@ -369,7 +400,7 @@ if ($VALIDO)
                                                     for ($i = 5; $i <= 30; $i++) {
                                                         $n = str_pad($i, 2, "0", STR_PAD_LEFT);
                                                         ?>
-                                                        <option <?php if ($hor[0] == "00:$n") print 'selected'; ?> value="00:<?= $n ?>">00:<?= $n ?></option>
+                                                        <option <?php if ($hor[0] == "00:$n" || "00:".$tempoIntervalo[$p] == "00:$n") print 'selected'; ?> value="00:<?= $n ?>">00:<?= $tempoIntervalo[$p] ?></option>
                                                         <?php
                                                         $i+=4;
                                                     }
@@ -382,7 +413,7 @@ if ($VALIDO)
                                                 <font size="1">Que horas representa o n&uacute;mero 1 no per&iacute;odo <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
-                                                <input type="text" id="Periodo<?= $p ?>" <?= $disabled ?> name="Periodo<?= $p ?>" size="3" value="<?= $hor[1] ?>" />
+                                                <input type="text" id="Periodo<?= $p ?>" <?= $disabled ?> name="Periodo<?= $p ?>" size="3" value="<?= $inicio[$p] ?>" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -390,7 +421,7 @@ if ($VALIDO)
                                                 <font size="1">Que horas come&ccedil;a o intervalo neste per&iacute;odo <?= $periodo[$p] ?>:</font>
                                             </td>
                                             <td>
-                                                <select id="IniIntervalo<?= $p ?>" <?= $disabled ?> name="IniIntervalo<?= $p ?>" value="<?= $hor[2] ?>"></select>
+                                                <input style="width: 35px" type="text"id="IniIntervalo<?= $p ?>" <?= $disabled ?> name="IniIntervalo<?= $p ?>" value="<?= $intervalo[$p] ?>" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -418,9 +449,9 @@ if ($VALIDO)
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
                         <tr>
-                            <th>Sigla</th>
-                            <th>Nome</th>
                             <th>Curso</th>
+                            <th>Nome</th>
+                            <th>Sigla</th>
                             <th>Per&iacute;odo</th>
                             <th>Aulas</th>
                         </tr>
@@ -428,9 +459,11 @@ if ($VALIDO)
                         for ($t = 0; $t <= 9; $t++) {
                             ?>
                             <tr>
-                                <th><input class="componente" type="text" <?= $disabled ?> size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
-                                <th><input class="componente" type="text" <?= $disabled ?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
-                                <th><input class="componente" type="text" <?= $disabled ?> size="40" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
+                                <th>
+                                    <input class="componente camposCursos" type="text" onfocus="return valores('cursos', 'C<?= $t ?>');" <?= $disabled ?> size="40" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/>
+                                </th>
+                                <th><input class="componente camposDisciplinas" type="text"  <?= $disabled ?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
+                                <th><input class="componente" type="text"  <?= $disabled ?> size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
                                 <th>
                                     <select class="componente" id="P<?= $t ?>" <?= $disabled ?> name="P<?= $t ?>" >
                                         <?php
@@ -446,7 +479,7 @@ if ($VALIDO)
                                         ?>
                                     </select>
                                 </th>
-                                <th><input class="componente" <?= $disabled ?> type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
+                                <th><input class="componente" <?= $disabled ?> type="number" style="width: 50px" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -477,8 +510,8 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="atividade ui-widget" <?= $disabled ?> type="text" onclick="return valores('AtvD<?= $t ?>');" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
-                                <th><input class="atividade" <?= $disabled ?> type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
+                                <th><input class="atividade ui-widget" <?= $disabled ?> type="text" onfocus="return valores('atividades','AtvD<?= $t ?>');" size="60" maxlength="200" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="number" style="width: 50px" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -514,8 +547,8 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="complementacao" <?= $disabled ?> type="text" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
-                                <th><input class="complementacao" <?= $disabled ?> type="text" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> onfocus="return valores('complementacao','CompD<?= $t ?>');" type="text" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> type="number" style="width: 50px" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -558,6 +591,7 @@ if ($VALIDO)
     var totalHoras = 0;
     callFunction();
     calcIntervalo();
+    desabilitarSalvar();
 
     function calcComponente() {
         total = 0;
@@ -622,9 +656,11 @@ if ($VALIDO)
                     $("#obsCELL").html('');
                     if (celulasSel >= totalCelulas) {
                         $("#obsCELL").html('Número máximo de células ultrapassado!');
+                        desabilitarEnviar();
                     }
                     if (((totalCelulas - celulasSel) - 1) > 0) {
                         $("#obsCELL").html('Falta selecionar ' + ((totalCelulas - celulasSel) - 1) + ' células!');
+                        desabilitarEnviar();
                     }
                     celulasSel++;
                     $("#celulasSel").html(celulasSel);
@@ -661,11 +697,12 @@ if ($VALIDO)
             maxCH = 20;
         }
 
-        if (totalHoras != maxCH)
+        if (totalHoras != maxCH){
             $("#obsCH").html('Carga horária final incompatível com a jornada de trabalho de ' + maxCH + 'h indicada, favor corrigir!');
-        else
+        }
+        else{
             $("#obsCH").html('');
-
+        }
         $("#ministrar").html(ministrar);
         $("#celulas").html(celulas);
         totalCelulas = celulas;
@@ -723,6 +760,7 @@ if ($VALIDO)
         calcComplementacao();
         calcAulas();
         checkCelulas();
+        validar();
         //calcIntervalo()
     }
 
@@ -734,11 +772,11 @@ if ($VALIDO)
         }
     });
 
-    $("input:text,.componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
+    $("input:text,.componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").on('keyup change',function () {
         callFunction();
     });
 
-    $("#IniIntervalo1,#IniIntervalo2,#IniIntervalo3,#Intervalo1,#Intervalo2,#Intervalo3").change(function () {
+    $("#IniIntervalo1,#IniIntervalo2,#IniIntervalo3,#Intervalo1,#Intervalo2,#Intervalo3").on('keyup change',function () {
         callFunction();
     });
 
@@ -755,6 +793,7 @@ if ($VALIDO)
 
     $("#subHorario").click(function () {
         callPeriodo('Favor preencher todos os campos com os horários!');
+        calcIntervalo();
     });
 
     $('#pano, #psemestre').change(function () {
@@ -832,19 +871,107 @@ if ($VALIDO)
         return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
     }
 
-    function valores(campo) {
-        var availableTags = [
-            "Atendimento ao aluno",
-            "Atendimento do NDE",
-            "Atendimento pedagógicas",
-            "Reunião de área",
-            "Reunião de curso",
-            "Recuperação paralela",
-            "Supervisão ou orientação de estágio",
-            "Supervisão ou orientação de trabalhos acadêmicos"
-        ];
+    function valores(flag,campo) {
+        if (flag == 'atividades'){
+            var itens = [
+                "Atendimento ao aluno",
+                "Atendimento do NDE",
+                "Atendimento pedagógicas",
+                "Reunião de área",
+                "Reunião de curso",
+                "Recuperação paralela", 
+                "Supervisão ou orientação de estágio",
+                "Supervisão ou orientação de trabalhos acadêmicos"
+            ];
+        }
+        else if (flag == 'cursos'){
+            var itens = [
+                <?php
+                require CONTROLLER . "/curso.class.php";
+                $cursos1 = new Cursos();
+                $c1 = $cursos1->listCursos();
+                $n=sizeof($c1);
+                for ($i=0; $i<$n; $i++){
+                    $valor = $c1[$i]['codigo']."-".$c1[$i]['curso'];
+                    if ($i<$n-1)
+                        echo "\"$valor\",";
+                    else
+                        echo "\"$valor\"";
+                }
+                ?>
+            ];
+        }
+        else if (flag == 'complementacao'){
+            var itens =[
+                "Projeto de Iniciação Científica (especificar)",
+                "Projeto de Extensão (especificar)",
+                "Coordenação de curso (especificar)",
+                "Coordenação de área (especificar)",
+                "Curso de capacitação (especificar)",
+                "Comissão ou comitê (especificar)"                
+            ];
+        }
         $("#" + campo).autocomplete({
-            source: availableTags
+            source: itens
         });
     }
+    
+    function desabilitarSalvar(){
+        $("#salvar").prop( "disabled", true );
+        $("#salvar").css("background-color", "gray");
+    }
+    
+    function desabilitarEnviar(){
+        $("#enviar").prop( "disabled", true );
+        $("#enviar").css("background-color", "gray");
+    }
+    
+    function habilitarSalvar(){
+        $("#salvar").prop( "disabled", false );
+        $("#salvar").css("background-color", "");
+    }
+    
+    function habilitarEnviar(){
+        if ($("#telefone").prop('disabled')==false){
+            $("#enviar").prop( "disabled", false );
+            $("#enviar").css("background-color", "");
+        }
+    }
+    
+    function validar(){   
+        if ($('#obsCELL').html()!=="" || $('#obsCH').html()!=="") 
+            desabilitarEnviar();
+        else
+            habilitarEnviar();
+    }
+    
+    
+    $('.camposCursos').change(function (event) {
+        var id = event.target.id.slice(-1);
+        var cod = event.target.value.substring(0,event.target.value.indexOf('-'));
+        
+            $.getJSON('<?= VIEW ?>/secretaria/cursos/disciplina.php?search=', {codigo: cod, ajax: 'true'}, function (j) {
+                var itens = [""];
+                for (var i = 0; i < j.length; i++) {
+                    itens.push(j[i].nome+" ["+j[i].sigla+"]");
+                }
+                $("#N"+id).autocomplete({
+                    source: itens
+                });
+            });
+    });
+
+    $('.camposDisciplinas').change(function (event) {
+        var cod = event.target.value.substring(event.target.value.indexOf(' [')+2,event.target.value.indexOf(']'));
+        var id = event.target.id.slice(-1);
+        $("#S"+id).val(cod);
+    });    
+
+    // HABILITA O BOTAO SALVAR CASO TENHA PREENCHIDO OS CAMPOS
+    $('#area, #regime, .celulas, .componente, .atividade, .complementacao').change(function (event) {
+        if ($('#area').val()!="" && $('#regime:checked').length>0){ 
+            habilitarSalvar();
+        }
+    });    
+    
 </script>

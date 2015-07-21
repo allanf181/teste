@@ -84,7 +84,7 @@ if (dcrip($_GET["professor"])) {
             $pdf->SetFont($fonte, 'B', $tamanho + 2);
             $pdf->Cell(60, 5, abreviar(utf8_decode($SITE_TITLE), 33), 1, 2, 'C', false);
             $pdf->Cell(60, 5, abreviar(utf8_decode($SITE_CIDADE), 33), 1, 2, 'C', false);
-            $pdf->Cell(60, 5, abreviar(utf8_decode("Semestre/Ano: $SEMESTRE/$ANO"), 33), 1, 0, 'C', false);
+            $pdf->Cell(60, 5, abreviar(utf8_decode("Semestre/Ano: $semestre/$ano"), 33), 1, 0, 'C', false);
             $pdf->Ln();
             $pdf->SetFont($fonte, 'B', $tamanho);
             $pdf->Cell(65, 5, utf8_decode("(Anexo III - Resolução nº 112 de 7 outubro de 2014)"), 0, 0, 'C', false);
@@ -203,7 +203,7 @@ if (dcrip($_GET["professor"])) {
 
             $pdf->Ln();
             $pdf->SetFont($fonte, 'B', $tamanho);
-            if ($finalizado != "0000-00-00 00:00:00")
+            if (!empty($finalizado) && $finalizado != "0000-00-00 00:00:00")
                 $pdf->Cell(60, $alturaLinha, utf8_decode($SITE_CIDADE) . ', ' . html_entity_decode(formata($finalizado)), 0, 0, 'L', true);
             $pdf->Ln();
 

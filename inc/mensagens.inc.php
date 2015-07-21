@@ -54,7 +54,8 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $OK_TRUE_UPDATE = 'Registro alterado com sucesso';
     $NOK_FALSE_UPDATE = 'Problema ao alterar registro.';
 
-    $INFO_UPDATE = 'Esse registro já está cadastrado no banco de dados ou nenhum valor foi alterado.';
+//    $INFO_UPDATE = 'Esse registro já está cadastrado no banco de dados ou nenhum valor foi alterado.';
+    $INFO_UPDATE = 'Dados atualizados.';
 
     $INFO_DELETE = 'Problema ao excluir registro! Esse registro possui depend&ecirc;ncias.';
 
@@ -100,6 +101,10 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $ERRO_ARQUIVO = $OPT;
     $INFO_ARQUIVO = $OPT;
 
+    // FPA/PIT/RIT
+    $ERRO_FPA_NAO_VALIDADA = "Sua FPA não foi finalizada. Por favor, preencha a FPA e aguarde a validação antes de preencher a PIT.";
+    $ERRO_PIT_NAO_VALIDADA = "Sua PIT não foi finalizada. Por favor, preencha a PIT e aguarde a validação antes de preencher a RIT.";
+    
     // LOGIN
     $ERRO_MANY_TRY = "Tentativas restantes: " . $OPT;
     $ERRO_USER_OR_PASS_INVALID = "Usu&aacute;rio ou senha inv&aacute;lidos.";

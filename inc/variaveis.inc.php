@@ -1,7 +1,7 @@
 <?php
 
 // SETANDO O ANO E SEMESTRE ATUAL.
-if (empty($_SESSION["ano"]) || empty($_SESSION["semestre"])) {
+if (empty($_SESSION["ano"]) || empty($_SESSION["semestre"]) || isset($_GET['retorno'])) {
     $_SESSION["ano"] = date('Y');
     $SEMESTRE = 1;
     if (date('m') > 7)
@@ -9,11 +9,28 @@ if (empty($_SESSION["ano"]) || empty($_SESSION["semestre"])) {
     $_SESSION["semestre"] = $SEMESTRE;
 }
 
-if (isset($_GET["ano"]))
+// SALVA O ANO/SEMESTRE ATUAL NO PERFIL DA PESSOA
+$_SESSION['anoOuSemestreAlterado']=false;
+if (isset($_GET["ano"]) || isset($_GET["semestre"]) || isset($_GET['retorno'])){
     $_SESSION["ano"] = $_GET["ano"];
-
-if (isset($_GET["semestre"]))
+    $_SESSION["anoPadrao"] = $_GET["ano"];
     $_SESSION["semestre"] = $_GET["semestre"];
+    $_SESSION["semPadrao"] = $_GET["semestre"];
+    
+    // ATUALIZA OS DADOS DE ANO/SEMESTRE NO REGISTRO DA PESSOA
+    require CONTROLLER . "/pessoa.class.php";
+    $p = new Pessoas();
+    $p->updateAnoSemestre($_SESSION['loginCodigo'], $_SESSION['ano'], $_SESSION['semestre']);
+}
+
+// VALIDA O SEMESTRE/ANO ATUAL PARA INCLUIR AVISO AO USUÁRIO DE QUE O SEMESTRE/ANO É DIFERENTE DO ATUAL
+if (isset($_SESSION['anoPadrao']) || isset($_SESSION['semPadrao'])){
+    if ($_SESSION['ano']!=$_SESSION['anoPadrao'] || $_SESSION['sem']!=$_SESSION['semPadrao']){
+        $_SESSION['anoOuSemestreAlterado']=true;
+        $_SESSION['ano'] = $_SESSION['anoPadrao'];
+        $_SESSION['semestre'] = $_SESSION['semPadrao'];
+    }
+}
 
 // PADRAO, MAISCULA GLOBAL VARS
 $ANO = $_SESSION["ano"];

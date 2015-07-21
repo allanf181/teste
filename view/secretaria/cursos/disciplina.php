@@ -14,6 +14,17 @@ require PERMISSAO;
 require CONTROLLER . "/disciplina.class.php";
 $disciplina = new Disciplinas();
 
+if ($_GET["ajax"]) {
+    $arr = array();
+    header('Cache-Control: no-cache');
+    header('Content-type: application/xml; charset="utf-8"', true);
+
+    $dados = $disciplina->listToJSON(($_GET["codigo"]));
+
+    echo( json_encode($dados) );
+    die;
+}
+
 if ($_GET["opcao"] == 'delete') {
     $ret = $disciplina->delete($_GET["codigo"]);
     mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);

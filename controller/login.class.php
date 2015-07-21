@@ -80,7 +80,7 @@ class login extends Generic {
             $params = array(':pront1' => $pront[0]);
             $notLog = 1;
         } else if (!$rs) {
-            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha"
+            $sql = "SELECT codigo, nome, prontuario, email, dataSenha, senha, anoPadrao, semPadrao"
                     . " FROM Pessoas"
                     . " WHERE prontuario=:prontuario"
                     . " AND senha=PASSWORD(:senha)";
@@ -100,6 +100,8 @@ class login extends Generic {
             $_SESSION["loginPassword"] = crip($res[0]['senha']);
             $_SESSION["loginEmail"] = $res[0]['email'];
             $_SESSION["loginDataSenha"] = $res[0]['dataSenha'];
+            $_SESSION["anoPadrao"] = $res[0]['anoPadrao'];
+            $_SESSION["semPadrao"] = $res[0]['semPadrao'];
 
             if (!$notLog) {
                 $log = new Logs();

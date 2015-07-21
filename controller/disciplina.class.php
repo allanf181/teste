@@ -9,6 +9,23 @@ class Disciplinas extends Generic {
     public function __construct() {
         //
     }
+    
+    public function listToJSON($codigo) {
+        $bd = new database();
+
+        $sql = "SELECT codigo, nome, numero as sigla
+		FROM Disciplinas
+		WHERE curso=:codigo
+		ORDER BY nome";
+
+        $params = array(':codigo' => $codigo);
+        $res = $bd->selectDB($sql, $params);
+        
+        if ($res)
+            return $res;
+        
+        return false;
+    }    
 
     //USADO POR: SECREATARIA/DISCIPLINA.PHP, RELATORIOS/DISCIPLINAS.PHP
     public function listDisciplinas($params, $sqlAdicional = null, $item = null, $itensPorPagina = null) {

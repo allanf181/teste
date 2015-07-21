@@ -48,6 +48,7 @@ if ($_POST) {
         unset($_POST['psemestre']);
 
         $ret = $dados->insertOrUpdateFPA($_POST);
+//        var_dump($_POST);
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 
        //ENVIANDO EMAIL
@@ -61,6 +62,9 @@ if ($_POST) {
 if ($_GET['pano'] && $_GET['psemestre']) {
     $pano = dcrip($_GET['pano']);
     $psemestre = dcrip($_GET['psemestre']);
+    $sqlAdicional = ' AND f.ano= :ano AND f.semestre= :semestre AND p.codigo = :pessoa AND f.modelo = :modelo ORDER BY f.codigo DESC LIMIT 1 ';
+    $params = array('ano' => $pano, 'semestre' => $psemestre, 'pessoa' => $_SESSION['loginCodigo'], 'modelo' => 'PIT');
+    $res = $dados->listModelo($params, $sqlAdicional, null, null);
 } else {
     // TENTA BUSCAR O ULTIMO REGISTRO GRAVADO PELO USUARIO
     $sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ORDER BY f.codigo DESC LIMIT 1 ';
@@ -82,8 +86,8 @@ if ($_GET['pano'] && $_GET['psemestre']) {
     }
 }
 
-$sqlAdicional = ' AND p.codigo = :pessoa AND f.modelo = :modelo ';
-$params = array('pessoa' => $_SESSION['loginCodigo']);
+$sqlAdicional = ' AND f.ano= :ano AND f.semestre= :semestre AND p.codigo = :pessoa AND f.modelo = :modelo ';
+$params = array('pessoa' => $_SESSION['loginCodigo'], 'ano' => $pano, 'semestre' => $psemestre, );
         
 //IMPORTA PARÃMETROS DA FPA
 $params['modelo'] = 'FPA';
@@ -101,6 +105,14 @@ $codigo = $res[0]['codigo'];
 
 //LISTA COMPONENTES
 $resC = $componente->listComponentes($codigo);
+if (!$resC){ // PIT AINDA NAO FOI CADASTRADA, BUSCANDO DADOS DA FPA
+    $params['modelo'] = 'FPA';
+    $res2 = $dados->listModelo($params, $sqlAdicional, null, null);
+    $codigo = $res2[0]['codigo'];
+    $resC = $componente->listComponentes($codigo);
+    if ($resC)
+        echo "<script>msg('Os dados de sua FPA foram importados. Preencha os horários, atualize o que for necessário e Salve ou Envie para avaliação do coordenador.')</script>";
+}
 //LISTA ATIVIDADES
 $resAtv = $atvECmt->listAtvECmt($codigo, 'atv');
 //LISTA COMPLEMENTACAO
@@ -180,6 +192,14 @@ if ($VALIDO)
                     </th>
                 </tr>
             </table>
+            <?php
+                            
+    if (!$resFPA || (is_null($resFPA[0]['valido']))){
+        mensagem('ERRO', 'FPA_NAO_VALIDADA');        
+    }
+    else{
+
+            ?>
             <table style="width: 865px" border="0" summary="FTD" id="tabela_boletim">
                 <thead>
                     <tr>
@@ -218,9 +238,16 @@ if ($VALIDO)
                             </a>
                         </th>
                         <th colspan="4" align="center">
+                            <?php
+                            if (!$disabled){
+                            ?>
                             <input type="submit" <?= $disabled ?> style="width: 50px;" value="Salvar" id="salvar">
                             &nbsp;&nbsp;&nbsp;
                             <input type="submit" style="width: 50px" <?= $disabled ?> value="Enviar" id="enviar">
+                            <?php
+                            }
+                            ?>
+
                         </th>
                     </tr>
                 </thead>
@@ -300,7 +327,7 @@ if ($VALIDO)
                                 }
                                 $IS = $p . $l . $c;
                                 ?>
-                                <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[<?= $IS ?>]" value="<?=$horarios[$n]?>" type="text" size="10" maxlength="45"  /></td>
+                                <td><input id="CE<?= $IS ?>" <?= $disabled ?> name="horario[<?= $IS ?>]" value="<?=$horarios[$n]?>" type="text" size="10" maxlength="45" class="horario" onclick="return valores('horarios', 'CE<?= $IS ?>');" /></td>
                                 <?php
                                 $c++;
                                 $n++;
@@ -322,9 +349,9 @@ if ($VALIDO)
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
                         <tr>
-                            <th>Sigla</th>
-                            <th>Nome</th>
                             <th>Curso</th>
+                            <th>Nome</th>
+                            <th>Sigla</th>
                             <th>Per&iacute;odo</th>
                             <th>Aulas</th>
                         </tr>
@@ -332,9 +359,9 @@ if ($VALIDO)
                         for ($t = 0; $t <= 9; $t++) {
                             ?>
                             <tr>
+                                <th><input class="componente camposCursos" type="text" <?= $disabled ?> size="40" maxlength="145" id="C<?= $t ?>" onfocus="return valores('cursos', 'C<?= $t ?>')" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>" /></th>
+                                <th><input class="componente camposDisciplinas" type="text" <?= $disabled ?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
                                 <th><input class="componente" type="text" <?= $disabled ?> size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
-                                <th><input class="componente" type="text" <?= $disabled ?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
-                                <th><input class="componente" type="text" <?= $disabled ?> size="40" maxlength="145" id="C<?= $t ?>" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
                                 <th>
                                     <select class="componente" id="P<?= $t ?>" <?= $disabled ?> name="P<?= $t ?>" >
                                         <?php
@@ -350,7 +377,7 @@ if ($VALIDO)
                                         ?>
                                     </select>
                                 </th>
-                                <th><input class="componente" <?= $disabled ?> type="text" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
+                                <th><input class="componente" <?= $disabled ?> type="number" style="width: 50px" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -385,8 +412,8 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" onclick="return valores('AtvD<?= $t ?>');" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
-                                <th><input class="atividade" <?= $disabled ?> type="text" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" onclick="return valores('atividades', 'AtvD<?= $t ?>');" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="number" style="width: 50px"  size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -422,8 +449,8 @@ if ($VALIDO)
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
-                                <th><input class="complementacao" <?= $disabled ?> type="text" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
-                                <th><input class="complementacao" <?= $disabled ?> type="text" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> type="text" onfocus="return valores('complementacao','CompD<?= $t ?>');"  size="60" maxlength="200"  id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> type="number" style="width: 50px"  size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -465,11 +492,13 @@ if ($VALIDO)
 $hor1 = explode(',', $horario1);
 $hor2 = explode(',', $horario2);
 $hor3 = explode(',', $horario3);
+    }
 ?>
 <script>
     var totalCelulas = 0;
     var totalHoras = 0;
-    callFunction();
+    callFunction(); 
+    desabilitarSalvar();
 
     function calcComponente() {
         total = 0;
@@ -549,10 +578,15 @@ $hor3 = explode(',', $horario3);
             maxCH = 20;
         }
 
-        if (totalHoras != maxCH)
+        if (totalHoras != maxCH){
             $("#obsCH").html('Carga horária final incompatível com a jornada de trabalho de ' + maxCH + 'h indicada, favor corrigir!');
-        else
+            desabilitarEnviar();
+        }
+        else{
             $("#obsCH").html('');
+            $("#obsCELL").html('');
+            habilitarSalvar();
+        }
 
         $("#ministrar").html(ministrar);
         $("#celulas").html(celulas);
@@ -608,13 +642,26 @@ $hor3 = explode(',', $horario3);
         calcAtividade();
         calcComplementacao();
         calcAulas();
+        calcHorario();
+        validar();
+    }
+    
+    function calcHorario(){
+        var preenchido=false;
+        $('.horario').each(function(){
+            if ($(this).val()!==""){
+                preenchido=true;
+            }
+        });
+        if (!preenchido)
+            $("#obsCH").html('Horário consolidado não foi preenchido.');
     }
 
-    $(".componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").keyup(function () {
+    $(".horario,.componente,.atividade,.complementacao,#Periodo1,#Periodo2,#Periodo3").on('keyup change blur',function () {
         callFunction();
     });
 
-    $("#IniIntervalo1,#IniIntervalo2,#IniIntervalo3,#Intervalo1,#Intervalo2,#Intervalo3").change(function () {
+    $("#IniIntervalo1,#IniIntervalo2,#IniIntervalo3,#Intervalo1,#Intervalo2,#Intervalo3").on('keyup change',function () {
         callFunction();
     });
 
@@ -670,19 +717,121 @@ $hor3 = explode(',', $horario3);
         return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
     }
     
-    function valores(campo) {
-        var availableTags = [
-            "Atendimento ao aluno",
-            "Atendimento do NDE",
-            "Atendimento pedagógicas",
-            "Reunião de área",
-            "Reunião de curso",
-            "Recuperação paralela",
-            "Supervisão ou orientação de estágio",
-            "Supervisão ou orientação de trabalhos acadêmicos"
-        ];
+    function valores(flag,campo) {
+        if (flag == 'atividades'){
+            var itens = [
+                "Atendimento ao aluno",
+                "Atendimento do NDE",
+                "Atendimento pedagógicas",
+                "Reunião de área",
+                "Reunião de curso",
+                "Recuperação paralela", 
+                "Supervisão ou orientação de estágio",
+                "Supervisão ou orientação de trabalhos acadêmicos"
+            ];
+        }
+        else if (flag == 'horarios'){
+            var itens = [
+                <?php
+                $n=sizeof($resC);
+                for ($i=0; $i<$n; $i++){
+                    $valor = $resC[$i]['sigla'];
+                    if ($i<$n-1)
+                        echo "\"$valor\",";
+                    else
+                        echo "\"$valor\"";
+                }
+                ?>
+            ];            
+        }
+        else if (flag == 'cursos'){
+            var itens = [
+                <?php
+                require CONTROLLER . "/curso.class.php";
+                $cursos1 = new Cursos();
+                $c1 = $cursos1->listCursos();
+                $n=sizeof($c1);
+                for ($i=0; $i<$n; $i++){
+                    $valor = $c1[$i]['codigo']."-".$c1[$i]['curso'];
+                    if ($i<$n-1)
+                        echo "\"$valor\",";
+                    else
+                        echo "\"$valor\"";
+                }
+                ?>
+            ];
+        }
+        else if (flag == 'complementacao'){
+            var itens =[
+                "Projeto de Iniciação Científica (especificar)",
+                "Projeto de Extensão (especificar)",
+                "Coordenação de curso (especificar)",
+                "Coordenação de área (especificar)",
+                "Curso de capacitação (especificar)",
+                "Comissão ou comitê (especificar)"                
+            ];
+        }
         $("#" + campo).autocomplete({
-            source: availableTags
+            source: itens,
+            minLength: 0
         });
     }   
+    
+    $('.camposCursos').change(function (event) {
+        var id = event.target.id.slice(-1);
+        var cod = event.target.value.substring(0,event.target.value.indexOf('-'));
+        
+        $.getJSON('<?= VIEW ?>/secretaria/cursos/disciplina.php?search=', {codigo: cod, ajax: 'true'}, function (j) {
+            var itens = [""];
+            for (var i = 0; i < j.length; i++) {
+                itens.push(j[i].nome+" ["+j[i].sigla+"]");
+            }
+            $("#N"+id).autocomplete({
+                source: itens
+            });
+        });
+    });
+
+    $('.camposDisciplinas').change(function (event) {
+        var cod = event.target.value.substring(event.target.value.indexOf(' [')+2,event.target.value.indexOf(']'));
+        var id = event.target.id.slice(-1);
+        $("#S"+id).val(cod);
+    });    
+
+    $('.horario').click(function(){
+        var e = jQuery.Event("keydown");
+        e.which = 8; // # Some key code value
+        $(this).trigger(e);
+    });
+    
+     function desabilitarSalvar(){
+        $("#salvar").prop( "disabled", true );
+        $("#salvar").css("background-color", "gray");
+    }
+    
+    function desabilitarEnviar(){
+        $("#enviar").prop( "disabled", true );
+        $("#enviar").css("background-color", "gray");
+    }
+    
+    function habilitarSalvar(){
+        $("#salvar").prop( "disabled", false );
+        $("#salvar").css("background-color", "");
+    }
+    
+    function habilitarEnviar(){
+        if ($("#salvar").prop('disabled')==false){
+            $("#enviar").prop( "disabled", false );
+            $("#enviar").css("background-color", "");
+        }
+    }
+    
+    function validar(){   
+        if ($('#obsCELL').html()!=="" || $('#obsCH').html()!=="")
+            desabilitarEnviar();
+        else{
+            habilitarSalvar();        
+            habilitarEnviar();        
+        }
+    }
 </script>

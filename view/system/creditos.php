@@ -82,8 +82,15 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 </p>
 
 <br />
+<b>Vers&atilde;o 1.442</b>
+<br> - Ajustes e correções nos formulários FPA, PIT e RIT: recurso autocompletar no campo de curso e disciplinas;
+<br> - Importação dos dados de FPA para PIT e de PIT para RIT;
+<br> - Melhorias no sincronizador Nambei em relação ao Consulta Roda: atualiza lista automaticamente ao clicar no botão;
+<br> - Funcionalidade de fixar ano/semestre;
+<br> - Todos os tipos de usuário com permissão de alterar ano/semestre por padrão (admin pode alterar);
+<br />
+<br />
 <b>Vers&atilde;o 1.441</b>
-<br> - Adi&ccedil;&atilde;o dos campos Crit&eacute;rios e Metodologia em Planos de Aula.
 <br> - Retirada dos Question&aacute;rios do Perfil Professor/Aluno.
 <br> - Integração com RodaWeb.
 <br> - Correções e ajustes na integração com RodaWeb.

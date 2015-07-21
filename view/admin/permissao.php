@@ -152,6 +152,8 @@ if (dcrip($_GET["tipo"]))
                         // Listando os diretórios dentro da VIEW.
                         $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html|\/common\/|\/system\/';
                         $cdir = dirToArray(PATH . LOCATION . '/view/', $regex);
+                        $cdir2 = dirToArray(PATH . LOCATION . '/db2/lib/includes/', $regex);
+                        $cdir = array_merge($cdir, $cdir2);
                         krsort($cdir);
                         $i = 0;
                         ?>

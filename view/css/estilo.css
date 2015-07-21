@@ -441,6 +441,10 @@ li{
     width: 400px;
 }
 
+input[type='button']:disabled, input[type='submit']:disabled, input[type='reset']:disabled {
+    background: gray;
+}
+
 #entrar, input[type="button"], input[type="submit"] , input[type="reset"]   {
     background: #009042;
     width: 100px;

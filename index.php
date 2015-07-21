@@ -26,6 +26,10 @@ include_once "inc/config.inc.php";
         <!-- JS PADRAO -->
         <script type="text/javascript">!window.jQuery && document.write('<script type="text/javascript" src="<?= VIEW ?>/js/jquery-2.1.3.min.js"><\/script>')</script>
         <script type="text/javascript" src="<?= VIEW ?>/js/jquery.html5form-1.5-min.js"></script>
+        
+        <!--PROJETO DE LIMPEZA DO JS-->
+        <script type="text/javascript" src="<?= VIEW ?>/js/wd.js"></script>
+        
         <!-- JS TOOLTIP -->
         <script src="<?= VIEW ?>/js/webui-popover/jquery.webui-popover.min.js"></script>
         <!-- JS MENU -->
@@ -106,6 +110,12 @@ include_once "inc/config.inc.php";
                     window.setTimeout(show_popup, 2000);
                 });
 
+                $('#setRetorno').click(function () {
+                    $('#sessaoTime').load('<?= VIEW ?>/system/home.php?retorno');
+                    $.Zebra_Dialog('<strong>Trocando período...</strong><br>Aguarde enquanto o sistema faz a troca...');
+                    window.setTimeout(show_popup, 2000);
+                });
+
                 $(window).scroll(function () {
                     if ($(this).scrollTop() > 100) {
                         $('.scrollup').fadeIn();
@@ -163,7 +173,14 @@ include_once "inc/config.inc.php";
                             <div id='ano_semestre'>
                                 <span style="color: white">Ano:<input type="text" maxlength="4" style="width: 50px" value="<?= $_SESSION['ano'] ?>" name="campoAnoIndex" id="campoAnoIndex" /></span>
                                 <span style="color: white">Sem:<input type="text" maxlength="1" style="width: 50px" value="<?= $_SESSION['semestre'] ?>" name="campoSemestreIndex" id="campoSemestreIndex" /></span>
-                                <div id='botao_ano_semestre'><a href="#" id="setTroca" data-placement="right" data-content="Clique para trocar o semestre" title="Trocar semestre"><img src="<?= ICONS ?>/change.png" /></a></div>&nbsp;
+                                    <?php if ($_SESSION['anoOuSemestreAlterado']){?>
+                                <div id='botao_retorno'>
+                                    <a href="#" id="setRetorno" data-placement="right" data-content="Não é o ano/semestre corrente, deseja ajustar para o ano/semestre atual?" title="Ajustar para ano/semestre atual"><img width="20px" src="<?= ICONS ?>/warning.png" /></a>
+                                </div>&nbsp;
+                                    <?php } ?>
+                                <div id='botao_ano_semestre'>
+                                    <a href="#" id="setTroca" data-placement="right" data-content="Clique para trocar o semestre" title="Trocar semestre"><img src="<?= ICONS ?>/change.png" /></a>
+                                </div>&nbsp;
                             </div>
                             <?php
                         }
