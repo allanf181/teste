@@ -64,7 +64,7 @@ while ($row = db2_fetch_object($res)) {
     $escola1g = addslashes(conv(rtrim($row->AL_1G_ESCOLA)));
 
     if (empty($aluno)) { // NÃO EXISTE, ENTÃO IMPORTA
-        $sql = "insert into Pessoas (codigo, prontuario, senha, nome, cidade, rg, cpf, email, observacoes, endereco, bairro, nascimento, naturalidade, "
+        $sql = "insert into Pessoas (codigo, prontuario, senha, nome, cidade, rg, cpf, email, observacoes, endereco, numero, bairro, nascimento, naturalidade, "
                 . "cep, telefone, celular, sexo, ano1g, escola1g) values (0, "
                 . "'" . $row->AL_PRONT . "', "
                 . "PASSWORD('" . $row->AL_PRONT . "'), "
