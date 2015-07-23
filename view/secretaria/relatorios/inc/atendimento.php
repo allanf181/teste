@@ -47,7 +47,7 @@ foreach ($atendimento->listAtendimento($params) as $reg) {
     $conteudo = explode("\n", wordwrap(str_replace("\r\n", ";", utf8_decode($reg['horario'])), 60));
     foreach ($conteudo as $j => $trecho) {
         if($j) $pdf->Cell(90, 5, "", 1, 0, 'L', true);
-        $pdf->Cell(100, 5, utf8_decode($conteudo[$j]), 1, 0, 'L', true);
+        $pdf->Cell(100, 5, ($conteudo[$j]), 1, 0, 'L', true);
         $pdf->Ln();
         $j=1;
     }
