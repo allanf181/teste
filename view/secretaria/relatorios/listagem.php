@@ -163,8 +163,10 @@ $rel_bolsa = null;
                 <input type="checkbox" id="alunos_cpf" value="1" checked="checked" /><label for="alunos_cpf">CPF</label>
                 <input type="checkbox" id="alunos_nasc" value="1" checked="checked" /><label for="alunos_nasc">D.Nasc</label>
                 <input type="checkbox" id="alunos_endereco" value="1" /><label for="alunos_endereco">Endereço</label>
+                <input type="checkbox" id="alunos_numero" value="1" /><label for="alunos_endereco">Nº</label>
                 <input type="checkbox" id="alunos_bairro" value="1" /><label for="alunos_bairro">Bairro</label>
                 <input type="checkbox" id="alunos_cidade" value="1" /><label for="alunos_cidade">Cidade</label>
+                <input type="checkbox" id="alunos_cep" value="1" /><label for="alunos_endereco">CEP</label>
                 <input type="checkbox" id="alunos_telefone" value="1" checked="checked" /><label for="alunos_telefone">Telefone</label>
                 <input type="checkbox" id="alunos_celular" value="1" checked="checked" /><label for="alunos_celular">Celular</label>
                 <input type="checkbox" id="alunos_email" value="1" checked="checked" /><label for="alunos_email">E-mail</label>
@@ -552,8 +554,10 @@ if ($relatorio == 'docente' || $relatorio == 'lancamentos' || $relatorio == 'fre
         var cpf = $('#alunos_cpf').is(':checked');
         var nasc = $('#alunos_nasc').is(':checked');
         var endereco = $('#alunos_endereco').is(':checked');
+        var numero = $('#alunos_numero').is(':checked');
         var bairro = $('#alunos_bairro').is(':checked');
         var cidade = $('#alunos_cidade').is(':checked');
+        var cep = $('#alunos_cep').is(':checked');
         var telefone = $('#alunos_telefone').is(':checked');
         var celular = $('#alunos_celular').is(':checked');
         var email = $('#alunos_email').is(':checked');
@@ -566,9 +570,13 @@ if ($relatorio == 'docente' || $relatorio == 'lancamentos' || $relatorio == 'fre
 
         if (impressao == 'pdf' || impressao == 'xls')
             window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + '.php?codigo=' + codigo + '&curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&mes=' + mes + '&situacao=' + situacao
-                    + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&bairro=' + bairro + '&cidade=' + cidade + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor + '&assunto=' + assunto +
+                    + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&numero=' + numero + '&bairro=' + bairro + '&cidade=' + cidade + '&cep=' + cep + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor + '&assunto=' + assunto +
                     '&email=' + email + '&detalhada=' + det + '&tipoImpressao=' + impressao, '_blank');
-        else
-            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno, '_blank');
+        else{
+//            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?curso=' + curso + '&turma=' + turma + '&turno=' + turno, '_blank');
+            window.open('<?= VIEW ?>/secretaria/relatorios/inc/' + tipo + 'Html.php?codigo=' + codigo + '&curso=' + curso + '&turma=' + turma + '&turno=' + turno + '&bimestre=' + bimestre + '&aluno=' + aluno + '&atribuicao=' + disciplina + '&data=' + data + '&mes=' + mes + '&situacao=' + situacao
+                    + '&rg=' + rg + '&cpf=' + cpf + '&nasc=' + nasc + '&endereco=' + endereco + '&numero=' + numero + '&bairro=' + bairro + '&cidade=' + cidade + '&cep=' + cep + '&telefone=' + telefone + '&celular=' + celular + '&professor=' + professor + '&assunto=' + assunto +
+                    '&email=' + email + '&detalhada=' + det + '&tipoImpressao=' + impressao, '_blank');
+}
     }
 </script>

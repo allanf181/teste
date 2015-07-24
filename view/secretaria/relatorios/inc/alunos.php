@@ -70,6 +70,12 @@ if (($_GET["endereco"]) == 'true') {
     $titulosColunas[] = "Endereço";
     $largura[] = 60;
 }
+if (($_GET["numero"]) == 'true') {
+    $camposExtra .= ", a.numero";
+    $colunas[] = 'numero';
+    $titulosColunas[] = "Nº";
+    $largura[] = 10;
+}
 if (($_GET["bairro"]) == 'true') {
     $camposExtra .= ", a.bairro";
     $colunas[] = 'bairro';
@@ -81,6 +87,12 @@ if (($_GET["cidade"]) == 'true') {
     $titulosColunas[] = "Cidade";
     $colunas[] = 'cidade';
     $largura[] = 25;
+}
+if (($_GET["cep"]) == 'true') {
+    $camposExtra .= ", a.cep as cep";
+    $titulosColunas[] = "CEP";
+    $colunas[] = 'cep';
+    $largura[] = 15;
 }
 if (($_GET["telefone"]) == 'true') {
     $camposExtra .= ", a.telefone";

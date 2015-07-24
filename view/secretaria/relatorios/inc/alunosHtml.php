@@ -35,8 +35,10 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 $camposExtra .= ", a.rg";
 $camposExtra .= ", date_format(a.nascimento, '%d/%m/%Y') nascimento ";
 $camposExtra .= ", a.endereco";
+$camposExtra .= ", a.numero";
 $camposExtra .= ", a.bairro";
 $camposExtra .= ", c.nome as cidade";
+$camposExtra .= ", a.cep";
 $camposExtra .= ", a.telefone";
 $camposExtra .= ", a.celular";
 $camposExtra .= ", a.email";
@@ -49,10 +51,10 @@ $conteudo.="<table border='1' width='100%'>";
 $cor = "white";
 $n = 1;
 
-$conteudo.="<tr><th>#</th><th>Prontu&aacute;rio</th><th>Nome</th><th>RG</th><th>Nascimento</th><th>Endere&ccedil;o</th><th>Bairro</th><th>Cidade</th><th>Telefone</th><th>Celular</th><th>E-mail</th><th>Curso</th></tr>";
+$conteudo.="<tr><th>#</th><th>Prontu&aacute;rio</th><th>Nome</th><th>RG</th><th>Nascimento</th><th>Endere&ccedil;o</th><th>No</th><th>Bairro</th><th>Cidade</th><th>CEP</th><th>Telefone</th><th>Celular</th><th>E-mail</th><th>Curso</th></tr>";
 
 foreach ($aluno->listAlunos($params, $sqlAdicional, $camposExtra) as $linha) {
-    $conteudo.="<tr bgcolor='$cor'><td>$n</td><td>" . $linha['prontuario'] . "</td><td>" . utf8_decode($linha['nome']) . "</td><td>" . utf8_decode($linha['rg']) . "</td><td>" . utf8_decode($linha['nascimento']) . "</td><td>" . utf8_decode($linha['endereco']) . "</td><td>" . utf8_decode($linha['bairro']) . "</td><td>" . utf8_decode($linha['cidade']) . "</td><td>" . utf8_decode($linha['telefone']) . "</td><td>" . utf8_decode($linha['celular']) . "</td><td>" . utf8_decode($linha['email']) . "</td><td>" . utf8_decode($linha['curso']) . "</td></tr>";
+    $conteudo.="<tr bgcolor='$cor'><td>$n</td><td>" . $linha['prontuario'] . "</td><td>" . utf8_decode($linha['nome']) . "</td><td>" . utf8_decode($linha['rg']) . "</td><td>" . utf8_decode($linha['nascimento']) . "</td><td>" . utf8_decode($linha['endereco']) . "</td><td>" . utf8_decode($linha['numero']) . "</td><td>" . utf8_decode($linha['bairro']) . "</td><td>" . utf8_decode($linha['cidade']) . "</td><td>" . utf8_decode($linha['cep']) . "</td><td>" . utf8_decode($linha['telefone']) . "</td><td>" . utf8_decode($linha['celular']) . "</td><td>" . utf8_decode($linha['email']) . "</td><td>" . utf8_decode($linha['curso']) . "</td></tr>";
 
     // alterna a cor de fundo da linha
     $n++;
