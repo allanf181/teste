@@ -59,6 +59,9 @@ $calculo = $res['calculo'];
 $fechamento = $res['fechamento'];
 $curso = $res['curso'];
 $status = $res['status'];
+if (empty($status))
+    $status = $res[2]['status'];
+//echo $status;
 
 if ($fechamento == 'a')
     $bimestreEsemestre = 'ANUAL';

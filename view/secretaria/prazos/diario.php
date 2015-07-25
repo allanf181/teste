@@ -90,7 +90,7 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
             </select>
         </td>
         <td rowspan="4"><input type="submit" name="liberar" id="liberar" value="Liberar"><br /><br />
-            <!--<input type="submit" name="fechar" id="fechar" value="Fechar"> -->
+            <input type="submit" name="fechar" id="fechar" value="Fechar"> 
         </td>
     </tr>
     <tr>
@@ -173,7 +173,7 @@ if (!empty($curso)) {
                 ?>
                 <tr <?= $cdif ?>>
                     <td align='left'><?= $i ?></td>
-                    <td>
+                    <td><?=$reg['atribuicao']?>
                         <a title='Clique aqui para visualizar o di&aacute;rio de <br><?=$reg['disciplina']?>' target='_blank' href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'><?= abreviar(mostraTexto($reg['disciplina']),20).$reg['bimestre'].$reg['subturma'] ?> [<?= $reg['turma'] ?>] [<?=$reg['turno']?>]</a>
                     </td>
                     <td align='left'><?= $prof->getProfessor($reg['atribuicao'], 1, '<br>', 1, 1, 20) ?></td>

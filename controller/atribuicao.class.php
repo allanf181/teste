@@ -316,7 +316,7 @@ class Atribuicoes extends Generic {
                     $origem = 'Diário aberto por ' . ($reg['prazoDiff'] * 24) . "h";
                 } else {
                     if ($reg['status'] == 1)
-                        $origem = "Fechado pela Coordenador.";
+                        $origem = "Fechado pelo Coordenador.";
                     if ($reg['status'] == 2)
                         $origem = "Fechado pelo Professor.";
                     if ($reg['status'] == 3)
@@ -351,16 +351,16 @@ class Atribuicoes extends Generic {
                 if ($res = $this->insertOrUpdate($params_new))
                     $ok++;
 
-                //ALTERAR NOTASFINAIS PARA SINCRONIZAR NOVAMENTE
-                if (!class_exists('NotasFinais'))
-                    require CONTROLLER . "/notaFinal.class.php";
-                $nota = new NotasFinais();
-
-                if ($nota->fecharDiario($atribuicao)) {
-                    $params_nota = array('codigo' => $atribuicao);
-                    $sql = "UPDATE NotasFinais SET sincronizado='' WHERE atribuicao=:codigo AND flag <> 5";
-                    $bd->updateDB($sql, $params_nota);
-                }
+                //ALTERAR NOTASFINAIS PARA SINCRONIZAR NOVAMENTE (ATENCAO: DESABILITADO PARA PERMITIR NOVAMENTE FECHAMENTO DO DIARIO PELO ADMIN)
+//                if (!class_exists('NotasFinais'))
+//                    require CONTROLLER . "/notaFinal.class.php";
+//                $nota = new NotasFinais();
+//
+//                if ($nota->fecharDiario($atribuicao)) {
+//                    $params_nota = array('codigo' => $atribuicao);
+//                    $sql = "UPDATE NotasFinais SET sincronizado='' WHERE atribuicao=:codigo AND flag <> 5";
+//                    $bd->updateDB($sql, $params_nota);
+//                }
             }
             
 
