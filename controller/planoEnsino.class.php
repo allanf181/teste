@@ -121,13 +121,14 @@ class PlanosEnsino extends Generic {
 
         $sql = "INSERT INTO PlanosAula 
 			SELECT 
-			NULL,:cod,p.semana,p.conteudo
+			NULL,:cod,p.semana,p.conteudo,p.criterio,p.metodologia
 			FROM PlanosAula p
 			WHERE p.atribuicao=:copia";
 
         $params = array(':cod' => $codigo, ':copia' => $copia);
         $res = $bd->insertDB($sql, $params);
 
+        $res['TIPO'].="_PLANO";
         if ($res) {
             return $res;
         } else {

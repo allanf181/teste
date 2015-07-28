@@ -39,6 +39,7 @@ function mensagem($TIPO, $MSG, $OPT = null) {
     $ERRO_DELETE = 'Problema ao apagar registro.';
 
     $OK_INSERT = 'Registro inserido com sucesso.';
+    $OK_INSERT_PLANO = 'Plano de Ensino importado com sucesso.';
     $ERRO_INSERT = 'Problema ao inserir registro.';
 
     $OK_UPDATE = 'Registros alterados: ' . $OPT;
