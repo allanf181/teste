@@ -93,13 +93,14 @@ class Atribuicoes extends Generic {
             //ALTERANDO O STATUS SE O PRAZO EXPIROU
             //E SE A DATA FINAL FOI ATINGIDA OU NAO HA PRAZO
             //E A DATA FINAL FOI ATINGIDA
-            if ($res[0]['status'] == 0 && (!$res[0]['prazoDiff'] && $res[0]['dataFimDiff'] < 0) || ($res[0]['prazoDiff'] && $reg[0]['prazoDiff'] < 0 && $reg[0]['dataFimDiff'] < 0)) {
-                $params1['codigo'] = crip($codigo);
-                $params1['status'] = crip(4);
-                $this->insertOrUpdate($params1);
-                $res[0]['status'] = 4;
-                $dataExpirou = true;
-            }
+            // ===> DESABILITADO TEMPORARIAMENTE POIS NAO É POSSÍVEL FECHAR O DIARIO SEM ENVIAR AS NOTAS
+//            if ($res[0]['status'] == 0 && (!$res[0]['prazoDiff'] && $res[0]['dataFimDiff'] < 0) || ($res[0]['prazoDiff'] && $reg[0]['prazoDiff'] < 0 && $reg[0]['dataFimDiff'] < 0)) {
+//                $params1['codigo'] = crip($codigo);
+//                $params1['status'] = crip(4);
+//                $this->insertOrUpdate($params1);
+//                $res[0]['status'] = 4;
+//                $dataExpirou = true;
+//            }
 
             //ALTERANDO O STATUS SE O STATUS FOR DIFERENTE DE ZERO
             //NAO HA PRAZO E A DATA FINAL AINDA NAO FOI ATINGIDA

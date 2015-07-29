@@ -162,7 +162,7 @@ require PATH . VIEW . '/system/paginacao.php';
         $disc = $reg['bimestre'] . '['. $reg['turno'] .']';
         ?>
         <tr <?= $cdif ?>>
-            <td><?= $reg['numero'] ?></td>
+            <td><?= $reg['numero'] ?> <?=($DEBUG)? $reg['atribuicao']:"" ?></td>
             <td>
                 <a data-placement="right" data-content='Clique aqui para abrir o Di&aacute;rio desta disciplina.' title="<?= $reg['disciplina'] .' '. $disc ?>" target="_blank" href='<?= VIEW ?>/secretaria/relatorios/inc/diario.php?atribuicao=<?= crip($reg['atribuicao']) ?>'>
                 <?= abreviar($reg['disciplina'], 30).$disc ?>

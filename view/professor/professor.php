@@ -188,7 +188,7 @@ if ($_GET["atribuicao"]) {
                 </td>
             </tr>
             <?php
-            if (!$status || $status == 4) {
+            if (!$status) {
                 ?>
                 <tr>
                     <td colspan="2">
@@ -208,15 +208,20 @@ if ($_GET["atribuicao"]) {
                     <hr>
                 </td>
             </tr>
-            <tr>
+<!--            <tr>
                 <td colspan="2"><font size="1">Aten&ccedil;&atilde;o: esse di&aacute;rio ser&aacute; bloqueado automaticamente pelo sistema em <?= $dataFimFormat ?>.</font>
                 </td>
-            </tr>
-            <tr>
+            </tr>-->
+<!--            <tr>
                 <td colspan="2">
                     <hr>
                 </td>
-            </tr>
+            </tr>-->
+            <?php
+            // SE O DIARIO NAO ESTÁ ABERTO
+            if ($status){
+            ?>
+            
             <tr>
                 <td colspan="2">
                     <table>
@@ -233,6 +238,8 @@ if ($_GET["atribuicao"]) {
                     </table>
             </tr>
             <?php
+            }
+            
             $params = array('nomeTabela' => 'DIARIO', 'codigoTabela' => $atribuicao);
             $res = $log->listSolicitacoes($params, ' ORDER BY l.codigo DESC ');
             if ($res) {
