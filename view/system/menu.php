@@ -2,6 +2,24 @@
     <ul>
         <li><a href="javascript:$('#index').load('<?= VIEW ?>/system/home.php');void(0);"><span>Home</span></a></li>
         <?php
+        if (!in_array($ALUNO, $_SESSION["loginTipo"])) {
+        ?>
+        <li class='active has-sub'><a href="#"><span>Ajuda</span></a>
+            <ul>
+                <li><a target="_blank" data-placement="right" data-content="" title="" href="http://webdiario.ifsp.edu.br/projects/webdiario-manuais/wiki/FAQ_-_Perguntas_frequentes"><span>FAQ - Perguntas Frequentes</span></a></li>
+                <li><a data-placement="right" data-content="" title="" href="javascript:$('#index').load('<?=VIEW?>/system/email.php');void(0);"><span>Fale Conosco</span></a></li>
+            </ul>
+        </li>
+        <?php
+        }
+        else{
+        ?>
+        <li>
+            <a href="javascript:$('#index').load('<?= VIEW ?>/aluno/boletim.php');void(0);"><span>Boletim</span></a>
+        </li>
+        <?php            
+        }
+
         // SE FOR ALUNO OU PROFESSOR, MOSTRA O MENU PERSONALIZADO COM AS SUAS ATRIBUICOES
         $menuDiferencial = 0;
         if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {

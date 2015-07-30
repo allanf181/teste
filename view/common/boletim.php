@@ -25,6 +25,11 @@ if (dcrip($_GET["aluno"])) {
     $params['aluno'] = $aluno;
     $sqlAdicional .= ' AND p.codigo = :aluno ';
 }
+else{
+    $aluno = $_SESSION['loginCodigo'];
+    $params['aluno'] = $aluno;
+    $sqlAdicional .= ' AND p.codigo = :aluno ';
+}
 
 if (dcrip($_GET["bimestre"])) {
     $bimestre = dcrip($_GET["bimestre"]);
@@ -116,7 +121,7 @@ if (dcrip($_GET["bimestre"])) {
         <?php
     }
 
-    if ($aluno && $turma) {
+    if ($aluno) {
         $params['ano'] = $ANO;
         $params['semestre'] = $SEMESTRE;
         $sqlAdicional .= " AND t.ano = :ano "
