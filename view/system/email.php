@@ -24,7 +24,8 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
 
         $headers = "MIME-Version: 1.0\r\n";
         $headers .= "Content-type: text/html; charset=utf-8\r\n";
-        $headers .= "From: ".$_POST['email']." \n";
+//        $headers .= "From: ".$_POST['email']." \n";
+        $headers .= "From: webdiario@ifsp.edu.br \n";
         $headers .= "Return-Path: ".$_POST['email']." \n";
         
         $mensagem = '<br />NOME: '.utf8_decode($_POST['nome']);
