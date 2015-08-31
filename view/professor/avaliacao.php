@@ -602,7 +602,7 @@ if ($_GET['opcao'] == '') {
                 <th width="150">Valor</th>
                 <th align="center" width="50">&nbsp;&nbsp;
                 <?php
-                if (!$_SESSION['dataExpirou'] && !$trava_nota && !$final && $libera_nota){
+                if (!$_SESSION['dataExpirou'] && !$trava_nota && !$final){
                 ?>
                     <input type="checkbox" id="select-all" value="">
                     <a href="#" class='item-excluir'>
