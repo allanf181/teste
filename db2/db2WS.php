@@ -64,7 +64,7 @@ $logEmail->send();
 function metricas() {
     global $ANO, $SEMESTRE;
 
-    $sql = "SELECT p.nome,
+    $sql = "SELECT p.codigo,
                 SUM((SELECT COUNT(*) FROM Aulas au WHERE au.atribuicao = a.codigo)) as aula,
                 SUM((SELECT COUNT(*) FROM Frequencias f, Aulas au WHERE au.codigo = f.aula AND au.atribuicao = a.codigo)) as frequencia,
                 SUM((SELECT COUNT(*) FROM Avaliacoes av WHERE av.atribuicao = a.codigo)) as avaliacao,
@@ -84,7 +84,8 @@ function metricas() {
         if ($row->aula || $row->frequencia || $row->avaliacao || $row->nota)
             $uso++;
         $count++;
-        $newRes .= '<tr><td>' . $row->nome . '</td><td>' . $row->aula . '</td><td>' . $row->frequencia . '</td><td>' . $row->avaliacao . '</td><td>' . $row->nota . '</td><td>' . $row->ultAula . '</td></tr>';
+        $class = ($count%2==0 ? 'class="rowDiff"':''); 
+        $newRes .= '<tr><td '.$class.'>' . $row->codigo . '</td><td>' . $row->aula . '</td><td>' . $row->frequencia . '</td><td>' . $row->avaliacao . '</td><td>' . $row->nota . '</td><td>' . $row->ultAula . '</td></tr>';
     }
     $uso = round(($uso * 100) / $count);
     $rs['uso'] = $uso;
