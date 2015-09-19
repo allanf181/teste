@@ -1,6 +1,6 @@
 <?php
 
-class Academico59 extends Ruckusing_Migration_Base
+class Academico59_1 extends Ruckusing_Migration_Base
 {
     public function up()
     {
