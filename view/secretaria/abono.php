@@ -105,7 +105,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                     <select name="aluno" id="aluno" style="width: 350px">
                         <option></option>
                         <?php
-                        require CONTROLLER . '/pessoa.class.php';
+                        require_once CONTROLLER . '/pessoa.class.php';
                         $pessoa = new Pessoas();
                         $paramPessoa = array('tipo' => $ALUNO, 'ano' => $ANO, 'semestre' => $SEMESTRE);
                         $sqlAdicionalTipo = " AND pt.tipo = :tipo AND p.codigo IN "
