@@ -31,7 +31,7 @@ if (isset($_GET["ano"]) || isset($_GET["semestre"])){
 }
 
 $dados = $p->getAnoSemestre($_SESSION['loginCodigo']);
-var_dump($dados);
+
 if (!empty($dados[0])){
     $_SESSION['ano']=$dados[0];
     $_SESSION['semestre']=$dados[1];
