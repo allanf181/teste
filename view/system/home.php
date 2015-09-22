@@ -29,23 +29,23 @@ if ($_GET['ano'] && $_GET['semestre']) {
     die;
 }
 
-require CONTROLLER . "/atribuicao.class.php";
-require CONTROLLER . "/planoEnsino.class.php";
-require CONTROLLER . "/pessoa.class.php";
-require CONTROLLER . "/professor.class.php";
-require CONTROLLER . "/aulaTroca.class.php";
-require CONTROLLER . "/aluno.class.php";
-require CONTROLLER . "/tdDado.class.php";
-require CONTROLLER . "/aviso.class.php";
-require CONTROLLER . "/atendimento.class.php";
-require CONTROLLER . "/coordenador.class.php";
-require CONTROLLER . "/ocorrencia.class.php";
-require CONTROLLER . "/chat.class.php";
-require CONTROLLER . "/log.class.php";
-require CONTROLLER . "/bolsa.class.php";
-require CONTROLLER . "/calendario.class.php";
-require CONTROLLER . "/questionario.class.php";
-require CONTROLLER . "/notaFinal.class.php";
+require_once CONTROLLER . "/atribuicao.class.php";
+require_once CONTROLLER . "/planoEnsino.class.php";
+require_once CONTROLLER . "/pessoa.class.php";
+require_once CONTROLLER . "/professor.class.php";
+require_once CONTROLLER . "/aulaTroca.class.php";
+require_once CONTROLLER . "/aluno.class.php";
+require_once CONTROLLER . "/tdDado.class.php";
+require_once CONTROLLER . "/aviso.class.php";
+require_once CONTROLLER . "/atendimento.class.php";
+require_once CONTROLLER . "/coordenador.class.php";
+require_once CONTROLLER . "/ocorrencia.class.php";
+require_once CONTROLLER . "/chat.class.php";
+require_once CONTROLLER . "/log.class.php";
+require_once CONTROLLER . "/bolsa.class.php";
+require_once CONTROLLER . "/calendario.class.php";
+require_once CONTROLLER . "/questionario.class.php";
+require_once CONTROLLER . "/notaFinal.class.php";
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
