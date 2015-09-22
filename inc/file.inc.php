@@ -11,7 +11,7 @@ if ($type == 'pic') {
     if (isset($_GET['force']))
         $force = dcrip($_GET['force']);
 
-    require CONTROLLER . "/pessoa.class.php";
+    require_once CONTROLLER . "/pessoa.class.php";
     $pessoa = new Pessoas();
     $params = array('codigo' => $codigo);
     $res = $pessoa->listRegistros($params);
