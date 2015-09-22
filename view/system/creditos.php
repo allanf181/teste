@@ -38,29 +38,31 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
         <tr><td>&nbsp;</td></tr>
 
         <tr>
-            <td width="300"><h2>Desenvolvedor</h2></td>
+            <td width="300"><h2>Desenvolvedores</h2></td>
             <td width="300"><h2>Testes de Software e Suporte</h2></td>
             <td width="300"><h2>Segurança de Software</h2></td>
         </tr>
         <tr>
-            <td valign="top" align="center">João Paulo Lemos Escola (Barretos)</td>
             <td valign="top" align="center">
-                Josiane Rosa de Oliveira Gaia (Hortol&acirc;ndia)
-                <br>Ricardo Takazu (S&atilde;o Paulo)
+                João Paulo Lemos Escola (Barretos)
+                <br>Kerolláine Lauro Oliveira (Araraquara) 
+            </td>
+            <td valign="top" align="center">
+                Ricardo Takazu (S&atilde;o Paulo)
             </td>
             <td valign="top" align="center">
                 Lucas de Araujo Oliveira (Barretos)
             </td>
         </tr>
         <tr>
-            <td colspan="3"><h2>Colaboradores</h2></td>
+            <td colspan="3"><h2>Colaboraram com o projeto</h2></td>
         </tr>
         <tr>
             <td colspan="3" valign="top" align="center">
                 Anne Domenici (Sert&atilde;ozinho)
                 <br>Carlos Eduardo Alves da Silva (Votuporanga)
                 <br>Fernando Parreira (Votuporanga)
-                <br>Kerolláine Lauro Oliveira (Araraquara) 
+                <br>Josiane Rosa de Oliveira Gaia (Hortol&acirc;ndia)
                 <br>Lourenço Alves (Araraquara)
                 <br>Marcelo Fernandes (Campos do Jordão)
                 <br>Naylor Garcia Bachiega (Birigui)
@@ -81,6 +83,14 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     É servidor do IFSP e quer ajudar? Venha fazer parte da equipe!
 </p>
 
+<br />
+<b>Vers&atilde;o 1.444</b>
+<br> - Correção da paginação na tela de abonos;
+<br> - Exclusão no bd da permissão de item de menu de questionários;
+<br> - Correção do aviso de ano/semestre alterado.
+<br />
+<b>Vers&atilde;o 1.443</b>
+<br> - Funcionalidade de backup online.
 <br />
 <b>Vers&atilde;o 1.442</b>
 <br> - Ajustes e correções nos formulários FPA, PIT e RIT: recurso autocompletar no campo de curso e disciplinas;

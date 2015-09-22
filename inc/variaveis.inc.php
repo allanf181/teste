@@ -1,36 +1,47 @@
 <?php
 
+require_once CONTROLLER . "/pessoa.class.php";
+$p = new Pessoas();
+
 // SETANDO O ANO E SEMESTRE ATUAL.
-if (empty($_SESSION["ano"]) || empty($_SESSION["semestre"]) || isset($_GET['retorno'])) {
-    $_SESSION["ano"] = date('Y');
+if (empty($_SESSION["anoAtual"]) || empty($_SESSION["semestreAtual"]) || isset($_GET['retorno'])) {
+    $_SESSION["anoAtual"] = date('Y');
     $SEMESTRE = 1;
     if (date('m') > 7)
         $SEMESTRE = 2;
-    $_SESSION["semestre"] = $SEMESTRE;
+    $_SESSION["semestreAtual"] = $SEMESTRE;
+    $_SESSION['ano']=$_SESSION['anoAtual'];
+    $_SESSION['semestre']=$_SESSION['semestreAtual'];
+    
+    if (isset($_GET['retorno'])){
+        // ATUALIZA OS DADOS DE ANO/SEMESTRE NO REGISTRO DA PESSOA
+        $p->updateAnoSemestre($_SESSION['loginCodigo'], $_SESSION['ano'], $_SESSION['semestre']);
+    }
 }
 
 // SALVA O ANO/SEMESTRE ATUAL NO PERFIL DA PESSOA
 $_SESSION['anoOuSemestreAlterado']=false;
-if (isset($_GET["ano"]) || isset($_GET["semestre"]) || isset($_GET['retorno'])){
+
+if (isset($_GET["ano"]) || isset($_GET["semestre"])){
     $_SESSION["ano"] = $_GET["ano"];
-    $_SESSION["anoPadrao"] = $_GET["ano"];
     $_SESSION["semestre"] = $_GET["semestre"];
-    $_SESSION["semPadrao"] = $_GET["semestre"];
     
     // ATUALIZA OS DADOS DE ANO/SEMESTRE NO REGISTRO DA PESSOA
-    require CONTROLLER . "/pessoa.class.php";
-    $p = new Pessoas();
     $p->updateAnoSemestre($_SESSION['loginCodigo'], $_SESSION['ano'], $_SESSION['semestre']);
 }
 
-// VALIDA O SEMESTRE/ANO ATUAL PARA INCLUIR AVISO AO USUÁRIO DE QUE O SEMESTRE/ANO É DIFERENTE DO ATUAL
-if (isset($_SESSION['anoPadrao']) || isset($_SESSION['semPadrao'])){
-    if ($_SESSION['ano']!=$_SESSION['anoPadrao'] || $_SESSION['sem']!=$_SESSION['semPadrao']){
-        $_SESSION['anoOuSemestreAlterado']=true;
-        $_SESSION['ano'] = $_SESSION['anoPadrao'];
-        $_SESSION['semestre'] = $_SESSION['semPadrao'];
-    }
+$dados = $p->getAnoSemestre($_SESSION['loginCodigo']);
+var_dump($dados);
+if (!empty($dados[0])){
+    $_SESSION['ano']=$dados[0];
+    $_SESSION['semestre']=$dados[1];
 }
+
+// VALIDA O SEMESTRE/ANO ATUAL PARA INCLUIR AVISO AO USUÁRIO DE QUE O SEMESTRE/ANO É DIFERENTE DO ATUAL
+if ($_SESSION['ano']!=$_SESSION['anoAtual'] || $_SESSION['semestre']!=$_SESSION['semestreAtual']){
+    $_SESSION['anoOuSemestreAlterado']=true;
+}
+
 
 // PADRAO, MAISCULA GLOBAL VARS
 $ANO = $_SESSION["ano"];
