@@ -1,7 +1,7 @@
 <?php
 
-require_once CONTROLLER . "/pessoa.class.php";
-$p = new Pessoas();
+require_once CONTROLLER . "/anoSemestre.class.php";
+$p = new AnoSemestre();
 
 // SETANDO O ANO E SEMESTRE ATUAL.
 if (empty($_SESSION["anoAtual"]) || empty($_SESSION["semestreAtual"]) || isset($_GET['retorno'])) {
