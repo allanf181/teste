@@ -43,8 +43,6 @@ $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuico
 	AND n.matricula = m.codigo
 	AND m.aluno = p.codigo
 	AND d.codigo = a.disciplina
-        AND t.ano = $ano
-        AND t.semestre = $semestre
 	AND m.atribuicao = a.codigo
 	AND t.codigo = a.turma
         AND flag <> 5
