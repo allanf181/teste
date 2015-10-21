@@ -1,6 +1,6 @@
 <?php
 
-class Academico62 extends Ruckusing_Migration_Base
+class WebDiario62 extends Ruckusing_Migration_Base
 {
     public function up()
     {
