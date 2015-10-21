@@ -653,17 +653,17 @@ select{
     width:100px;
     max-height:130px;
     border-right:2px solid #bfe0c5;
-    margin-left:-613px
+    margin-left:-662px
 }
-
+ 
 .alunos_dados_nome{
-    margin-left:165px;
+    margin-left:105px;
     margin-top:-90px;
     font-size:large
 }
 
 .alunos_dados_prontuario{
-    margin-left:165px;
+    margin-left:105px;
     margin-top:-20px
 }
 

@@ -84,6 +84,10 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 </p>
 
 <br />
+<b>Vers&atilde;o 1.445</b>
+<br> - Início implantação do Hudson;
+<br> - Link do boletim no nome do aluno na tela de ocorrências;
+<br> - Inclusão do campo SMTP Auth na tela de cadastro do email da Instituição.
 <b>Vers&atilde;o 1.444</b>
 <br> - Correção da paginação na tela de abonos;
 <br> - Exclusão no bd da permissão de item de menu de questionários;

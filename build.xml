@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="webdiario" default="build" basedir=".">
+
+	<!-- Propriedades construção de build -->
+	<property name="project.version" value="1.0.0" />
+	<property name="target.dir" value="target" />
+	<property name="target.dir.build" value="${target.dir}/build" />
+
+	<!-- Propriedades para ambiente de desenvolvimento -->
+	<property name="apache.htdocs.dir" value="C://xampp//htdocs//" />
+	<property name="web.root.dir" value="webdiario" />
+	<property name="full.deploy.path" value="${apache.htdocs.dir}/${web.root.dir}" />
+		
+	<target name="clean">
+		<delete dir="${target.dir}" />
+	</target>
+
+	<target name="init">
+		<mkdir dir="${target.dir}" />
+		<mkdir dir="${target.dir.build}" />
+	</target>
+
+	<fileset id="fileset.build" dir="${basedir}">
+		<exclude name="**/nbproject/**" />
+		<exclude name="**/.settings/**" />
+		<exclude name="**/build.xml" />
+		<exclude name="**/${target.dir}/**" />
+		<exclude name="**/.buildpath" />
+		<exclude name="**/.project" />
+	</fileset>
+
+	<target name="build" depends="clean, init">
+		<echo message="Construindo projeto PHP [${ant.project.name}]" />
+		<copy todir="${target.dir.build}">
+			<fileset refid="fileset.build" />
+		</copy>
+		<zip destfile="${target.dir}/${ant.project.name}-${project.version}.zip">
+			<fileset dir="${target.dir.build}" />
+		</zip>
+	</target>
+	
+	<target name="deploy">
+		<echo message="Cleaning [${full.deploy.path}]"/>
+		<delete dir="${full.deploy.path}">
+			<exclude name="**/seg.txt" />
+		</delete>
+
+		<copy todir="${full.deploy.path}">
+			<fileset refid="fileset.build" />
+		</copy>
+	</target>
+
+</project>
+

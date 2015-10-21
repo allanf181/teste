@@ -24,7 +24,7 @@ class Instituicoes extends Generic {
 
             $mail->isSMTP();
             $mail->Host = $res[0]['email_smtp'];
-            $mail->SMTPAuth = true;
+            $mail->SMTPAuth = $res[0]['email_auth'];
             $mail->Username = $res[0]['email_account'];
             $mail->Password = $res[0]['email_password'];
             $mail->SMTPSecure = $res[0]['email_secure'];

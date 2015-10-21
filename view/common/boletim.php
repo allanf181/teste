@@ -133,7 +133,7 @@ if (dcrip($_GET["bimestre"])) {
 
         <div class='fundo_listagem'>
             <div id='alunos_cabecalho'>
-                <img alt="foto" style="width: 150px; height: 130px" src="<?= INC ?>/file.inc.php?type=pic&id=<?= crip($aluno) ?>" />
+                <img alt="foto" style="margin-top: 2px; margin-bottom: 2px; width: 95px; height: 125px " src="<?= INC ?>/file.inc.php?type=pic&id=<?= crip($aluno) ?>" />
                 <div class="alunos_dados_nome"><?= $res[0]['pessoa'] ?></div><br />
                 <div class="alunos_dados_prontuario"><?= $res[0]['prontuario'] ?></div>
             </div>

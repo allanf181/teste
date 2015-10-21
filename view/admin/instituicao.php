@@ -34,6 +34,8 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
         $_POST['ldap_sync'] = 0;
     if (!$_POST['ldap_pass'])
         $_POST['ldap_pass'] = 0;
+    if (!$_POST['email_auth'])
+        $_POST['email_auth'] = 0;
     unset($_POST['opcao']);
 
     $ret = $instituicao->insertOrUpdate($_POST);
@@ -233,6 +235,7 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                     <tr><td colspan="2">Aten&ccedil;&atilde;o, informe uma conta de e-mail abaixo para envio autenticado de mensagens, evitando que o e-mail de recupera&ccedil;&atilde;o de senha seja direcionado para a pasta SPAM do cliente. 
                             Se n&atilde;o for informada uma conta, o sistema ir&aacute; utilizar a fun&ccedil;&atilde;o MAIL do PHP, que n&atilde;o necessita de autentica&ccedil;&atilde;o, por&eacute;m muitos servidores de e-mail acusam como SPAM.<br /><br /></td></tr>
                     <tr><td>Servidor SMTP (ex. smtp.gmail.com): </td><td><input type="text" name="email_smtp" id="email_smtp" value="<?= $email_smtp ?>" /></td></tr>
+                    <tr><td>SMTP Auth (habilite por padrão): </td><td><input type='checkbox' <?php if ($email_auth != '') print "checked"; ?> id='email_auth' name='email_auth' value='1' /></td></tr>
                     <tr><td>Porta: </td><td><input type="text" name="email_port" id="email_port" value="<?= $email_port ?>" /></td></tr>
                     <tr><td>Segurança (ex. tls ou ssl): </td><td><input type="text" name="email_secure" id="email_secure" value="<?= $email_secure ?>" /></td></tr>
                     <tr><td>Conta de E-mail: </td><td><input type="text" name="email_account" id="email_account" value="<?= $email_account ?>" /></td></tr>

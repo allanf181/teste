@@ -271,7 +271,7 @@ require PATH . VIEW . '/system/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>>
-            <td>&nbsp;<a href="#" data-placement="top" title="Aluno" data-content="<?= $reg['aluno'] ?>"><?= abreviar($reg['aluno'], 30) ?></a></td>
+            <td>&nbsp;<a href="javascript:$('#index').load('<?=VIEW?>/secretaria/boletim.php?aluno=<?=crip($reg['codAluno'])?>');void(0);" data-placement="top" title="Aluno" data-content="<?= $reg['aluno'] ?>"><?= abreviar($reg['aluno'], 30) ?></a></td>
             <td><?= $reg['dataFormat'] ?></td>
             <td>&nbsp;<a href="#" data-placement="top" title="Regitro por" data-content="<?= $reg['registroPor'] ?>"><?= abreviar($reg['registroPor'], 30) ?></a></td>
             <td>&nbsp;<a href="#" data-placement="top" title="Descri&ccedil;&atilde;o" data-content="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 15) ?></a></td>
@@ -295,6 +295,11 @@ require PATH . VIEW . '/system/paginacao.php';
     }
     ?>
 </table>
+
+<?php
+$_SESSION['VOLTAR'] = "index";
+$_SESSION['LINK'] = VIEW . "/secretaria/ocorrencia.php";
+?>
 
 <script>
     $(".search").click(function () {
