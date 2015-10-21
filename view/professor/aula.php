@@ -90,7 +90,7 @@ if ($_GET['opcao'] == 'insert') {
     <?php
     require CONTROLLER . "/planoAula.class.php";
     $planoAula = new PlanosAula();
-    $res = $planoAula->getConteudosAulas($atribuicao, $ANO, $SEMESTRE);
+    $res = $planoAula->listPlanoAulas($atribuicao);
 
     if (!$quantidade)
         $quantidade = $ensalamento->getQdeAulaDiaSemana($atribuicao, date("N"));
