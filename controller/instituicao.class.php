@@ -17,8 +17,7 @@ class Instituicoes extends Generic {
 
         $res = $this->listRegistros();
 
-        if ($res[0]['email_smtp'] && $res[0]['email_port'] && $res[0]['email_secure'] && 
-                $res[0]['email_account'] && $res[0]['email_password']) {
+        if ($res[0]['email_smtp'] && $res[0]['email_port'] && $res[0]['email_account']) {
             
             $mail = new PHPMailer;
 
@@ -31,7 +30,7 @@ class Instituicoes extends Generic {
             $mail->Port = $res[0]['email_port'];
 
             foreach($emails as $email) {
-                $mail->From = $email;
+                $mail->From = $res[0]['email_account'];
                 $mail->FromName = $email;
                 $mail->addAddress($email, $email);
             }
