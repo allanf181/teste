@@ -90,7 +90,7 @@ if ($_GET['opcao'] == 'insert') {
     <?php
     require CONTROLLER . "/planoAula.class.php";
     $planoAula = new PlanosAula();
-    $res = $planoAula->listPlanoAulas($atribuicao);
+    $res = $planoAula->getConteudosAulas($atribuicao, $ANO, $SEMESTRE);
 
     if (!$quantidade)
         $quantidade = $ensalamento->getQdeAulaDiaSemana($atribuicao, date("N"));
@@ -172,7 +172,7 @@ if ($_GET['opcao'] == '') {
     <center>    
         <?php 
         if($nf['flag5'] && !$_SESSION['dataExpirou'] && (!$nf['total'] || ($nf['flag5'] && $nf['totalRec']==$nf['total']))){
-            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px'>Notas finalizadas.<br>Pode finalizar o diário.</p>";
+            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px'>Notas finalizadas.</p>";
         }
         else if($nf['reg'] < $nf['flag5']  && !$_SESSION['dataExpirou']){
             echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 10px'>Notas e faltas enviadas.<br>Aguardando o Roda.</p>";
