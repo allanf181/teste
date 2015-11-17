@@ -1,0 +1,2 @@
+Jul 13 17:16:14 [info] SELECT version FROM schema_migrations
+Jul 13 17:16:17 [info] SELECT version FROM schema_migrations

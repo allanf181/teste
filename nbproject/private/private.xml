@@ -7,8 +7,123 @@
             <file>file:/dados/PHP/academico/db2/db2WS.php</file>
             <file>file:/dados/PHP/academico/db2/lib/consultaDisciplinasWS.php</file>
         </group>
+        <group name="wd">
+            <file>file:/dados/PHP/academico/lib/migration/migrations/academico/20151119000001_Academico59_1.php</file>
+            <file>file:/dados/PHP/academico/db2/db2WS.php</file>
+        </group>
         <group>
-            <file>file:/home/kerollaine/repositorios/academico/view/professor/avaliacao.php</file>
+            <file>file:/dados/PHP/academico/db2/db2ConsultaDisciplinas.php</file>
+            <file>file:/dados/PHP/academico/controller/generic.class.php</file>
+            <file>file:/dados/PHP/academico/view/secretaria/cursos/atribuicao.php</file>
+            <file>file:/dados/PHP/academico/controller/avaliacao.class.php</file>
+            <file>file:/dados/PHP/academico/inc/config.inc.php</file>
+            <file>file:/dados/PHP/academico/controller/notaFinal.class.php</file>
+            <file>file:/dados/PHP/academico/lib/migration/migrations/academico/20151122000063_WebDiario63.php</file>
+            <file>file:/dados/PHP/academico/inc/config.system.php</file>
+            <file>file:/dados/PHP/academico/controller/atribuicao.class.php</file>
+            <file>file:/dados/PHP/academico/db2/db2DigitaNotas.php</file>
+            <file>file:/dados/PHP/academico/view/professor/avaliacao.php</file>
+        </group>
+        <group name="wd-extras"/>
+        <group name="JS"/>
+        <group name="soap">
+            <file>file:/dados/PHP/academico/db2/db2ConsultaDisciplinas.php</file>
+            <file>file:/dados/PHP/academico/view/system/email.php</file>
+            <file>file:/dados/PHP/academico/view/js/jquery.html5form-1.5-min.js</file>
+            <file>file:/dados/PHP/academico/view/common/chat.php</file>
+            <file>file:/dados/PHP/academico/controller/tipoAvaliacao.class.php</file>
+            <file>file:/dados/PHP/academico/index.php</file>
+            <file>file:/dados/PHP/academico/view/professor/aula.php</file>
+            <file>file:/dados/PHP/academico/view/system/login.php</file>
+            <file>file:/dados/PHP/academico/db2/lib/inc/aguardandoRoda.php</file>
+            <file>file:/dados/PHP/academico/view/secretaria/relatorios/inc/diario.php</file>
+            <file>file:/dados/PHP/academico/view/common/bolsas/bolsaRelatorio.php</file>
+            <file>file:/dados/PHP/academico/inc/funcoes.inc.php</file>
+            <file>file:/dados/PHP/academico/view/common/bolsas/base.php</file>
+            <file>file:/dados/PHP/academico/lib/Zebra_Dialog/public/css/flat/zebra_dialog.css</file>
+            <file>file:/dados/PHP/academico/controller/permissao.class.php</file>
+            <file>file:/dados/PHP/academico/controller/nota.class.php</file>
+            <file>file:/dados/PHP/academico/db2/db2WS.php</file>
+            <file>file:/dados/PHP/academico/view/common/ensalamento.php</file>
+            <file>file:/dados/PHP/academico/view/professor/nota.php</file>
+            <file>file:/dados/PHP/academico/view/css/estilo.min.css</file>
+            <file>file:/dados/PHP/academico/inc/permissao.inc.php</file>
+            <file>file:/dados/PHP/academico/controller/professor.class.php</file>
+            <file>file:/dados/PHP/academico/view/secretaria/ocorrencia.php</file>
+            <file>file:/dados/PHP/academico/controller/avaliacao.class.php</file>
+            <file>file:/dados/PHP/academico/controller/notaFinal.class.php</file>
+            <file>file:/dados/PHP/academico/view/system/senha.php</file>
+            <file>file:/dados/PHP/academico/view/professor/plano.php</file>
+            <file>file:/dados/PHP/academico/view/professor/diario.php</file>
+            <file>file:/dados/PHP/academico/lib/migration/migrations/academico/20151122000063_WebDiario63.php</file>
+            <file>file:/dados/PHP/academico/inc/config.system.php</file>
+            <file>file:/dados/PHP/academico/view/professor/professor.php</file>
+            <file>file:/dados/PHP/academico/controller/matriculaAlteracao.class.php</file>
+            <file>file:/dados/PHP/academico/db2/lib/consultaDisciplinasWS.php</file>
+            <file>file:/dados/PHP/academico/controller/arredondamento.class.php</file>
+            <file>file:/dados/PHP/academico/view/common/boletim.php</file>
+            <file>file:/dados/PHP/academico/view/professor/arquivo.php</file>
+            <file>file:/dados/PHP/academico/db2/lib/digitaNotasWS.php</file>
+            <file>file:/dados/PHP/academico/inc/config.inc.php</file>
+            <file>file:/dados/PHP/academico/view/css/menu/styles.css</file>
+            <file>file:/dados/PHP/academico/view/professor/arredondamento.php</file>
+            <file>file:/dados/PHP/academico/view/css/aba.css</file>
+            <file>file:/dados/PHP/academico/db2/db2DigitaNotas.php</file>
+            <file>file:/dados/PHP/academico/view/system/home.php</file>
+            <file>file:/dados/PHP/academico/view/professor/avaliacao.php</file>
+            <file>file:/dados/PHP/academico/view/secretaria/cursos/atribuicao.php</file>
+            <file>file:/dados/PHP/academico/view/system/menu.php</file>
+        </group>
+        <group name="academico">
+            <file>file:/dados/PHP/academico/db2/db2ConsultaDisciplinas.php</file>
+            <file>file:/dados/PHP/academico/view/common/chat.php</file>
+            <file>file:/dados/PHP/academico/view/js/jquery.html5form-1.5-min.js</file>
+            <file>file:/dados/PHP/academico/view/system/email.php</file>
+            <file>file:/dados/PHP/academico/controller/tipoAvaliacao.class.php</file>
+            <file>file:/dados/PHP/academico/index.php</file>
+            <file>file:/dados/PHP/academico/view/system/login.php</file>
+            <file>file:/dados/PHP/academico/db2/lib/inc/aguardandoRoda.php</file>
+            <file>file:/dados/PHP/academico/view/system/menu.php</file>
+            <file>file:/dados/PHP/academico/inc/funcoes.inc.php</file>
+            <file>file:/dados/PHP/academico/lib/Zebra_Dialog/public/css/flat/zebra_dialog.css</file>
+            <file>file:/dados/PHP/academico/db2/db2WS.php</file>
+            <file>file:/dados/PHP/academico/view/css/estilo.min.css</file>
+            <file>file:/dados/PHP/academico/view/secretaria/ocorrencia.php</file>
+            <file>file:/dados/PHP/academico/controller/notaFinal.class.php</file>
+            <file>file:/dados/PHP/academico/view/professor/plano.php</file>
+            <file>file:/dados/PHP/academico/view/professor/professor.php</file>
+            <file>file:/dados/PHP/academico/lib/migration/lib/Ruckusing/Adapter/PgSQL/Base.php</file>
+            <file>file:/dados/PHP/academico/controller/matriculaAlteracao.class.php</file>
+            <file>file:/dados/PHP/academico/view/common/boletim.php</file>
+            <file>file:/dados/PHP/academico/view/professor/arquivo.php</file>
+            <file>file:/dados/PHP/academico/db2/lib/digitaNotasWS.php</file>
+            <file>file:/dados/PHP/academico/inc/config.inc.php</file>
+            <file>file:/dados/PHP/academico/view/professor/arredondamento.php</file>
+            <file>file:/dados/PHP/academico/lib/migration/ruckus.php</file>
+            <file>file:/dados/PHP/academico/view/css/aba.css</file>
+            <file>file:/dados/PHP/academico/db2/db2DigitaNotas.php</file>
+            <file>file:/dados/PHP/academico/view/professor/avaliacao.php</file>
+            <file>file:/dados/PHP/academico/view/system/home.php</file>
+            <file>file:/dados/PHP/academico/view/professor/aula.php</file>
+            <file>file:/dados/PHP/academico/view/secretaria/relatorios/inc/diario.php</file>
+            <file>file:/dados/PHP/academico/view/common/bolsas/bolsaRelatorio.php</file>
+            <file>file:/dados/PHP/academico/view/common/bolsas/base.php</file>
+            <file>file:/dados/PHP/academico/controller/nota.class.php</file>
+            <file>file:/dados/PHP/academico/controller/permissao.class.php</file>
+            <file>file:/dados/PHP/academico/view/professor/nota.php</file>
+            <file>file:/dados/PHP/academico/view/common/ensalamento.php</file>
+            <file>file:/dados/PHP/academico/controller/professor.class.php</file>
+            <file>file:/dados/PHP/academico/inc/permissao.inc.php</file>
+            <file>file:/dados/PHP/academico/view/secretaria/cursos/atribuicao.php</file>
+            <file>file:/dados/PHP/academico/controller/avaliacao.class.php</file>
+            <file>file:/dados/PHP/academico/view/system/senha.php</file>
+            <file>file:/dados/PHP/academico/inc/config.system.php</file>
+            <file>file:/dados/PHP/academico/lib/migration/migrations/academico/20151122000063_WebDiario63.php</file>
+            <file>file:/dados/PHP/academico/view/professor/diario.php</file>
+            <file>file:/dados/PHP/academico/db2/lib/consultaDisciplinasWS.php</file>
+            <file>file:/dados/PHP/academico/controller/arredondamento.class.php</file>
+            <file>file:/dados/PHP/academico/lib/migration/lib/Ruckusing/Adapter/MySQL/Base.php</file>
+            <file>file:/dados/PHP/academico/view/css/menu/styles.css</file>
         </group>
     </open-files>
 </project-private>
