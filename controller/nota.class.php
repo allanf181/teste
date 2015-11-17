@@ -94,7 +94,13 @@ class Notas extends Frequencias {
         $dados['media'] = arredondar($media);
         $dados['frequencia'] = $frequencia;
         $dados['faltas'] = $faltas;
-
+        
+        // VERIFICANDO SE HÁ REAVALIAÇÃO
+        if (!empty($dados['notaReavaliacao']) && $dados['notaReavaliacao']>$dados['media']){
+            $dados['media'] = $dados['notaReavaliacao'];
+            $dados['origemMedia'] = 'reavaliacao';
+        }
+//debug($dados);
         // RETORNANDO OS DADOS
         return $dados;
     }
@@ -152,8 +158,9 @@ class Notas extends Frequencias {
                         t.calculo as calculo, at.calculo as calculoAtt,
 			t.arredondar as arredondar, at.bimestre as bimestre,
                         t.final as final, a.sigla as sigla, at.formula as formula,
-                        (SELECT a1.sigla FROM Avaliacoes a1 WHERE a1.codigo = a.substitutiva) as sub
-			FROM Notas n, Avaliacoes a, Atribuicoes at, TiposAvaliacoes t
+                        (SELECT a1.sigla FROM Avaliacoes a1 WHERE a1.codigo = a.substitutiva) as sub, t.sigla as siglaTipo, nf.ncc , nf.mcc
+			FROM Notas n, Avaliacoes a, TiposAvaliacoes t, Atribuicoes at
+                        LEFT JOIN NotasFinais nf ON nf.atribuicao=at.codigo AND nf.matricula=:matricula
 			WHERE n.avaliacao = a.codigo
 			AND a.atribuicao = at.codigo
 			AND t.codigo = a.tipo
@@ -165,6 +172,7 @@ class Notas extends Frequencias {
         $params = array(':att' => $atribuicao,
             ':matricula' => $matricula);
         $res = $bd->selectDB($sql, $params);
+//debug($res);
 
         $media = 0;
         $total = 0;
@@ -203,14 +211,20 @@ class Notas extends Frequencias {
                 }
             }
 
-            if ($reg['tipo'] == 'recuperacao' && !$reg['final']) {
+            if ($reg['tipo'] == 'recuperacao' && $reg['siglaTipo']!='REF' && !$reg['final']) {
                 $rec = $reg['nota'];
                 $calculo = $reg['calculo'];
             }
-            if ($reg['tipo'] == 'recuperacao' && $reg['final']) {
+            if ($reg['tipo'] == 'recuperacao' && $reg['siglaTipo']!='REF' && $reg['final']) {
                 $rec = $reg['nota'];
                 $calculo = $reg['calculo'];
                 $final = 1;
+            }
+            if ($bimestre==4 && $reg['tipo'] == 'recuperacao' && $reg['siglaTipo']=='REF'){
+                $notaReavaliacao=$reg['nota'];
+            }
+            else if ($bimestre==0 && $reg['tipo'] == 'recuperacao' && $reg['siglaTipo']=='REF'){
+                $rec=$reg['nota'];
             }
         }
 
@@ -238,10 +252,13 @@ class Notas extends Frequencias {
         // GARANTINDO A MEDIA MENOR QUE 10
         if ($media > 10)
             $media = 10;
-
+//debugSQL($sql, $params);
         // ARMAZENANDO A MEDIA DAS AVALIACOES PARA O DIARIO
         $dados['mediaAvaliacao'] = arredondar($media);
         $dados['notaRecuperacao'] = arredondar($rec);
+        $dados['notaReavaliacao'] = $notaReavaliacao;
+        if ($reg['ncc']!=$reg['mcc'])
+            $dados['notaArredondada'] = $reg['ncc'];
 
         if ($calculo) { // SE TEM RECUPERACAO
             $media = $this->calcMedia($calculo, $media, $medias, $rec, $tipo, $formula);
@@ -262,7 +279,25 @@ class Notas extends Frequencias {
 
         // REGISTRANDO A MEDIA
         $dados['media'] = $media;
+        
+//        // VERIFICANDO SE HÁ ARREDONDAMENTO
+//        if (!empty($dados['notaArredondada']) && $dados['notaArredondada']>=0){
+//            $dados['media'] = $dados['notaArredondada'];
+//            $dados['origemMedia'] = 'arredondamento';
+//        }
+//
+//        // VERIFICANDO SE HÁ RECUPERACAO
+//        if (!empty($dados['notaRecuperacao']) && $dados['notaRecuperacao']>$dados['media']){
+//            $dados['media'] = $dados['notaRecuperacao'];
+//            $dados['origemMedia'] = 'recuperacao';
+//        }
 
+        // VERIFICANDO SE HÁ REAVALIAÇÃO
+//        if (!empty($dados['notaReavaliacao']) && $dados['notaReavaliacao']>$dados['media']){
+//            $dados['media'] = $dados['notaReavaliacao'];
+//            $dados['origemMedia'] = 'reavaliacao';
+//        }
+$dados['atribuicao']=$atribuicao;
         // RETORNANDO OS DADOS
         return $dados;
     }
@@ -431,6 +466,7 @@ class Notas extends Frequencias {
         return $media;
     }
 
+    
 }
 
 ?>

@@ -24,7 +24,7 @@ foreach ($res as $reg) {
     $reg['horario'] = str_ireplace("[$match[1]]", "", $reg['horario']);
     $T = $match[1];
     $link = 'Turma ' . $reg['turma'] . ' (' . $reg['subturma'] . ') <br>' . $reg['professor'] . '<br>' . $reg['sala'];
-    $horas[$T][$reg['diaSemana']][] = $prof->getProfessor($reg['atribuicao'], 0, ' ', 1, 1) . "<br><a href='#' data-placement='right' data-content='" . $link . "' title='" . $reg['disciplina'] . "'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
+    $horas[$T][$reg['diaSemana']][] = $prof->getProfessor($reg['atribuicao'], 0, ' ', 1, 1) . "<br><a style='color: darkgreen' href='#' data-placement='right' data-content='" . $link . "' title='" . $reg['disciplina'] . "'>" . $reg['inicio'] . ' - ' . $reg['fim'] . '<br>' . $reg['discNumero'] . ' - ' . $reg['horario'] . "</a>";
     $turmaNome = $reg['turma'];
 }
 
@@ -70,8 +70,8 @@ if ($atribuicao)
                         <?php
                         if (isset($horas[$tur][$i])) {
                             foreach ($horas[$tur][$i] as $disc) {
-                                print str_ireplace("[$match[1]]", "", $disc);
-                                print '<br>-----------------<br>';
+                                print "<p style='color: blue'>".str_ireplace("[$match[1]]", "", $disc)."</p>";
+                                print '<hr style=\'color: #e3f0e5; width: 90%;\' />';
                             }
                         }
                         ?>

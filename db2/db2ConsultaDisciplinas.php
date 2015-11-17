@@ -15,6 +15,11 @@ if (isset($_GET["atribuicao"])) {
     $sqlCodigo = "AND a.codigo = $atribuicao";
 }
 
+if (isset($_GET["turma"])) {
+    $turma = $_GET["turma"];
+    $sqlCodigo = "AND a.codigo IN (SELECT codigo from Atribuicoes where turma=$turma)";
+}
+
 $user = 'BA000022';
 $pass = '4(HC&m3KbT';
 //$pass = 1234; 
@@ -27,16 +32,13 @@ $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.e
         AND pr.atribuicao = a.codigo
 	AND d.codigo = a.disciplina
 	AND t.codigo = a.turma
-        AND t.ano = $ano
-        AND t.semestre = $semestre
         AND (a.bimestre = 0 OR a.bimestre = 4)
-        AND n.bimestre = 1
-        AND (n.situacao IS NULL or n.situacao = 'Em Curso')
+        AND (n.situacao IS NULL or n.situacao = 'Em Curso' or n.situacao = 'MATRICULADO')
         AND flag = 5
         $sqlCodigo
 	GROUP BY a.codigo
         ORDER BY n.bimestre,d.numero";
-//echo $sql;
+echo $sql;
 $result = mysql_query($sql);
 
 $total = mysql_num_rows($result);
@@ -92,19 +94,21 @@ while ($l = mysql_fetch_array($result)) {
                 $situacaoNota = rtrim($alunosMatriculado->situacaoNota);
                 $aluno = $alunosMatriculado->prontuario;
                 $situacaoAluno = $alunosMatriculado->situacao;
-//echo "<br>=====================<br>".var_dump($alunosMatriculado);
+echo "<br>=====================<br>".debug($alunosMatriculado);
 
-//echo "<hr />".$alunosMatriculado->nome;
-//echo "<br>".$situacaoNota;
-//echo "<br>reav? ".$flagNotaReavDigitada;
-//echo "<br>sit? ".$alunosMatriculado->situacao;
-//echo "<br>sitNota? ".$alunosMatriculado->situacaoNota;
-//echo "<br>nota1? ".$flagNota1Digitada;
-//echo "<br>notareav? ".$flagNotaReavDigitada;
+echo "<hr />".$alunosMatriculado->nome;
+echo "<br>".$situacaoNota;
+echo "<br>reav? ".$flagNotaReavDigitada;
+echo "<br>sit? ".$alunosMatriculado->situacao;
+echo "<br>sitNota? ".$alunosMatriculado->situacaoNota;
+echo "<br>nota1? ".$flagNota1Digitada;
+echo "<br>notareav? ".$flagNotaReavDigitada;
                 $recuperacao = null;
 
                 //Verifica a situação
-                if ($flagNota1Digitada == "5" && $flagNotaReavDigitada == "0" && $situacaoNota == "5") {
+                // ALTERADA PARA EFETUAR TESTES DE INTEGRACAO COM O WS (VALIDAR SE NOTAS BIMESTRAIS FORAM DIGITADAS?)
+//                if ($flagNota1Digitada == "5" && $flagNotaReavDigitada == "0" && $situacaoNota == "5") {
+                if ($flagNotaReavDigitada == "0" && $situacaoNota == "5") {
 //                if ($flagNota1Digitada == "5" && $flagNotaReavDigitada == "0" && $situacaoAluno == "Em Curso") {
 //                    $situacaoAluno=null;// ALUNO DE RECUPERACAO DEVE TER SITUACAO NULA
 //                    echo "<br>REC!";
@@ -162,7 +166,7 @@ while ($l = mysql_fetch_array($result)) {
                                             WHERE m.aluno = p.codigo
                                             AND m.atribuicao = $atribuicao
                                             AND p.prontuario = '$aluno')";
-//                    print $sqlUpdate;
+                    print $sqlUpdate;
                     mysql_query($sqlUpdate);
                     
                 }

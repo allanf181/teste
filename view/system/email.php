@@ -67,7 +67,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
                     <strong>Caso necess&aacute;rio, tentaremos responder o mais breve poss&iacute;vel.</strong>
                 </td>
             </tr>
-            <tr><td>&nbsp;</td><td align="right"><a href="javascript:$('#index').load('<?= VIEW ?>/system/home.php');void(0);">VOLTAR</a></td></tr>
+            <tr><td>&nbsp;</td></tr>
             <tr>
                 <td width="20px" align="right">Nome: </td>
                 <td><input type='text' id='nome' name="nome" value='' size='60' /></td>
@@ -78,7 +78,7 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
             </tr>
             <tr>
                 <td align="right">Mensagem: </td>
-                <td><textarea maxlength="500" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"></textarea></td>
+                <td><textarea maxlength="500" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 505px; height: 60px"></textarea></td>
             </tr>
             <tr>
                 <td>&nbsp;</td><td>Digite o c&oacute;digo da figura abaixo:</td>
@@ -87,10 +87,14 @@ if ($_POST['nome'] && $_POST['email'] && $_POST['conteudo']) {
                 <td>&nbsp;</td><td><input type="text" name="captcha_r" id="captcha_r" autocomplete="off" />  </td>
             </tr>
             <tr>
-                <td>&nbsp;</td><td><img src="<?= CAPTCHA ?>/captcha.php" width="133" height="49"></td>
+                <td>&nbsp;</td><td><img src="<?= CAPTCHA ?>/captcha.php" width="133" height="49" style="margin-top: 10px"></td>
             </tr>
             <tr>
-                <td>&nbsp;</td><td><input type="submit" id='enviar' value="   Enviar   " disabled="disabled"  /></td>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="submit" id='enviar' value="   Enviar   " disabled="disabled"  />
+                    <input type="button" id='voltar' value="   Voltar   " onclick="window.location=''"  />
+                </td>
             </tr>
         </table>
     </form>

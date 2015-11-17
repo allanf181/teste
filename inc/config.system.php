@@ -24,7 +24,7 @@ ini_set("memory_limit","-1");
 //           PATHs GLOBAIS           //
 //=======================================//
 // Localização do diretório raiz do sistema
-define("LOCATION", '/academico', true);
+define("LOCATION", '/webdiario', true);
 
 // Diretório de Includes
 define("INC", LOCATION.'/inc', true);

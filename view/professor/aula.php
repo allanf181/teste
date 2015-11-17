@@ -113,9 +113,9 @@ if ($_GET['opcao'] == 'insert') {
                         </select>
                     </td>
                 </tr>
-                <tr><td align="right">Data: </td><td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?= $data ?>" />
+                <tr><td align="right">Data: </td><td><input type="text" readonly class="data" id="data" name="data" value="<?= $data ?>" />
                         <a href='#' id="unlock" title='Perdeu o prazo? Clique aqui e solicite ao coordenador a libera&ccedil;&atilde;o do di&aacute;rio.'><img style="width: 20px;" src="<?= ICONS ?>/unlock.png"></a></td></tr>
-                <tr><td align="right">Quantidade: </td><td><input style="width: 50px" <?php if ($codigo) print 'readonly'; ?> type="text" maxlength="4" id="quantidade" name="quantidade" value="<?= $quantidade ?>" /></td></tr>
+                <tr><td align="right">Quantidade: </td><td><input style="width: 100px" <?php if ($codigo) print 'readonly'; ?> type="text" maxlength="4" id="quantidade" name="quantidade" value="<?= $quantidade ?>" /></td></tr>
                 <tr><td align="right">Bases/Conhecimentos Desenvolvidos: </td><td><textarea maxlength="400" rows="5" cols="80" id="conteudo" name="conteudo" style="width: 600px; height: 60px"><?= $conteudo ?></textarea></td></tr>
                 <tr>
                     <td align="right">Atividades:</td>
@@ -166,13 +166,12 @@ if ($_GET['opcao'] == '') {
         <span class='rotulo_professor'>Disciplina: </span><?= $res[0]['disciplina'] ?><br />
         <span class='rotulo_professor'>Dias: </span><?= $res[0]['dias'] ?><br />
         <span class='rotulo_professor'>Aulas dadas: </span><?= $res[0]['aulasDadas'] ?><br />
-    </div>
-    <hr>
+    </div>    
 
     <center>    
         <?php 
         if($nf['flag5'] && !$_SESSION['dataExpirou'] && (!$nf['total'] || ($nf['flag5'] && $nf['totalRec']==$nf['total']))){
-            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px'>Notas finalizadas.</p>";
+            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px'>Notas finalizadas.<br>Pode finalizar o diário.</p>";
         }
         else if($nf['reg'] < $nf['flag5']  && !$_SESSION['dataExpirou']){
             echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 10px'>Notas e faltas enviadas.<br>Aguardando o Roda.</p>";

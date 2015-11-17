@@ -21,7 +21,7 @@ class TiposAvaliacoes extends Generic {
         else
             $sqlAdicional = " AND t.tipo = '$tipo'";
 
-        $sql = "SELECT t.codigo as codigo, t.nome as nome, t.tipo as tipo, t.final, a.bimestre
+        $sql = "SELECT t.codigo as codigo, t.nome as nome, t.tipo as tipo, t.final, a.bimestre, t.sigla
 		FROM TiposAvaliacoes t, Modalidades m, Cursos c, Atribuicoes a, Turmas tu 
 		WHERE t.modalidade = m.codigo 
 		AND m.codigo = c.modalidade 
@@ -33,7 +33,7 @@ class TiposAvaliacoes extends Generic {
 		ORDER BY t.tipo, t.final";
         $params = array(':cod' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
-        
+debugSQL($sql, $params)        ;
         if ($res) {
             foreach ($res as $reg) {
                 // MOSTRA AS AVALIACOES CASO AINDA NAO ATINGIU OS PONTOS NO CASO
@@ -66,6 +66,7 @@ class TiposAvaliacoes extends Generic {
                     $new[$reg['codigo']]['nome'] = $reg['nome'];
                     $new[$reg['codigo']]['tipo'] = $reg['tipo'];
                 }                
+                $new[$reg['codigo']]['sigla'] = $reg['sigla'];
             }
 
             return $new;

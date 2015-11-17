@@ -44,7 +44,7 @@ extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
     <?php
 }
 ?>
-<span>Professor, utilize os campos abaixo para inserir as compet&ecirc;ncias e observa&ccedil;&otilde;es no di&aacute;rio.</span>
+<p style="margin-bottom: 10px; margin-top: 10px;">Professor, utilize os campos abaixo para inserir as compet&ecirc;ncias e observa&ccedil;&otilde;es no di&aacute;rio.</p>
 <script>
     $('#form_padrao').html5form({
         method: 'POST',
@@ -60,15 +60,15 @@ extract(array_map("htmlspecialchars", $res), EXTR_OVERWRITE);
     <form id="form_padrao">
         <h2>Competências Desenvolvidas:</h2>
         <div class='fundo_listagem'>
-            <textarea <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> maxlength='1500' id='competencias' name='competencias'><?= $competencias ?></textarea>
+            <textarea <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> style="min-width: 930px" maxlength='1500' id='competencias' name='competencias'><?= $competencias ?></textarea>
         </div>
         <h2>Observações a serem incluídas no diário da disciplina:</h2>
         <div class='fundo_listagem'>
-            <textarea <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> maxlength='1500' id='observacoes' name='observacoes'><?= $observacoes ?></textarea>
+            <textarea <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> style="min-width: 930px" maxlength='1500' id='observacoes' name='observacoes'><?= $observacoes ?></textarea>
         </div>
         <input type='hidden' value='<?= $_GET['atribuicao'] ?>' name='atribuicao' id='atribuicao' />
         <input type='hidden' name='opcao' value='InsertOrUpdate' />
-        <input id='professores_botao' <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> type='submit' value='Salvar' />
+        <p style="text-align: center; margin-top: 10px;"><input id='professores_botao' <?php if($_SESSION['dataExpirou']) print 'disabled'; ?> type='submit' value='Salvar' /></p>
     </form>
 </div>
 

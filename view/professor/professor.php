@@ -108,20 +108,20 @@ if ($_GET["atribuicao"]) {
             $aulaPrevista=0;
         
         if ($DEBUG){
-            echo "<br>info1: $info1";
-            echo "<br>info2: $info2";
-            echo "<br>status: $status";
-            echo "<br>\$qdeAulas: $qdeAulas";
-            echo "<br>\$aulaPrevista: $aulaPrevista";
-            echo "<br>\$qdeAvaliacoes['avalCadastradas']: ".$qdeAvaliacoes['avalCadastradas'];
-            echo "<br>\$qdeAvaliacoes['qdeMinima']: ".$qdeAvaliacoes['qdeMinima'];
-            echo "<br>\$temPendencias['reg']: ".$temPendencias['reg'];
-            echo "<br>\$temPendencias['totalRec']: ".$temPendencias['totalRec'];
-            echo "<br>\situacoes: ".$temPendencias['situacoes'];
-            echo "<br>total: ".$temPendencias['total'];
-            echo "<br>reavaliados: ".$temPendencias['reavaliados'];
-            echo "<br>flag5: ".$temPendencias['flag5'];
-            echo "<br>\$bimestreNome: ".$bimestreNome;
+//            echo "<br>info1: $info1";
+//            echo "<br>info2: $info2";
+//            echo "<br>status: $status";
+//            echo "<br>\$qdeAulas: $qdeAulas";
+//            echo "<br>\$aulaPrevista: $aulaPrevista";
+//            echo "<br>\$qdeAvaliacoes['avalCadastradas']: ".$qdeAvaliacoes['avalCadastradas'];
+//            echo "<br>\$qdeAvaliacoes['qdeMinima']: ".$qdeAvaliacoes['qdeMinima'];
+//            echo "<br>\$temPendencias['reg']: ".$temPendencias['reg'];
+//            echo "<br>\$temPendencias['totalRec']: ".$temPendencias['totalRec'];
+//            echo "<br>\situacoes: ".$temPendencias['situacoes'];
+//            echo "<br>total: ".$temPendencias['total'];
+//            echo "<br>reavaliados: ".$temPendencias['reavaliados'];
+//            echo "<br>flag5: ".$temPendencias['flag5'];
+//            echo "<br>\$bimestreNome: ".$bimestreNome;
         }
         
         if (!$status && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima'] && $temPendencias['reg'] && (($bimestreNome != "SEMESTRAL" && $bimestreNome != "ANUAL" && $temPendencias['flag5']==$temPendencias['reg']) || $temPendencias['reavaliados']>0 || $temPendencias['situacoes'] == $temPendencias['reg'])) {
@@ -147,27 +147,27 @@ if ($_GET["atribuicao"]) {
         <tr valign="top" align='center'>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/aula.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/aulas.png' /><br />Aulas</a></td>
             <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/avaliacao.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/avaliacoes.png' /><br />Avalia&ccedil;&otilde;es</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/diario.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/diario.png' /><br />Di&aacute;rio de Classe</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chamada.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/chamada.png' /><br />Lista de Chamada</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/diario.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/diario.png' /><br />Di&aacute;rio de <br />Classe</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chamada.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/chamada.png' /><br />Lista de<br /> Chamada</a></td>
             <?php
             if ($bimestreNome == "SEMESTRAL" || $bimestreNome == "1º BIMESTRE" || $bimestreNome == "ANUAL") {
                 ?>
-                <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/plano.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/planoEnsino.png' /><br />Plano de Ensino</a></td>
+                <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/plano.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/planoEnsino.png' /><br />Plano de<br /> Ensino</a></td>
                 <?php
             }
             ?>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/aviso.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos para Turma</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chat.php?atribuicao=<?= crip($atribuicao) ?>&timestamp=<?= time() ?>');void(0);"><div id="imageChat"><img style='width: 60px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat (Atendimento)</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/ensalamento.php?turma=<?= crip($turmaCodigo) ?>&subturma=<?= crip($subturma) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da Turma</a></td>
-            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/arquivo.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de Aula</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/aviso.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/aviso.png' /><br />Avisos para <br />Turma</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/chat.php?atribuicao=<?= crip($atribuicao) ?>&timestamp=<?= time() ?>');void(0);"><div id="imageChat"><img style='width: 60px' src='<?= INC ?>/file.inc.php?type=chat&atribuicao=<?= crip($atribuicao) ?>' /></div>Chat <br />(Atendimento)</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/ensalamento.php?turma=<?= crip($turmaCodigo) ?>&subturma=<?= crip($subturma) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/horario.png' /><br />Hor&aacute;rio da<br /> Turma</a></td>
+            <td valign="top" width="90"><a class='nav professores_item' href="javascript:$('#professor').load('<?= VIEW ?>/professor/arquivo.php?atribuicao=<?= crip($atribuicao) ?>');void(0);"><img style='width: 60px' src='<?= IMAGES ?>/arquivo.png' /><br />Material de<br /> Aula</a></td>
         </tr>
-        <tr><td colspan="9"><hr></td></tr>
+        
     </table>
 
-    <div id="professor">
-
+    <div id="professor" style="padding-top: 15px;">
+        <hr style="margin-top: 10px; margin-bottom: 10px;" />
         <table border="0">
-            <tr>
+            <tr style="vertical-align: top">
                 <td><b><font size="1">Aulas dadas:</b> <?= $qdeAulas ?><br>
                     <b>Carga Hor&aacute;ria:</b> <?= $CH ?>
                     <br><b>Aulas previstas:</b> <?= $aulaPrevista ?><?=($aulaPrevista==0) ? " (NAO INFORMADO PELA SECRETARIA)" : "" ?></font>
@@ -181,22 +181,23 @@ if ($_GET["atribuicao"]) {
                     <br>
                     <b>Avalia&ccedil;&otilde;es aplicadas:</b> <?= $qdeAvaliacoes['avalCadastradas'] ?></font>
                 </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <font size="1"><b>Professores da disciplina:</b> <?= $professor->getProfessor($atribuicao, 1, '', 1, 1) ?></font>
+                <td>
+                    <font size="1"><b>Professores da disciplina:</b> 
+                        <?= $professor->getProfessor($atribuicao, 1, '', 1, 1) ?>
+                    </font>
                 </td>
+                
             </tr>
             <?php
             if (!$status) {
                 ?>
                 <tr>
-                    <td colspan="2">
-                        <hr>
+                    <td colspan="3">
+                        <hr style="margin-top: 10px; margin-bottom: 10px;" />
                     </td>
                 </tr>            
                 <tr>
-                    <td colspan="2"><font size="1">Para esse di&aacute;rio ser finalizado, &eacute; necess&aacute;rio que a quantidade de aulas dadas seja maior ou igual a carga hor&aacute;ria e atingido o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es.
+                    <td colspan="3"><font size="1">Para esse di&aacute;rio ser finalizado, &eacute; necess&aacute;rio que a quantidade de aulas dadas seja maior ou igual a carga hor&aacute;ria e atingido o n&uacute;mero m&iacute;nimo de avalia&ccedil;&otilde;es.
                         Caso deseje finalizar o di&aacute;rio manualmente, <a href='#' title='Finalizar Di&aacute;rio' class='finalizar' id='2'>clique aqui</a>
                     </td>
                 </tr>
@@ -204,8 +205,8 @@ if ($_GET["atribuicao"]) {
             }
             ?>
             <tr>
-                <td colspan="2">
-                    <hr>
+                <td colspan="3">
+                    <hr style="margin-top: 10px; margin-bottom: 10px;" />
                 </td>
             </tr>
 <!--            <tr>
@@ -223,7 +224,7 @@ if ($_GET["atribuicao"]) {
             ?>
             
             <tr>
-                <td colspan="2">
+                <td colspan="3">
                     <table>
                         <tr>
                             <td width="50px" align="center">
@@ -232,7 +233,7 @@ if ($_GET["atribuicao"]) {
                                 </a>
                             </td>
                             <td>
-                                <font size="1">Professor, se o diário foi finalizado pelo sistema e ainda tem pendências ou perdeu o prazo para digitação de aulas, clique no cadeado e informe o motivo para seu coordenador analisar sua solicitação. Ap&oacute;s liberado, voc&ecirc; ter&aacute; 24 horas para regularizar o di&aacute;rio.</font>
+                                <p style="font-size: 8pt">Professor, se o diário foi finalizado pelo sistema e ainda tem pendências ou perdeu o prazo para digitação de aulas, clique no cadeado e informe o motivo para seu coordenador analisar sua solicitação. Ap&oacute;s liberado, voc&ecirc; ter&aacute; 24 horas para regularizar o di&aacute;rio.</p>
                             </td>
                         </tr>
                     </table>
@@ -245,12 +246,12 @@ if ($_GET["atribuicao"]) {
             if ($res) {
                 ?>
                 <tr>
-                    <td colspan="2">
+                    <td colspan="3">
                         <h2>Hist&oacute;rico de Solicita&ccedil;&otilde;es</h2>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2"><br />
+                    <td colspan="3"><br />
                         <table id="listagem" border="0" align="center">
                             <tr>
                                 <th width="70">Data</th>

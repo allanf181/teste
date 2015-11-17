@@ -205,7 +205,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             <tr>
                 <td align="right">Descri&ccedil;&atilde;o:</td>
                 <td colspan="2">
-                    <textarea maxlength="500" rows="5" cols="80" id="descricao" name="descricao" style="width: 600px; height: 60px"><?= $descricao ?></textarea>
+                    <textarea maxlength="500" rows="5" cols="80" id="descricao" name="descricao" style="width: 400px; height: 60px"><?= $descricao ?></textarea>
                 </td>
             </tr>
             <tr>
@@ -216,8 +216,8 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <tr>
                             <td>
                                 <input type="submit" value="Salvar" id="salvar" />
-                            </td>
-                            <td><a href="javascript:$('#index').load('<?= $SITE ?>');void(0);">Novo/Limpar</a></td>
+                                <input type="button" id="limpar" onclick="$('#form_padrao').attr('id','')" value=" Novo/Limpar " />
+                            </td>                            
                         </tr>
                     </table>
                 </td>
@@ -271,10 +271,10 @@ require PATH . VIEW . '/system/paginacao.php';
         $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
         ?>
         <tr <?= $cdif ?>>
-            <td>&nbsp;<a href="javascript:$('#index').load('<?=VIEW?>/secretaria/boletim.php?aluno=<?=crip($reg['codAluno'])?>');void(0);" data-placement="top" title="Aluno" data-content="<?= $reg['aluno'] ?>"><?= abreviar($reg['aluno'], 30) ?></a></td>
+            <td>&nbsp;<a href="#" data-placement="top" title="Aluno" data-content="<?= $reg['aluno'] ?>"><?= abreviar($reg['aluno'], 30) ?></a></td>
             <td><?= $reg['dataFormat'] ?></td>
             <td>&nbsp;<a href="#" data-placement="top" title="Regitro por" data-content="<?= $reg['registroPor'] ?>"><?= abreviar($reg['registroPor'], 30) ?></a></td>
-            <td>&nbsp;<a href="#" data-placement="top" title="Descri&ccedil;&atilde;o" data-content="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 15) ?></a></td>
+            <td>&nbsp;<a href="#" data-placement="top" title="Descri&ccedil;&atilde;o" data-content="<?= $reg['descricao'] ?>"><?= abreviar($reg['descricao'], 25) ?></a></td>
             <td align='center'><?= $reg['interacao'] ?></td>
             <td align='center'>
                 <a href='#' data-placement="top" title='Ver hist&oacute;rico de ocorr&ecirc;ncias e intera&ccedil;&otilde;es'>
@@ -296,12 +296,10 @@ require PATH . VIEW . '/system/paginacao.php';
     ?>
 </table>
 
-<?php
-$_SESSION['VOLTAR'] = "index";
-$_SESSION['LINK'] = VIEW . "/secretaria/ocorrencia.php";
-?>
-
 <script>
+    $('#limpar').click(function(){
+        $('#index').load('<?= $SITE ?>');
+    });
     $(".search").click(function () {
         var codigo = $(this).attr('id');
         new $.Zebra_Dialog('<strong>Hist&oacute;rico de Ocorr&ecirc;ncias e Intera&ccedil;&otilde;es</strong>', {

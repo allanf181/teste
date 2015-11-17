@@ -4,7 +4,7 @@
 }
 
 body{
-    background:#e1f2d0 url(images/bg.jpg) repeat-y top center;
+    background:#e1f2d0 url(images/bg2.jpg) repeat-y top center;
     font-family:Verdana,Arial,Helvetica,sans-serif;
     font-size:12px;
     line-height:20px;
@@ -24,12 +24,13 @@ a:hover{
 #wrap{
     margin:0 auto;
     width:1024px;
-    height:600px
+    height:600px;
+        
 }
 
 #header{
     height:120px;
-    background:#e1f2d0 url(images/header_new.jpg) no-repeat
+    background:#e1f2d0 url(images/header_new2.jpg) no-repeat
 }
 
 #header h1{
@@ -61,7 +62,7 @@ a:hover{
 #menu{
     height:30px;
     line-height:30px;
-    background:#00913d url(images/menu.jpg) no-repeat
+    background:#00913d url(images/menu2.jpg) no-repeat
 }
 
 #menu ul{
@@ -88,7 +89,7 @@ a:hover{
 }
 
 #content{
-    padding:0 10px
+    padding:0 10px;    
 }
 
 .right{
@@ -133,13 +134,23 @@ img{
     border:0
 }
 
+.form_bolsas textarea{
+    min-width: 500px;
+}
+
+.form_bolsas input[type='text']{
+    min-width: 495px;
+}
+
 .footer-hr{
     display:block;
     height:1px;
     border:0;
     border-top:1px solid #ccc;
-    margin:1em 0;
-    padding:0
+    margin: 0 auto;
+    padding:0;
+    width: 950px;
+    
 }
 
 .footer{
@@ -200,7 +211,7 @@ th{
 }
 
 #listagem tr:not(.cdif){
-    background:#bedfc2
+    background:#ecf5e0
 }
 
 #listagem tr th{
@@ -298,6 +309,17 @@ li{
     color:#fff
 }
 
+#screenshotLeft{
+    z-index:9999;
+    position:absolute;
+    margin-top:-165px;
+    border:1px solid #ccc;
+    background:#333;
+    padding:5px;
+    display:none;
+    color:#fff
+}
+
 #form{
     background:#fff;
     padding:10px;
@@ -309,7 +331,13 @@ li{
 }
 
 .data1{
-    width:100px
+    min-width:100px;
+    max-width:100px;
+}
+
+#data{
+    min-width:100px;
+    max-width:100px;
 }
 
 .foto_lista{
@@ -419,13 +447,12 @@ li{
 }
 
 #form_login{
-    border:1px solid #bedfc2;
+    border:1px solid #009042;
     -moz-border-radius:15px;
-    border-radius:15px;
+    border-radius:30px;
     background:#bedfc2;
     width:400px;
-    height:280px;
-    margin:100px auto 50px;
+    margin:30px auto 50px;
     z-index:1
 }
 
@@ -439,20 +466,39 @@ li{
     width:400px
 }
 
-#entrar,input[type="button"],input[type="submit"],input[type="reset"]{
+
+#salvar:hover, #entrar:hover,input[type="button"]:hover,input[type="submit"]:hover,input[type="reset"]:hover{
+    background: darkgreen;;
+}
+
+#salvar, #entrar,input[type="button"],input[type="submit"],input[type="reset"]{
     background:#009042;
     width:100px;
     color:#fff;
     font-weight:700;
     height:30px;
-    border:none
+    border:none;
+    border-radius: 30px;
 }
 
+
 #campoLogin,#campoSenha,#cap{
-    background:#fff;
-    width:200px;
-    height:25px;
-    border:none
+    width:170px;
+    height:20px;
+    border:solid 1px green;
+    border-radius: 5px;
+} 
+
+#rodapeLogin{
+    background: url('images/ifspLogo.png') center no-repeat;
+    background-size: 150px;
+    width: 200px;
+    height: 150px;
+    margin: -40px auto 0 auto;
+}
+
+#textoRodape{
+    text-align: center;
 }
 
 #cap{
@@ -461,22 +507,24 @@ li{
 }
 
 #form_login_label{
-    background:#e2efe4;
+    color: green;
     font-size:8pt;
-    width:100px;
-    margin-left:20px;
-    text-align:center;
+    width:50px;
+    margin-left:30px;
+    text-align:right;
     height:21px;
     margin-right:-2px;
-    padding:4px
-}
-
-#login_logo{
-    margin-left:30px
+    padding:4px;
+    border-radius: 10px;
 }
 
 #div_login_logo{
-    margin-top:30px
+    width: 400px;
+    height: 120px;
+    background: url('images/logotipo_new.png') center no-repeat;
+    /*background-size: 150px 150px;*/
+    margin-top: 30px;
+    margin-bottom: 10px;
 }
 
 #botao_ano_semestre{
@@ -488,12 +536,13 @@ li{
     -moz-border-radius:15px;
     border-top-left-radius:15px;
     border-bottom-left-radius:15px;
-    background:#fff url(images/ifsp_branco.jpg) center no-repeat;
+    background: url(images/ifspLogoSmall.png) center no-repeat;
+    /*background-size: 120px 70px;*/
     width:180px;
-    height:114px;
+    height:80px;
     position:absolute;
-    margin-top:-114px;
-    margin-left:834px
+    margin-top:-110px;
+    margin-left:854px
 }
 
 #home{
@@ -567,9 +616,10 @@ input{
     padding:2px
 }
 
-select{
-    max-width:600px
-}
+/*select{
+    min-width:600px;
+    max-width:600px;
+}*/
 
 .rotulo_professor{
     font-weight:700
@@ -630,6 +680,12 @@ select{
     margin-top:5px
 }
 
+#screenshotLeft img{
+    width:170px;
+    height:220px;
+    margin-top:5px
+}
+
 #form_login_logo{
     -moz-border-radius:15px;
     border-radius:15px;
@@ -653,17 +709,17 @@ select{
     width:100px;
     max-height:130px;
     border-right:2px solid #bfe0c5;
-    margin-left:-662px
+    margin-left:-613px
 }
- 
+
 .alunos_dados_nome{
-    margin-left:105px;
+    margin-left:165px;
     margin-top:-90px;
     font-size:large
 }
 
 .alunos_dados_prontuario{
-    margin-left:105px;
+    margin-left:165px;
     margin-top:-20px
 }
 
@@ -920,11 +976,11 @@ div.flash{
     font-weight:700;
     position:absolute;
     width:230px;
-    height:20px;
+    height:30px;
     z-index:15;
     top:80%;
     left:60%;
-    margin:-100px 0 0 -150px;
+    margin: 0 auto 0 auto;
     background:#CCC;
     -moz-border-radius:7px;
     -webkit-border-radius:7px;
@@ -932,4 +988,21 @@ div.flash{
 }
 input[type='button']:disabled, input[type='submit']:disabled, input[type='reset']:disabled {
     background: gray;
+}
+
+#limpar:hover{
+    background: darkgreen;
+}
+
+#limpar{
+    background: #bee0c5;
+    color: black;
+    width: 120px;
+}
+
+.consulta-roda {
+    cursor: pointer;
+}
+.consulta-roda-turma{
+    cursor: pointer;
 }

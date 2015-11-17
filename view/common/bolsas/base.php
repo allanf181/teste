@@ -10,7 +10,7 @@ $script = explode('/', $_SERVER['SCRIPT_NAME']);
 <table align="center" width="100%" id="form" border="0">
     <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
     <tr>
-        <td width="25%" align="center" <?= ($script[5]=='bolsa.php') ? 'style="background-color: #EEE"':'' ?>>
+        <td width="25%" align="center" <?= ($script[5]=='bolsa.php' || empty($script[5])) ? 'style="background-color: #EEE"':'' ?>>
             <a title='Cadastrar bolsas' href="javascript:$('#index').load('<?= $_SESSION['SITE_RAIZ'] ?>');void(0);">
                 <img style='width: 48px' src="<?= IMAGES ?>/bolsa.png">
                 <br />

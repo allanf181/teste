@@ -218,6 +218,34 @@ class Ruckusing_Migration_Base
     {
         return $this->_adapter->remove_index($table_name, $column_name, $options);
     }
+    
+    /**
+     * Add timestamps
+     *
+     * @param string $table_name  the name of the table
+     * @param string $created_column_name Created at column name
+     * @param string $updated_column_name Updated at column name
+     *
+     * @return boolean
+     */
+    public function add_timestamps($table_name, $created_column_name = "created_at", $updated_column_name = "updated_at")
+    {
+        return $this->_adapter->add_timestamps($table_name, $created_column_name, $updated_column_name);
+    }
+    
+    /**
+     * Remove timestamps
+     *
+     * @param string $table_name  the name of the table
+     * @param string $created_column_name Created at column name
+     * @param string $updated_column_name Updated at column name
+     *
+     * @return boolean
+     */
+    public function remove_timestamps($table_name, $created_column_name = "created_at", $updated_column_name = "updated_at")
+    {
+        return $this->_adapter->remove_timestamps($table_name, $created_column_name, $updated_column_name);
+    }
 
     /**
      * Create a table
@@ -231,49 +259,15 @@ class Ruckusing_Migration_Base
     }
 
     /**
-     * Split up multiple sql queries from a single query string
-     * @link   http://stackoverflow.com/questions/4001797/how-to-break-queries-using-regex-in-php
-     * @param  string $query The query to be split
-     * @return array Each query string found
-     */
-    protected function split_query($query)
-    {
-        $open = false;
-        $buffer = null;
-        $parts = array();
-        for($i = 0, $l = strlen($query); $i < $l; $i++) {
-            if ($query[$i] == ';' && !$open) {
-                $parts[] = trim($buffer);
-                $buffer = null;
-                continue;
-            }
-            if ($query[$i] == "'") {
-                $open = ($open) ? false: true;
-            }
-            $buffer .= $query[$i];
-        }
-        if ($buffer) $parts[] = trim($buffer);
-        return $parts;
-    }
-
-    /**
      * Execute a query
      *
-     * @param string $query the query to run
+     * @param string $query the query or queries to run
      *
      * @return boolean
      */
     public function execute($query)
     {
-        $result = null;
-        $queries = $this->split_query($query);
-        foreach($queries as $query_s) {
-            $query_s = trim($query_s);
-            if (!empty($query_s)) {
-                $result = $this->_adapter->query($query_s.';');
-            }
-        }
-        return $result;
+        return $this->_adapter->multi_query($query);
     }
 
     /**

@@ -4,8 +4,17 @@ if (!class_exists('Notas'))
     require_once CONTROLLER . '/nota.class.php';
 
 class NotasFinais extends Notas {
+    
+        //MÉTODO QUE VERIFICA SE A MÉDIA PRECISARÁ SER ARREDONDADA 
+    public function verificaDecimal($valor){
+        $decimal = $valor - (int)$valor;
+        $jaArredondado = ($decimal < 0.01) || (($decimal > 0.49) && ($decimal < 0.51));
+        if (!$jaArredondado){
+            throw new Exception("Algumas médias precisam ser arredondadas.");
+        }
+    }
 
-    public function fecharDiario($atribuicao) {
+    public function fecharDiario($atribuicao, $arredondamentos=0, $ifa=0) {
         $bd = new database();
 
         $erro = 0;
@@ -20,6 +29,7 @@ class NotasFinais extends Notas {
 
         $params = array(':cod' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
+        
         if ($res) {
             if (!class_exists('MatriculasAlteracoes'))
                 require CONTROLLER . "/matriculaAlteracao.class.php";
@@ -32,6 +42,14 @@ class NotasFinais extends Notas {
 
                     $dados = $this->resultado($reg['matricula'], $atribuicao, 0, 0);
                     
+                    if ($arredondamentos != 0){
+                        // SUBSTITUI A MÉDIA ATUAL PELA MÉDIA FORNECIDA NO ARREDONDAMENTO MANUAL
+                        $dados['media'] = $arredondamentos[$reg['matricula']];
+                    }
+                    if (!$ifa){
+                        $this->verificaDecimal($dados['media']); // VERIFICA O ARREDONDAMENTO
+                    }
+                    
                     $params2 = array();
                     
                     $params2['atribuicao'] = $atribuicao;
@@ -41,14 +59,33 @@ class NotasFinais extends Notas {
                         $reg['bimestre'] = '1';
                     } else
                         $params2['bimestre'] = $reg['bimestre'];
-                    $params2['mcc'] = $dados['mediaAvaliacao'];
-                    $params2['rec'] = $dados['notaRecuperacao'];
-                    $params2['ncc'] = $dados['media'];
-                    $params2['falta'] = $dados['faltas'];
-
+                    
+                    if (!$ifa){
+                        $params2['mcc'] = $dados['media'];
+                        $params2['ncc'] = $dados['media'];
+                        if ($mediaArredondada = $this->getMediaArredondada($atribuicao, $reg['matricula'])){
+                            $params2['mcc'] = $mediaArredondada;
+                            if ($mediaArredondada>$dados['notaRecuperacao'])
+                                $params2['ncc'] = $mediaArredondada;
+                        }
+                        else
+                            $params2['rec'] = $dados['notaRecuperacao'];
+                        $params2['falta'] = $dados['faltas'];
+                    }
+//                    echo "<br>==>".$ifa;
+//                    echo "<br>==>".$reg['bimestre'];
+                    if ($reg['bimestre']==4 && $ifa) // REAVALIAÇÃO
+                        $params2['reavaliacao'] = $dados['notaReavaliacao'];
+                    if ($reg['bimestre']==1 && $ifa) // IFA
+                        $params2['rec'] = $dados['notaRecuperacao'];
+                    
 //                    if ($dados['siglaSituacao'] != 'REF') {// ERRO DESABILITADO TEMPORARIAMENTE
 
-                        $sql1 = "SELECT codigo,recuperacao FROM NotasFinais WHERE atribuicao = :cod 
+                        $sql1 = "SELECT count(recuperacao) N FROM NotasFinais WHERE atribuicao=:cod";
+                        $res1 = $bd->selectDB($sql1, array(':cod'=>$atribuicao));
+                        $nReavaliacoes = $res1[0]['N'];
+                        
+                        $sql1 = "SELECT codigo,recuperacao,flag,count(recuperacao) recs FROM NotasFinais WHERE atribuicao = :cod 
     			AND matricula = :mat
     			AND bimestre = :bim";
 
@@ -57,10 +94,14 @@ class NotasFinais extends Notas {
                             ':bim' => $reg['bimestre']);
 
                         $res1 = $bd->selectDB($sql1, $params1);
-
+//echo $nReavaliacoes;
+//debug($dados);
+//debug($res1);
                         if ($res1) {
                             $params2['codigo'] = $res1[0]['codigo'];
                             $params2['flag'] = '00';
+                            if ($nReavaliacoes>0 && $res1[0]['flag']=='5' && !$res1[0]['recuperacao'])
+                                continue;
                             $params2['retorno'] = 'Diario alterado, aguardando sincronizacao.';
                             if ($res1[0]['recuperacao'])
                                 $params2['recuperacao'] = '2';
@@ -68,7 +109,8 @@ class NotasFinais extends Notas {
                             $params2['atribuicao'] = $atribuicao;
                             $params2['matricula'] = $reg['matricula'];
                         }
-
+//debug($params2);
+//die();
                         if (!$this->insertOrUpdate($params2))
                             $erro = 1;
 //                    } else
@@ -258,7 +300,8 @@ class NotasFinais extends Notas {
                     AND p.atribuicao = a.codigo
                     AND a.disciplina = d.codigo
                     AND p.professor = :professor
-                    AND n.recuperacao = 1
+                    AND (n.recuperacao = 1 OR (n.recuperacao=2 AND a.status=0))
+                    GROUP BY p.atribuicao
                     ORDER BY n.codigo ";
 
         $params = array('professor' => $professor);
@@ -270,7 +313,7 @@ class NotasFinais extends Notas {
             return false;
         }
     }
-    
+
     // DISCIPLINAS QUE AGUARDAM O RODA
     public function getDisciplinasRoda() {
         $bd = new database();
@@ -280,6 +323,7 @@ class NotasFinais extends Notas {
             from Cursos c, Turmas t, Pessoas pe, Professores p, Disciplinas d, NotasFinais n, Atribuicoes a, Modalidades m 
             where c.modalidade=m.codigo and t.curso = c.codigo and a.turma=t.codigo and pe.codigo=p.professor 
             and p.atribuicao=a.codigo and a.disciplina=d.codigo 
+            AND c.modalidade IN (1004,1006,1007)
             and a.codigo=n.atribuicao and (n.flag=0 or (n.flag=5 and n.situacao='Em Curso' and n.recuperacao is null)) 
             group by a.codigo order by pe.nome"; 
         
@@ -287,6 +331,35 @@ class NotasFinais extends Notas {
 //        $params = array('atribuicao' => $atribuicao, 'matricula' => $matricula);
 //        $res = $bd->selectDB($sql, $params);
         $res = $bd->selectDB($sql);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }    
+    
+    // TURMAS DE MÓDULO QUE AGUARDAM O RODA
+    public function getTurmasRoda($ano, $semestre) {
+        $bd = new database();
+
+        // efetuando a consulta para listagem
+        $sql = "select t.codigo, t.numero turma, c.nome curso, m.nome modalidade, n.flag, n.situacao
+                from Turmas t, Cursos c, Modalidades m, Disciplinas d, Atribuicoes a
+                LEFT JOIN NotasFinais n ON n.atribuicao=a.codigo
+                WHERE a.turma=t.codigo
+                AND a.disciplina=d.codigo
+                AND c.modalidade=m.codigo
+                AND t.curso=c.codigo
+                AND t.ano=:ano
+                AND t.semestre=:sem
+                AND c.modalidade NOT IN (1004,1006,1007)
+                AND n.bimestre IN (0,1,4)
+                GROUP BY t.codigo
+                HAVING n.flag is not null AND n.situacao is null;";         
+
+        $params = array(':ano' => $ano, ':sem' => $semestre);
+        $res = $bd->selectDB($sql, $params);
 
         if ($res) {
             return $res;
@@ -303,7 +376,7 @@ class NotasFinais extends Notas {
         $sql = "select count(*) n
             from NotasFinais n
             where n.atribuicao=:atribuicao 
-            and (n.flag=0 or (n.flag=5 and n.situacao='Em Curso' and n.recuperacao is null)) ";        
+            and (n.flag=0 or (n.flag=5  and n.recuperacao is null)) ";        
 
         $params = array('atribuicao' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
@@ -315,6 +388,80 @@ class NotasFinais extends Notas {
             return false;
         }
     }        
+    
+    // LISTA AS ATRIBUICOES QUE AGUARDAM O RODA
+    public function getListaAguardandoRoda($atribuicao) {
+        $bd = new database();
+
+        // efetuando a consulta para listagem
+        $sql = "select p.nome nome, d.numero numero, a.codigo atribuicao, d.nome disciplina from Professores pr, Pessoas p, Atribuicoes a, Turmas t, Disciplinas d
+                where a.turma=t.codigo 
+                and pr.professor=p.codigo
+                and a.disciplina=d.codigo
+                and pr.atribuicao=a.codigo
+                and t.codigo=(select turma from Atribuicoes where codigo=:att) order by p.nome; ";        
+
+        $params = array(':att' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return $res;
+        } else {
+            return false;
+        }
+    }        
+    
+    // VERIFICA SE O PROFESSOR DIGITOU MANUALMENTE O ARREDONDAMENTO
+    public function getMediaArredondada($atribuicao, $matricula, $media) {
+        $bd = new database();
+
+        $sql = " select * from NotasFinais where atribuicao=:atribuicao and matricula=:matricula";
+
+        $params = array('atribuicao'=>$atribuicao, 'matricula' => $matricula);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            if ($res[0]['ncc']!=$media)
+                return $res[0]['ncc'];
+            else 
+                return false;
+        } else {
+            return false;
+        }
+    }
+
+    // RETORNA A SITUACAO DO ALUNO
+    public function getSituacaoMatricula($matricula) {
+        $bd = new database();
+
+        $sql = "select * 
+                from Situacoes s, MatriculasAlteracoes ma
+                LEFT JOIN NotasFinais nf ON nf.matricula=ma.matricula
+                where ma.matricula=:matricula
+                and ma.situacao=s.codigo";
+
+        $params = array('matricula' => $matricula);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            $situacao = ucwords(strtolower($res[0]['nome']));
+            if ($res[0]['situacao'])
+                $situacao = ucwords(strtolower($res[0]['situacao']));
+            
+            if ($res[0]['recuperacao']==1) // CASO O ALUNO ESTEJA AGUARDANDO NOTA DE REAVALIACAO
+                if ($res[0]['bimestre']==1)
+                    return "Reavaliação/IFA";
+                else
+                    return "Reavaliação";
+            else if ($res[0]['recuperacao']==2) // CASO O ALUNO ESTEJA REAVALIADO
+                return "Reavaliado";
+            
+            return $situacao;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 ?>

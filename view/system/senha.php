@@ -172,12 +172,12 @@ if ($_GET["opcao"] == 'recuperarPorChave' || $_GET["opcao"] == 'alterar') {
                     </tr>
                     <tr>
                         <td>
-                            <img src="<?= CAPTCHA ?>/captcha.php" width="133" height="49">
+                            <img src="<?= CAPTCHA ?>/captcha.php" width="133" height="49" style="padding-top: 10px;">
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <input title="Clique para alterar sua senha" type="submit" id="alterar_snh" value="   Alterar   " disabled="disabled"  />
+                            <input style="margin-top: 10px;" title="Clique para alterar sua senha" type="submit" id="alterar_snh" value="   Alterar   " disabled="disabled"  />
                         </td>
                     </tr>
                 </table>

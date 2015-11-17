@@ -374,6 +374,49 @@ class Ruckusing_Adapter_MySQL_Base extends Ruckusing_Adapter_Base implements Ruc
     }
 
     /**
+     * Execute several queries
+     *
+     * @param string $queries queries to run 
+     *
+     * @throws Ruckusing_Exception
+     * @return boolean
+     */
+    public function multi_query($queries)
+    {
+        $res = $this->conn->multi_query($queries);
+
+        // free up mysqli
+        if ($result = $this->conn->store_result()) {
+            $result->free();
+        }
+
+        if ($this->isError($res)) {
+            throw new Ruckusing_Exception(
+                sprintf("Error executing 'query' with:\n%s\n\nReason: %s\n\n", $queries, $this->conn->error),
+                Ruckusing_Exception::QUERY_ERROR
+            );
+        }
+
+        while ($this->conn->more_results()) {
+            $res = $this->conn->next_result();
+
+            // free up mysqli
+            if ($result = $this->conn->store_result()) {
+                $result->free();
+            }
+
+            if ($this->isError($res)) {
+                throw new Ruckusing_Exception(
+                    sprintf("Error executing 'query' with:\n%s\n\nReason: %s\n\n", $queries, $this->conn->error),
+                    Ruckusing_Exception::QUERY_ERROR
+                );
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Select one
      *
      * @param string $query query to run
@@ -767,7 +810,7 @@ class Ruckusing_Adapter_MySQL_Base extends Ruckusing_Adapter_Base implements Ruc
         }
         $sql = sprintf("CREATE %sINDEX %s ON %s(%s)",
                 $unique ? "UNIQUE " : "",
-                $index_name,
+                $this->identifier($index_name),
                 $this->identifier($table_name),
                 join(", ", $cols));
 
@@ -807,6 +850,76 @@ class Ruckusing_Adapter_MySQL_Base extends Ruckusing_Adapter_Base implements Ruc
         $sql = sprintf("DROP INDEX %s ON %s", $this->identifier($index_name), $this->identifier($table_name));
 
         return $this->execute_ddl($sql);
+    }
+    
+    /**
+     * Add timestamps
+     *
+     * @param string $table_name          The table name
+     * @param string $created_column_name Created at column name
+     * @param string $updated_column_name Updated at column name
+     *
+     * @return boolean
+     */
+    public function add_timestamps($table_name, $created_column_name, $updated_column_name)
+    {
+        if (empty($table_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing table name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($created_column_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing created at column name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($updated_column_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing updated at column name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        $created_at = $this->add_column($table_name, $created_column_name, "datetime");
+        $updated_at = $this->add_column($table_name, $updated_column_name, "timestamp", array("null" => false, 'default' => 'CURRENT_TIMESTAMP', 'extra' => 'ON UPDATE CURRENT_TIMESTAMP'));
+
+        return $created_at && $updated_at;
+    }
+    
+    /**
+     * Remove timestamps
+     *
+     * @param string $table_name          The table name
+     * @param string $created_column_name Created at column name
+     * @param string $updated_column_name Updated at column name
+     *
+     * @return boolean
+     */
+    public function remove_timestamps($table_name, $created_column_name, $updated_column_name)
+    {
+        if (empty($table_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing table name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($created_column_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing created at column name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($updated_column_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing updated at column name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        $updated_at = $this->remove_column($table_name, $created_column_name);
+        $created_at = $this->remove_column($table_name, $updated_column_name);
+
+        return $created_at && $updated_at;
     }
 
     /**
@@ -1039,6 +1152,8 @@ class Ruckusing_Adapter_MySQL_Base extends Ruckusing_Adapter_Base implements Ruc
                 $default_format = '%d';
             } elseif (is_bool($options['default'])) {
                 $default_format = "'%d'";
+            } elseif ($options['default'] == 'CURRENT_TIMESTAMP') {
+                $default_format = "%s";
             } else {
                 $default_format = "'%s'";
             }
@@ -1047,11 +1162,18 @@ class Ruckusing_Adapter_MySQL_Base extends Ruckusing_Adapter_Base implements Ruc
             $sql .= sprintf(" DEFAULT %s", $default_value);
         }
 
-        if (array_key_exists('null', $options) && ($options['null'] === false || $options['null'] === 'NO')) {
-            $sql .= " NOT NULL";
+        if (array_key_exists('null', $options)) {
+            if ($options['null'] === false || $options['null'] === 'NO') {
+                $sql .= " NOT NULL";
+            } elseif ('timestamp' === $type) {
+                $sql .= " NULL";
+            }
         }
         if (array_key_exists('comment', $options)) {
             $sql .= sprintf(" COMMENT '%s'", $this->quote_string($options['comment']));
+        }
+        if (array_key_exists('extra', $options)) {
+            $sql .= sprintf(" %s", $this->quote_string($options['extra']));
         }
         if (array_key_exists('after', $options)) {
             $sql .= sprintf(" AFTER %s", $this->identifier($options['after']));
@@ -1191,6 +1313,15 @@ class Ruckusing_Adapter_MySQL_Base extends Ruckusing_Adapter_Base implements Ruc
             $this->_tables = array(); //clear existing structure
             $query = "SHOW TABLES";
             $res = $this->conn->query($query);
+
+            // check for errors
+            if ($this->isError($res)) {
+                throw new Ruckusing_Exception(
+                        sprintf("Error executing 'query' with:\n%s\n\nReason: %s\n\n", $query, $this->conn->error),
+                        Ruckusing_Exception::QUERY_ERROR
+                );
+            }
+
             while ($row = $res->fetch_row()) {
                 $table = $row[0];
                 $this->_tables[$table] = true;

@@ -185,8 +185,8 @@ include_once "inc/config.inc.php";
                             <?php
                         }
                         ?>
-                        <span style="color: white">Ol&aacute; <a id="senhaTip" title="Troque sua senha" data-content="Para sua segurança, altere sua senha periodicamente." href="javascript:$('#index').load('<?= VIEW ?>/system/senha.php?opcao=alterar');void(0);" style="color: white"><?= $nome ?></a></span>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/system/logoff.php');void(0);" style="color: white">(Sair)</a>
+                        <div style="width: 800px; color: white; text-align: right">Ol&aacute; <a id="senhaTip" title="Troque sua senha" data-content="Para sua segurança, altere sua senha periodicamente." href="javascript:$('#index').load('<?= VIEW ?>/system/senha.php?opcao=alterar');void(0);" style="color: white"><?= $nome ?></a>
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/system/logoff.php');void(0);" style="color: white">(Sair)</a></div>
                     </div>
                 </div>
                 <?php
@@ -243,7 +243,7 @@ include_once "inc/config.inc.php";
         <div class="footer">
             &nbsp;
             <hr class="footer-hr" />
-            <a class="link" href="javascript:$('#index').load('view/system/creditos.php');void(0);">Grupo de Trabalho WebDi&aacute;rio IFSP</a>
+            <a class="link" href="javascript:$('#index').load('view/system/creditos.php');void(0);">Grupo de Trabalho <b>WebDi&aacute;rio IFSP</b></a>
             <br />
             <span>Resolu&ccedil;&atilde;o m&iacute;nima 1024x768</span>
         </div>

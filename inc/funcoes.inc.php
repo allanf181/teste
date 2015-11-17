@@ -27,21 +27,22 @@ function percentual($parte, $todo) {
 }
 
 function arredondar($valor) {
-    if ($valor - floor($valor) > 0 && $valor - floor($valor) <= .249) {
-        $r = floor($valor);
-        return $r;
-    } else if ($valor - floor($valor) >= .25 && $valor - floor($valor) < .59) {
-        $r = floor($valor) + .5;
-        return $r;
-    } else if ($valor - floor($valor) > .5 && $valor - floor($valor) <= .749) {
-        $r = floor($valor) + .5;
-        return $r;
-    } else if (($valor - floor($valor)) >= .749) {
-        $r = ceil($valor);
-        return $r;
-    } else {
-        return ($valor);
-    }
+//    if ($valor - floor($valor) > 0 && $valor - floor($valor) <= .249) {
+//        $r = floor($valor);
+//        return $r;
+//    } else if ($valor - floor($valor) >= .25 && $valor - floor($valor) < .59) {
+//        $r = floor($valor) + .5;
+//        return $r;
+//    } else if ($valor - floor($valor) > .5 && $valor - floor($valor) <= .749) {
+//        $r = floor($valor) + .5;
+//        return $r;
+//    } else if (($valor - floor($valor)) >= .749) {
+//        $r = ceil($valor);
+//        return $r;
+//    } else {
+//        return ($valor);
+//    }
+    return $valor;
 }
 
 function formata($strDate, $PDF = null) {
@@ -360,6 +361,22 @@ function xss_clean($data) {
 
     // we are done...
     return $data;
+}
+
+function debug($array){
+    echo "<pre>"; print_r($array);
+}
+
+function debugSQL($sql, $params){
+    echo "<pre><hr>INICIO<br>".$sql; print_r($params);
+    echo "FIM<BR>";
+}
+
+function iconeMediaArredondada($origemMedia){
+    if ($origemMedia == "arredondamento")
+        return "<a href='#' data-placement='right' title='Nota arredondada manualmente pelo professor'><img style='width: 20px' src='".ICONS."/info.png'  /></a>";
+    else
+        return false;
 }
 
 ?>

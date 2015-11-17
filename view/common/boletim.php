@@ -168,6 +168,7 @@ if (dcrip($_GET["bimestre"])) {
 
                     <?php
                     $dados = $nota->resultado($reg['matricula'], $reg['atribuicao']);
+//debug($dados);
                     ?>
                     <tr class='cdif'>
                         <th>Situa&ccedil;&atilde;o</th>
@@ -183,7 +184,7 @@ if (dcrip($_GET["bimestre"])) {
                         <td align='center'><?= intval($dados['CH']) ?></td>
                         <td <?= $col ?> align='center'><?= $dados['faltas'] ?></td>
                         <td align='center'><?= arredondar($dados['frequencia']) ?>%</td>
-                        <td align='center'><?= $dados['media'] ?></td>
+                        <td align='center'><?= $dados['media'].iconeMediaArredondada($dados['origemMedia']); ?></td>
                     </tr>
                     <tr class='cdif'>
                         <th colspan='3'>Avalia&ccedil;&atilde;o</th>
@@ -195,9 +196,11 @@ if (dcrip($_GET["bimestre"])) {
                     // busca as avaliações da disciplina atual
                     $i = 0;
                     $params = array(':aluno' => $aluno, ':atribuicao' => $reg['atribuicao']);
-                    $sqlAdicional = ' ORDER BY al.nome ';
+                    $sqlAdicional = ' ORDER BY al.nome, av.data DESC ';
                     $aval = $avaliacao->listAvaliacoesAluno($params, $sqlAdicional);
+//debug($aval);                    
                     foreach ($aval as $a) {
+                        if ($a['siglaTipoAval']!='REF'){
                         if ($a['calculo'] == 'FORMULA')
                             $aval = str_replace('$', '', $a['formula']);
                         else
@@ -216,6 +219,7 @@ if (dcrip($_GET["bimestre"])) {
                         </tr>
                         <?php
                         $i++;
+                        }
                     }
                     ?>
                 </table>

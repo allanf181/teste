@@ -59,11 +59,13 @@
 .ZebraDialog .ZebraDialog_Buttons a {
     font-weight: bold;
     color: #FFF;
-    padding: 10px 15px;
+    /*padding: 10px 15px;*/
+        margin-top: 5px;
+
 }
 
 .ZebraDialog .ZebraDialog_Buttons a:hover {
-    background: #224467;
+    background: darkgreen;
     color: #FFF
 }
 
@@ -120,10 +122,13 @@
     text-decoration: none;
     display: inline-block;
     margin-right: 5px;
-    min-width: 60px;
+    min-width: 100px;
     float: right;
-    _width: 60px;
-    background: #516270;
+    _width: 100px;
+    background: #37994e;
+    border-radius: 30px;
+    height: 25px;
+    padding-top: 5px;
 }
 
 .ZebraDialog .ZebraDialog_Buttons_Centered .ZebraDialog_Buttons {

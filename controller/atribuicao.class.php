@@ -697,6 +697,29 @@ class Atribuicoes extends Generic {
         return false;
     }
 
+    // VERIFICA SE DEVE AGUARDAR AS OUTRAS ATRIBUICOES PARA EXECUCAO DO RODA
+    public function isAtribuicaoAguardaRoda($atribuicao) {
+        $bd = new database();
+
+        // efetuando a consulta para listagem
+        $sql = "SELECT m.nome from Atribuicoes a, Cursos c, Turmas t, Modalidades m
+                WHERE a.turma=t.codigo
+                and t.curso=c.codigo
+                and c.modalidade=m.codigo
+                and a.codigo=:att;";        
+
+        $params = array(':att' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+//debug($res);
+//echo "===>".strpos($res[0]['nome'],'Modular');
+        if (is_numeric(strpos($res[0]['nome'],'Modular')) || $res[0]['bimestre']==4) {
+            return true;
+        } else {
+            return false;
+        }
+    
+    }
+
 }
 
 ?>

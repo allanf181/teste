@@ -69,11 +69,11 @@ if ($_GET['pagina']) {
         <tr>
             <td>
                 <ul class="tabs">
-                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=entregarPlano');void(0);">Entregar Plano</a></li>	
-                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoEnsino');void(0);">Plano de Ensino</a></li>
-                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoAula');void(0);">Plano de Aula</a></li>
-                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoCopiar');void(0);">Importar Plano</a></li>
-                    <li><a target="_blank" href="<?= VIEW; ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= $atribuicao; ?>"><img src="<?= ICONS; ?>/icon-printer.gif" width="30"></a></li>
+                    <li <?=($_GET['pagina']=='entregarPlano')?"class='active'":""?>><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=entregarPlano');void(0);">Entregar Plano</a></li>	
+                    <li <?=($_GET['pagina']=='planoEnsino')?"class='active'":""?>><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoEnsino');void(0);">Plano de Ensino</a></li>
+                    <li <?=($_GET['pagina']=='planoAula')?"class='active'":""?>><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoAula');void(0);">Plano de Aula</a></li>
+                    <li <?=($_GET['pagina']=='planoCopiar')?"class='active'":""?>><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=planoCopiar');void(0);">Importar Plano</a></li>
+                    <li><a title="Imprimir" class="nav" target="_blank" href="<?= VIEW; ?>/secretaria/relatorios/inc/planoEnsino.php?atribuicao=<?= $atribuicao; ?>"><img src="<?= ICONS; ?>/icon-printer.gif" width="13"></a></li>
                 </ul>
             </td>
         </tr>

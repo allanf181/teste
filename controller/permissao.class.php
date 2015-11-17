@@ -24,7 +24,7 @@ class Permissoes extends Generic {
         $param = implode($new_params, ',');
         $params = $new_array;
 
-        $sql = "SELECT codigo,nome,menu,permissao FROM Permissoes WHERE tipo IN ($param)";
+        $sql = "SELECT codigo,nome,menu,permissao FROM PermissoesArquivos WHERE tipo IN ($param)";
         $res = $bd->selectDB($sql, $params);
 
         // Concatenando todas as permissões do usuário

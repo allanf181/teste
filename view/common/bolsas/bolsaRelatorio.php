@@ -117,7 +117,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
 </script>
 <div id="html5form" class="main">
     <?php include("base.php"); ?>
-    <form id="form_padrao">
+    <form id="form_padrao" class="form_bolsas">
         <table align="center" width="100%" id="form">
             <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
             <tr>
@@ -142,7 +142,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             <tr>
                 <td align="right">Aluno: </td>
                 <td>
-                    <select name="aluno" id="aluno" style="width: 350px">
+                    <select name="aluno" id="aluno">
                         <option></option>
                         <?php
                         if ($paramsAluno || $aluno) {
@@ -162,17 +162,17 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
             <tr>
                 <td align="right">Assunto: </td>
                 <td>
-                    <input type="text" maxlength="100" size="60" name="assunto" id="assunto" value="<?= $assunto ?>"/>
+                    <input type="text" maxlength="100" name="assunto" id="assunto" value="<?= $assunto ?>"/>
                 </td>
             </tr>
             <tr>
                 <td align="right">Data: </td>
-                <td><input type="text" readonly class="data" size="10" id="data" name="data" value="<?= $data ?>" />
+                <td><input type="text" readonly class="data" id="data" name="data" value="<?= $data ?>" />
                 </td>
             </tr>
             <tr>
                 <td align="right">Descri&ccedil;&atilde;o: </td>
-                <td><textarea maxlength="1000" rows="5" cols="80" id="descricao" name="descricao" style="width: 600px; height: 60px"><?= $descricao ?></textarea>
+                <td><textarea maxlength="1000" rows="5" id="descricao" name="descricao"><?= $descricao ?></textarea>
                 </td>
             </tr>
             <tr>
@@ -183,9 +183,7 @@ if (!empty($_GET["codigo"])) { // se o parâmetro não estiver vazio
                         <tr>
                             <td>
                                 <input type="submit" value="Salvar" id="salvar" />
-                            </td>
-                            <td>
-                                <a href="javascript:$('#index').load('<?= $_SESSION['SITE_RAIZ'] ?>');void(0);">Novo/Limpar</a>
+                                <input style="width: 120px" type='button' id="limpar" value='Novo/Limpar' />
                             </td>
                         </tr>
                     </table>
@@ -255,6 +253,9 @@ require PATH . VIEW . '/system/paginacao.php';
 </table>
 
 <script>
+    $('#limpar').click(function(){
+        $('#index').load('<?= $SITE ?>');
+    });
     function atualizar(getLink) {
         var bolsa = $('#bolsa').val();
         var aluno = $('#aluno').val();

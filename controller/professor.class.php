@@ -18,22 +18,18 @@ class Professores extends Generic {
         if ($res) {
             foreach ($res as $reg) {
                 $r = null;
-                if ($foto)
-                    $r .= "<a href='#' rel='" . INC . "/file.inc.php?type=pic&id=".crip($reg['codigo'])."&timestamp=".time()."' class='screenshot' title='".$reg['nome']."'>
-                                <img style='width: 25px; height: 25px' alt='Embedded Image' src='" . INC . "/file.inc.php?type=pic&id=".crip($reg['codigo'])."&timestamp=".time()."' />
-                           </a>";
-                
-                if ($lattes && $reg['lattes'])
-                    $r .= "<a title='Curr&iacute;culo Lattes' data-placement='right' data-content='Clique para visualizar' target='_blank' href='" . $reg['lattes'] . "'>";
-                
                 if ($abreviar && $nome)
                     $r .=  abreviar ($reg['nome'], $abreviar);
                 
                 if (!$abreviar && $nome)
                     $r .= $reg['nome'];
+
+                if ($foto)
+                    $r .= "<a href='#' rel='" . INC . "/file.inc.php?type=pic&id=".crip($reg['codigo'])."&timestamp=".time()."' class='screenshot' title='".$reg['nome']."'>
+                              <img style='width: 10px' alt='Embedded Image' src='" . INC . "/file.inc.php?type=pic&id=".crip($reg['codigo'])."&timestamp=".time()."' />  </a>";
                 
                 if ($lattes && $reg['lattes'])
-                    $r .= "</a>";
+                    $r .= "<a title='Curr&iacute;culo Lattes' data-placement='bottom' data-content='Clique para visualizar' target='_blank' href='" . $reg['lattes'] . "'>&nbsp;<img style='width: 10px' src='".ICONS."/lattes.jpg' /></a>";
 
                 $professores[] = $r;
             }

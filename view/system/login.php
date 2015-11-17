@@ -67,11 +67,9 @@ if ($prontuario && $senha) {
 ?>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <div id='fundo_login'></div>
-<div id='form_login_logo'></div>
 <div id="" class="">
     <form method="post" id="form_login">
         <div id='div_login_logo'>
-            <img id='login_logo' src='<?= IMAGES ?>/logotipo_new.png' />
         </div>
         <table>
             <tr>
@@ -113,15 +111,30 @@ if ($prontuario && $senha) {
             }
             ?>
             <tr>
-                <td>&nbsp;</td>
-                <td style='text-align: left'>
-                    <input type="button"  id="entrar" value=" ENTRAR " />
-                    &nbsp;
-                    <a style='color: black' href="#" data-content='A senha ser&aacute; enviada para seu e-mail de cadastro.' title='Recupera&ccedil;&atilde;o de Senha' onclick="return recuperarSenha();">Recuperar a Senha</a>
+                <td colspan="2">
+                    <p><input type="submit"  id="entrar" value=" Entrar " /></p>
+                    <p>&nbsp;</p>
+                    <p>
+                        <a style='color: green; font-weight: bold' href="#" data-content='A senha ser&aacute; enviada para seu e-mail de cadastro.' title='Recupera&ccedil;&atilde;o de Senha' onclick="return recuperarSenha();">Clique aqui para recuperar sua senha</a>
+                    </p>
+                    <p style="margin-top: 30px">
+                        <a style="color: black" class="link" href="javascript:$('#index').load('view/system/creditos.php');void(0);">Grupo de Trabalho <b>WebDi&aacute;rio IFSP</b></a>
+                    </p>
+                    <p style="margin-bottom: 10px">Resolu&ccedil;&atilde;o m&iacute;nima 1024x768</p>
+        
                 </td>
             </tr>
         </table>
     </form>
+    <div id="rodapeLogin"></div>
+    <div id="textoRodape">
+        <p style="color: green">
+            Instituto Federal de Educação, Ciência e Tecnologia de São Paulo
+        </p>
+        <p style="margin-top: -5px">
+            Rua Pedro Vicente, 625 - Canindé - São Paulo - SP - Brasil - Cep: 01109-010
+        </p>
+    </div>
 </div>
 <div id='recuperarSenha'></div>
 

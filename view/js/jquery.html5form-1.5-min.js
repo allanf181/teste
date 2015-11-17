@@ -149,7 +149,7 @@
                     }
                 });
             });
-            $.each($('input:submit, input:image, input:button', this), function() {
+            $.each($('input:submit, input:image', this), function() {
                 $(this).bind('click', function(ev){
                                        
                     var emptyInput=null;

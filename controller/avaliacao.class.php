@@ -18,7 +18,7 @@ class Avaliacoes extends Generic {
                 ti.tipo, DATE_FORMAT(av.data, '%d/%m/%Y') as data, 
                 n.nota as nota, UPPER(a.calculo) as calculo,
                 IF(av.peso > 0, av.peso, '') as peso, a.formula,
-                ti.tipo as avaliacao, UPPER(ti.calculo) as avalCalculo
+                ti.tipo as avaliacao, UPPER(ti.calculo) as avalCalculo, ti.sigla as siglaTipoAval
     		FROM Atribuicoes a 
     		left join Avaliacoes av on av.atribuicao=a.codigo 
     		left join Matriculas m on m.atribuicao=a.codigo 
@@ -59,7 +59,7 @@ class Avaliacoes extends Generic {
                         WHERE a1.tipo = t1.codigo AND t1.tipo = 'pontoExtra' AND a1.atribuicao = at.codigo) as totalPonto,                        
 		(SELECT final FROM TiposAvaliacoes WHERE codigo = a.tipo AND tipo='recuperacao' AND final=1) as final,
 		at.bimestre, a.sigla, t.numero,
-                (SELECT CONCAT(nome, ' (', sigla,')') FROM Avaliacoes WHERE codigo = a.substitutiva) as substitutiva
+                (SELECT CONCAT(nome, ' (', sigla,')') FROM Avaliacoes WHERE codigo = a.substitutiva) as substitutiva, ti.nome as nomeTipoAvaliacao, ti.sigla as siglaTipoAvaliacao
             FROM Turnos tu, Cursos c, Turmas t, Disciplinas d, Atribuicoes at
             LEFT JOIN Avaliacoes a ON a.atribuicao=at.codigo $sqlAdicional
             LEFT JOIN TiposAvaliacoes ti ON ti.codigo = a.tipo

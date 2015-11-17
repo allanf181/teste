@@ -52,15 +52,15 @@ require SESSAO;
 
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
-<div id="loaderChat">&nbsp;Inicializando o Chat... aguarde...</div>
+
 <div id="html5form" class="main">
     <form id="form_padrao">
-        <table align="center" width="100%" id="form" border="0">
+        <table align="center" width="100%" id="form" border="0" style="border-spacing: 0px;">
             <input type="hidden" name="codigo" value="<?= crip($codigo) ?>" />
             <tr style="background-color: #DEDEDE">
                 <td align="left" width="400"><b>Membros</b></td>
-                <td>&nbsp;</td>
-                <td align="left"><div id="nomeAluno"></div></td>
+                <td style="background: white">&nbsp;</td>
+                <td align="left"><div id="nomeAluno"></div><div id="loaderChat">&nbsp;Inicializando o Chat... aguarde...</div></td>
             </tr>
             <tr>
                 <td valign="top">
@@ -131,18 +131,18 @@ require SESSAO;
                 <td width="450" valign="top">
                     <input type="hidden" name="first" id="first" value="0" />
                     <input type="hidden" name="origem" id="origem" value="" />
-                    <table width="100%" border="0">
+                    <table width="100%" border="0" style="border-spacing: 0px">
                         <tr>
-                            <td colspan="2">
-                                <div class="message_box" style="width: 450px; height: 300px; overflow-y: scroll;"></div> 
+                            <td colspan="2" style="background:#ecf5e0; ">
+                                <div class="message_box" style="width: 440px; height: 280px; overflow-y: scroll; background: #ecf5e0; margin-top: 10px; margin-bottom: 10px"></div> 
                             </td>
                         </tr>
-                        <tr>
+                        <tr style="background: #ecf5e0">
                             <td>
-                                <textarea rows="2" cols="40" maxlength='500' id='conteudo' name='conteudo'><?= $mensagem ?></textarea>
+                                <textarea style="margin: 5px; width: 330px;" rows="2" cols="40" maxlength='500' id='conteudo' name='conteudo'><?= $mensagem ?></textarea>
                             </td>
-                            <td>
-                                <input type="submit" value="Enviar" id="salvar" />
+                            <td align="left">
+                                <input style="margin: 5px;" type="submit" value="Enviar" id="salvar" />
                             </td>
                         </tr>
                     </table>

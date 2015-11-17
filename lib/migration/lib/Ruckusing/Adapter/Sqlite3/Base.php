@@ -154,6 +154,26 @@ class Ruckusing_Adapter_Sqlite3_Base extends Ruckusing_Adapter_Base implements R
     }
 
     /**
+     * Execute several queries
+     *
+     * @param string $queries queries to run
+     *
+     * @throws Ruckusing_Exception
+     * @return boolean
+     */
+    public function multi_query($queries)
+    {
+        $res = $this->sqlite3->exec($queries);
+        if ($this->isError($res)) {
+            throw new Ruckusing_Exception(sprintf("Error executing 'query' with:\n%s\n\nReason: %s\n\n", $queries, $this->lastErrorMsg()),
+                Ruckusing_Exception::QUERY_ERROR
+            );
+        }
+
+        return true;
+    }
+
+    /**
      * @param $query
      * @return SQLite3Result
      * @throws Ruckusing_Exception
@@ -557,6 +577,28 @@ class Ruckusing_Adapter_Sqlite3_Base extends Ruckusing_Adapter_Base implements R
     }
 
     /**
+     * @param $table_name
+     * @param $created_column_name
+     * @param $updated_column_name
+     * @return boolean
+     */
+    public function add_timestamps($table_name, $created_column_name, $updated_column_name)
+    {
+        $this->log_unsupported_feature(__FUNCTION__);
+    }
+
+   /**
+     * @param $table_name
+     * @param $created_column_name
+     * @param $updated_column_name
+     * @return boolean
+     */
+    public function remove_timestamps($table_name, $created_column_name, $updated_column_name)
+    {
+        $this->log_unsupported_feature(__FUNCTION__);
+    }
+
+    /**
      * @param $type
      * @param $options
      * @param bool $performing_change
@@ -575,6 +617,8 @@ class Ruckusing_Adapter_Sqlite3_Base extends Ruckusing_Adapter_Base implements R
                     $default_format = '%d';
                 } elseif (is_bool($options['default'])) {
                     $default_format = "'%d'";
+                } elseif ($options['default'] == 'CURRENT_TIMESTAMP') {
+                    $default_format = "%s";
                 } else {
                     $default_format = "'%s'";
                 }
@@ -584,6 +628,9 @@ class Ruckusing_Adapter_Sqlite3_Base extends Ruckusing_Adapter_Base implements R
 
             if (array_key_exists('null', $options) && $options['null'] === false) {
                 $sql .= " NOT NULL";
+            }
+            if (array_key_exists('extra', $options)) {
+                $sql .= sprintf(" %s", $this->quote_string($options['extra']));
             }
         }
         return $sql;

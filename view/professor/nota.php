@@ -100,7 +100,7 @@ if ($_SESSION['dataExpirou'] || ($nf['flag5'] && $resAval['tipo']!='recuperacao'
         }
         
         if($nf['flag5'] && !$_SESSION['dataExpirou'] && ($nf['flag5'] && $nf['totalRec']==$nf['total'])){
-            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px auto 30px auto'>Notas finalizadas.<br>Pode finalizar o diário.</p>";
+            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px auto 30px auto'>Notas finalizadas.</p>";
         }
         else if($nf['flag5'] && $nf['total']!=$nf['reavaliados'] && $resAval['tipo']!='recuperacao' && ($nf['flag5'] && $nf['totalRec']!=$nf['total'])){
             echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 10px auto 30px auto; padding: 5px'>Permitido lançamento de Reavaliação/IFA somente.</p>";
@@ -166,102 +166,79 @@ if ($_SESSION['dataExpirou'] || ($nf['flag5'] && $resAval['tipo']!='recuperacao'
 
                     $i % 2 == 0 ? $cdif = "class='cdif'" : $cdif = "";
                     ?>
-                <tr <?= $cdif ?>>
-                    <td align='center'><?= $reg['prontuario'] ?></td>
-                    <td><a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot' title='<?= mostraTexto($reg['aluno']) ?>'>
-                            <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' />
-                        </a>
-                        <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>');void(0);"><?= mostraTexto($reg['aluno']) ?></a>
-                    </td>
-                    <td align='center'>
-                        <?php
-                        $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $atribuicao, $resAval['data']);
-                        if ($matSituacao['listar'] && $matSituacao['habilitar']) {
-                            ?>
-                            <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
+                    <tr <?= $cdif ?>>
+                        <td align='center'><?= $reg['prontuario'] ?></td>
+                        <td><a href='#' rel='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' class='screenshot' title='<?= mostraTexto($reg['aluno']) ?>'>
+                                <img style='width: 20px; height: 20px' src='<?= INC ?>/file.inc.php?type=pic&id=<?= crip($reg['codAluno']) ?>' />
+                            </a>
+                            <a class='nav' title='Clique aqui para ver o boletim do aluno.' href="javascript:$('#professor').load('<?= VIEW ?>/professor/boletim.php?aluno=<?= crip($reg['codAluno']) ?>&turma=<?= crip($reg['turma']) ?>&bimestre=<?= crip($reg['bimestre']) ?>');void(0);"><?= mostraTexto($reg['aluno']) ?></a>
+                        </td>
+                        <td align='center'>
                             <?php
-//                            if ($notaFinal->checkIfExportDN($atribuicao, $reg['matricula'], $bimNF, $tipoDN)) {
-                            if ($disabled) {
+                            $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $atribuicao, $resAval['data']);
+                            if ($matSituacao['listar'] && $matSituacao['habilitar']) {
                                 ?>
-<!--                                <a href='#' data-placement='top' title='Nota exportada para o DigitaNotas' data-content='Aten&ccedil;&atilde;o, a m&eacute;dia j&aacute; foi exportada! <br> A altera&ccedil;&atilde;o s&oacute; ser&aacute; efetivada pela secretaria diretamente no Nambei. <br><br>Favor informar a secretaria.'>
-                                    DN
-                                </a>-->
+                                <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
+                                <input <?= $disabled ?> id='A<?= $reg['codAluno'] ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' class="campoNota" />
                                 <?php
-//                                $disabled = 'disabled';
-                            }
-                            ?>
-                            <input <?= $disabled ?> id='A<?= $reg['codAluno'] ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' onchange="validaItem(this)" />
-                            <?php
-                            $situacao = array();
-                            if ($reg['bimestre'] > 0) { // Busca as Notas dos Bimestres
-                                foreach ($AT_BIM as $nBim => $at) {
-                                    $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0, $_SESSION['dataExpirou']);
-                                    if ($reg['bimestre'] == $nBim && $res['final'] == 0) {
-                                        $color = 'blue';
-                                        $situacao[$reg['codAluno']] = abreviar($dados['situacao'], 14); 
-                                    } else {
-                                        $color = null;
-                                    }
-                                    ?>
-                                <td align='center'><font color='<?= $color ?>'><?= $dados['media'] ?></font></td>
-                                <?php
-                            }
-
-                            if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']])
-                                $resAval['final'] = 1;
-                            $dados1 = $nota->resultadoBimestral($reg['codAluno'], $resAval['turmaCodigo'], $resAval['discNumero']);
-                            if ($resAval['final'])
-                                $color = 'blue';
-                            else
-                                $color = '';
-                            ?>
-                            <td align='center'><font color="<?= $color ?>"><?= $dados1['media'] ?></font></td>
-                            <?php
-                            if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']]) {
-                                ?>
-                                <td align='center'><?= abreviar($dados1['situacao'], 24) ?></td>
-                                <?php
-                                //TRAVANDO PARA REAVALIACAO FINAL
-                                $trava = null;
-                                if ($travaFinal && !$dados1['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
-                                    ?>
-                                    <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
+                                
+                                // BIMESTRAL
+                                if ($reg['bimestre'] > 0) { 
+                                    foreach ($AT_BIM as $nBim => $at) {
+                                        $dados = $nota->resultado($matricula->getMatricula($reg['codAluno'], $at, $nBim), $at, 0, $_SESSION['dataExpirou']);
+                                        $media = $dados['media'];
+                                        ?>
+                                        <td align='center'><?= $media ?></td>
                                     <?php
+                                    }
+
+                                    if ($reg['bimestre'] == 4 && $nBim == 4 && $resAval['tipo'] == 'recuperacao' && !$situacao[$reg['codAluno']])
+                                        $resAval['final'] = 1;
+                                    $dados1 = $nota->resultadoBimestral($reg['codAluno'], $resAval['turmaCodigo'], $resAval['discNumero']);
+                                    $media = $dados1['media'];
+                                    $situacao = $notaFinal->getSituacaoMatricula($reg['matricula']);
+                                    ?>
+                                    <td align='center'><?= $media ?></td>
+                                    <td align='center'><?= $situacao ?></td>
+                                    <?php
+                                    
+                                } else {
+                                    $dados = $nota->resultado($reg['matricula'], $atribuicao, $resAval['final']);
+//                                    $mediaArredondada = $notaFinal->getMediaArredondada($atribuicao, $reg['matricula'],$dados['media']);
+//debug($dados);
+//echo "<br>Ma: ".$mediaArredondada;
+//                                    $iconeMediaArredondada=null;
+//                                    if ($mediaArredondada>=0 && ($dados['notaRecuperacao'] != $dados['media'])){
+//                                        if ($dados['notaRecuperacao']>$mediaArredondada)
+//                                            $dados['media'] = $dados['notaRecuperacao'];
+//                                        else{
+//                                            $dados['media'] = $mediaArredondada;
+                                            $iconeMediaArredondada = iconeMediaArredondada($dados['origemMedia']);
+//                                        }
+//                                    }
+
+                                    ?>
+                                    <td align='center'><?= $dados['media'].$iconeMediaArredondada ?></td>
+                                    <td align='center'><?= $notaFinal->getSituacaoMatricula($reg['matricula']); ?></td>
+                                    <?php
+                                    // TRAVANDO PARA ATRIBUICOES NAO BIMESTRAIS
+                                    if (!$dados['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
+                                    ?>
+                                        <script> $('#<?= $i ?>').attr('disabled', 'disabled');</script>
+                                    <?php
+                                    }
                                 }
-                            }
-                            ?>
-                            <td align='center'><?= $situacao[$reg['codAluno']] ?></td>
-                            <?php
-                            //TRAVANDO PARA RECUPERACAO
-                            if (!$travaFinal && !$situacao[$reg['codAluno']] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
+                            } else {
                                 ?>
-                                 <!--<script> $('#<?= $i ?>').attr('disabled','disabled'); </script>-->
+                                <td align='center' colspan='6'><?= $matSituacao['tipo'] ?></td>
                                 <?php
                             }
-                        } else {
-                            $dados = $nota->resultado($reg['matricula'], $atribuicao, $resAval['final']);
                             ?>
-                            <td align='center'><?= $dados['media'] ?></td>
-                            <td align='center'></td>
-                            <?php
-                            // TRAVANDO PARA ATRIBUICOES NAO BIMESTRAIS
-                            if (!$dados['situacao'] && $resAval['tipo'] == 'recuperacao' && !$reg['nota']) {
-                                ?>
-                            <script> $('#<?= $i ?>').attr('disabled', 'disabled');</script>
-                            <?php
-                        }
-                    }
-                } else {
-                    ?>
-                    <td align='center' colspan='6'><?= $matSituacao['tipo'] ?></td>
+                    </tr>
                     <?php
+                    $i++;
                 }
                 ?>
-                </tr>
-                <?php
-                $i++;
-            }
-            ?>
         </table>
         <table align="center" width="100%" style="margin-top: 10px">
             <tr><td></td><td>
@@ -269,7 +246,7 @@ if ($_SESSION['dataExpirou'] || ($nf['flag5'] && $resAval['tipo']!='recuperacao'
                     <input type="hidden" value="<?= crip($atribuicao) ?>" name="atribuicao" />
                     <input type="hidden" name="opcao" value="InsertOrUpdate" />
                     <?php if (!$disabled) { ?>
-                        <center><input type="submit" value="Salvar" name="salvar" /></center>
+                        <center><input type="submit" id="btnEnviar" value="Salvar" name="salvar" /></center>
                     <?php } ?>
                 </td></tr>
         </table>
@@ -285,13 +262,46 @@ if ($_SESSION['dataExpirou'] || ($nf['flag5'] && $resAval['tipo']!='recuperacao'
 <?php
 $_SESSION['VOLTAR'] = "professor";
 $_SESSION['LINK'] = VIEW . "/professor/nota.php?atribuicao=" . crip($atribuicao) . "&avaliacao=" . crip($avaliacao);
-
+//debug($resAval);
 ?>
 <script>
-    function validaItem(item) {
-        item.value = item.value.replace(",", ".");
-        if (item.value < 0 || item.value > <?= $resAval['notaMaxima'] ?>) {
-            item.value = '';
+    
+    
+    $('.campoNota').change(function(){
+        $(this).css('background','');
+        if ($(this).val() < 0 || $(this).val() > <?= $resAval['notaMaxima'] ?>) {
+            $(this).css('background','red');
         }
-    }
+    });
+    
+    $('.campoNota').focus(function(){
+         $(this).select();
+    });
+        
+<?php
+// VALIDANDO FORM EM CASO DE RECUPERACAO
+
+if ($resAval['sigla']=="REF" || $resAval['sigla']=="IFA"){
+?>
+    $('#btnEnviar').prop('disabled', true);
+    $('.campoNota').keyup(function(){
+        $(this).val($(this).val().replace(",", ".")) ;
+        $('#btnEnviar').prop('disabled', false);
+        $(this).css('background','');
+        $('.campoNota').each(function(){
+            if ($(this).val() < 0 || $(this).val() > <?= $resAval['notaMaxima'] ?>) {
+                $('#btnEnviar').prop('disabled', true);
+                $(this).css('background','red');
+            }
+            decimal = $(this).val() - parseInt($(this).val());
+            jaArredondado = (decimal < 0.01) || ((decimal > 0.49) && (decimal < 0.51));
+            if (!jaArredondado){
+                $('#btnEnviar').prop('disabled', true);
+                $(this).css('background','red');
+            }
+        });        
+    });
+<?php
+}
+?>
 </script>

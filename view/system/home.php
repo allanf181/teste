@@ -280,7 +280,7 @@ function defineFoto() {
         <tr>
             <td>
                 <a href='#' data-content='Coloque apenas foto de rosto e individual, demais fotos serão descartadas!' data-placement="right" data-trigger='hover' <?= $addFoto ?>>
-                    <img alt="foto" style="width: 150px; height: 150px" src="<?= INC ?>/file.inc.php?type=pic&time=<?= time() ?>&id=<?= crip($user) ?>" />
+                    <img alt="foto" style="width: 150px;" src="<?= INC ?>/file.inc.php?type=pic&time=<?= time() ?>&id=<?= crip($user) ?>" />
                 </a>
                 <?php
                 $params = array('codigo' => $user);

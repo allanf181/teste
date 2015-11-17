@@ -40,13 +40,16 @@ $largura = array(
     60,
     36,
     280
-);
+); 
 $larguraDia = 4; // campos de dias
 
 
 include PATH . LIB . '/fpdf17/rotation.php';
 
 $res = $att->getAtribuicao($atribuicao);
+//debug($res);
+$turmaCodigo = $res['turmaCodigo'];
+$disciplinaCodigo = $res['numeroDisciplina'];
 $numeroTurma = $res['numeroDisciplina'] . ' ' . $res['turma'] . ' ' . $res['subturma'];
 $numeroDisciplina = $res['numero'];
 $ano = $res['ano'];
@@ -58,6 +61,7 @@ $bimTexto = ($bimestre) ? " - $bimestre BIMESTRE - " : "";
 $calculo = $res['calculo'];
 $fechamento = $res['fechamento'];
 $curso = $res['curso'];
+$modalidade = $res['modalidade'];
 $status = $res['status'];
 if (empty($status))
     $status = $res[2]['status'];
@@ -87,7 +91,7 @@ if (!$status)
 
 function cabecalho() {
     // Cabeçalho
-    global $pdf, $largura, $alturaLinha, $fonte, $tamanho, $larguraDia, $SITE_TITLE, $orientacao, $papel;
+    global $pdf, $largura, $alturaLinha, $fonte, $tamanho, $larguraDia, $SITE_TITLE, $orientacao, $papel, $bimestre;
 
     $pdf->AliasNbPages();
     $pdf->AddPage($orientacao, $papel);
@@ -121,7 +125,7 @@ function cabecalho() {
     $pdf->Cell($larguraDia * 5, $alturaLinha, utf8_decode("TURMA"), 0, 0, 'C', true);
     $pdf->Ln();
 
-    global $disciplina, $professor, $bimestreEsemestre, $curso, $numeroTurma, $ano;
+    global $disciplina, $professor, $bimestreEsemestre, $curso, $modalidade, $numeroTurma, $ano;
     // 2ª LINHA
     $alturaLinha+=3;
     $pdf->Cell($largura[0] + $largura[1] + $largura[2] + $largura[3], $alturaLinha, utf8_decode(mostraTexto($disciplina)), 1, 0, 'L', true);
@@ -132,7 +136,7 @@ function cabecalho() {
     $pdf->Cell($larguraDia, $alturaLinha, utf8_decode(""), 0, 0, 'C', true);
     $pdf->Cell($larguraDia * 3, $alturaLinha, utf8_decode($ano), 1, 0, 'C', true);
     $pdf->Cell($larguraDia, $alturaLinha, utf8_decode(""), 0, 0, 'C', true);
-    $pdf->Cell($larguraDia * 24.3, $alturaLinha, utf8_decode(mostraTexto($curso)), 1, 0, 'C', true);
+    $pdf->Cell($larguraDia * 24.3, $alturaLinha, utf8_decode(mostraTexto($curso." [".$modalidade."]")), 1, 0, 'C', true);
     $pdf->Cell($larguraDia, $alturaLinha, utf8_decode(""), 0, 0, 'C', true);
     $pdf->Cell($larguraDia * 5.2, $alturaLinha, utf8_decode($numeroTurma), 1, 0, 'C', true);
     $pdf->Ln();
@@ -158,9 +162,15 @@ function cabecalho() {
     $quantidadeTotal = $quantidades;
     $totalDias = intval((295 - $quantidadeTotal) / 4);
     $totalDias -= $qde_avaliacao * 3;
+    
+    if ($bimestre==4){
+        $N=$N+8; 
+        $totalDias-=5;
+    }
+
     $M = ($totalDias * 4) + $quantidadeTotal - 4;
     $N = (12) + ($qde_avaliacao * 4);
-
+    
     $pdf->SetFont($fonte, '', $tamanho - 1);
     $pdf->Cell(78, $alturaLinha - 3, utf8_decode(""), 'LRT', 0, 'C', true);
     $pdf->Cell($M, $alturaLinha - 3, '', 'LRT', 0, 'C', true);
@@ -199,7 +209,13 @@ function cabecalho() {
     $pdf->Cell($N, $alturaLinha, utf8_decode("Avaliações"), 1, 0, 'C', true);
     $pdf->Cell($N, $alturaLinha, utf8_decode("Notas"), 1, 0, 'C', true);
     $pdf->Cell($larguraDia * 2, $alturaLinha, utf8_decode("Faltas"), 1, 0, 'C', true);
-
+    
+    if ($bimestre==4){
+        $pdf->Cell($larguraDia * 2, $alturaLinha, utf8_decode("REA"), 1, 0, 'C', true);
+        $pdf->Cell($larguraDia * 2, $alturaLinha, utf8_decode("MF"), 1, 0, 'C', true);
+        $pdf->Cell($larguraDia * 2, $alturaLinha, utf8_decode("FF"), 1, 0, 'C', true);
+    }
+    
     // Pular linha
     $pdf->Ln();
 
@@ -307,13 +323,27 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
         $pdf->Cell($larguraDia, $alturaLinha, '-', 1, 0, 'C', true);
 
     $MEDIAS = $nota->resultado($matricula, $atribuicao);
-
+    
     // FECHAMENTO DE NOTAS
-    $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['mediaAvaliacao'], 1, 0, 'C', true);
+    $media = $MEDIAS['media'];
+//    if (!empty($MEDIAS['notaArredondada']))
+//        $media = $MEDIAS['notaArredondada'];
+    $pdf->Cell($larguraDia, $alturaLinha, $media, 1, 0, 'C', true);
     $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['notaRecuperacao'], 1, 0, 'C', true);
     $pdf->Cell($larguraDia, $alturaLinha, $MEDIAS['media'], 1, 0, 'C', true);
     // FALTAS
     $pdf->Cell(8, $alturaLinha, $MEDIAS['faltas'], 1, 0, 'C', true);
+    if ($bimestre==4){
+        $reavaliacao = $MEDIAS['notaReavaliacao'];
+        
+        $dados1 = $nota->resultadoBimestral($aluno, $turmaCodigo, $disciplinaCodigo);
+        $mf = $dados1['media'];
+        $faltas = $dados1['faltas'];
+        
+        $pdf->Cell(8, $alturaLinha, $reavaliacao, 1, 0, 'C', true);
+        $pdf->Cell(8, $alturaLinha, $mf, 1, 0, 'C', true);
+        $pdf->Cell(8, $alturaLinha, $faltas, 1, 0, 'C', true);
+    }    
 
     $i++;
 

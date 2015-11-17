@@ -32,14 +32,14 @@ $res = metricas();
 
 // INSERINDO INFOS VIA WS
 require $LOCATION_CRON . '../lib/nusoap/lib/nusoap.php';
-$client = new nusoap_client("http://200.133.214.163/webdiarioadmin/server.wsdl", true);
+$client = new nusoap_client("http://192.168.6.163/webdiarioadmin/server.wsdl", true);
 $client->setCredentials("WebDiarioWDWS", "W3bD1ari0_WS_WD_##!!", "basic");
 
 if ($client) {
     $result = $client->call("setversion", array("nome" => "$SITE_TITLE",
         "cidade" => "$SITE_CIDADE",
         "digitaNotas" => "$DIGITANOTAS",
-        "versao" => "$VERSAO",
+        "versao" => "$VERSAO"." OK",
         "cidadePredominante" => $cidPr->city,
         "uname" => php_uname(),
         "hostname" => gethostname(),
@@ -50,6 +50,9 @@ if ($client) {
         mysql_query("UPDATE Instituicoes SET versaoAtual = '$result'");
         if ($DEBUG)
             print "Registrando a versao $result \n";
+    }
+    else{
+        print "ERRO AO ATUALIZAR A VERSAO, AVISE O ADMINISTRADOR.";
     }
 }
 

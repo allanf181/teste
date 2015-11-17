@@ -48,8 +48,8 @@ $local = $_SESSION['loginCodigo'] . '/' . dcrip($atribuicao) . '/';
         <tr>
             <td>
                 <ul class="tabs">
-                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=inserir');void(0);">Inserir Material</a></li>
-                    <li><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=copiar');void(0);">Copiar Material</a></li>
+                    <li <?=($_GET['pagina']=='inserir')?"class='active'":""?>><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=inserir');void(0);">Inserir Material</a></li>
+                    <li <?=($_GET['pagina']=='copiar')?"class='active'":""?>><a href="javascript:$('#professor').load('<?= $SITE . "?atribuicao=$atribuicao"; ?>&pagina=copiar');void(0);">Copiar Material</a></li>
                 </ul>
             </td>
         </tr>
@@ -219,7 +219,7 @@ if ($_GET['pagina'] == "inserir") {
                 </tr>
                 <tr>
                     <td align="left">Link: </td>
-                    <td><input type="text" size="60" id="link" name="link" maxlength="255" value="<?= $link; ?>"/></td>
+                    <td><input type="text" size="51" id="link" name="link" maxlength="255" value="<?= $link; ?>"/></td>
                 </tr>
                 <tr>
                     <td align="left">Arquivo: </td>
@@ -239,8 +239,12 @@ if ($_GET['pagina'] == "inserir") {
                 </tr>
 
             </table>
-            <table width="100%"><tr><td><input type="submit" id="salvar" value="Salvar" /></td>
-                    <td><a href="javascript:$('#professor').load('<?= "$SITE?pagina=inserir&atribuicao=$atribuicao"; ?>');void(0);">Novo/Limpar</a></td>
+            <table width="100%">
+                <tr>
+                    <td>
+                        <input type="submit" id="salvar" value="Salvar" />
+                        <input type="button" id="limpar" value="Novo/Limpar" />
+                    </td>
                 </tr></table>	
             <br>
         </form>
@@ -327,7 +331,9 @@ if ($_GET['pagina'] == "inserir") {
 $atribuicao = $_GET['atribuicao'];
 ?>
 <script>
-
+    $('#limpar').click(function(){
+        $('#professor').load('<?= "$SITE?pagina=inserir&atribuicao=$atribuicao"; ?>');
+    });
     $(document).ready(function () {
         $('#descricao').maxlength({
             events: [], // Array of events to be triggerd    

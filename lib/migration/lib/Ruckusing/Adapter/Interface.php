@@ -203,6 +203,28 @@ interface Ruckusing_Adapter_Interface
     public function add_index($table_name, $column_name, $options = array());
 
     /**
+     * add timestamps
+     *
+     * @param string $table_name          The table name
+     * @param string $created_column_name Created at column name
+     * @param string $updated_column_name Updated at column name
+     *
+     * @return boolean
+     */
+    public function add_timestamps($table_name, $created_column_name, $updated_column_name);
+
+    /**
+     * remove timestamps
+     *
+     * @param string $table_name          The table name
+     * @param string $created_column_name Created at column name
+     * @param string $updated_column_name Updated at column name
+     *
+     * @return boolean
+     */
+    public function remove_timestamps($table_name, $created_column_name, $updated_column_name);
+
+    /**
      * Wrapper to execute a query
      *
      * @param string $query query to run
@@ -210,5 +232,14 @@ interface Ruckusing_Adapter_Interface
      * @return boolean
      */
     public function query($query);
+
+    /**
+     * Wrapper to execute multiple queries
+     *
+     * @param string $queries queries to run
+     *
+     * @return boolean
+     */
+    public function multi_query($queries);
 
 }

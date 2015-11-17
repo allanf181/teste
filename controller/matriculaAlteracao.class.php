@@ -36,16 +36,17 @@ class MatriculasAlteracoes extends Generic {
     public function getAlteracaoMatricula($aluno, $atribuicao, $data) {
         $bd = new database();
         
-        $sql = "SELECT s.listar, s.habilitar, s.sigla, s.nome, s.codigo
-			FROM Matriculas m, MatriculasAlteracoes ma, Situacoes s
+        $sql = "SELECT s.listar, s.habilitar, s.sigla, s.nome, s.codigo, nf.situacao sit
+			FROM MatriculasAlteracoes ma, Situacoes s, Matriculas m
+                        LEFT JOIN NotasFinais nf ON nf.matricula=m.codigo AND nf.atribuicao=:atr
 			WHERE m.codigo = ma.matricula
                         AND ma.situacao = s.codigo
 			AND m.aluno = :aluno
                         AND m.atribuicao = :atr
                         ORDER BY ma.data DESC";
-
         $params = array(':aluno' => $aluno, ':atr' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
+//        debugSQL($sql, $params);
 
         if ($res) {
             $rs['habilitar'] = $res[0]['habilitar'];
@@ -53,6 +54,10 @@ class MatriculasAlteracoes extends Generic {
             $rs['sigla'] = $res[0]['sigla'];
             $rs['tipo'] = $res[0]['nome'];
             $rs['codSituacao'] = $res[0]['codigo'];
+            $rs['situacao'] = $res[0]['sit'];
+            if (!$res[0]['sit'])
+                $rs['situacao'] = $res[0]['nome'];
+                
         } 
         // DESABILITADO ATÉ QUE SEJA INCLUÍDO UM CAMPO DE DATA DE MATRÍCULA NO NAMBEI
 //        else {

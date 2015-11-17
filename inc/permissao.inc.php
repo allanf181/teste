@@ -18,7 +18,7 @@ if (isset($_SESSION["loginTipo"])) {
   
     if ($TITLE) {
         $TITLE_DESCRICAO = $permissao->fileDescricao($SITE);
-        $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-content=\"".$TITLE_DESCRICAO['descricaoArquivo']."\" href=\"#\"><img src=\"".ICONS."/help.png\"></a></span>";
+        $TITLE_DESCRICAO = "<span class=\"help\"><a title='Sobre esse m&oacute;dulo' data-placement='right' data-content=\"".$TITLE_DESCRICAO['descricaoArquivo']."\" href=\"#\"><img src=\"".ICONS."/help.png\"></a></span>";
     }
     
     if (!$TITLE) {

@@ -11,7 +11,7 @@ if (!$LOCATION_CRON) {
 
 require ('lib/digitaNotasWS.php');
 
-if (isset($_GET["codigo"])) {
+if (isset($_GET["codigo"])) { 
     $codigo = $_GET["codigo"];
     $sqlCodigo = "AND n.codigo = $codigo";
 } 
@@ -23,6 +23,17 @@ if (isset($_GET["atribuicao"])) {
 //else
 //    $sqlCodigo = "AND (n.sincronizado IS NULL OR n.sincronizado = '0000-00-00 00:00:00')";
 
+// FECHAR DIARIO *****************************************************
+// COMMAND LINE CLIENT
+if (isset($argv)){
+    $atribuicao = $argv[1];
+    $sqlCodigo = "AND a.codigo = $atribuicao";
+    
+    require CONTROLLER . "/notaFinal.class.php"; 
+    $notaFinal = new NotasFinais();
+    echo $notaFinal->fecharDiario($atribuicao);
+}
+// FECHAR DIARIO *****************************************************
 
 $user = 'BA000022'; 
 $pass = '4(HC&m3KbT';
@@ -37,7 +48,7 @@ $sql = "SELECT (SELECT p1.prontuario FROM Pessoas p1, Professores pr1, Atribuico
                     AND a1.codigo = a.codigo LIMIT 1),
         p.prontuario, d.numero, a.eventod, t.ano, t.semestre,
         n.bimestre, n.falta, n.sincronizado, n.mcc, n.rec, n.ncc, n.codigo, 
-        DATEDIFF(NOW(),a.dataFim) as data, t.numero, n.recuperacao
+        DATEDIFF(NOW(),a.dataFim) as data, t.numero, n.recuperacao, n.reavaliacao 
 	FROM NotasFinais n, Atribuicoes a, Pessoas p, Matriculas m, Disciplinas d, Turmas t
 	WHERE n.atribuicao = a.codigo
 	AND n.matricula = m.codigo
@@ -90,6 +101,15 @@ while ($l = mysql_fetch_array($result)) {
             $nota = number_format($l[10], 1, '.', ' ');
     }
 
+    //REAVALIACAO
+    if (!is_null($l[16])) {
+        $bimestre = 'R';
+        $faltas = '0';
+        $nota = $l[16];
+        if ($l[16] < 10)
+            $nota = number_format($l[16], 1, '.', ' ');
+    }
+
     $aluno = array(
         "ano" => $ano,
         "bimestre" => $bimestre,
@@ -106,7 +126,7 @@ while ($l = mysql_fetch_array($result)) {
         "turma" => $turma
     );
 
-    $logs[] = "COD: $l[12] |TURMA: $turmaD [$bimestre BIM] |PRONT: $prontuario |DISC: $codigoDisciplina |NOTA: $nota \n";
+    $logs[] = "<br>COD: $l[12] |TURMA: $turmaD [$bimestre BIM] |PRONT: $prontuario |DISC: $codigoDisciplina |NOTA: $nota \n";
     $codigos[] = $l[12];
     $dAtual = $codigoDisciplina;
     
@@ -157,7 +177,7 @@ while ($l = mysql_fetch_array($result)) {
 //                echo "<hr>";
                 
                 if ($ret->sucesso == 1) {
-                    $URL = 'Nota registra com sucesso';
+                    $URL = 'Nota registrada com sucesso';
                 } else {
                     $URL = $ret->motivo;
                 }

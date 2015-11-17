@@ -320,10 +320,11 @@ SQL;
      */
     public function schema($output_file)
     {
-        $command = sprintf("pg_dump -U %s -Fp -s -f '%s' %s",
+        $command = sprintf("pg_dump -U %s -Fp -s -f '%s' %s --host %s",
                 $this->db_info['user'],
                 $output_file,
-                $this->db_info['database']
+                $this->db_info['database'],
+                $this->db_info['host']
         );
 
         return system($command);
@@ -397,6 +398,27 @@ SQL;
 
             return true;
         }
+    }
+
+    /**
+     * Execute several queries
+     *
+     * @param string $queries queries to run
+     *
+     * @throws Ruckusing_Exception
+     * @return boolean
+     */
+    public function multi_query($queries)
+    {
+        $res = pg_query($this->conn, $queries);
+        if ($this->isError($res)) {
+            throw new Ruckusing_Exception(
+                sprintf("Error executing 'query' with:\n%s\n\nReason: %s\n\n", $queries, pg_last_error($this->conn)),
+                Ruckusing_Exception::QUERY_ERROR
+            );
+        }
+
+        return true;
     }
 
     /**
@@ -863,7 +885,9 @@ SQL;
                 $data['null'] = $result['attnotnull'] == 'f';
                 $data['default'] = $result['adsrc'];
             }
-
+            else{
+              $data = null;
+            }
             return $data;
         } catch (Exception $e) {
             return null;
@@ -968,7 +992,77 @@ SQL;
 
         return $this->execute_ddl($sql);
     }
+    
+    /**
+     * Add timestamps
+     *
+     * @param string $table_name          The table name
+     * @param string $created_column_name Created at column name
+     * @param string $updated_column_name Updated at column name
+     *
+     * @return boolean
+     */
+    public function add_timestamps($table_name, $created_column_name, $updated_column_name)
+    {
+        if (empty($table_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing table name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($created_column_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing created at column name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($updated_column_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing updated at column name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        $created_at = $this->add_column($table_name, $created_column_name, "datetime", array("null" => false));
+        $updated_at = $this->add_column($table_name, $updated_column_name, "datetime", array("null" => false));
 
+        return $created_at && $updated_at;
+    }
+    
+    /**
+     * Remove timestamps
+     *
+     * @param string $table_name          The table name
+     * @param string $created_column_name Created at column name
+     * @param string $updated_column_name Updated at column name
+     *
+     * @return boolean
+     */
+    public function remove_timestamps($table_name, $created_column_name, $updated_column_name)
+    {
+        if (empty($table_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing table name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($created_column_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing created at column name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($updated_column_name)) {
+            throw new Ruckusing_Exception(
+                    "Missing updated at column name parameter",
+                    Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        $created_at = $this->remove_column($table_name, $created_column_name);
+        $updated_at = $this->remove_column($table_name, $updated_column_name);
+
+        return $created_at && $updated_at;
+    }
+    
     /**
      * Check an index
      *
