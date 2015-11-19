@@ -49,7 +49,7 @@ class Notas extends Frequencias {
 		AND ma.aluno = :aluno
 		AND t.codigo IN (SELECT t1.codigo FROM Turmas t1 
 			WHERE t1.numero IN (SELECT t2.numero FROM Turmas t2 
-			WHERE t2.codigo = :turma))
+			WHERE t2.codigo = :turma and t2.ano=t.ano))
 		AND d.numero = :numDisc";
 
         $params = array(':aluno' => $aluno,
