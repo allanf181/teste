@@ -129,7 +129,7 @@ class login extends Generic {
             $chave = date("Ymd") . '$' . time() . '$' . 'IFSP';
             $chave = sha1($chave);
             $chv = 'https://' . $_SERVER['HTTP_HOST'] . '/webdiario/index.php?key=' . $chave . '&prt=' . base64_encode($prontuario);
-
+  
             // Guarda a chave no banco
             $sql = "UPDATE Pessoas SET recuperaSenha = :chave "
                     . "WHERE prontuario = :prontuario";

@@ -1,5 +1,12 @@
 <?php
 include_once "inc/config.inc.php";
+
+// Verifica e redireciona para HTTPS
+// Verifica se está tentando acessar diretamente
+if ((!isset($_SERVER['HTTPS']) && $_SERVER['HTTP_HOST'] != 'localhost') || ($_SERVER["PHP_SELF"] != LOCATION . "/index.php")) {
+    header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -136,12 +143,6 @@ include_once "inc/config.inc.php";
     <?php
     require FUNCOES;
     require VARIAVEIS;
-
-    // Verifica e redireciona para HTTPS
-    // Verifica se está tentando acessar diretamente
-    if ((!isset($_SERVER['HTTPS']) && $_SERVER['HTTP_HOST'] != 'localhost') || ($_SERVER["PHP_SELF"] != LOCATION . "/index.php")) {
-        header('Location: https://' . $_SERVER['HTTP_HOST'] . LOCATION);
-    }
 
     //VERIFICANDO SE AS BIBLIOTECAS NECESSÁRIAS FORAM INSTALADAS
     foreach ($EXTENSIONS as $ext) {

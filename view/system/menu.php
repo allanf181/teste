@@ -6,7 +6,8 @@
         ?>
         <li class='active has-sub'><a href="#"><span>Ajuda</span></a>
             <ul>
-                <li><a target="_blank" data-placement="right" data-content="" title="" href="http://webdiario.ifsp.edu.br/projects/webdiario-manuais/wiki/FAQ_-_Perguntas_frequentes"><span>FAQ - Perguntas Frequentes</span></a></li>
+                <li><a target="_blank" data-placement="right" data-content="" title="" href="http://sistemas.ifsp.edu.br/projects/webdiario/wiki/Manuais_do_Usu%C3%A1rio"><span>Manuais do Usuário</span></a></li>
+                <li><a target="_blank" data-placement="right" data-content="" title="" href="http://sistemas.ifsp.edu.br/projects/webdiario/wiki/FAQ_-_Perguntas_frequentes"><span>FAQ - Perguntas Frequentes</span></a></li>
                 <li><a data-placement="right" data-content="" title="" href="javascript:$('#index').load('<?=VIEW?>/system/email.php');void(0);"><span>Fale Conosco</span></a></li>
             </ul>
         </li>

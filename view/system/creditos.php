@@ -83,6 +83,15 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     É servidor do IFSP e quer ajudar? Venha fazer parte da equipe!
 </p>
 
+<br /><b>Vers&atilde;o 1.446</b>
+<br> - Integração com WS digita notas módulo Técnico Integrado;
+<br> - Listagem de professores aguardando Roda, na tela de cadastro de avaliações e exportação de notas;
+<br> - Refatoração do layout e interfaces;
+<br> - Tela de ajuste de médias na exportação e eliminação da função de arredondamento de médias;
+<br> - Refatoração do módulo de permissões e arquivos do sistema;
+<br> - Inclusão dos manuais do usuário no menu ajuda;
+<br> - Validação de segurança no campo e-mail da tela inicial do usuário.
+
 <br /><b>Vers&atilde;o 1.445</b>
 <br> - Início implantação do Hudson;
 <br> - Link do boletim no nome do aluno na tela de ocorrências;

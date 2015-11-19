@@ -330,7 +330,11 @@ function defineEmail() {
         if ($_GET['email'] == 'undefined')
             $_GET['email'] = null;
 
-        $params = array('codigo' => crip($user), 'email' => $_GET['email']);
+        // VALIDACAO BÁSICA
+        $str = preg_replace("/[^A-Za-z0-9?!@.]/","",$_GET['email']);// ACEITA LETRAS, NUMEROS, @ E PONTO
+        $str = (substr_count($str,"@")==1)?$str:""; // VERIFICA SE HÁ SOMENTE UM @
+        
+        $params = array('codigo' => crip($user), 'email' => $str);
         $pessoa->insertOrUpdate($params);
     }
 
@@ -339,7 +343,7 @@ function defineEmail() {
 
     if (!$userDados[0]['email']) {
         ?>
-        <br>E-mail: <input data-title='E-mail utilizado para avisos e recuperação de senha.' data-content='Mantenha sempre atualizado.' class='newTooltip' data-placement="top-right" data-trigger='hover' type="text" size="40" maxlength="100" name="email" id="email" value="" />
+        <br>E-mail: <input type="email" data-title='E-mail utilizado para avisos e recuperação de senha.' data-content='Mantenha sempre atualizado.' class='newTooltip' data-placement="top-right" data-trigger='hover' size="40" maxlength="100" name="email" id="email" value="" />
         <img src="<?= ICONS ?>/accept.png" id="send-email" style="width: 20px; height: 20px">
         <?php
     } else {
