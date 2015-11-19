@@ -272,6 +272,7 @@ $_SESSION['LINK'] = VIEW . "/professor/nota.php?atribuicao=" . crip($atribuicao)
         if ($(this).val() < 0 || $(this).val() > <?= $resAval['notaMaxima'] ?>) {
             $(this).css('background','red');
         }
+        $(this).val($(this).val().replace(",", ".")) ;
     });
     
     $('.campoNota').focus(function(){
@@ -285,7 +286,7 @@ if ($resAval['sigla']=="REF" || $resAval['sigla']=="IFA"){
 ?>
     $('#btnEnviar').prop('disabled', true);
     $('.campoNota').keyup(function(){
-        $(this).val($(this).val().replace(",", ".")) ;
+        
         $('#btnEnviar').prop('disabled', false);
         $(this).css('background','');
         $('.campoNota').each(function(){
