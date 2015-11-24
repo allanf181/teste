@@ -158,7 +158,7 @@ class Notas extends Frequencias {
                         t.calculo as calculo, at.calculo as calculoAtt,
 			t.arredondar as arredondar, at.bimestre as bimestre,
                         t.final as final, a.sigla as sigla, at.formula as formula,
-                        (SELECT a1.sigla FROM Avaliacoes a1 WHERE a1.codigo = a.substitutiva) as sub, t.sigla as siglaTipo, nf.ncc , nf.mcc
+                        (SELECT a1.sigla FROM Avaliacoes a1 WHERE a1.codigo = a.substitutiva) as sub, t.sigla as siglaTipo, nf.ncc ncc, nf.mcc mcc
 			FROM Notas n, Avaliacoes a, TiposAvaliacoes t, Atribuicoes at
                         LEFT JOIN NotasFinais nf ON nf.atribuicao=at.codigo AND nf.matricula=:matricula
 			WHERE n.avaliacao = a.codigo
@@ -179,6 +179,7 @@ class Notas extends Frequencias {
         $final = 0;
 
         foreach ($res as $reg) {
+            $ncc = $reg['ncc'];
             $bimestre = $reg['bimestre'];
             $tipo = $reg['calculoAtt'];
             $arredondar = $reg['arredondar'];
@@ -279,6 +280,10 @@ class Notas extends Frequencias {
 
         // REGISTRANDO A MEDIA
         $dados['media'] = $media;
+        
+        // VERIFICA SE O A MEDIA JA FOI EXPORTADA
+        if (isset($ncc))
+            $dados['media'] = $ncc;
         
 //        // VERIFICANDO SE HÁ ARREDONDAMENTO
 //        if (!empty($dados['notaArredondada']) && $dados['notaArredondada']>=0){
