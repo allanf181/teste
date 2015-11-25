@@ -164,12 +164,12 @@ Class database {
         }
     }
 
-    public function backup() {
+    public function backup($db) {
         $conexao = $this->connect();
 
         $conexao->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_NATURAL);
 
-        header("Content-disposition: filename=banco" . time() . ".sql");
+        header("Content-disposition: filename=banco".$db . date('YMdHi') . ".sql.gz");
         header("Content-type: application/octetstream");
         header("Pragma: no-cache");
         header("Expires: 0");
@@ -256,7 +256,7 @@ Class database {
             }
             $return = "\n\n-- ------------------------------------------------ \n\n";
 
-            print $return;
+            print gzcompress($return);
             $return = "";
         }
 

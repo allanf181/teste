@@ -16,7 +16,7 @@ if ($_GET["opcao"] == 'download') {
  
          $bd = new database();
 
-         $bd->backup();
+         $bd->backup($DB2_DB);
 }
 
 require PERMISSAO;
