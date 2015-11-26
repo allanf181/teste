@@ -290,12 +290,14 @@ $_SESSION['LINK'] = VIEW . "/professor/nota.php?atribuicao=" . crip($atribuicao)
                     $('#btnEnviar').prop('disabled', true);
                     $(this).css('background','red');
                 }
+                <?php if ($resAval['sigla']=="REF" || $resAval['sigla']=="IFA"){ // VALIDANDO FORM EM CASO DE RECUPERACAO ?>
                 decimal = $(this).val() - parseInt($(this).val());
                 jaArredondado = (decimal < 0.01) || ((decimal > 0.49) && (decimal < 0.51));
                 if (!jaArredondado){
                     $('#btnEnviar').prop('disabled', true);
                     $(this).css('background','red');
                 }
+                <?php }?>                
             }
         });        
     });
