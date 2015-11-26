@@ -266,43 +266,40 @@ $_SESSION['LINK'] = VIEW . "/professor/nota.php?atribuicao=" . crip($atribuicao)
 ?>
 <script>
     
-    
-    $('.campoNota').change(function(){
-        $(this).css('background','');
-        if ($(this).val() < 0 || $(this).val() > <?= $resAval['notaMaxima'] ?>) {
-            $(this).css('background','red');
-        }
-        $(this).val($(this).val().replace(",", ".")) ;
-    });
+//    
+//    $('.campoNota').change(function(){
+//        $(this).css('background','');
+//        if ($(this).val() < 0 || $(this).val() > <?= $resAval['notaMaxima'] ?>) {
+//            $(this).css('background','red');
+//        }
+//        
+//    });
     
     $('.campoNota').focus(function(){
          $(this).select();
     });
         
-<?php
-// VALIDANDO FORM EM CASO DE RECUPERACAO
-
-if ($resAval['sigla']=="REF" || $resAval['sigla']=="IFA"){
-?>
     $('#btnEnviar').prop('disabled', true);
-    $('.campoNota').keyup(function(){
-        
+    $('.campoNota').keyup(function(){ 
+        $(this).val($(this).val().replace(",", ".")) ;
         $('#btnEnviar').prop('disabled', false);
         $(this).css('background','');
         $('.campoNota').each(function(){
-            if ($(this).val() < 0 || $(this).val() > <?= $resAval['notaMaxima'] ?>) {
-                $('#btnEnviar').prop('disabled', true);
-                $(this).css('background','red');
-            }
-            decimal = $(this).val() - parseInt($(this).val());
-            jaArredondado = (decimal < 0.01) || ((decimal > 0.49) && (decimal < 0.51));
-            if (!jaArredondado){
-                $('#btnEnviar').prop('disabled', true);
-                $(this).css('background','red');
+            if ($(this).val()!=""){
+                if ($(this).val() < 0 || $(this).val() > <?= $resAval['notaMaxima'] ?>) {
+                    $('#btnEnviar').prop('disabled', true);
+                    $(this).css('background','red');
+                }
+                decimal = $(this).val() - parseInt($(this).val());
+                jaArredondado = (decimal < 0.01) || ((decimal > 0.49) && (decimal < 0.51));
+                if (!jaArredondado){
+                    $('#btnEnviar').prop('disabled', true);
+                    $(this).css('background','red');
+                }
             }
         });        
     });
 <?php
-}
+//}
 ?>
 </script>
