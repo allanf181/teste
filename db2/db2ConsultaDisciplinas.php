@@ -38,7 +38,7 @@ $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.e
         $sqlCodigo
 	GROUP BY a.codigo
         ORDER BY n.bimestre,d.numero";
-echo $sql;
+//echo $sql;
 $result = mysql_query($sql);
 
 $total = mysql_num_rows($result);

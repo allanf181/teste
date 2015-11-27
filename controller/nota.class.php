@@ -39,9 +39,10 @@ class Notas extends Frequencias {
                 d.numero as numero,
 		a.bimestre as bimestre
 		FROM Turmas t, Cursos c, Modalidades m, Matriculas ma, 
-                    Atribuicoes a, Pessoas p, Disciplinas d
+                    Atribuicoes a, Pessoas p, Disciplinas d, Professores pr
 		WHERE c.modalidade = m.codigo 
 		AND ma.atribuicao = a.codigo
+                AND pr.atribuicao=a.codigo
 		AND a.turma = t.codigo
 		AND p.codigo = ma.aluno
 		AND c.codigo = d.curso
@@ -56,7 +57,7 @@ class Notas extends Frequencias {
             ':turma' => $turma,
             ':numDisc' => $numeroDisciplina);
         $res = $bd->selectDB($sql, $params);
-
+//debugSQL($sql, $params);
         $c = 0;
         foreach ($res as $reg) {
             $c++;
