@@ -43,6 +43,7 @@ if ($_POST["opcao"] == 'InsertOrUpdate') {
 ?>
 <script src="<?= VIEW ?>/js/screenshot/main.js" type="text/javascript"></script>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
+<script src="<?= VIEW ?>/js/jquery.numeric.min.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
 <?php
 $avaliacao = dcrip($_GET["avaliacao"]);
@@ -278,7 +279,9 @@ $_SESSION['LINK'] = VIEW . "/professor/nota.php?atribuicao=" . crip($atribuicao)
     $('.campoNota').focus(function(){
          $(this).select();
     });
-        
+    
+    $('.campoNota').numeric();// PLUGIN jquery.numeric.min.js
+    
     $('#btnEnviar').prop('disabled', true);
     $('.campoNota').keyup(function(){ 
         $(this).val($(this).val().replace(",", ".")) ;
