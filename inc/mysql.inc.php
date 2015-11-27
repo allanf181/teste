@@ -170,11 +170,11 @@ Class database {
         $conexao->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_NATURAL);
 
         header("Content-disposition: filename=banco".$db . date('YMdHi') . ".sql.gz");
-        header("Content-type: application/octetstream");
+        header("Content-type: gzip");
         header("Pragma: no-cache");
         header("Expires: 0");
 
-        print "set @@foreign_key_checks=0; \n\n";
+        $dados= "set @@foreign_key_checks=0; \n\n";
         
         $numtypes = array('tinyint', 'smallint', 'mediumint', 'int', 'bigint', 'float', 'double', 'decimal', 'real');
 
@@ -195,7 +195,7 @@ Class database {
             $ifnotexists = str_replace('CREATE TABLE', 'CREATE TABLE IF NOT EXISTS', $row2[1]);
             $return.= "\n\n" . $ifnotexists . ";\n\n";
 
-            print $return;
+            $dados.=$return;
 
             $return = "";
 
@@ -221,7 +221,7 @@ Class database {
 
                 $return.= ")" . ' VALUES';
 
-                print $return;
+                $dados.=$return;
                 $return = "";
             }
             $count = 0;
@@ -251,21 +251,25 @@ Class database {
                     $return.= ");";
                 }
 
-                print $return;
+                $dados.=$return;
                 $return = "";
             }
             $return = "\n\n-- ------------------------------------------------ \n\n";
 
-            print gzcompress($return);
+            $dados.=$return;
             $return = "";
         }
 
         $error1 = $pstm2->errorInfo();
         $error2 = $pstm3->errorInfo();
         $error3 = $result->errorInfo();
-        echo $error1[2];
-        echo $error2[2];
-        echo $error3[2];
+        $dados.= $error1[2];
+        $dados.= $error2[2];
+        $dados.= $error3[2];
+        
+        // COMPACTANDO DADOS DE BACKUP
+        print gzencode($dados,9);
+        
         die;
     }
 

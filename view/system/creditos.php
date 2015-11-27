@@ -83,6 +83,10 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     É servidor do IFSP e quer ajudar? Venha fazer parte da equipe!
 </p>
 
+<br /><b>Vers&atilde;o 1.447 (próxima)</b>
+<br> - Compactação do backup da tela de Instituições;
+<br> - Correções e melhorias na tela de lançamento de notas;
+
 <br /><b>Vers&atilde;o 1.446</b>
 <br> - Integração com WS digita notas módulo Técnico Integrado;
 <br> - Listagem de professores aguardando Roda, na tela de cadastro de avaliações e exportação de notas;
