@@ -39,7 +39,7 @@ if ($client) {
     $result = $client->call("setversion", array("nome" => "$SITE_TITLE",
         "cidade" => "$SITE_CIDADE",
         "digitaNotas" => "$DIGITANOTAS",
-        "versao" => "$VERSAO"." OK2",
+        "versao" => "$VERSAO"."",
         "cidadePredominante" => $cidPr->city,
         "uname" => php_uname(),
         "hostname" => gethostname(),
