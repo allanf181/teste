@@ -94,15 +94,15 @@ while ($l = mysql_fetch_array($result)) {
                 $situacaoNota = rtrim($alunosMatriculado->situacaoNota);
                 $aluno = $alunosMatriculado->prontuario;
                 $situacaoAluno = $alunosMatriculado->situacao;
-echo "<br>=====================<br>".debug($alunosMatriculado);
-
-echo "<hr />".$alunosMatriculado->nome;
-echo "<br>".$situacaoNota;
-echo "<br>reav? ".$flagNotaReavDigitada;
-echo "<br>sit? ".$alunosMatriculado->situacao;
-echo "<br>sitNota? ".$alunosMatriculado->situacaoNota;
-echo "<br>nota1? ".$flagNota1Digitada;
-echo "<br>notareav? ".$flagNotaReavDigitada;
+//echo "<br>=====================<br>".debug($alunosMatriculado);
+//
+//echo "<hr />".$alunosMatriculado->nome;
+//echo "<br>".$situacaoNota;
+//echo "<br>reav? ".$flagNotaReavDigitada;
+//echo "<br>sit? ".$alunosMatriculado->situacao;
+//echo "<br>sitNota? ".$alunosMatriculado->situacaoNota;
+//echo "<br>nota1? ".$flagNota1Digitada;
+//echo "<br>notareav? ".$flagNotaReavDigitada;
                 $recuperacao = null;
 
                 //Verifica a situação
