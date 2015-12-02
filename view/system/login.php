@@ -10,6 +10,8 @@ require FUNCOES;
 require MENSAGENS;
 require VARIAVEIS;
 require CONTROLLER . '/login.class.php';
+require_once CONTROLLER . '/instituicao.class.php';
+$instituicao = new Instituicoes();
 
 // verifica se não está sendo chamado diretamente.
 if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
@@ -67,6 +69,15 @@ if ($prontuario && $senha) {
 ?>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <div id='fundo_login'></div>
+<?php
+if ($prontuario && $senha) { // MOSTRA OS ERROS DO LOGIN, APÓS O FORM.
+    if ($try < 3 && $try > 0) {
+        mensagem('ERRO', 'MANY_TRY', $try);
+    }
+    if (!isset($erro_cap))
+        mensagem('ERRO', $ERRO);
+}
+?>
 <div id="" class="">
     <form method="post" id="form_login">
         <div id='div_login_logo'>
@@ -126,6 +137,7 @@ if ($prontuario && $senha) {
             </tr>
         </table>
     </form>
+    <div id="mensagemLogin"><pre><?= $instituicao->getMensagem() ?></pre></div>
     <div id="rodapeLogin"></div>
     <div id="textoRodape">
         <p style="color: green">
@@ -152,15 +164,6 @@ if ($try < 0) {
 }
 ?>
 </script>
-<?php
-if ($prontuario && $senha) { // MOSTRA OS ERROS DO LOGIN, APÓS O FORM.
-    if ($try < 3 && $try > 0) {
-        mensagem('ERRO', 'MANY_TRY', $try);
-    }
-    if (!isset($erro_cap))
-        mensagem('ERRO', $ERRO);
-}
-?>
 <script>
     $('#campoSenha').keypress(function (e) {
         if (e.which == 13) {

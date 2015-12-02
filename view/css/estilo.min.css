@@ -1006,3 +1006,21 @@ input[type='button']:disabled, input[type='submit']:disabled, input[type='reset'
 .consulta-roda-turma{
     cursor: pointer;
 }
+
+#mensagemLogin pre {
+    font-family: arial;
+    border: 1px solid green;
+    border-radius: 20px;
+    background: url('icons/info.png') no-repeat left #bedfc2;
+    margin-top: -30px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#mensagemLogin pre:empty {
+    border: none;
+}
+
+#taMensagemLogin{
+    width: 100%;
+}

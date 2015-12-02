@@ -57,5 +57,13 @@ class Instituicoes extends Generic {
 
         return false;
     }
+    
+    public function getMensagem(){
+        $bd = new database();
+    	$sql = "SELECT mensagem from Instituicoes limit 1"; 
+        $res = $bd->selectDB($sql);
+
+        return $res[0]['mensagem'];
+    }
 
 }

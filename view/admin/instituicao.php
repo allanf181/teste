@@ -87,6 +87,9 @@ extract(array_map("htmlspecialchars", $res[0]), EXTR_OVERWRITE);
                 <table align="center" width="60%">
                     <tr><td align="left">Nome: </td><td><input type="text" name="nome" id="nome" size="60" maxlength="200" value="<?= $nome ?>"/></td></tr>
                     <tr><td align="left">Cidade: </td><td><input type="text" name="cidade" id="cidade" size="60" maxlength="200" value="<?= $cidade ?>"/></td></tr>
+                    <tr><td align="left"></td>
+                        <td>Mensagem para tela de login: <br><textarea id="taMensagemLogin" name="mensagem"><?=$mensagem?></textarea></td>
+                    </tr>
                 </table>
                 <br><input type="submit" value="Salvar" id="salvar" />
 
