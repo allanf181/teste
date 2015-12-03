@@ -79,7 +79,7 @@ class Notas extends Frequencias {
         }
 
         // MEDIA DAS MEDIAS DOS BIMESTRES
-        $media = $medias / $c;
+        $media = round(($medias / $c),3); // PRECISAO MAXIMA DE 3 CASAS DECIMAIS NA MEDIA
 
         // MEDIA DAS FREQUENCIAS DO BIMESTRE
         $frequencia = $frequencias / $c;
@@ -142,12 +142,12 @@ class Notas extends Frequencias {
                 $dados = $this->getFrequencia($matricula, $atribuicao);
 
                 // PARA O DIARIO E NOTAFINAL
-                $dados['mediaAvaliacao'] = round($reg['mcc'], 2);
-                $dados['notaRecuperacao'] = round($reg['rec'], 2);
+                $dados['mediaAvaliacao'] = round($reg['mcc'], 3);
+                $dados['notaRecuperacao'] = round($reg['rec'], 3);
 
-                $dados['recuperacao'] = round($reg['rec'], 2);
-                $dados['media'] = round($reg['ncc'], 2);
-                $dados['faltas'] = round($reg['falta'], 2);
+                $dados['recuperacao'] = round($reg['rec'], 3);
+                $dados['media'] = round($reg['ncc'], 3);
+                $dados['faltas'] = round($reg['falta'], 3);
                 $dados['final'] = $reg['final'];
                 return $dados;
             }
@@ -246,8 +246,11 @@ class Notas extends Frequencias {
         // ADICIONANDO OS PONTOS EXTRAS
         $media += array_sum($pontoExtra);
 
-        if ($arredondar)
-            $media = arredondar($media);
+        $media = round($media,3);// PRECISAO MAXIMA DE 3 CASAS DECIMAIS
+        
+//        if ($arredondar)
+//            $media = arredondar($media); // ARREDONDAMENTO DESABILITADO
+        
 
         // CALCULANDO A FREQUENCIA
         $dados = $this->getFrequencia($matricula, $atribuicao);
@@ -349,7 +352,7 @@ $dados['atribuicao']=$atribuicao;
         $dadosGlobais['frequenciaGlobal'] = $frequencia;
 
         $media = array_sum($medias) / count($medias);
-        $dadosGlobais['mediaGlobal'] = round($media, 2);
+        $dadosGlobais['mediaGlobal'] = round($media, 3);
         return $dadosGlobais;
     }
 

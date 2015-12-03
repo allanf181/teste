@@ -67,8 +67,8 @@ $('#form_padrao').html5form({
                     <!--<input type="hidden" name="matricula[<?=$dados[$indice]['aluno']?>]" value='<?= $dados[$indice]['matricula'] ?>' />-->
                     <?php 
                     $decimal = $dados[$indice]['media'] - (int)$dados[$indice]['media'];
-                    if(($decimal < 0.01) || (($decimal > 0.49) && ($decimal < 0.51))){ ?>
-                        <input name='media[<?=$dados[$indice]['matricula']?>]' style='width: 30px' class="input" type='text' value='<?= $dados[$indice]['media'] ?>' size='4' maxlength='4' readonly="readonly" /></td>
+                    if(($decimal < 0.001) || (($decimal > 0.499) && ($decimal < 0.501))){ ?>
+                        <input name='media[<?=$dados[$indice]['matricula']?>]' style='width: 40px' class="input" type='text' value='<?= $dados[$indice]['media'] ?>' size='4' maxlength='4' readonly="readonly" /></td>
                     <?php   
                     } else { 
                         $media = $dados[$indice]['media'];
@@ -76,7 +76,7 @@ $('#form_padrao').html5form({
                             $media = $dados[$indice]['ncc'];
                         }
                     ?>
-                    <input name='media[<?=$dados[$indice]['matricula']?>]' style='width: 30px' class="input" type='text'  tabindex='<?= $classe ?>' size='4' maxlength='4' onKeyUp="validaTodos()" value="<?= $media ?>" /></td>
+                    <input name='media[<?=$dados[$indice]['matricula']?>]' style='width: 40px' class="input" type='text'  tabindex='<?= $classe ?>' size='4' maxlength='4' onKeyUp="validaTodos()" value="<?= $media ?>" /></td>
                     <?php } ?>
                     
             </tr>
