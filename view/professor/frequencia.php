@@ -77,7 +77,7 @@ $dadosAula = $aulaFreq->getAula($aula);
 </script>
 <?php
         if($nf['flag5'] && !$_SESSION['dataExpirou'] && ($nf['flag5'] && $nf['totalRec']==$nf['total'])){
-            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 0 auto 30px auto'>Notas finalizadas.<br>Pode finalizar o diário.</p>";
+            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 0 auto 30px auto'>Notas e faltas exportadas.</p>";
         }
         else if($nf['reg'] < $nf['flag5'] && !$_SESSION['dataExpirou']){
             echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 0 auto 30px auto'>Notas e faltas enviadas.<br>Aguardando o Roda.</p>";

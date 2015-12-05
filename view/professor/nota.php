@@ -101,7 +101,7 @@ if ($_SESSION['dataExpirou'] || ($nf['flag5'] && $resAval['tipo']!='recuperacao'
         }
         
         if($nf['flag5'] && !$_SESSION['dataExpirou'] && ($nf['flag5'] && $nf['totalRec']==$nf['total'])){
-            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px auto 30px auto'>Notas finalizadas.</p>";
+            echo "<p style='text-align: center; font-weight: bold; color: green; border: 3px solid green; width: 300px; margin: 10px auto 30px auto'>Notas e faltas exportadas.</p>";
         }
         else if($nf['flag5'] && $nf['total']!=$nf['reavaliados'] && $resAval['tipo']!='recuperacao' && ($nf['flag5'] && $nf['totalRec']!=$nf['total'])){
             echo "<p style='text-align: center; font-weight: bold; color: red; border: 3px solid red; width: 300px; margin: 10px auto 30px auto; padding: 5px'>Permitido lançamento de Reavaliação/IFA somente.</p>";
