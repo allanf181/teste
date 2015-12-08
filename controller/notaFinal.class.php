@@ -315,7 +315,7 @@ class NotasFinais extends Notas {
     }
 
     // DISCIPLINAS QUE AGUARDAM O RODA
-    public function getDisciplinasRoda() {
+    public function getDisciplinasRoda($ano, $semestre) {
         $bd = new database();
 
         // efetuando a consulta para listagem
@@ -325,6 +325,7 @@ class NotasFinais extends Notas {
             and p.atribuicao=a.codigo and a.disciplina=d.codigo 
             AND c.modalidade IN (1004,1006,1007)
             and a.codigo=n.atribuicao and (n.flag=0 or (n.flag=5 and n.situacao='Em Curso' and n.recuperacao is null)) 
+            AND t.ano='$ano' AND t.semestre='$semestre' 
             group by a.codigo order by pe.nome"; 
         
 
@@ -360,7 +361,7 @@ class NotasFinais extends Notas {
 
         $params = array(':ano' => $ano, ':sem' => $semestre);
         $res = $bd->selectDB($sql, $params);
-
+//debugSQL($sql, $params);
         if ($res) {
             return $res;
         } else {
