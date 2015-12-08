@@ -284,13 +284,13 @@ class Atribuicoes extends Generic {
                         DATEDIFF(a.prazo,NOW()) as prazoDiff,
                         CONCAT(date_format( a.dataInicio, '%d/%m/%Y'), ' a ', 
                             date_format( a.dataFim, '%d/%m/%Y')) as periodo
-                FROM Disciplinas d, Turmas t, Atribuicoes a, 
-                           Cursos c, Modalidades m, Professores p
+                FROM Disciplinas d, Turmas t, 
+                           Cursos c, Modalidades m, Atribuicoes a
+                LEFT JOIN Professores p ON p.atribuicao=a.codigo
 		WHERE d.codigo = a.disciplina 
 		AND t.codigo = a.turma
 		AND c.codigo = t.curso 
 		AND m.codigo = c.modalidade
-                AND p.atribuicao = a.codigo
                 AND (t.semestre=:semestre OR t.semestre=0)
                 AND t.ano = :ano";
 
