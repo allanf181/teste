@@ -702,7 +702,7 @@ class Atribuicoes extends Generic {
         $bd = new database();
 
         // efetuando a consulta para listagem
-        $sql = "SELECT m.nome from Atribuicoes a, Cursos c, Turmas t, Modalidades m
+        $sql = "SELECT m.nome, a.bimestre from Atribuicoes a, Cursos c, Turmas t, Modalidades m
                 WHERE a.turma=t.codigo
                 and t.curso=c.codigo
                 and c.modalidade=m.codigo

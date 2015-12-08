@@ -17,7 +17,7 @@ $descricao = "Curso Superior: Esta listagem apresenta as disciplinas e nomes dos
 
 echo "<p style='background: red; color: white; text-align: center'>Docentes/Turmas aguardando o Roda:<a  title='$descricao'><img class='resultado botao' src='".ICONS."/info.png' /></a></p>";
 echo "<p style='background: red; color: white; text-align: center; padding-bottom: 5px'>Filtrar: <input type='text' id='filtro' /></p>";
-foreach ($notas->getDisciplinasRoda() as $atribuicao) {
+foreach ($notas->getDisciplinasRoda($ANO, $SEMESTRE) as $atribuicao) {
     $codigoAtribuicao = ($DEBUG)?"[". $atribuicao['codigo'] ."] ":"";
     echo "<p class='resultado'><a class='consulta-roda' id='".$atribuicao['codigo']."' "
             . "title='Clique para consultar o Roda para esta disciplina'>" 
