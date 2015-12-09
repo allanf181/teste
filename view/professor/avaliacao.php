@@ -655,7 +655,9 @@ if ($_GET['opcao'] == '') {
                                             $cor="red";
                                             $aguarda = "<a class='nav' title='Não enviou as notas' ><img src='".ICONS."/exclamation.png' /></a>";
                                         }                                        
-                                        echo "<p style='font-family: courier; color: $cor'>".abreviar($roda['nome']." [".$roda['numero']."]",45).$aguarda;
+                                        if (isset($roda['subturma']))
+                                            $subturma = "(".$roda['subturma']."-".$roda['bimestre']."ºbim)";
+                                        echo "<p style='font-family: courier; color: $cor'>".abreviar($roda['nome']." [".$roda['numero']."] $subturma",55).$aguarda;
                                     }
                                 ?>
                                 </td>
