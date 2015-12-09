@@ -108,24 +108,24 @@ if ($_GET["atribuicao"]) {
             $aulaPrevista=0;
         
         if ($DEBUG){
-//            echo "<br>info1: $info1";
-//            echo "<br>info2: $info2";
-//            echo "<br>status: $status";
-//            echo "<br>\$qdeAulas: $qdeAulas";
-//            echo "<br>\$aulaPrevista: $aulaPrevista";
-//            echo "<br>\$qdeAvaliacoes['avalCadastradas']: ".$qdeAvaliacoes['avalCadastradas'];
-//            echo "<br>\$qdeAvaliacoes['qdeMinima']: ".$qdeAvaliacoes['qdeMinima'];
-//            echo "<br>\$temPendencias['reg']: ".$temPendencias['reg'];
-//            echo "<br>\$temPendencias['totalRec']: ".$temPendencias['totalRec'];
-//            echo "<br>\situacoes: ".$temPendencias['situacoes'];
-//            echo "<br>total: ".$temPendencias['total'];
-//            echo "<br>reavaliados: ".$temPendencias['reavaliados'];
-//            echo "<br>flag5: ".$temPendencias['flag5'];
-//            echo "<br>\$bimestreNome: ".$bimestreNome;
+            echo "<br>info1: $info1";
+            echo "<br>info2: $info2";
+            echo "<br>status: $status";
+            echo "<br>\$qdeAulas: $qdeAulas";
+            echo "<br>\$aulaPrevista: $aulaPrevista";
+            echo "<br>\$qdeAvaliacoes['avalCadastradas']: ".$qdeAvaliacoes['avalCadastradas'];
+            echo "<br>\$qdeAvaliacoes['qdeMinima']: ".$qdeAvaliacoes['qdeMinima'];
+            echo "<br>\$temPendencias['reg']: ".$temPendencias['reg'];
+            echo "<br>\$temPendencias['totalRec']: ".$temPendencias['totalRec'];
+            echo "<br>\situacoes: ".$temPendencias['situacoes'];
+            echo "<br>total: ".$temPendencias['total'];
+            echo "<br>reavaliados: ".$temPendencias['reavaliados'];
+            echo "<br>flag5: ".$temPendencias['flag5'];
+            echo "<br>\$bimestreNome: ".$bimestreNome;
         }
         
         if (!$status && $qdeAulas >= $aulaPrevista && $qdeAvaliacoes['avalCadastradas'] >= $qdeAvaliacoes['qdeMinima'] && $temPendencias['reg'] && (($bimestreNome != "SEMESTRAL" && $bimestreNome != "ANUAL" && $temPendencias['flag5']==$temPendencias['reg']) || $temPendencias['reavaliados']>0 || $temPendencias['situacoes'] == $temPendencias['reg'])) {
-            $pergunta = $QUESTION_DIARIO2;
+//            $pergunta = $QUESTION_DIARIO2;DESATIVADO POIS PRECISA VERIFICAR SE AS NOTAS FORAM EXPORTADAS
         }
         ?>
         <h2><?= abreviar("$disciplina [$subturma]: $turma/$curso", 150) ?></h2>

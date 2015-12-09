@@ -377,7 +377,7 @@ class NotasFinais extends Notas {
         $sql = "select count(*) n
             from NotasFinais n
             where n.atribuicao=:atribuicao 
-            and (n.flag=0 or (n.flag=5  and n.recuperacao is null)) ";        
+            and ((n.flag=0 and n.sincronizado is not null) or (n.flag=5  and n.recuperacao is null)) ";        
 
         $params = array('atribuicao' => $atribuicao);
         $res = $bd->selectDB($sql, $params);
