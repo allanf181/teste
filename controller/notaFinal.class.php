@@ -8,7 +8,7 @@ class NotasFinais extends Notas {
         //MÉTODO QUE VERIFICA SE A MÉDIA PRECISARÁ SER ARREDONDADA 
     public function verificaDecimal($valor){
         $decimal = $valor - (int)$valor;
-        $jaArredondado = ($decimal < 0.01) || (($decimal > 0.49) && ($decimal < 0.51));
+        $jaArredondado = ($decimal < 0.001) || (($decimal > 0.499) && ($decimal < 0.501));
         if (!$jaArredondado){
             throw new Exception("Algumas médias precisam ser arredondadas.");
         }
