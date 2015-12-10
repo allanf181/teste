@@ -325,7 +325,7 @@ foreach ($aula->listAlunosByAula($params, $sqlAdicional) as $reg) {
     $MEDIAS = $nota->resultado($matricula, $atribuicao);
     
     // FECHAMENTO DE NOTAS
-    $media = $MEDIAS['media'];
+    $media = $MEDIAS['ncc']; // ALTERADO PARA MOSTRAR CORRETAMENTE EM CASO DE APLICAÇÃO DE IFA (10/12/15)
 //    if (!empty($MEDIAS['notaArredondada']))
 //        $media = $MEDIAS['notaArredondada'];
     $pdf->Cell($larguraDia, $alturaLinha, $media, 1, 0, 'C', true);

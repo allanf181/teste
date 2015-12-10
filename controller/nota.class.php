@@ -290,6 +290,12 @@ class Notas extends Frequencias {
         if (isset($ncc))
             $dados['media'] = $ncc;
         
+        // CORREÇÃO FEITA EM 10/12/2015: MEDIA DA REC NAO SUBSTITUIA A MEDIA FINAL EM CURSO SUPERIOR E MODULAR
+        $dados['ncc']=$dados['media'];
+        if (isset($dados['notaRecuperacao']) && $dados['notaRecuperacao']>$dados['media']){
+            $dados['media']=$dados['notaRecuperacao'];
+        }
+        
 //        // VERIFICANDO SE HÁ ARREDONDAMENTO
 //        if (!empty($dados['notaArredondada']) && $dados['notaArredondada']>=0){
 //            $dados['media'] = $dados['notaArredondada'];
