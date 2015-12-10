@@ -177,7 +177,8 @@ if ($_SESSION['dataExpirou'] || ($nf['flag5'] && $resAval['tipo']!='recuperacao'
                         <td align='center'>
                             <?php
                             $matSituacao = $ma->getAlteracaoMatricula($reg['codAluno'], $atribuicao, $resAval['data']);
-                            if ($matSituacao['listar'] && $matSituacao['habilitar']) {
+                            // IGNORANDO CASO A DATA DE MATRÍCULA SEJA POSTERIOR A DATA DA AVALIACAO
+                            if (!$matSituacao || ($matSituacao['listar'] && $matSituacao['habilitar'])) {
                                 ?>
                                 <input type='hidden' name='codigo[<?= $reg['matricula'] ?>]' value='<?= $reg['codNota'] ?>'>
                                 <input <?= $disabled ?> id='A<?= $reg['codAluno'] ?>' tabindex='<?= $i ?>' style='width: 30px' type='text' value='<?= $reg['nota'] ?>' size='4' maxlength='4' name='matricula[<?= $reg['matricula'] ?>]' class="campoNota" />

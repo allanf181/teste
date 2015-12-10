@@ -757,7 +757,7 @@ if ($_GET['opcao'] == '') {
                         ?>
                         <td align='center' width="20">
                             <?php
-                            if ((!$reavaliacao || ($reavaliacao && $reg['siglaTipoAvaliacao']=="REF")) && ((!$trava_nota && !$final) || ($final && !$trava_rec) || $libera_nota)) {
+                            if ((!$reavaliacao || ($reavaliacao && ($reg['siglaTipoAvaliacao']=="REF" || $reg['siglaTipoAvaliacao']=="IFA"))) && ((!$trava_nota && !$final) || ($final && !$trava_rec) || $libera_nota)) {
                                 ?>
                                 <input type='checkbox' id='deletar' name='deletar[]' value='<?= crip($reg['codigo']) ?>'>
 
