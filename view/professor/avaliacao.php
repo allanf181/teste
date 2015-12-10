@@ -514,7 +514,7 @@ if ($_GET['opcao'] == '') {
 //                            echo "<br>ifa:".$ifa;
                             $libera_rec = 0;
                             $rec = $notaFinal->checkIfRoda($atribuicao);
-                            if ($res[0]['bimestre']==4 && $rec['total']>0 && $rec['reavaliados']==0){
+                            if (($res[0]['bimestre']==0 || $res[0]['bimestre']==4) && $rec['total']>0 && $rec['reavaliados']==0){
                                 $reavaliacao=true;
 //                                $trava_rec=true;
                             }
