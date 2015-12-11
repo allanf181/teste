@@ -352,10 +352,10 @@ class NotasFinais extends Notas {
                 AND a.disciplina=d.codigo
                 AND c.modalidade=m.codigo
                 AND t.curso=c.codigo
-                AND t.ano=:ano
-                AND t.semestre=:sem
-                AND c.modalidade NOT IN (1004,1006,1007)
-                AND n.bimestre IN (0,1,4)
+                AND (   (t.ano=:ano and n.bimestre in (4) and c.modalidade >=1 and c.modalidade <=9) 
+                    OR  (t.ano=:ano and n.bimestre in (4) and c.modalidade >=2000 and c.modalidade <=2999) 
+                    OR  (t.ano=:ano AND t.semestre=:sem AND n.bimestre in (0,1) AND c.modalidade = 1003)
+                )
                 GROUP BY t.codigo
                 HAVING n.flag is not null AND n.situacao is null;";         
 
