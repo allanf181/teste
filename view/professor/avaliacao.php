@@ -587,7 +587,7 @@ if ($_GET['opcao'] == '') {
                                 $ifa=1; // HABILITA SOMENTE CRIACAO DE AVALIACAO DO TIPO IFA
                                 $liberaDN=1;
                                 $rec_text = 'ATENÇÃO: Há alunos aptos à aplicação de '.$instrumento.'!<BR>Cadastre uma avaliação do tipo IFA/Reavaliação para lançar as notas. <br>Após digitar suas notas de '.$instrumento.', clique no bot&atilde;o ao lado para exportar para o DigitaNotas.';
-                            } else if ($rec['totalRec'] || ($rec['reg']==$rec['situacoes'] && $rec['totalRec']==0)) { // NÃO HÁ ALUNOS EM REC
+                            } else if ($rec['totalRec']) {
 //                                echo "<br>".$rec['totalRec'];
                                 $rec_text = 'Notas enviadas. Pode finalizar o di&aacute;rio.';
                                 $trava_rec = 1;
