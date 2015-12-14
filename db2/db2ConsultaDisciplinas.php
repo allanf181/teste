@@ -20,6 +20,20 @@ if (isset($_GET["turma"])) {
     $sqlCodigo = "AND a.codigo IN (SELECT codigo from Atribuicoes where turma=$turma)";
 }
 
+if (isset($_GET["ano"])) {
+    $ano = $_GET["ano"];
+    $sqlCodigo .= " AND t.ano=$ano";
+}
+
+if (isset($_GET["semestre"])) {
+    $semestre = $_GET["semestre"];
+    $sqlCodigo .= " AND t.semestre=$semestre";
+}
+
+if (isset($_GET["debug"])) {
+    $debug = 1;
+}
+
 $user = 'BA000022';
 $pass = '4(HC&m3KbT';
 //$pass = 1234; 
@@ -36,9 +50,10 @@ $sql = "SELECT p.prontuario, n.atribuicao, d.numero, n.bimestre, a.subturma, a.e
         AND (n.situacao IS NULL or n.situacao = 'Em Curso' or n.situacao = 'MATRICULADO')
         AND flag = 5
         $sqlCodigo
-	GROUP BY a.codigo
+	GROUP BY a.codigo, p.codigo
         ORDER BY n.bimestre,d.numero";
-//echo $sql;
+if ($debug)
+    echo "<pre style='color: blue'>$sql</pre><br />";
 $result = mysql_query($sql);
 
 $total = mysql_num_rows($result);
@@ -56,6 +71,9 @@ while ($l = mysql_fetch_array($result)) {
 
     //Obtem todas as informações das disciplinas ministradas pelo professor
     $professorObj = $consultaDisciplinasWS->consultaDisciplinas($user, $pass, $campus, $prontuario);
+    
+    if ($debug)
+        debug($professorObj);
     
     //Pega todas as disciplinas ministradas pelo professor
     if (count($professorObj->disciplinasMinistradas->DisciplinaMinistrada) > 1) {

@@ -25,7 +25,7 @@ $log = new Logs();
 <script>
     $(document).ready(function() {
         $("input[type='button']").click(function() {
-            $('#' + this.id + 'Retorno').load('db2/' + this.id + '.php');
+            $('#' + this.id + 'Retorno').load('db2/' + this.id + '.php?ano=<?=$ANO?>&semestre=<?=$SEMESTRE?>');
         });
     });
 </script>
