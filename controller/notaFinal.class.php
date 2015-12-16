@@ -257,7 +257,7 @@ class NotasFinais extends Notas {
                                     (SELECT COUNT(*) 
                                     FROM NotasFinais n1
                                     WHERE n1.atribuicao = n.atribuicao
-                                    AND n1.situacao IS NOT NULL and n1.situacao!='Em Curso')  as situacoes,
+                                    AND n1.situacao IS NOT NULL and n1.situacao!='Em Curso' and n1.situacao!='MATRICULADO')  as situacoes,
                         (SELECT COUNT(*) 
                                     FROM NotasFinais n1
                                     WHERE n1.atribuicao = n.atribuicao
