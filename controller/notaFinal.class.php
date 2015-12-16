@@ -273,7 +273,11 @@ class NotasFinais extends Notas {
                         (SELECT COUNT(*) 
                                     FROM NotasFinais n1 
                                     WHERE n1.atribuicao = n.atribuicao 
-                                    AND n1.flag =5) as flag5 
+                                    AND n1.flag =5) as flag5,
+                        (SELECT COUNT(*) 
+                                    FROM NotasFinais n1 
+                                    WHERE n1.atribuicao = n.atribuicao 
+                                    AND n1.recuperacao is not null and n1.recuperacao == 1) as aguardaRecuperacao 
                     FROM NotasFinais n
                     WHERE n.atribuicao = :atribuicao
                     ORDER BY n.codigo ";
