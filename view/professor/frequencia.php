@@ -148,7 +148,7 @@ $dadosAula = $aulaFreq->getAula($aula);
                                     <?php
                                 }
                             } else {
-                                print "<a href='#' data-placement='top' data-content=" . $A['motivo'] . " title='Motivo'>" . $A['tipo'] . "</a>";
+                                print "<a href='#' data-placement='top' data-content='" . $A['motivo'] . "' title='Motivo'>" . $A['tipo'] . "</a>";
                             }
                             ?>
                         </td>

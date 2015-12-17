@@ -20,7 +20,7 @@ class FrequenciasAbonos extends Generic {
                         OR (f.dataInicio = :data)
                     )
                 AND
-                (   (f.atribuicao = :atr)
+                (   (f.atribuicao = :atr OR f.atribuicao is null)
                     OR 
                     (
                         (f.aula = (SELECT h1.nome

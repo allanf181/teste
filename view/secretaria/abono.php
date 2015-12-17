@@ -41,7 +41,7 @@ if ($_GET["opcao"] == 'delete') {
 <?php
 // inicializando as variáveis do formulário
 $params['ano'] = $ANO;
-$sqlAdicional .= " AND date_format(f.dataInicio, '%Y') = :ano ";
+$sqlAdicional .= " AND (date_format(f.dataInicio, '%Y') = :ano OR date_format(f.dataFim, '%Y') = :ano) ";
 
 if (dcrip($_GET["aluno"]) != "") {
     $params['aluno'] = dcrip($_GET["aluno"]);
