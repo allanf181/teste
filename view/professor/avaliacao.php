@@ -589,7 +589,7 @@ if ($_GET['opcao'] == '') {
                                 $rec_text = 'ATENÇÃO: Há alunos aptos à aplicação de '.$instrumento.'!<BR>Cadastre uma avaliação do tipo IFA/Reavaliação para lançar as notas. <br>Após digitar suas notas de '.$instrumento.', clique no bot&atilde;o ao lado para exportar para o DigitaNotas.';
                             } else if ($rec['totalRec'] || 
                                     ($rec['aguardaRecuperacao']==0 && $rec['reg']==$rec['situacoes']) ||
-                                    ($rec['total']==0 && $rec['situacoes']==0 && $rec['flag5']==$rec['reg']) // NINGUEM DE RECUPERACAO
+                                    ($rec['total']==0 && $rec['situacoes']==0 && $rec['flag5']==$rec['reg']&& $res[0]['bimestre']==4) // NINGUEM DE RECUPERACAO
                                     ) { // NÃO HÁ ALUNOS EM REC
 //                                echo "<br>".$rec['totalRec'];
                                 $rec_text = 'Notas enviadas. Pode finalizar o di&aacute;rio.';
