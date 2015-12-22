@@ -141,8 +141,9 @@ class Frequencias extends FrequenciasAbonos {
                 }
             }
 
-            if (!$auladada = $res[0]['aulas'])
-                $auladada = $res[0]['CH'];
+//            if (!$auladada = $res[0]['aulas'])
+                $auladada = $res[0]['CH']; // CALCULO DA FREQUENCIA SOBRE AS AULAS PREVISTAS E NÃO SOBRE AS AULAS DADAS
+                
 
             if ($faltas) {
                 $frequencia = 100 - (($faltas * 100) / $auladada);
