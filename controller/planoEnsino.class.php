@@ -70,7 +70,8 @@ class PlanosEnsino extends Generic {
                          WHERE p.codigo = l.solicitante
                          AND l.codigoTabela = a.codigo
                          AND l.nomeTabela = 'PlanoEnsino'
-                         AND l.dataConcessao IS NULL) as solicitante
+                         AND l.dataConcessao IS NULL) as solicitante,
+                pe.instrumentos as instrumentos
 		FROM PlanosEnsino pe, Atribuicoes a, Disciplinas d,
 		Cursos c, Modalidades m, Turmas t, Professores p
 		WHERE pe.atribuicao = a.codigo 

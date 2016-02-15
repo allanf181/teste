@@ -14,6 +14,8 @@ require CONTROLLER . "/planoAula.class.php";
 $planoAula = new PlanosAula();
 
 
+define('FPDF_FONTPATH', PATH . LIB . '/fpdf17/font');
+
 include PATH . LIB . '/fpdf17/rotation.php';
 $pdf = new PDF ();
 
@@ -82,7 +84,7 @@ if (dcrip($_GET["atribuicao"])) {
 
         $pdf->Cell(90, 27, "", 1, 0, 'C', false);
         $pdf->Cell(130, 27, utf8_decode($tipo), 1, 0, 'C', false);
-        $pdf->Cell(58, 27, utf8_decode("CAMPUS: $SITE_CIDADE"), 1, 0, 'C', false);
+        $pdf->Cell(58, 27, utf8_decode("CÂMPUS \n: $SITE_CIDADE"), 1, 0, 'C', false);
         $pdf->Ln();
         $pdf->Cell(278, $alturaLinha, utf8_decode("1 - IDENTIFICAÇÃO"), 1, 0, 'L', true);
         $pdf->Ln();
@@ -99,7 +101,7 @@ if (dcrip($_GET["atribuicao"])) {
         $pdf->Cell(100, $alturaLinha, utf8_decode("TOTAL DE AULAS: $totalAulas"), 1, 0, 'L', true);
         $pdf->Cell(100, $alturaLinha, utf8_decode("NÚMERO DE PROFESSORES: $numeroProfessores"), 1, 0, 'L', true);
         $pdf->Ln();
-        $pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(A) RESPONSÁVEL: $professores"), 1, 0, 'L', true);
+        $pdf->Cell(278, $alturaLinha, utf8_decode("PROFESSOR(ES) RESPONSÁVEL(IS): $professores"), 1, 0, 'L', true);
         $pdf->Ln();
         $pdf->Ln();
     }
@@ -153,51 +155,159 @@ if (dcrip($_GET["atribuicao"])) {
 
     rodape();
 
-    cabecalho('P L A N O   D E   A U L A');
+    cabecalho('P L A N O   D E   A U L A S');
+    
+    $limit = 76;
+    // 2 - INSTRUMENTOS E CRITERIOS DE AVALIACAO DA APRENDIZAGEM
+    $borda = 'LRT';
+    $pdf->Cell(278, $alturaLinha, utf8_decode("2 - INSTRUMENTOS E CRITÉRIOS DE AVALIAÇÃO DA APRENDIZAGEM"), 'LRTB', 1, 'L');
+    pdfAdd($pdf, $reg['instrumentos'], $fonte, '', $tamanho +3, $alturaLinha, 175, $borda, $secao2=true); // CONTEÚDO SECAO2
+    $pdf->Ln();
+    
+    $pdf->SetFont($fonte, 'B', $tamanho+5);
+    
+    // 3 - DESENVOLVIMENTO DAS AULAS
+    $borda = 'LRT';
+    $pdf->Cell(278, $alturaLinha, utf8_decode("3 - DESENVOLVIMENTO DAS AULAS"), 1, 0, 'L', true);
+    $pdf->Ln();
+    $pdf->Cell(28, $alturaLinha, 'Semana* **', $borda, 0, 'L', true); 
+    pdfAdd($pdf, "Conteúdo", $fonte, 'B', $tamanho+5, $alturaLinha, $limit, $borda); // TÍTULO
+    $borda = 'LRT';
+    pdfAdd($pdf, "Metodologias de Ensino e Recursos", $fonte, 'B',$tamanho+5, $alturaLinha, $limit, $borda); // TÍTULO
+    $pdf->Ln();
 
-    $limit = 125;
-    foreach ($planoAula->listPlanoAulas($atribuicao) as $reg) {
+    $res = $planoAula->listPlanoAulas($atribuicao);
+    
+    $dataInicio=0;
+    foreach ($res as $reg) {
         $pdf->SetFont($fonte, 'B', $tamanho + 3);
-        // CONTEÚDO
-        $borda = 'LRT';
-        $pdf->Cell(28, $alturaLinha, utf8_decode($reg['semana']), $borda, 0, 'C', true); // SEMANA
-        pdfAdd($pdf, "Conteúdo: ", $fonte, 'B', $tamanho+3, $alturaLinha, $limit, $borda); // TÍTULO
-        $borda = 'LRB';
+                    
+        // CONTEÚDO  
+        
         if (count(explode("\r\n", $reg['conteudo']))>1 || (($reg['metodologia']!="" || $reg['criterio']!="")))
-            $borda='LR';
-        $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
+            $borda='LRT';
+        
+        if(end($res) == $reg){
+            $borda = 'LRTB';
+        }
+
+        if ((strlen($reg['metodologia']) < $limit) AND (strlen($reg['conteudo']) < $limit) ){
+            $borda = 'LRT';
+        }
+        
+        $pdf->Cell(28, $alturaLinha, utf8_decode($reg['semana']), $borda, 0, 'C', true); // SEMANA
+        
+        
         if ($reg['metodologia']=="" && $reg['criterio']=="")
-            $borda = 'LRB';
-        pdfAdd($pdf, $reg['conteudo'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda); // CONTEUDO
+            $borda = 'LRT';
         
-        // CRITÉRIOS
-        $borda = 'LR';
-        if ($reg['criterio']){
-            $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
-            pdfAdd($pdf, "Instrumentos e Critérios de Avaliação da Aprendizagem: ", $fonte, 'B',$tamanho+3, $alturaLinha, $limit, $borda); // TÍTULO
-            if (empty($reg['metodologia']))
-                $borda='LRB';
-            $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
-            pdfAdd($pdf, $reg['criterio'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda); // CONTEUDO
-        }
+        if ($dataInicio==0)
+            $dataInicio=$reg['dataInicio']; // DATA DA PRIMEIRA AULA
         
-        // METODOLOGIA
-        if ($reg['metodologia']){
-            $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
-            pdfAdd($pdf, "Metodologia de Ensino e Recursos: ", $fonte, 'B',$tamanho+3, $alturaLinha, $limit, $borda); // TÍTULO
-            $borda='LRB';
-            $pdf->Cell(28, $alturaLinha, '', $borda, 0, 'C', true); // VAZIA
-            pdfAdd($pdf, $reg['metodologia'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda); // CONTEUDO
-        }
-        $pdf->Ln();
+        $dataInicio = getProximaAula($dataInicio,$reg['dataFim'], $atribuicao);    // BUSCA A PROXIMA DATA DE AULA    
+        
+        addPlanoAula($pdf, $reg['conteudo'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda,$reg['metodologia'], $dataInicio); // CONTEUDO
+        
+        $dataInicio = date("Y-m-d", strtotime("+1 day", strtotime($dataInicio)));  // ACRESCENTA UM DIA NA DATA
+        
     }
+    $pdf->Write(5, utf8_decode('* estas datas são uma previsão, de acordo com o horário de aula e o calendário escolar cadastrados pela secretaria.'));
+    $pdf->Ln();
+    $pdf->Write(5, utf8_decode('** caso não tenha sido possível alocar todas as aulas dentro do calendário escolar, datas posteriores podem ter sido utilizadas.'));
+    $pdf->Ln();
 
     rodape();
 
     $pdf->Output();
 }
 
-function pdfAdd($pdf, $conteudo, $fonte, $bold, $tamanho, $alturaLinha, $limit, $borda){
+//FUNCAO RESPONSAVEL POR COLUNAS VERTICAIS DO PLANO DE AULAS
+function addPlanoAula($pdf, $conteudo, $fonte, $bold, $tamanho, $alturaLinha, $limit, $borda, $metodologia = '', $dataAula){
+    $conteudo = explode("\r\n", trim($conteudo));
+    $metodologia = explode("\r\n", trim($metodologia));
+    $conteudoSeparado= array();
+    $metodologiaSeparada= array();
+    
+    $pdf->SetFont($fonte, $bold, $tamanho);
+    $k = 0;
+    $indice = 0;
+    $temp = $borda;
+    
+    //SEPARA A SEQUENCIA DO TEXTO DE CONTEUDO E METODOLOGIA 
+    foreach ($conteudo as $j => $trecho) {
+        $borda='LR';
+        if (sizeof($conteudo)==$j+1)
+            $borda=$temp;
+
+        if ($k != 0)
+            $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
+        
+        if (strlen($trecho) > $limit) {
+            $conteudo2 = explode("\n", wordwrap(str_replace("\r\n", "; ", trim($trecho)), $limit));
+
+            foreach ($conteudo2 as $n => $trecho2) {
+                
+                $conteudoSeparado[$indice] = $trecho2;
+                $indice++;
+            }
+        } else {
+                $conteudoSeparado[$indice] = $trecho;
+                $indice++;
+        }
+    }
+    $indice = 0;
+    
+    foreach ($metodologia as $j => $trecho) {
+        $borda='LR';
+        if (sizeof($metodologia)==$j+1)
+            $borda=$temp;
+
+        if ($k != 0)
+            $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
+        if (strlen($trecho) > $limit) {
+            $metodologia2 = explode("\n", wordwrap(str_replace("\r\n", "; ", trim($trecho)), $limit));
+            
+            foreach ($metodologia2 as $n => $trecho2) {
+                $metodologiaSeparada[$indice] = $trecho2;
+                 $indice ++;
+            }
+        } else {
+                $metodologiaSeparada[$indice] = $trecho;
+                $indice ++;
+        }
+        
+        $k ++;
+    }
+   
+    //DISPOE DE MANEIRA LINEAR O CONTEUDO E METODOLOGIA NO PLANO DE AULAS
+    for ($i = 0; ($i <= sizeof($conteudoSeparado)) OR ($i <= sizeof($metodologiaSeparada)); $i++){
+        $borda = 'LR';
+        $bordaData = 'LR';            
+
+        if ($i == 0){
+            $borda = 'LRT';
+            $bordaData = 'LRT';
+        }
+        if ($i >= sizeof($conteudoSeparado) && $i >= sizeof($metodologiaSeparada)){
+            $borda = 'LRB';
+            $bordaData = 'LRB';
+        }
+        if ($i == 1)
+            $pdf->Cell(28, $alturaLinha, date('d/m', strtotime($dataAula)), $bordaData, 0, 'C', true);
+        if ($i > 1)
+            $pdf->Cell(28, $alturaLinha, "", $bordaData, 0, 'C', true);
+        
+    
+        $pdf->Cell(125, $alturaLinha, utf8_decode($conteudoSeparado[$i]), $borda, 0, 'L', true);
+        $pdf->Cell(125, $alturaLinha, utf8_decode($metodologiaSeparada[$i]), $borda, 0, 'L', true);
+        $pdf->Ln();        
+    }
+}
+    
+
+
+//FUNCAO ANTERIOR A NOVA IN. COLUNAS HORIZONTAIS
+function pdfAdd($pdf, $conteudo, $fonte, $bold, $tamanho, $alturaLinha, $limit, $borda, $secao2 = false){
     // ADICIONA A LINHA DE CONTEÚDO NO PLANO DE AULA
     $conteudo = explode("\r\n", $conteudo);
     $pdf->SetFont($fonte, $bold, $tamanho);
@@ -210,19 +320,57 @@ function pdfAdd($pdf, $conteudo, $fonte, $bold, $tamanho, $alturaLinha, $limit, 
 
         if ($k != 0)
             $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
+        
         if (strlen($trecho) > $limit) {
             $conteudo2 = explode("\n", wordwrap(str_replace("\r\n", "; ", trim($trecho)), $limit));
             foreach ($conteudo2 as $n => $trecho2) {
-                if ($n != 0)
-                    $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
-                $pdf->Cell(250, $alturaLinha, utf8_decode($trecho2), $borda, 0, 'L', true);
-                $pdf->Ln();
+                
+                if ($trecho2 == end($conteudo2)){
+                    $borda = 'LRB';      
+                } else if ($n == 0){
+                    $borda = 'LRT';
+                } else {
+                    $borda = 'LR';
+                }
+                
+                if ($secao2) {
+                    $pdf->Cell(278, $alturaLinha, utf8_decode($trecho2), $borda, 0, 'L', true); 
+                    $pdf->Ln(); 
+                }else{
+                    if ($n != 0)
+                        $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
+                    $pdf->Cell(135, $alturaLinha, utf8_decode($trecho2), $borda, 0, 'L', true);
+                }
             }
         } else {
-            $pdf->Cell(250, $alturaLinha, utf8_decode($trecho), $borda, 0, 'L', true);
-            $pdf->Ln();
+            if ($secao2) {
+                $pdf->Cell(278, $alturaLinha, utf8_decode($trecho), 'LRTB', 0, 'L', true);
+                $pdf->Ln(); 
+         }else{
+                $pdf->Cell(125, $alturaLinha, utf8_decode($trecho), $borda, 0, 'L', true);
+            }
         }
         $k ++;
     }
 }
+
+// VERIFICA QUAL A PROXIMA DATA DE AULA
+function getProximaAula($data, $dataFim, $atribuicao){
+    require_once CONTROLLER . "/ensalamento.class.php";
+    $ensalamento = new Ensalamentos();
+
+    require_once CONTROLLER . "/calendario.class.php";
+    $calendario = new Calendarios();
+
+    while (strtotime($data) < strtotime($dataFim)){
+        if ($calendario->isDiaLetivo($data) && $ensalamento->getQdeAulaDiaSemana($atribuicao, date('w', strtotime($data)))>0)
+            return $data;
+
+        $data = date("Y-m-d", strtotime("+1 day", strtotime($data)));  
+    }
+    
+    return date("Y-m-d", strtotime("+1 day", strtotime($dataFim))); // UM DIA APÓS FINAL DO PERIODO LETIVO
+}
+
+
 ?>

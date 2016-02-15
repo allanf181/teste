@@ -88,7 +88,7 @@ class PlanosAula extends Generic {
     public function listPlanoAulas($codigo) {
         $bd = new database();
 
-        $sql = "SELECT pa.codigo, pa.conteudo, pa.semana, pe.numeroAulaSemanal, pa.criterio, pa.metodologia 
+        $sql = "SELECT pa.codigo, pa.conteudo, pa.semana, pe.numeroAulaSemanal, pa.metodologia, a.dataInicio, a.dataFim
                 FROM PlanosAula pa, PlanosEnsino pe, Atribuicoes a, Disciplinas d, Turmas t
                 WHERE pa.atribuicao = pe.atribuicao
                 AND pe.atribuicao = a.codigo 

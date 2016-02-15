@@ -624,7 +624,7 @@ function avisos() {
     <?php
     if ($res) {
         ?>
-        <div class="boxHome avisos">
+        <div class="boxHome avisos mensagem">
             <table border="0" width="100%">
                 <?php
                 foreach ($res as $reg) {
@@ -960,10 +960,10 @@ function listOcorrencia() {
     $ocorrencia = new Ocorrencias();
 
     if (in_array($PROFESSOR, $_SESSION["loginTipo"])) {
-        $sqlAdicional = "AND registroPor = :cod ORDER BY data DESC LIMIT 5";
+        $sqlAdicional = "AND data > '$ANO-01-01' AND registsroPor = :cod ORDER BY data DESC LIMIT 5";
         $params = array('cod' => $user);
     } else {
-        $sqlAdicional = "ORDER BY data DESC LIMIT 5";
+        $sqlAdicional = "AND data > '$ANO-01-01' ORDER BY data DESC LIMIT 5";
     }
     $res = $ocorrencia->listOcorrencias($params, $sqlAdicional);
     if ($res) {
@@ -1031,21 +1031,26 @@ function listOcorrencia() {
         $('#remover-foto').click(function () {
             $('#index').load('<?= VIEW ?>/system/home.php?removerFoto=<?= crip($user) ?>');
 
-                    });
+        });
 
-                    $('#adiciona-foto').click(function () {
-                        new $.Zebra_Dialog('<strong>Recorte a foto, se desejar.</strong>', {
-                            source: {'iframe': {
-                                    'src': '<?= VIEW ?>/system/trocaFoto.php',
-                                    'height': 350
-                                }
-                            },
-                            width: 500,
-                            title: 'Troque a Foto',
-                            onClose: function () {
-                                $('#index').load('<?= VIEW ?>/system/home.php');
-                            }
-                        });
-                    });
-                });
+        $('#adiciona-foto').click(function () {
+            new $.Zebra_Dialog('<strong>Recorte a foto, se desejar.</strong>', {
+                source: {'iframe': {
+                        'src': '<?= VIEW ?>/system/trocaFoto.php',
+                        'height': 350
+                    }
+                },
+                width: 500,
+                title: 'Troque a Foto',
+                onClose: function () {
+                    $('#index').load('<?= VIEW ?>/system/home.php');
+                }
+            });
+        });
+        
+//        $('.mensagem').click(function(){
+//            $.get("db2/db2ConsultaDisciplinas.php?atribuicao=<?=$atribuicao?>"
+//            $(this).slideUp();
+//        });
+    });
 </script>

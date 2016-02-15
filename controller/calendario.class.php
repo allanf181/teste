@@ -115,6 +115,23 @@ class Calendarios extends Generic {
             return false;
         }
     }
+    
+    public function isDiaLetivo($data) {
+        $bd = new database();
+
+        $sql = "SELECT diaLetivo 
+                    FROM Calendarios c
+                    WHERE c.dataInicio = :dia";
+
+        $params = array(':dia' => $data);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res) {
+            return false;
+        } else {
+            return true;
+        }
+    } 
 
 }
 
