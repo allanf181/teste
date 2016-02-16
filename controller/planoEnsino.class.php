@@ -113,7 +113,7 @@ class PlanosEnsino extends Generic {
 		    p.ementa,p.objetivoGeral,p.objetivoEspecifico,p.conteudoProgramatico,p.metodologia,
                     p.recursoDidatico,p.avaliacao,
 		    p.recuperacaoParalela,p.recuperacaoFinal,p.bibliografiaBasica,p.bibliografiaComplementar
-		    ,NULL,NULL
+		    ,NULL,NULL,p.instrumentos
                     FROM PlanosEnsino p
                     WHERE p.atribuicao=:copia";
 
@@ -122,7 +122,7 @@ class PlanosEnsino extends Generic {
 
         $sql = "INSERT INTO PlanosAula 
 			SELECT 
-			NULL,:cod,p.semana,p.conteudo,p.criterio,p.metodologia
+			NULL,:cod,p.semana,p.conteudo,p.metodologia
 			FROM PlanosAula p
 			WHERE p.atribuicao=:copia";
 

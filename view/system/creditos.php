@@ -83,6 +83,9 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     É servidor do IFSP e quer ajudar? Venha fazer parte da equipe!
 </p>
 
+<br /><b>Vers&atilde;o 1.448</b>
+<br> - Atualização do formato do plano de aulas;
+
 <br /><b>Vers&atilde;o 1.447</b>
 <br> - Compactação do backup da tela de Instituições;
 <br> - Correções e melhorias na tela de lançamento de notas;
