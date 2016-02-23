@@ -11,7 +11,7 @@ class TDAtvECmt extends Generic {
     public function listAtvECmt($codigo, $tipo) {
         $bd = new database();
 
-        $sql = "SELECT descricao,aulas FROM TDAtvECmt WHERE TD = :codigo AND tipo = :tipo ";
+        $sql = "SELECT descricao,aulas,referencia FROM TDAtvECmt WHERE TD = :codigo AND tipo = :tipo ";
         
         $params = array('codigo' => $codigo, 'tipo' => $tipo);
         

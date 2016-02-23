@@ -46,7 +46,7 @@ if ($_POST) {
         $_GET['psemestre'] = $_POST['psemestre'];    
         unset($_POST['pano']);
         unset($_POST['psemestre']);    
-
+//debug($_POST);die();
         $ret = $dados->insertOrUpdateFPA($_POST);
         mensagem($ret['STATUS'], $ret['TIPO'], $ret['RESULTADO']);
 
@@ -256,45 +256,25 @@ if ($VALIDO)
             <link rel="stylesheet" type="text/css" href="view/css/aba.css" media="screen" />
             <script src="view/js/aba.js"></script>
 
+            <div id="obsCH"></div>
+            <div id="obsCELL"></div>
+            
             <table style="width: 865px" border="0" summary="FTD">
                 <tr>
                     <th>
-                <ul class="tabs">
-                    <li><a href="#Dados1">Altera&ccedil;&otilde;es</a></li>
-                    <li><a href="#Dados2">Atividades de Ensino</a></li>
-                    <li><a href="#Dados3">Atividades de Apoio</a></li>
-                    <li><a href="#Dados4">Complementa&ccedil;&atilde;o</a></li>
-                </ul>
-                </th>
+                    <ul class="tabs">
+                        <li><a href="#Dados2">Atividades de Ensino</a></li>
+                        <li><a href="#Dados3">Atividades de Apoio</a></li>
+                        <li><a href="#Dados4">Complementa&ccedil;&atilde;o</a></li>
+                        <li><a href="#Dados1">Altera&ccedil;&otilde;es</a></li>
+                    </ul>
+                    </th>
                 </tr>
             </table>
 
-            <div class="cont_tab" id="Dados1">
-                <font size="2"><b>Altera&ccedil;&otilde;es em rela&ccedil;&atilde;o ao PIT</b></font>
-                <br />
-                <br />
-                <table style="width: 865px" border="0" summary="FTD" >
-                    <tr align="right" valign="top">
-                        <th>
-                    <table style="width: 100%" id="tabela_boletim">
-                        <tr>
-                            <th>Justificativas</th>
-                        </tr>
-                        <tr>
-                            <th>        
-                        <div class='fundo_listagem' style="background: #fff;">
-                            <textarea <?= $disabled ?> maxlength='500' id='horario' name='horario'><?= $horario ?></textarea>
-                        </div>
-                        </th>
-                        </tr>
-                    </table>
-                    </th>
-                    </tr>
-                </table>
-            </div>
-
+           
             <div class="cont_tab" id="Dados2">
-                <font size="2"><b>Atividades de Ensino<br>Reg&ecirc;ncia de Aulas</b></font>
+                <font size="2"><b>Atividades de Ensino<br>Componentes Curriculares ministrados no período considerado neste relatório</b></font>
                 <br />
                 <br />
                 <table style="width: 865px" border="0" summary="FTD" >
@@ -305,8 +285,9 @@ if ($VALIDO)
                             <th>Curso</th>
                             <th>Nome</th>
                             <th>Sigla</th>
-                            <th>Per&iacute;odo</th>
+                            <th>Turno</th>
                             <th>Aulas</th>
+                            <th>Oferta</th>
                         </tr>
                         <?php
                         $periodo[1] = 'Matutino';
@@ -316,14 +297,14 @@ if ($VALIDO)
                         for ($t = 0; $t <= 9; $t++) {
                             ?>
                             <tr>
-                                <th><input class="componente camposCursos" type="text" <?= $disabled ?> size="40" maxlength="145" id="C<?= $t ?>" onfocus="return valores('cursos', 'C<?= $t ?>')" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
-                                <th><input class="componente camposDisciplinas" type="text" <?= $disabled ?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
+                                <th><input class="componente camposCursos" type="text" <?= $disabled ?> size="30" maxlength="145" id="C<?= $t ?>" onfocus="return valores('cursos', 'C<?= $t ?>')" name="C<?= $t ?>" value="<?= $resC[$t]['curso'] ?>"/></th>
+                                <th><input class="componente camposDisciplinas" type="text" <?= $disabled ?> size="30" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
                                 <th><input class="componente" type="text" <?= $disabled ?> size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
                                 <th>
-                                    <select class="componente" id="P<?= $t ?>" <?= $disabled ?> name="P<?= $t ?>" >
+                                    <select class="componente" id="T<?= $t ?>" <?= $disabled ?> name="T<?= $t ?>" >
                                         <?php
                                         for ($p = 1; $p <= 3; $p++) {
-                                            if ($resC[$t]['periodo'] == $periodo[$p][0])
+                                            if ($resC[$t]['turno'] == $periodo[$p][0])
                                                 $selected = 'selected';
                                             else
                                                 $selected = '';
@@ -335,22 +316,26 @@ if ($VALIDO)
                                     </select>
                                 </th>
                                 <th><input class="componente" <?= $disabled ?> type="number" style="width: 50px" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
+                                <th>
+                                    <select class="componente" id="R<?= $t ?>" <?= $disabled ?> name="R<?= $t ?>" >
+                                        <option></option>
+                                        <option <?= ($resC[$t]['referencia']=="1") ? "selected" : ""?> value="1">1º Sem.</option>
+                                        <option <?= ($resC[$t]['referencia']=="2") ? "selected" : ""?> value="2">2º Sem.</option>
+                                        <option <?= ($resC[$t]['referencia']=="3") ? "selected" : ""?> value="3">1ºe2º Sem.</option>
+                                        <option <?= ($resC[$t]['referencia']=="4") ? "selected" : ""?> value="4">Anual</option>
+                                        <?php
+                                        ?>
+                                    </select>
+                                </th>
+                                <th><input class="componente" type="hidden" id="Pr<?= $t ?>" name="Pr<?= $t ?>" value="<?= $resC[$t]['prioridade'] ?>"/></th>
                             </tr>
                             <?php
                         }
                         ?>
                         <tr>
-                            <th colspan="4" align="right">Reg&ecirc;ncia de Aulas (em horas)</th>
-                            <th id="regencia">&nbsp;</th>
+                            <th colspan="4" align="right">Tempo total dedicado às aulas (Total em horas)</th>
+                            <th colspan="2" id="regencia">&nbsp;</th>
                         </tr>
-                        <tr>
-                            <th colspan="4" align="right">Tempo Organiza&ccedil;&atilde;o do Ensino (em horas)</th>
-                            <th id="ensino">&nbsp;</th>
-                        </tr>
-                        <tr>
-                            <th colspan="4" align="right">Tempo total dedicado &agrave; Aulas e Organiza&ccedil;&atilde;o de Ensino (em horas)</th>
-                            <th id="totalRegEns">&nbsp;</th>
-                        </tr>                        
                     </table>
                     </th>
                     </tr>
@@ -358,26 +343,43 @@ if ($VALIDO)
             </div>
 
             <div class="cont_tab" id="Dados3">
-                <font size="2"><b>Atividades de Apoio ao Ensino</b></font>
+                <font size="2"><b>Atividades de Apoio ao Ensino no período considerado neste relatório</b></font>
                 <br />
                 <br />
                 <table style="width: 865px" border="0" summary="FTD" >
                     <tr align="right" valign="top">
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Duração(h)</th>
+                            <th>Referência</th>
+                        </tr>
+                        
                         <?php
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
                                 <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" onclick="return valores('atividades', 'AtvD<?= $t ?>');" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
-                                <th><input class="atividade" <?= $disabled ?> type="number" style="width: 50px" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="number" style="width: 60px" size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
+                                <th>
+                                    <select class="atividade" id="AtvR<?= $t ?>" <?= $disabled ?> name="AtvR<?= $t ?>" >
+                                        <option></option>
+                                        <option <?= ($resAtv[$t]['referencia']==1) ? "selected" : ""?> value="1">1º Sem.</option>
+                                        <option <?= ($resAtv[$t]['referencia']==2) ? "selected" : ""?> value="2">2º Sem.</option>
+                                        <option <?= ($resAtv[$t]['referencia']==3) ? "selected" : ""?> value="3">1ºe2º Sem.</option>
+                                        <option <?= ($resAtv[$t]['referencia']==4) ? "selected" : ""?> value="4">Anual</option>
+                                        <?php
+                                        ?>
+                                    </select>
+                                </th>
                             </tr>
                             <?php
                         }
                         ?>
                         <tr>
-                            <th align="right">Atividades de Apoio ao Ensino (em horas)</th>
-                            <th id="atvEnsino">&nbsp;</th>
+                            <th align="right">Atividades de Apoio ao Ensino (Total em horas)</th>
+                            <th colspan="2" id="atvEnsino">&nbsp;</th>
                         </tr>
                     </table>
                     </th>
@@ -402,19 +404,34 @@ if ($VALIDO)
                     <tr align="right" valign="top">
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Duração(h)</th>
+                            <th>Referência</th>
+                        </tr>
                         <?php
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
                                 <th><input class="complementacao" <?= $disabled ?> type="text" onfocus="return valores('complementacao','CompD<?= $t ?>');" size="60" maxlength="200" id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
-                                <th><input class="complementacao" <?= $disabled ?> type="number" style="width: 50px" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
-                            </tr>
+                                <th><input class="complementacao" <?= $disabled ?> type="number" style="width: 60px" size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
+                                <th>
+                                    <select class="complementacao" id="CompR<?= $t ?>" <?= $disabled ?> name="CompR<?= $t ?>" >
+                                        <option></option>
+                                        <option <?= ($resComp[$t]['referencia']==1) ? "selected" : ""?> value="1">1º Sem.</option>
+                                        <option <?= ($resComp[$t]['referencia']==2) ? "selected" : ""?> value="2">2º Sem.</option>
+                                        <option <?= ($resComp[$t]['referencia']==3) ? "selected" : ""?> value="3">1ºe2º Sem.</option>
+                                        <option <?= ($resComp[$t]['referencia']==4) ? "selected" : ""?> value="4">Anual</option>
+                                        <?php
+                                        ?>
+                                    </select>
+                                </th>                            </tr>
                             <?php
                         }
                         ?>
                         <tr>
-                            <th align="right">Complementa&ccedil;&atilde;o de Atividades (em horas)</th>
-                            <th id="compAtv">&nbsp;</th>
+                            <th align="right">Complementa&ccedil;&atilde;o de Atividades (Total em horas)</th>
+                            <th colspan="2" id="compAtv">&nbsp;</th>
                         </tr>
                     </table>
                     </th>
@@ -432,6 +449,31 @@ if ($VALIDO)
                     </tr>
                 </table>
             </div>
+            
+             <div class="cont_tab" id="Dados1">
+                <font size="2"><b>Alterações em relação ao(s) PIT(s) (Justificativas)</b></font>
+                <br />
+                <br />
+                <table style="width: 865px" border="0" summary="FTD" >
+                    <tr align="right" valign="top">
+                        <th>
+                    <table style="width: 100%" id="tabela_boletim">
+                        <tr>
+                            <th>Justificativas</th>
+                        </tr>
+                        <tr>
+                            <th>        
+                        <div class='fundo_listagem' style="background: #fff;">
+                            <textarea <?= $disabled ?> maxlength='500' id='horario' name='horario'><?= $horario ?></textarea>
+                        </div>
+                        </th>
+                        </tr>
+                    </table>
+                    </th>
+                    </tr>
+                </table>
+            </div>
+
         </form>
     </div>
     <table style="width: 865px" id="tabela_boletim">
@@ -441,9 +483,6 @@ if ($VALIDO)
         </tr>
     </table>    
 
-    <span id="obsCH" style="color: red;">&nbsp;</span>
-    <br />
-    <span id="obsCELL" style="color: red;">&nbsp;</span>
 </center >
 <?php
 $hor1 = explode(',', $horario1);

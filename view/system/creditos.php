@@ -83,6 +83,9 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
     É servidor do IFSP e quer ajudar? Venha fazer parte da equipe!
 </p>
 
+<br /><b>Vers&atilde;o 1.449</b>
+<br> - Atualização do módulo de FPA, PIT e RIT para a resolução 109/2015;
+
 <br /><b>Vers&atilde;o 1.448</b>
 <br> - Atualização do formato do plano de aulas;
 

@@ -1024,3 +1024,19 @@ input[type='button']:disabled, input[type='submit']:disabled, input[type='reset'
 #taMensagemLogin{
     width: 100%;
 }
+
+#obsCH:empty{
+    display: none;
+}
+
+#obsCELL:empty{
+    display: none;
+}
+
+#obsCH{
+    color: white; background: red; width: 800px; border-radius: 2px; height: 20px; font-weight: bold; margin: 10px
+}
+
+#obsCELL{
+    color: white; background: red; width: 800px; border-radius: 2px; height: 20px; font-weight: bold; margin: 10px
+}

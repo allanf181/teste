@@ -255,6 +255,9 @@ if ($VALIDO)
             <link rel="stylesheet" type="text/css" href="view/css/aba.css" media="screen" />
             <script src="view/js/aba.js"></script>
 
+            <div id="obsCH"></div>
+            <div id="obsCELL"></div>
+            
             <table style="width: 865px" border="0" summary="FTD">
                 <tr>
                     <th>
@@ -352,7 +355,7 @@ if ($VALIDO)
                             <th>Curso</th>
                             <th>Nome</th>
                             <th>Sigla</th>
-                            <th>Per&iacute;odo</th>
+                            <th>Turno</th>
                             <th>Aulas</th>
                         </tr>
                         <?php
@@ -363,10 +366,10 @@ if ($VALIDO)
                                 <th><input class="componente camposDisciplinas" type="text" <?= $disabled ?> size="40" maxlength="45" id="N<?= $t ?>" name="N<?= $t ?>" value="<?= $resC[$t]['nome'] ?>"/></th>
                                 <th><input class="componente" type="text" <?= $disabled ?> size="5" maxlength="45" id="S<?= $t ?>" name="S<?= $t ?>" value="<?= $resC[$t]['sigla'] ?>"/></th>
                                 <th>
-                                    <select class="componente" id="P<?= $t ?>" <?= $disabled ?> name="P<?= $t ?>" >
+                                    <select class="componente" id="T<?= $t ?>" <?= $disabled ?> name="T<?= $t ?>" >
                                         <?php
                                         for ($p = 1; $p <= 3; $p++) {
-                                            if ($resC[$t]['periodo'] == $periodo[$p][0])
+                                            if ($resC[$t]['turno'] == $periodo[$p][0])
                                                 $selected = 'selected';
                                             else
                                                 $selected = '';
@@ -378,6 +381,8 @@ if ($VALIDO)
                                     </select>
                                 </th>
                                 <th><input class="componente" <?= $disabled ?> type="number" style="width: 50px" size="3" maxlength="2" id="A<?= $t ?>" name="A<?= $t ?>" value="<?= $resC[$t]['aulas'] ?>"/></th>
+                                <th><input class="componente" type="hidden" id="Pr<?= $t ?>" name="Pr<?= $t ?>" value="<?= $resC[$t]['prioridade'] ?>"/></th>
+                                <th><input class="componente" type="hidden" id="R<?= $t ?>" name="R<?= $t ?>" value="<?= $resC[$t]['referencia'] ?>"/></th>
                             </tr>
                             <?php
                         }
@@ -408,18 +413,22 @@ if ($VALIDO)
                     <tr align="right" valign="top">
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Duração(h)</th>
+                        </tr>
                         <?php
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
                                 <th><input class="atividade" <?= $disabled ?> type="text" size="60" maxlength="200" onclick="return valores('atividades', 'AtvD<?= $t ?>');" id="AtvD<?= $t ?>" name="AtvD<?= $t ?>" value="<?= $resAtv[$t]['descricao'] ?>"/></th>
-                                <th><input class="atividade" <?= $disabled ?> type="number" style="width: 50px"  size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
+                                <th><input class="atividade" <?= $disabled ?> type="number" style="width: 60px"  size="3" maxlength="2" id="AtvA<?= $t ?>" name="AtvA<?= $t ?>" value="<?= $resAtv[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
                         ?>
                         <tr>
-                            <th align="right">Atividades de Apoio ao Ensino (em horas)</th>
+                            <th align="right">Atividades de Apoio ao Ensino (Total em horas)</th>
                             <th id="atvEnsino">&nbsp;</th>
                         </tr>
                     </table>
@@ -445,18 +454,22 @@ if ($VALIDO)
                     <tr align="right" valign="top">
                         <th>
                     <table style="width: 100%" id="tabela_boletim">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Duração(h)</th>
+                        </tr>
                         <?php
                         for ($t = 0; $t <= 6; $t++) {
                             ?>
                             <tr>
                                 <th><input class="complementacao" <?= $disabled ?> type="text" onfocus="return valores('complementacao','CompD<?= $t ?>');"  size="60" maxlength="200"  id="CompD<?= $t ?>" name="CompD<?= $t ?>" value="<?= $resComp[$t]['descricao'] ?>"/></th>
-                                <th><input class="complementacao" <?= $disabled ?> type="number" style="width: 50px"  size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
+                                <th><input class="complementacao" <?= $disabled ?> type="number" style="width: 60px"  size="3" maxlength="2" id="CompA<?= $t ?>" name="CompA<?= $t ?>" value="<?= $resComp[$t]['aulas'] ?>"/></th>
                             </tr>
                             <?php
                         }
                         ?>
                         <tr>
-                            <th align="right">Complementa&ccedil;&atilde;o de Atividades (em horas)</th>
+                            <th align="right">Complementa&ccedil;&atilde;o de Atividades (Total em horas)</th>
                             <th id="compAtv">&nbsp;</th>
                         </tr>
                     </table>
@@ -484,9 +497,6 @@ if ($VALIDO)
         </tr>
     </table>    
 
-    <span id="obsCH" style="color: red;">&nbsp;</span>
-    <br />
-    <span id="obsCELL" style="color: red;">&nbsp;</span>
 </center >
 <?php
 $hor1 = explode(',', $horario1);
@@ -579,7 +589,7 @@ $hor3 = explode(',', $horario3);
         }
 
         if (totalHoras != maxCH){
-            $("#obsCH").html('Carga horária final incompatível com a jornada de trabalho de ' + maxCH + 'h indicada, favor corrigir!');
+            $("#obsCH").html('Carga horária final ['+totalHoras+'] incompatível com a jornada de trabalho de ' + maxCH + 'h indicada, favor corrigir!');
             desabilitarEnviar();
         }
         else{

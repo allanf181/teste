@@ -11,12 +11,12 @@ class TDComponente extends Generic {
     public function listComponentes($codigo) {
         $bd = new database();
 
-        $sql = "SELECT sigla,nome,curso,periodo,aulas FROM TDComponente WHERE TD = :codigo ";
+        $sql = "SELECT sigla,nome,curso,turno,aulas,prioridade,referencia FROM TDComponente WHERE TD = :codigo ";
         
         $params = array('codigo' => $codigo);
         
         $res = $bd->selectDB($sql, $params);
-        
+
         if ($res) {
             return $res;
         } else {

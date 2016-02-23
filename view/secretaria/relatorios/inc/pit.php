@@ -87,7 +87,7 @@ if (dcrip($_GET["professor"])) {
             $pdf->Cell(60, 5, abreviar(utf8_decode("Semestre/Ano: $semestre/$ano"), 33), 1, 0, 'C', false);
             $pdf->Ln();
             $pdf->SetFont($fonte, 'B', $tamanho);
-            $pdf->Cell(65, 5, utf8_decode("(Anexo II - Resolução nº 112 de 7 outubro de 2014)"), 0, 0, 'C', false);
+            $pdf->Cell(65, 5, utf8_decode("(Anexo III - Resolução nº 109 de 4 de novembro de 2015)"), 0, 0, 'C', false);
             $pdf->Ln();
             $pdf->Ln();
 
@@ -194,7 +194,7 @@ if (dcrip($_GET["professor"])) {
             $pdf->Cell(20, 5, utf8_decode("Sigla"), 1, 0, 'C', true);
             $pdf->Cell(60, 5, utf8_decode("Nome"), 1, 0, 'C', true);
             $pdf->Cell(60, 5, utf8_decode("Curso"), 1, 0, 'C', true);
-            $pdf->Cell(20, 5, utf8_decode("Período"), 1, 0, 'C', true);
+            $pdf->Cell(20, 5, utf8_decode("Turno"), 1, 0, 'C', true);
             $pdf->Cell(20, 5, utf8_decode("Aulas"), 1, 0, 'C', true);
             $pdf->Ln();
             $pdf->SetFont($fonte, '', $tamanho);
@@ -204,7 +204,7 @@ if (dcrip($_GET["professor"])) {
                 $pdf->Cell(20, 3, utf8_decode($resC[$t]['sigla']), 1, 0, 'L', true);
                 $pdf->Cell(60, 3, utf8_decode($resC[$t]['nome']), 1, 0, 'L', true);
                 $pdf->Cell(60, 3, utf8_decode($resC[$t]['curso']), 1, 0, 'L', true);
-                $pdf->Cell(20, 3, utf8_decode($resC[$t]['periodo']), 1, 0, 'L', true);
+                $pdf->Cell(20, 3, utf8_decode($resC[$t]['turno']), 1, 0, 'L', true);
                 $pdf->Cell(20, 3, utf8_decode($resC[$t]['aulas']), 1, 0, 'L', true);
                 $pdf->Ln();
                 $tAulas += $resC[$t]['aulas'];
@@ -223,7 +223,7 @@ if (dcrip($_GET["professor"])) {
                 $tAulas = $tAulas + ($disc - 4);
                 $totalGeral = $totalGeral + ($disc - 4);
             }
-            $pdf->Cell(160, 5, utf8_decode("Organização do Ensino (em horas)"), 1, 0, 'R', true);
+            $pdf->Cell(160, 5, utf8_decode("Tempo de Organização do Ensino (em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tAulas, 1, 0, 'C', true);
             $pdf->Ln();
             $pdf->Cell(160, 5, utf8_decode("Tempo total dedicado à Aulas e Organização de Ensino (em horas)"), 1, 0, 'R', true);
@@ -231,7 +231,8 @@ if (dcrip($_GET["professor"])) {
             $pdf->Ln();
             $pdf->Ln();
 
-            $pdf->Cell(180, 5, utf8_decode("Atividades de Apoio ao Ensino"), 1, 0, 'C', true);
+            $pdf->Cell(160, 5, utf8_decode("Atividades de Apoio ao Ensino"), 1, 0, 'C', true);
+            $pdf->Cell(20, 5, utf8_decode("Duração(h)"), 1, 0, 'C', true);
             $pdf->Ln();
             $pdf->SetFont($fonte, '', $tamanho);
             for ($t = 0; $t <= 6; $t++) {
@@ -242,12 +243,13 @@ if (dcrip($_GET["professor"])) {
             }
             $totalGeral += $tAtv;
             $pdf->SetFont($fonte, 'B', $tamanho);
-            $pdf->Cell(160, 5, utf8_decode("Atividades de Apoio ao Ensino (em horas)"), 1, 0, 'R', true);
+            $pdf->Cell(160, 5, utf8_decode("Atividades de Apoio ao Ensino (Total em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tAtv, 1, 0, 'C', true);
             $pdf->Ln();
             $pdf->Ln();
 
-            $pdf->Cell(180, 5, utf8_decode("Complementação de Atividades"), 1, 0, 'C', true);
+            $pdf->Cell(160, 5, utf8_decode("Complementação de Atividades"), 1, 0, 'C', true);
+            $pdf->Cell(20, 5, utf8_decode("Duração(h)"), 1, 0, 'C', true);
             $pdf->Ln();
             $pdf->SetFont($fonte, '', $tamanho);
             for ($t = 0; $t <= 6; $t++) {
@@ -258,7 +260,7 @@ if (dcrip($_GET["professor"])) {
             }
             $totalGeral += $tComp;
             $pdf->SetFont($fonte, 'B', $tamanho);
-            $pdf->Cell(160, 5, utf8_decode("Complementação de Atividades (em horas)"), 1, 0, 'R', true);
+            $pdf->Cell(160, 5, utf8_decode("Complementação de Atividades (Total em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tComp, 1, 0, 'C', true);
 
             $pdf->Ln();
@@ -293,7 +295,11 @@ if (dcrip($_GET["professor"])) {
             $pdf->Cell(180, 50, "", 1, 0, 'L', true);
             $pdf->Ln();
             $pdf->SetFont($fonte, '', $tamanho);
-            $pdf->Cell(180, 10, utf8_decode("Resultado:  [  ] Homologado  [  ] Devolução para ajustes no preenchimento em ____/_____/______           Ass.: ______________________ (Presidente da CAAD)"), 1, 0, 'L', true);
+            $pdf->Cell(180, 5, utf8_decode("Resultado:  [  ] Homologado  [  ] Devolução para ajustes [  ] Indeferido      ___________________                ________________________________ "), 'LR', 0, 'L', true);
+            $pdf->Ln();
+            $pdf->Cell(180, 1, utf8_decode("                                                                                                                                     Data                                               Presidente da CAAD"), 'LR', 0, 'L', true);
+            $pdf->Ln();
+            $pdf->Cell(180, 5, utf8_decode(""), 'LRB', 1, 'L', false);
         }
     } else {
         print utf8_decode("PIT está em processo de correção ou não foi finalizado pelo Docente!");

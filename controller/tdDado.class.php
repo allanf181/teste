@@ -142,14 +142,19 @@ class TDDados extends Generic {
                 $paramsC[$i]['sigla'] = $params['S' . $i];
                 $paramsC[$i]['nome'] = $params['N' . $i];
                 $paramsC[$i]['curso'] = $params['C' . $i];
-                $paramsC[$i]['periodo'] = $params['P' . $i];
+                $paramsC[$i]['turno'] = $params['T' . $i];
                 $paramsC[$i]['aulas'] = $params['A' . $i];
+                $paramsC[$i]['prioridade'] = $params['Pr' . $i];
+                $paramsC[$i]['referencia'] = $params['R' . $i];
             }
             unset($params['S' . $i]);
             unset($params['N' . $i]);
             unset($params['C' . $i]);
-            unset($params['P' . $i]);
+            unset($params['T' . $i]);
             unset($params['A' . $i]);
+            unset($params['Pr' . $i]);
+            unset($params['R' . $i]);
+            
         }
 
         //PEGANDO AS ATIVIDADES
@@ -157,9 +162,11 @@ class TDDados extends Generic {
             if ($params['AtvD' . $i] && $params['AtvA' . $i]) {
                 $paramsAtv[$i]['descricao'] = $params['AtvD' . $i];
                 $paramsAtv[$i]['aulas'] = $params['AtvA' . $i];
+                $paramsAtv[$i]['referencia'] = $params['AtvR' . $i];
             }
             unset($params['AtvD' . $i]);
             unset($params['AtvA' . $i]);
+            unset($params['AtvR' . $i]);
         }
 
         //PEGANDO AS COMPLEMENTACOES
@@ -167,9 +174,11 @@ class TDDados extends Generic {
             if ($params['CompD' . $i] && $params['CompA' . $i]) {
                 $paramsCmp[$i]['descricao'] = $params['CompD' . $i];
                 $paramsCmp[$i]['aulas'] = $params['CompA' . $i];
+                $paramsCmp[$i]['referencia'] = $params['CompR' . $i];
             }
             unset($params['CompD' . $i]);
             unset($params['CompA' . $i]);
+            unset($params['CompR' . $i]);
         }
 
         $res1 = $this->insertOrUpdate($params);
