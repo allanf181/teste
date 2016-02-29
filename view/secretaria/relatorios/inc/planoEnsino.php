@@ -363,7 +363,7 @@ function getProximaAula($data, $dataFim, $atribuicao){
     $calendario = new Calendarios();
 
     while (strtotime($data) < strtotime($dataFim)){
-        if ($calendario->isDiaLetivo($data) && $ensalamento->getQdeAulaDiaSemana($atribuicao, date('w', strtotime($data)))>0)
+        if ($calendario->isDiaLetivo($data) && $ensalamento->getQdeAulaDiaSemana($atribuicao, date('w', strtotime($data))+1)>0)
             return $data;
 
         $data = date("Y-m-d", strtotime("+1 day", strtotime($data)));  

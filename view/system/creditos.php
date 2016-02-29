@@ -39,7 +39,8 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 
         <tr>
             <td width="300"><h2>Desenvolvedores</h2></td>
-            <td width="300"><h2>Testes de Software e Suporte</h2></td>
+            <td width="300"><h2>Testes de Software</h2></td>
+            <td width="300"><h2>Suporte</h2></td>
             <td width="300"><h2>Segurança de Software</h2></td>
         </tr>
         <tr>
@@ -51,14 +52,18 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
                 Ricardo Takazu (Reitoria)
             </td>
             <td valign="top" align="center">
+                Edilson Davoglio Candido (Araraquara) 
+                <br>João Paulo Lemos Escola (Barretos)
+            </td>
+            <td valign="top" align="center">
                 Lucas de Araujo Oliveira (Barretos)
             </td>
         </tr>
         <tr>
-            <td colspan="3"><h2>Colaboraram com o projeto</h2></td>
+            <td colspan="4"><h2>Colaboraram com o projeto</h2></td>
         </tr>
         <tr>
-            <td colspan="3" valign="top" align="center">
+            <td colspan="4" valign="top" align="center">
                 Anne Domenici (Sert&atilde;ozinho)
                 <br>Carlos Eduardo Alves da Silva (Votuporanga)
                 <br>Fernando Parreira (Votuporanga)
