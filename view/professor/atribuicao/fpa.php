@@ -679,8 +679,9 @@ if ($VALIDO)
                 if ($("#CE" + IS).is(':checked')) {
                     $("#obsCELL").html('');
                     if (celulasSel >= totalCelulas) {
-                        $("#obsCELL").html('Número máximo de células ultrapassado!');
-                        desabilitarEnviar();
+                        // permitindo escolher mais do que o limite mínimo
+//                        $("#obsCELL").html('Número máximo de células ultrapassado!');
+//                        desabilitarEnviar();
                     }
                     if (((totalCelulas - celulasSel) - 1) > 0) {
                         $("#obsCELL").html('Falta selecionar ' + ((totalCelulas - celulasSel) - 1) + ' células!');
