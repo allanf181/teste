@@ -210,7 +210,31 @@ class PlanosEnsino extends Generic {
         } else {
             return false;
         }
-    }    
+    }
+
+    public function getDataFim($atribuicao) {
+        $bd = new database();
+        
+        $sql = "select bimestre, dataFim from Atribuicoes where codigo=:atr";
+        $params = array(':atr' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+        
+        if ($res[0]['bimestre']=="1"){ // integrado
+            $sql = "select dataFim from Atribuicoes where bimestre=4 
+                and disciplina=(select disciplina from Atribuicoes where codigo=:atr) 
+                and eventod=(select eventod from Atribuicoes where codigo=:atr) ";
+
+            $params = array(':atr' => $atribuicao);
+
+            $res = $bd->selectDB($sql, $params);
+
+            if ($res[0])
+                return $res[0]['dataFim'];
+        }
+        else{
+            return $res[0]['dataFim'];
+        }
+    }
 
 }
 

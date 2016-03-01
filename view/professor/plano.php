@@ -127,7 +127,7 @@ if ($_GET['pagina']) {
 
         if ($count <= 0)
             $disabled = 'disabled';
-        print "Quantidade de aulas cadastradas no Plano de Aula: $count<br>";
+        print "Quantidade de semanas cadastradas no Plano de Aula: $count<br>";
 
         if (!$BLOQ)
             print "<br><input type=\"submit\" $disabled value=\"Entregar\" id=\"item-entregar\"></th>";

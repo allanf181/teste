@@ -204,7 +204,7 @@ if (dcrip($_GET["atribuicao"])) {
         if ($dataInicio==0)
             $dataInicio=$reg['dataInicio']; // DATA DA PRIMEIRA AULA
         
-        $dataInicio = getProximaAula($dataInicio,$reg['dataFim'], $atribuicao);    // BUSCA A PROXIMA DATA DE AULA    
+        $dataInicio = getProximaAula($dataInicio,$planoEnsino->getDataFim($atribuicao), $atribuicao);    // BUSCA A PROXIMA DATA DE AULA    
         
         addPlanoAula($pdf, $reg['conteudo'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda,$reg['metodologia'], $dataInicio); // CONTEUDO
         

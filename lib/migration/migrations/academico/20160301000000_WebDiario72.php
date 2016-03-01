@@ -5,7 +5,7 @@ class WebDiario72 extends Ruckusing_Migration_Base
     public function up()
     {
         
-        $this->execute("UPDATE Instituicoes SET versao='449.2', versaoAtual='449.2'");
+        $this->execute("UPDATE Instituicoes SET versao='449.3', versaoAtual='449.3'");
 
         printf("\nPatch WebDiario 72: OK\n\n");
         
