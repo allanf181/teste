@@ -204,7 +204,15 @@ if (dcrip($_GET["atribuicao"])) {
         if ($dataInicio==0)
             $dataInicio=$reg['dataInicio']; // DATA DA PRIMEIRA AULA
         
-        $dataInicio = getProximaAula($dataInicio,$planoEnsino->getDataFim($atribuicao), $atribuicao);    // BUSCA A PROXIMA DATA DE AULA    
+        $dataFim = $planoEnsino->getDataFim($atribuicao);
+        $dataInicio = getProximaAula($dataInicio,$dataFim, $atribuicao);    // BUSCA A PROXIMA DATA DE AULA 
+        
+        if ($dataInicio == "1970-01-01"){
+            echo "Datas de início/fim dos 4 bimestres precisam ser cadastrados para a disciplina. Procure a secretaria.";die;
+        }
+        else if ($dataInicio == date("Y-m-d", strtotime("+1 day", strtotime($dataFim)))){
+            echo "Ensalamentos precisam ser cadastrados para a disciplina. Procure a secretaria.";die;
+        }
         
         addPlanoAula($pdf, $reg['conteudo'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda,$reg['metodologia'], $dataInicio); // CONTEUDO
         
