@@ -179,6 +179,24 @@ class Ensalamentos extends Generic {
             return false;
         }
     } 
+    
+    public function getEnsalamentos($atribuicao) {
+        $bd = new database();
+
+        $sql = "SELECT * 
+                    FROM Ensalamentos e
+                    WHERE e.atribuicao = :atribuicao
+                    GROUP BY e.sala";
+
+        $params = array(':atribuicao' => $atribuicao);
+        $res = $bd->selectDB($sql, $params);
+
+        if ($res[0]) {
+            return $res[0];
+        } else {
+            return false;
+        }
+    } 
 }
 
 ?>

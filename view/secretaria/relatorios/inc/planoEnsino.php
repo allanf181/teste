@@ -206,17 +206,17 @@ if (dcrip($_GET["atribuicao"])) {
         
         $dataFim = $planoEnsino->getDataFim($atribuicao);
         $dataInicio = getProximaAula($dataInicio,$dataFim, $atribuicao);    // BUSCA A PROXIMA DATA DE AULA 
-        
-        if ($dataInicio == "1970-01-01"){
-            echo "Datas de início/fim dos 4 bimestres precisam ser cadastrados para a disciplina. Procure a secretaria.";die;
-        }
-        else if ($dataInicio == date("Y-m-d", strtotime("+1 day", strtotime($dataFim)))){
+
+        if (empty($dataInicio)){
             echo "Ensalamentos precisam ser cadastrados para a disciplina. Procure a secretaria.";die;
+        }
+        else if ($dataInicio == "1970-01-01"){
+            echo "Datas de início/fim dos 4 bimestres precisam ser cadastrados para a disciplina. Procure a secretaria.";die;
         }
         
         addPlanoAula($pdf, $reg['conteudo'], $fonte, '',$tamanho+3, $alturaLinha, $limit, $borda,$reg['metodologia'], $dataInicio); // CONTEUDO
         
-        $dataInicio = date("Y-m-d", strtotime("+1 day", strtotime($dataInicio)));  // ACRESCENTA UM DIA NA DATA
+        $dataInicio = date("Y-m-d", strtotime("next sunday", strtotime($dataInicio)));  // ACRESCENTA UMA SEMANA NA DATA
         
     }
     $pdf->Write(5, utf8_decode('* estas datas são uma previsão, de acordo com o horário de aula e o calendário escolar cadastrados pela secretaria.'));
@@ -270,8 +270,8 @@ function addPlanoAula($pdf, $conteudo, $fonte, $bold, $tamanho, $alturaLinha, $l
         if (sizeof($metodologia)==$j+1)
             $borda=$temp;
 
-        if ($k != 0)
-            $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
+//        if ($k != 0)
+//            $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
         if (strlen($trecho) > $limit) {
             $metodologia2 = explode("\n", wordwrap(str_replace("\r\n", "; ", trim($trecho)), $limit));
             
@@ -326,8 +326,8 @@ function pdfAdd($pdf, $conteudo, $fonte, $bold, $tamanho, $alturaLinha, $limit, 
         if (sizeof($conteudo)==$j+1)
             $borda=$temp;
 
-        if ($k != 0)
-            $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
+//        if ($k != 0)
+//            $pdf->Cell(28, $alturaLinha, "", $borda, 0, 'C', true);
         
         if (strlen($trecho) > $limit) {
             $conteudo2 = explode("\n", wordwrap(str_replace("\r\n", "; ", trim($trecho)), $limit));
@@ -370,14 +370,19 @@ function getProximaAula($data, $dataFim, $atribuicao){
     require_once CONTROLLER . "/calendario.class.php";
     $calendario = new Calendarios();
 
-    while (strtotime($data) < strtotime($dataFim)){
-        if ($calendario->isDiaLetivo($data) && $ensalamento->getQdeAulaDiaSemana($atribuicao, date('w', strtotime($data))+1)>0)
-            return $data;
+    if (!empty($ensalamento->getEnsalamentos($atribuicao))) {
 
-        $data = date("Y-m-d", strtotime("+1 day", strtotime($data)));  
-    }
-    
-    return date("Y-m-d", strtotime("+1 day", strtotime($dataFim))); // UM DIA APÓS FINAL DO PERIODO LETIVO
+        while (strtotime($data) < strtotime($dataFim)) {
+            if ($calendario->isDiaLetivo($data) && $ensalamento->getQdeAulaDiaSemana($atribuicao, date('w', strtotime($data)) + 1) > 0)
+                return $data;
+
+            $data = date("Y-m-d", strtotime("+1 day", strtotime($data)));
+        }
+
+        return date("Y-m-d", strtotime("+1 day", strtotime($dataFim))); // UM DIA APÓS FINAL DO PERIODO LETIVO
+        
+    } else
+        return null;
 }
 
 
