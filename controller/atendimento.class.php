@@ -16,10 +16,11 @@ class Atendimento extends Generic {
         if ($item && $itensPorPagina)
             $nav = "LIMIT " . ($item - 1) . ", $itensPorPagina";
 
+        // permitindo também professores sem atribuicao no semestre
         $sql = "SELECT DISTINCT p.codigo, p.nome, p.lattes, a.horario
-                    FROM Atendimento a, Pessoas p, PessoasTipos pt, Professores pr
+                    FROM Atendimento a, PessoasTipos pt, Pessoas p
+                    LEFT JOIN Professores pr ON pr.professor = p.codigo
                     WHERE p.codigo = pt.pessoa
-                    AND pr.professor = p.codigo
                     AND a.pessoa = p.codigo
                     AND pt.tipo = :tipo
                     AND a.ano = :ano
