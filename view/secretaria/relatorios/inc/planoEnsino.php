@@ -370,7 +370,7 @@ function getProximaAula($data, $dataFim, $atribuicao){
     require_once CONTROLLER . "/calendario.class.php";
     $calendario = new Calendarios();
 
-    if (!empty($ensalamento->getEnsalamentos($atribuicao))) {
+    if ($ensalamento->getEnsalamentos($atribuicao)) {
 
         while (strtotime($data) < strtotime($dataFim)) {
             if ($calendario->isDiaLetivo($data) && $ensalamento->getQdeAulaDiaSemana($atribuicao, date('w', strtotime($data)) + 1) > 0)
