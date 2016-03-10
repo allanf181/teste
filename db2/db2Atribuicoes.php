@@ -82,10 +82,11 @@ for ($n = 1; $n <= 2; $n++) {
             $sql = "SELECT * FROM Turmas t WHERE numero='A$row->TD_TURMA' AND ano=$ano AND semestre = $n";
             $result = mysql_query($sql);
             while ($turma = @mysql_fetch_object($result)) {
-                $nn = $n;
-                if ($n == 2)
-                    $nn = 3;
-                for ($i = $nn; $i <= $nn + 1; $i++) {// BIMESTRES
+//                $nn = $n;
+//                if ($n == 2)
+//                    $nn = 3;
+//                for ($i = $nn; $i <= $nn + 1; $i++) {// BIMESTRES
+                for ($i = 1; $i <= 4; $i++) {// BIMESTRES
                     $sqlProf = "SELECT * FROM Pessoas WHERE prontuario='$row->NH_PROFESSOR'";
                     $resultProf = mysql_query($sqlProf);
                     if (!$professor = mysql_fetch_object($resultProf))
