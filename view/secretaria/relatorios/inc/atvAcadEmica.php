@@ -1,5 +1,4 @@
 <?php
-
 require '../../../../inc/config.inc.php';
 require VARIAVEIS;
 require FUNCOES;

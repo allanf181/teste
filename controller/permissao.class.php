@@ -28,6 +28,7 @@ class Permissoes extends Generic {
         $res = $bd->selectDB($sql, $params);
 
         // Concatenando todas as permissões do usuário
+        $P['codigo'] = null;
         $P['nome'] = null;
         $P['menu'] = null;
         $P['permissao'] = null;
@@ -43,6 +44,7 @@ class Permissoes extends Generic {
         foreach ($res as $reg) {
             if ($j)
                 $vir = ',';
+            $P['codigo'] .= $vir . $reg['codigo'];
             $P['nome'] .= $vir . $reg['nome'];
             $P['menu'] .= $vir . $reg['menu'];
             $P['permissao'] .= $vir . $reg['permissao'];
@@ -50,6 +52,7 @@ class Permissoes extends Generic {
         }
 
         // Tranformando em Array
+        $P['codigo'] = explode(",", $P['codigo']);
         $P['nome'] = explode(",", $P['nome']);
         $P['menu'] = explode(",", $P['menu']);
         $P['permissao'] = explode(",", $P['permissao']);
@@ -65,8 +68,8 @@ class Permissoes extends Generic {
         }
 
         // Pegando o codigo em caso de alteracao de alguma permissao
-        if ($res)
-            $P['codigo'] = $res[0]['codigo'];
+//        if ($res)
+//            $P['codigo'] = $res[0]['codigo'];
 
         if ($tipo == 'permissao')
             return $P;
@@ -133,20 +136,48 @@ class Permissoes extends Generic {
         $bd = new database();
 
         $params = dcripArray($params);
-
-        $sql = "SELECT nome,menu,permissao,(SELECT codigo FROM Permissoes WHERE tipo = :codigo) as codigo"
-                . " FROM Permissoes WHERE tipo = :tipo";
+        $sql = "SELECT nome,menu,permissao,(SELECT codigo FROM PermissoesArquivos WHERE tipo = :codigo) as codigo"
+                . " FROM PermissoesArquivos WHERE tipo = :tipo";
 
         $res = $bd->selectDB($sql, $params);
+        
+        foreach ($res as $v) {
+            $paramsInsert = array(
+                            'codigo'=>0,
+                            'tipo'=>$params['codigo'],
+                            'permissao'=>$v['permissao'],
+                            'menu'=>$v['menu'],
+                            'nome'=>$v['nome']
+                        );           
+            $sql = "INSERT INTO PermissoesArquivos values(:codigo,:tipo,:permissao,:nome,:menu)";
+            $ret = $bd->insertDB($sql, $paramsInsert);
+        }
+    }
+    
+    public function addPermissao($params){
+        $bd = new database();
 
-        $params1['codigo'] = $res[0]['codigo'];
-        $params1['permissao'] = $res[0]['permissao'];
-        $params1['nome'] = $res[0]['nome'];
-        $params1['menu'] = $res[0]['menu'];
-        $params1['tipo'] = $params['codigo'];
+        $params = dcripArray($params);
+        $codigos = explode(",", $params['codigo']);
+        $permissoes = explode(",", $params['permissao']);
+        $menus = explode(",", $params['menu']);
+        $nomes = explode(",", $params['nome']);
 
-        if ($res[0])
-            $res = $this->insertOrUpdate($params1);
+        $sql = "DELETE FROM PermissoesArquivos WHERE tipo=:tipo";
+        $bd->deleteDB($sql, array('tipo' => $params['tipo']));
+
+        foreach ($permissoes as $i => $v) {
+            $paramsInsert = array(
+                            'codigo'=>$codigos[$i],
+                            'tipo'=>$params['tipo'],
+                            'permissao'=>$permissoes[$i],
+                            'menu'=>$menus[$i],
+                            'nome'=>$nomes[$i]
+                        );           
+            $sql = "INSERT INTO PermissoesArquivos values(:codigo,:tipo,:permissao,:nome,:menu)";
+            $ret = $bd->insertDB($sql, $paramsInsert);
+            $paramsInsert=null;
+        }
     }
 
 }

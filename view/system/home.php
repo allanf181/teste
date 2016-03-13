@@ -167,7 +167,14 @@ if (in_array($COORD, $_SESSION["loginTipo"])) {
 // Verifica se há Planos de Ensino para validar
     listLibPlanoEnsino();
 // Verifica se há FPA, PIT e RIT para validar.
-    listLibTD();
+//    listLibTD();// SOMENTE PARA QUEM É DA CAAD, COORDENADOR AINDA CONSEGUE VISUALIZAR, MAS NÃO É MAIS AVISADO NA TELA INICIAL
+}
+
+require_once CONTROLLER . "/caad.class.php";
+$caad = new Caads();
+if ($areas = $caad->getAreas($_SESSION["loginTipo"])) {    
+    // Verifica se há FPA, PIT e RIT para validar.
+    listLibTD($areas);    
 }
 
 ///////////////////////// FUNCOES ////////////////////////////////////
@@ -911,14 +918,28 @@ function listLibPlanoEnsino() {
     }
 }
 
-function listLibTD() {
+function listLibTD($areas=null) {
     global $user, $ANO, $SEMESTRE;
 
     $tdDados = new TDDados();
-    $sqlAdicional = "AND ((f.finalizado <> '0000-00-00 00:00:00') "
-            . "AND (f.valido = '0000-00-00 00:00:00' OR f.valido IS NULL)) "
-            . "AND f.area IN (SELECT area FROM Coordenadores WHERE coordenador = :cod) ORDER BY p.nome ";
-    $params = array(':cod' => $user);
+    $sqlAdicional = " AND f.ano=$ANO AND f.semestre=$SEMESTRE AND ((f.finalizado <> '0000-00-00 00:00:00') "
+    . "AND (f.valido = '0000-00-00 00:00:00' OR f.valido IS NULL)) ";
+
+    if ($areas){
+        $sqlAdicional.=" AND (";
+        for ($i=0; $i<count($areas); $i++){
+            if ($i>0)
+                $sqlAdicional.=" OR ";
+
+            $params['area'.$i] = $areas[$i];
+            $sqlAdicional.=" f.area = :area$i ";
+        }
+        $sqlAdicional.=")";
+    }
+    else{
+        $sqlAdicional = "AND f.area IN (SELECT area FROM Coordenadores WHERE coordenador = :cod) ORDER BY p.nome ";
+        $params = array(':cod' => $user);
+    }
     $res = $tdDados->listTDs($params, $sqlAdicional, null, null);
     if ($res) {
         ?>
@@ -940,7 +961,7 @@ function listLibTD() {
                     <td><?= $reg['modelo'] ?></td>
                     <td><?= $reg['semestre'] . '/' . $reg['ano'] ?></td>
                     <td>
-                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?professor=<?= crip($reg['pessoa']) ?>');void(0);" data-placement="top" title="Clique aqui para validar">
+                        <a href="javascript:$('#index').load('<?= VIEW ?>/secretaria/atribuicao_docente/<?= strtolower($reg['modelo']) ?>.php?codigo=<?= crip($reg['codigo']) ?>');void(0);" data-placement="top" title="Clique aqui para validar">
                             Validar
                         </a>
                     </td>

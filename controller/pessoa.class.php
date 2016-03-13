@@ -64,7 +64,7 @@ class Pessoas extends Generic {
 		ORDER BY p.nome $nav";
 
         $res = $bd->selectDB($sql, $params);
-
+        
         if ($res) {
             return $res;
         } else {

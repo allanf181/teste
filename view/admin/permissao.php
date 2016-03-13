@@ -18,6 +18,7 @@ if ($_POST["opcao"] == 'Salvar') {
     $perms = $_POST["permissao"];
     $nome = $_POST["nome"];
     $menu = $_POST["menu"];
+    $codigos = $_POST["codigo"];
 
     $nomes = array();
     $menus = array();
@@ -30,9 +31,9 @@ if ($_POST["opcao"] == 'Salvar') {
     $_POST['nome'] = implode(",", $nomes);
     $_POST['menu'] = implode(",", $menus);
     $_POST['nome'] = htmlentities($_POST['nome'], ENT_COMPAT, 'UTF-8');
+    $_POST['codigo'] = implode(",", $codigos);
 
-    $ret = $permissao->insertOrUpdate($_POST);
-
+    $ret = $permissao->addPermissao($_POST);
     $ret['TIPO'] = 'UPDATE';
     $ret['STATUS'] = 'OK';
     $ret['RESULTADO'] = '1';
@@ -150,10 +151,10 @@ if (dcrip($_GET["tipo"]))
                         $perms = $permissao->listaPermissoes(array(dcrip($tipo)), 'permissao');
 
                         // Listando os diretórios dentro da VIEW.
-                        $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/inc\/|index.html|\/common\/|\/system\/';
+                        $regex = '\/..$|\/.$|.svn|\/js\/|\/css\/|\/view\/inc\/|index.html|\/common\/|\/system\/';
                         $cdir = dirToArray(PATH . LOCATION . '/view/', $regex);
-//                        $cdir2 = dirToArray(PATH . LOCATION . '/db2/lib/includes/', $regex);
-//                        $cdir = array_merge($cdir, $cdir2);
+                        $cdir2 = dirToArray(PATH . LOCATION . '/db2/lib/inc/');
+                        $cdir = array_merge($cdir, $cdir2);
                         krsort($cdir);
                         $i = 0;
                         ?>
@@ -168,14 +169,17 @@ if (dcrip($_GET["tipo"]))
                                         foreach ($perms['permissao'] as $perm) {
                                             $checkedPermissao = "";
                                             $checkedLink = "";
-                                            $arquivoNomeMenu = "";
+                                            $arquivoNomeMenu = "";                                            
                                             $disabled = 'disabled';
+                                            $codigo=0;
                                             if ($arquivo == $perm) {
                                                 if (in_array($arquivo, $perms['menu']))
                                                     $checkedLink = "checked='checked'";
                                                 $checkedPermissao = "checked='checked'";
                                                 $disabled = '';
                                                 $arquivoNomeMenu = html_entity_decode($perms['nome'][$j], ENT_COMPAT, 'UTF-8');
+                                                if ($perms['codigo'][$j])
+                                                    $codigo = $perms['codigo'][$j];
                                                 break;
                                             }
                                             $j++;
@@ -205,6 +209,7 @@ if (dcrip($_GET["tipo"]))
                                             <br><input type='checkbox' <?= $disabled ?> <?= $checkedLink ?> name='menu[<?= $arquivo ?>]' id="M_<?= $descricao['nome'] . $i ?>" value='<?= $arquivo ?>' />
                                             <font size="1"> - link vis&iacute;vel</font>
                                             <br><input type="text" <?= $disabled ?> name="nome[<?= $arquivo ?>]" id="<?= $descricao['nome'] . $i ?>" value="<?= $arquivoNomeMenu ?>" />
+                                            <input type="hidden" <?= $disabled ?>  id="C_<?= $descricao['nome'] . $i ?>" name="codigo[<?= $arquivo ?>]" value="<?= crip($codigo) ?>" />
                                         </td>
                                         <?php
                                         $i++;
@@ -216,7 +221,7 @@ if (dcrip($_GET["tipo"]))
                                 }
                             }
                             ?>
-                            <input type="hidden" name="codigo" value="<?= crip($perms['codigo']) ?>" />
+                            
                             <?php
                         }
                         ?>
@@ -273,12 +278,15 @@ if (dcrip($_GET["tipo"]))
         if (valor) {
             document.getElementById(campo).disabled = false;
             document.getElementById('M_' + campo).disabled = false;
+            document.getElementById('C_' + campo).disabled = false;
         }
         else
         {
             document.getElementById(campo).disabled = true;
             document.getElementById('M_' + campo).checked = false;
+            document.getElementById('C_' + campo).checked = false;
             document.getElementById('M_' + campo).disabled = true;
+            document.getElementById('C_' + campo).disabled = true;
             document.getElementById(campo).value = '';
         }
     }

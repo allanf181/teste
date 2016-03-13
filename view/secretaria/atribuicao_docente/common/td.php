@@ -17,6 +17,9 @@ $logEmail = new LogEmails();
 require CONTROLLER . "/pessoa.class.php";
 $pessoa = new Pessoas();
 
+require CONTROLLER . "/caad.class.php";
+$caad = new Caads();
+
 if ($_GET["opcao"] == 'historico') {
     $_GET['tabela'] = $tabela;
     // COPIA DE:
@@ -97,8 +100,38 @@ if (dcrip($_GET["area"])) {
 if (dcrip($_GET["professor"])) {
     $professor = dcrip($_GET["professor"]);
     $params['professor'] = $professor;
-    $sqlAdicional .= ' AND f.pessoa = :professor ';
+    $sqlAdicional .= ' AND f.codigo = :professor ';
 }
+else if (dcrip($_GET["codigo"])) {
+    $codigo = dcrip($_GET["codigo"]);
+    $params['codigo'] = $codigo;
+    $sqlAdicional .= ' AND f.codigo = :codigo ';
+}
+
+//LISTA OS REGISTROS DA TD
+if (in_array($COORD, $_SESSION["loginTipo"])) {
+    $params['coord'] = $_SESSION['loginCodigo'];
+    $sqlAdicionalCoord = 'AND f.area IN (SELECT c.area FROM Coordenadores c WHERE c.coordenador = :coord)';
+}
+if ($areas = $caad->getAreas($_SESSION['loginTipo'])){ // VERIFICA SE É MEMBRO DE ALGUMA CAAD
+    $sqlAdicionalCoord.=" AND (";
+    for ($i=0; $i<count($areas); $i++){
+        if ($i>0)
+            $sqlAdicionalCoord.=" OR ";
+            
+        $params['area'.$i] = $areas[$i];
+        $sqlAdicionalCoord.=" f.area = :area$i ";
+    }
+    $sqlAdicionalCoord.=")";
+}
+$sqlAdicional .= " AND f.modelo = :modelo $sqlAdicionalCoord ORDER BY p.nome ";
+$params['ano'] = $ANO;
+$params['semestre'] = $SEMESTRE;
+$params['modelo'] = $tabela;
+
+$res = $dados->listTDs($params, $sqlAdicional, null, null);
+$totalRegistros = count($res);
+
 ?>
 <script src="<?= VIEW ?>/js/tooltip.js" type="text/javascript"></script>
 <h2><?= $TITLE_DESCRICAO ?><?= $TITLE ?></h2>
@@ -110,10 +143,7 @@ if (dcrip($_GET["professor"])) {
             <select name="professor" id="professor" value="<?= $professor ?>" style="width: 400px">
                 <option></option>
                 <?php
-                $sqlAdicionalProf = ' AND pt.tipo = :prof ';
-                $paramsProf = array('prof' => $PROFESSOR);
-                $resProf = $pessoa->listPessoasTipos($paramsProf, $sqlAdicionalProf, null, null);
-                foreach ($resProf as $reg) {
+                foreach ($res as $reg) {
                     $selected = "";
                     if ($reg['codigo'] == $professor)
                         $selected = "selected";
@@ -129,13 +159,11 @@ if (dcrip($_GET["professor"])) {
             <select name="area" id="area" value="<?= $area ?>" style="width: 400px">
                 <option></option>
                 <?php
-                require CONTROLLER . "/area.class.php";
-                $areas = new Areas();
-                foreach ($areas->listRegistros(null, 'ORDER BY nome', null, null) as $reg) {
+                foreach (array_combine(array_column($res,'area'),array_column($res,'areaNome')) as $i => $reg) {
                     $selected = "";
-                    if ($reg['codigo'] == $area)
+                    if ($i == $area)
                         $selected = "selected";
-                    print "<option $selected value='" . crip($reg['codigo']) . "'>" . $reg['nome'] . "</option>";
+                    print "<option $selected value='" . crip($i) . "'>" . $reg . "</option>";
                 }
                 ?>
             </select>
@@ -161,18 +189,6 @@ $item = 1;
 if (isset($_GET['item']))
     $item = $_GET["item"];
 
-//LISTA OS REGISTROS DA TD
-if (in_array($COORD, $_SESSION["loginTipo"])) {
-    $params['coord'] = $_SESSION['loginCodigo'];
-    $sqlAdicionalCoord = 'AND f.area IN (SELECT c.area FROM Coordenadores c WHERE c.coordenador = :coord)';
-}
-$sqlAdicional .= " AND f.modelo = :modelo $sqlAdicionalCoord ORDER BY p.nome ";
-$params['ano'] = $ANO;
-$params['semestre'] = $SEMESTRE;
-$params['modelo'] = $tabela;
-
-$res = $dados->listTDs($params, $sqlAdicional, null, null);
-$totalRegistros = count($dados->listTDs($params, $sqlAdicional, null, null));
 
 $SITENAV = $SITE . '?';
 require PATH . VIEW . '/system/paginacao.php';
@@ -184,7 +200,7 @@ require PATH . VIEW . '/system/paginacao.php';
         <th width="100">Sem/Ano</th>
         <th width="150">Entregue</th>
         <?php
-        if (in_array($COORD, $_SESSION["loginTipo"]) || in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
+        if (isset($areas) || $in_array($COORD, $_SESSION["loginTipo"]) || in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"])) {
             ?>
             <th width="150" title='Solicitar Corre&ccedil;&atilde;o?'>Solicitar corre&ccedil;&atilde;o</th>
             <th width="70" title='Marcar como conferido?'>Validar?</th>
@@ -230,7 +246,7 @@ require PATH . VIEW . '/system/paginacao.php';
                 <?php
                 $correcao = 1;
             } else {
-                if (in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"])) {
+                if (isset($areas) || in_array($ADM, $_SESSION["loginTipo"]) || in_array($GED, $_SESSION["loginTipo"]) || in_array($COORD, $_SESSION["loginTipo"])) {
                     ?>
                     <td align='center'>
                         <a href='#' title='Solicitar correção' onclick="return change('<?= $reg['codigo'] ?>', '<?= $reg['nome'] ?>')">
@@ -243,10 +259,10 @@ require PATH . VIEW . '/system/paginacao.php';
 
             if (!$correcao) {
                 if ($reg['valido'] != "00/00/0000 00:00" || $reg['valido'] != "") {
-                    if (!in_array($ADM, $_SESSION["loginTipo"]) && !in_array($COORD, $_SESSION["loginTipo"]) && !in_array($GED, $_SESSION["loginTipo"]))
+                    if (!isset($areas) && !in_array($ADM, $_SESSION["loginTipo"]) && !in_array($COORD, $_SESSION["loginTipo"]) && !in_array($GED, $_SESSION["loginTipo"]))
                         $bloqueado = "disabled='disabled' title='pendente'";
 
-                    if (!in_array($ADM, $_SESSION["loginTipo"]) && !in_array($GED, $_SESSION["loginTipo"]) && $checked)
+                    if (!isset($areas) && !in_array($ADM, $_SESSION["loginTipo"]) && !in_array($GED, $_SESSION["loginTipo"]) && $checked)
                         $bloqueado = "disabled='disabled' title='Somente GED'";
                     ?>
                     <td align='center'>

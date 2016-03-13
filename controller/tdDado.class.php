@@ -53,16 +53,16 @@ class TDDados extends Generic {
                 . "         WHERE p.codigo = l.solicitante "
                 . "         AND l.codigoTabela = f.codigo "
                 . "         AND l.nomeTabela = f.modelo "
-                . "         AND l.dataConcessao IS NULL) as solicitante "
-                . "FROM TDDados as f, Pessoas as p "
-                . "WHERE f.pessoa = p.codigo ";
+                . "         AND l.dataConcessao IS NULL) as solicitante, a.nome areaNome "
+                . "FROM TDDados as f, Pessoas as p, Areas a "
+                . "WHERE f.pessoa = p.codigo AND a.codigo=f.area ";
 
         if ($params['ano'] && $params['semestre'])
             $sql .= "AND f.ano = :ano AND (f.semestre = :semestre OR f.semestre = 0) ";
 
         $sql .= " $sqlAdicional ";
         $sql .= " $nav ";
-
+        
         $res = $bd->selectDB($sql, $params);
 
         if ($res)
