@@ -83,6 +83,8 @@ if ($_GET["opcao"] == 'controle') {
 
     unset($_GET['solicitante']);
     unset($_GET['conferido']);
+    
+    $_GET['codigo']=crip($_GET['codigo']);
 
     $ret = $dados->insertOrUpdate($_GET);
 
