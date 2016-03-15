@@ -33,7 +33,8 @@ class Caads extends Generic {
             $params = array(':tipo' => $t);
             $res = $bd->selectDB($sql, $params);
             if ($res){
-                array_push($areas, $res[0]['area']);
+                foreach ($res as $reg)
+                    array_push($areas, $reg['area']);
             }
         }
         if ($areas) {
