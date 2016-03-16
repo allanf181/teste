@@ -111,12 +111,17 @@ else if (dcrip($_GET["codigo"])) {
 }
 
 //LISTA OS REGISTROS DA TD
+$coordenador = false;
 if (in_array($COORD, $_SESSION["loginTipo"])) {
     $params['coord'] = $_SESSION['loginCodigo'];
-    $sqlAdicionalCoord = 'AND f.area IN (SELECT c.area FROM Coordenadores c WHERE c.coordenador = :coord)';
+    $sqlAdicionalCoord = 'AND (f.area IN (SELECT c.area FROM Coordenadores c WHERE c.coordenador = :coord)';
+    $coordenador = true;
 }
 if ($areas = $caad->getAreas($_SESSION['loginTipo'])){ // VERIFICA SE É MEMBRO DE ALGUMA CAAD
-    $sqlAdicionalCoord.=" AND (";
+    if ($coordenador)
+        $sqlAdicionalCoord.=" OR  (";
+    else
+        $sqlAdicionalCoord.=" AND (";
     for ($i=0; $i<count($areas); $i++){
         if ($i>0)
             $sqlAdicionalCoord.=" OR ";
@@ -124,7 +129,10 @@ if ($areas = $caad->getAreas($_SESSION['loginTipo'])){ // VERIFICA SE É MEMBRO 
         $params['area'.$i] = $areas[$i];
         $sqlAdicionalCoord.=" f.area = :area$i ";
     }
-    $sqlAdicionalCoord.=")";
+    if ($coordenador)
+        $sqlAdicionalCoord.="))";
+    else
+        $sqlAdicionalCoord.=")";
 }
 $sqlAdicional .= " AND f.modelo = :modelo $sqlAdicionalCoord ORDER BY p.nome ";
 $params['ano'] = $ANO;

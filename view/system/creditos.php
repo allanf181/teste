@@ -52,7 +52,6 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
                 Ricardo Takazu (Reitoria)
             </td>
             <td valign="top" align="center">
-                Edilson Davoglio Candido (Araraquara) 
                 <br>João Paulo Lemos Escola (Barretos)
             </td>
             <td valign="top" align="center">
@@ -87,6 +86,9 @@ if (strpos($_SERVER["HTTP_REFERER"], LOCATION) == false) {
 <p style="text-align: center; margin: 20px auto 0 auto; width: 80%; color: green;">
     É servidor do IFSP e quer ajudar? Venha fazer parte da equipe!
 </p>
+
+<br /><b>Vers&atilde;o 1.450</b>
+<br> - Módulo de gerenciamento de CAADs;
 
 <br /><b>Vers&atilde;o 1.449</b>
 <br> - Atualização do módulo de FPA, PIT e RIT para a resolução 109/2015;
