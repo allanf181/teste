@@ -134,6 +134,10 @@ if ($areas = $caad->getAreas($_SESSION['loginTipo'])){ // VERIFICA SE É MEMBRO 
     else
         $sqlAdicionalCoord.=")";
 }
+else{
+    if ($coordenador)
+        $sqlAdicionalCoord.=")";
+}
 $sqlAdicional .= " AND f.modelo = :modelo $sqlAdicionalCoord ORDER BY p.nome ";
 $params['ano'] = $ANO;
 $params['semestre'] = $SEMESTRE;
