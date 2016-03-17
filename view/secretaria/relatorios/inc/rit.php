@@ -146,15 +146,15 @@ if (dcrip($_GET["professor"])) {
 
             $tAulas = round($tAulas * substr($duracaoAula, 3, 2) / 60);
             $totalGeral = $tAulas * 2;
+            if ($disc > 4) {
+                $tAulas = $tAulas + ($disc - 4);
+                $totalGeral = $totalGeral + ($disc - 4);
+            }
             $pdf->SetFont($fonte, 'B', $tamanho);
-            $pdf->Cell(160, 5, utf8_decode("Temo total dedicado às aulas (Total em horas)"), 1, 0, 'R', true);
+            $pdf->Cell(160, 5, utf8_decode("Tempo total dedicado às aulas (Total em horas)"), 1, 0, 'R', true);
             $pdf->Cell(20, 5, $tAulas, 1, 0, 'C', true);
             $pdf->Ln();
 
-//            if ($disc > 4) {
-//                $tAulas = $tAulas + ($disc - 4);
-//                $totalGeral = $totalGeral + ($disc - 4);
-//            }
 //            $pdf->Cell(160, 5, utf8_decode("Organização do Ensino (em horas)"), 1, 0, 'R', true);
 //            $pdf->Cell(20, 5, $tAulas, 1, 0, 'C', true);
 //            $pdf->Ln();
